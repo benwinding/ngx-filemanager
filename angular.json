@@ -133,6 +133,111 @@
           }
         }
       }
+    },
+    "ngx-filemanager-core": {
+      "root": "projects/ngx-filemanager-core",
+      "sourceRoot": "projects/ngx-filemanager-core/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngx-filemanager-core/tsconfig.lib.json",
+            "project": "projects/ngx-filemanager-core/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-filemanager-core/src/test.ts",
+            "tsConfig": "projects/ngx-filemanager-core/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-filemanager-core/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-filemanager-core/tsconfig.lib.json",
+              "projects/ngx-filemanager-core/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ngx-filemanager-client": {
+      "root": "projects/ngx-filemanager-client",
+      "sourceRoot": "projects/ngx-filemanager-client/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngx-filemanager-client/tsconfig.lib.json",
+            "project": "projects/ngx-filemanager-client/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-filemanager-client/src/test.ts",
+            "tsConfig": "projects/ngx-filemanager-client/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-filemanager-client/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-filemanager-client/tsconfig.lib.json",
+              "projects/ngx-filemanager-client/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "ngx-filemanager-api-firebase": {
+      "root": "projects/ngx-filemanager-api-firebase",
+      "sourceRoot": "projects/ngx-filemanager-api-firebase/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngx-filemanager-api-firebase/tsconfig.lib.json",
+            "project": "projects/ngx-filemanager-api-firebase/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-filemanager-api-firebase/src/test.ts",
+            "tsConfig": "projects/ngx-filemanager-api-firebase/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-filemanager-api-firebase/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-filemanager-api-firebase/tsconfig.lib.json",
+              "projects/ngx-filemanager-api-firebase/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "ngx-filemanager"
