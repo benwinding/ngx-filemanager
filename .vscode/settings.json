@@ -1,0 +1,19 @@
+{
+  "typescript.preferences.quoteStyle": "single",
+  "javascript.preferences.quoteStyle": "single",
+  "prettier.singleQuote": true,
+  "autoimport.doubleQuotes": false,
+  "editor.tabSize": 2,
+  "files.watcherExclude": {
+    ".git": true,
+    "dist": true,
+    "node_modules": true,
+    "src-functions": true
+  },
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  }
+}

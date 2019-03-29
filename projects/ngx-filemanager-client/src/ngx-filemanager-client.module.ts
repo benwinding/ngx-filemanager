@@ -1,40 +1,45 @@
-// Angular
-import { ReactiveFormsModule } from '@angular/forms';
-
+import { FileDetailsComponent } from './components/file-details.component';
+import { NgxFileManagerComponent } from './components/file-manager.component';
 import { NgModule } from '@angular/core';
-import { AutoTableComponent } from './components/ngx-auto-table.component';
+import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppRoutingModule } from 'src/app/app-routing.module';
 import {
+  MatTableModule,
   MatAutocompleteModule,
   MatButtonModule,
   MatButtonToggleModule,
-  MatPaginatorModule,
   MatCheckboxModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
+  MatMenuModule,
+  MatPaginatorModule,
   MatProgressBarModule,
   MatProgressSpinnerModule,
   MatSelectModule,
   MatSortModule,
-  MatTableModule,
   MatToolbarModule,
-  MatMenuModule
+  MatSidenavModule,
+  MatTooltipModule
 } from '@angular/material';
+import { AutoTableModule } from 'ngx-auto-table/dist/public_api';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FileSizePipe } from './services/file-size.pipe';
 
-import { AppTableLoaderComponent } from './components/app-table-loader.component';
-import { CsvModule } from '@ctrl/ngx-csv';
-import { AppExportCsvExportComponent } from './components/app-table-csv-export.component';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-
-const sharedComponents = [AutoTableComponent, AppTableLoaderComponent];
+const sharedComponents = [NgxFileManagerComponent];
 
 @NgModule({
-  declarations: [...sharedComponents, AppExportCsvExportComponent],
+  declarations: [...sharedComponents, FileDetailsComponent, FileSizePipe],
   exports: sharedComponents,
   imports: [
-    CsvModule,
+    CommonModule,
+    AppRoutingModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
+    BrowserModule,
+    AutoTableModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatButtonToggleModule,
@@ -50,8 +55,9 @@ const sharedComponents = [AutoTableComponent, AppTableLoaderComponent];
     MatSortModule,
     MatTableModule,
     MatToolbarModule,
-    CommonModule,
-    RouterModule,
+    MatTooltipModule,
+
+    MatSidenavModule
   ]
 })
-export class AutoTableModule {}
+export class NgxFilemanagerClientModule {}

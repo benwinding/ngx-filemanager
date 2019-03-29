@@ -1,14 +1,7 @@
-import { OnInit, Component } from '@angular/core';
+import { OnInit, Component, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subscription, Subject } from 'rxjs';
-import { FilesSystemProviderService } from './files-provider.service';
 import { AutoTableConfig } from 'ngx-auto-table/dist';
-import { ResFile, MakeClientDirectory } from './files-api-types';
-import {
-  getFileIcon,
-  getFolderIcon
-} from 'src/app/subcomponents/doc-viewer/file-icon';
 import { take, map, tap, filter } from 'rxjs/operators';
-import { AuthQueriesService } from 'src/app/services/auth/auth-queries.service';
 import { MatDialog } from '@angular/material';
 import { AppDialogNewFolderComponent } from './dialog-new-folder.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,38 +9,15 @@ import {
   AppDialogRenameComponent,
   RenameInterface
 } from './dialog-rename.component';
+import { FilesSystemProviderService } from '../services/files-provider.service';
+import { ResFile } from 'ngx-filemanager-core/public_api';
+import { getFileIcon, getFolderIcon } from '../getIcons/file-icon-guesser';
+import { MakeClientDirectory } from '../getIcons/file.factory';
 
 @Component({
-  selector: 'files-page',
+  // tslint:disable-next-line:component-selector
+  selector: 'ngx-file-manager',
   template: `
-    <app-toolbar
-      title="{{ buildingName }} File Locker"
-      [controls]="[upfolderTmpl, newFolderTmpl, uploadTmpl]"
-    >
-      <ng-template #upfolderTmpl>
-        <button
-          [disabled]="$NoParentFolder | async"
-          (click)="onClickUpFolder()"
-          mat-raised-button
-          color="default"
-        >
-          <mat-icon matPrefix class="gap">arrow_upward</mat-icon>
-          <span>Back</span>
-        </button>
-      </ng-template>
-      <ng-template #newFolderTmpl>
-        <button (click)="onClickNewFolder()" mat-raised-button color="default">
-          <mat-icon matPrefix class="gap">create_new_folder</mat-icon>
-          <span>New Folder</span>
-        </button>
-      </ng-template>
-      <ng-template #uploadTmpl>
-        <button (click)="onClickUpload()" mat-raised-button color="default">
-          <mat-icon matPrefix class="gap">cloud_upload</mat-icon>
-          <span>Upload Files</span>
-        </button>
-      </ng-template>
-    </app-toolbar>
     <div class="page-container">
       <mat-drawer-container>
         <mat-drawer-content>
@@ -156,7 +126,7 @@ import {
     `
   ]
 })
-export class FilesPageComponent implements OnInit {
+export class NgxFileManagerComponent implements OnInit, OnDestroy {
   $currentFiles = new BehaviorSubject<ResFile[]>([]);
   $currentPath = new BehaviorSubject<string>(null);
 
@@ -170,7 +140,6 @@ export class FilesPageComponent implements OnInit {
 
   constructor(
     private fp: FilesSystemProviderService,
-    private as: AuthQueriesService,
     private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router
@@ -251,8 +220,9 @@ export class FilesPageComponent implements OnInit {
         this.$selectedFile.next(item);
       },
       filterText: 'Search files...',
-      $triggerSelectItem: this.$triggerSelectItem.pipe(tap(file => 
-        console.log('files-page: $triggerSelectItem', {file})))
+      $triggerSelectItem: this.$triggerSelectItem.pipe(
+        tap(file => console.log('files-page: $triggerSelectItem', { file }))
+      )
     };
   }
 
@@ -319,10 +289,6 @@ export class FilesPageComponent implements OnInit {
   private async currentFiles() {
     const currentFiles = await this.$currentFiles.pipe(take(1)).toPromise();
     return currentFiles;
-  }
-
-  get buildingName() {
-    return this.as.buildingName;
   }
 
   async onClickNewFolder() {
