@@ -24,12 +24,6 @@
       "ngx-filemanager-core/*": [
         "dist/ngx-filemanager-core/*"
       ],
-      "ngx-filemanager-client": [
-        "dist/ngx-filemanager-client"
-      ],
-      "ngx-filemanager-client/*": [
-        "dist/ngx-filemanager-client/*"
-      ],
       "ngx-filemanager-api-firebase": [
         "dist/ngx-filemanager-api-firebase"
       ],
