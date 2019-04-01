@@ -28,9 +28,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxFilemanagerClientFirebaseModule } from 'ngx-filemanager-client-firebase';
 import { HttpClientModule } from '@angular/common/http';
 import { AppTestPageComponent } from './test-page.component';
+import { AppTestBlankComponent } from './test-blank.component';
 
 @NgModule({
-  declarations: [AppComponent,AppTestPageComponent],
+  declarations: [AppComponent, AppTestPageComponent, AppTestBlankComponent],
   imports: [
     CommonModule,
     BrowserAnimationsModule,

@@ -1,8 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AutoTableConfig } from 'ngx-auto-table/dist';
-import { of } from 'rxjs';
-import { ClientConfiguration } from 'ngx-filemanager-client-firebase/public_api';
-import { ReqBodyCopy } from 'ngx-filemanager-core/public_api';
 
 @Component({
   selector: 'app-root',

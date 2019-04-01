@@ -1,18 +1,14 @@
-import { OnInit, Component, OnDestroy, Input } from '@angular/core';
-import { BehaviorSubject, Subscription, Subject } from 'rxjs';
+import { OnInit, Component, Input } from '@angular/core';
 import { AutoTableConfig } from 'ngx-auto-table/dist/public_api';
-import { take, map, tap, filter } from 'rxjs/operators';
+import { take, map, filter } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { AppDialogNewFolderComponent } from './dialog-new-folder.component';
 import {
   AppDialogRenameComponent,
   RenameInterface
 } from './dialog-rename.component';
-import { FilesSystemProviderService } from '../services/files-provider.service';
-import { ResFile } from 'ngx-filemanager-core/public_api';
-import { getFileIcon, getFolderIcon } from '../utils/file-icon-guesser';
-import { MakeClientDirectory } from '../utils/file.factory';
-import {ClientConfiguration} from './client-configuration';
+import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
+import { FilesClientCacheService } from '../services/files-client-cache.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -74,7 +70,7 @@ import {ClientConfiguration} from './client-configuration';
           position="end"
           opened
         >
-          <ngx-filemanager-file-details [file]="$selectedFile | async">
+          <ngx-filemanager-file-details [file]="$SelectedFile | async">
           </ngx-filemanager-file-details>
         </mat-drawer>
       </mat-drawer-container>
@@ -121,46 +117,30 @@ import {ClientConfiguration} from './client-configuration';
     `
   ]
 })
-export class NgxFileManagerComponent implements OnInit, OnDestroy {
+export class NgxFileManagerComponent implements OnInit {
   @Input()
-  clientConfig: ClientConfiguration;
-
-  private $currentFiles = new BehaviorSubject<ResFile[]>([]);
-  private $currentPath = new BehaviorSubject<string>(null);
-
-  private $triggerSelectItem = new Subject<ResFile>();
-  public $selectedFile = new BehaviorSubject<ResFile>(null);
+  fileSystem: FileSystemProvider;
 
   public config: AutoTableConfig<ResFile>;
   public isFileDetailsOpen = true;
 
   constructor(
-    private fp: FilesSystemProviderService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private clientsCache: FilesClientCacheService
   ) {}
 
   ngOnInit() {
-    if (!this.clientConfig) {
-      throw new Error('<ngx-filemanager> must have input selector [clientConfig] set');
+    if (!this.fileSystem) {
+      throw new Error(
+        '<ngx-filemanager> must have input selector [clientConfig] set'
+      );
     }
+    this.clientsCache.initialize(this.fileSystem);
     this.makeConfig();
   }
 
-  ngOnDestroy() {
-  }
-
   makeConfig() {
-    const filesWithIcons$ = this.$currentFiles.pipe(
-      map(files => files.map(file => this.addIconPath(file))),
-      map(files =>
-        files.map(file => {
-          return { ...file, id: file.fullPath };
-        })
-      ),
-      tap(files => {
-        console.log('files-page: added files to filesWithIcons$', { files });
-      })
-    );
+    const filesWithIcons$ = this.clientsCache.$FilesWithIcons;
     this.config = {
       data$: filesWithIcons$,
       debug: true,
@@ -168,44 +148,45 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
         {
           label: 'Delete',
           icon: 'delete',
-          onClick: async (file: ResFile) => this.HandleDelete([file])
+          onClick: async (file: ResFile) => this.onClickBulkDelete([file])
         },
         {
           label: 'Rename',
           icon: 'border_color',
-          onClick: async (file: ResFile) => this.HandleRename(file)
+          onClick: async (file: ResFile) => this.onClickSingleRename(file)
         },
         {
           label: 'Permissions',
           icon: 'lock_outline',
-          onClick: async (file: ResFile) => this.HandleRename(file)
+          onClick: async (file: ResFile) => this.onClickSingleRename(file)
         }
       ],
       actionsBulk: [
         {
           label: 'Delete',
           icon: 'delete',
-          onClick: async (files: ResFile[]) => this.HandleDelete(files)
+          onClick: async (files: ResFile[]) => this.onClickBulkDelete(files)
         }
       ],
       onSelectItemDoubleClick: async (item: ResFile) => {
         console.log('files-page: onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
-          this.setExplorerPath(item.fullPath);
+          this.clientsCache.HandleLoadPath(item.fullPath);
         }
       },
       onSelectItem: (item: ResFile) => {
         console.log('files-page: onSelectItem!', { item });
-        this.$selectedFile.next(item);
+        this.clientsCache.onSelectItem(item);
       },
-      filterText: 'Search files...',
-      $triggerSelectItem: this.$triggerSelectItem.pipe(
-        tap(file => console.log('files-page: $triggerSelectItem', { file }))
-      )
+      filterText: 'Search files...'
     };
   }
 
-  private async HandleRename(file: ResFile) {
+  public get $SelectedFile() {
+    return this.clientsCache.$selectedFile;
+  }
+
+  private async onClickSingleRename(file: ResFile) {
     const ref = this.dialog.open(AppDialogRenameComponent, {
       width: '300px',
       hasBackdrop: true,
@@ -215,62 +196,18 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
         currentPath: file.fullPath
       } as RenameInterface
     });
-    const renamedPath = await ref
-      .afterClosed()
-      .pipe(take(1))
-      .toPromise();
-    const currentFiles = await this.currentFiles();
-    const renamedFile = currentFiles.find(cf => cf.fullPath === file.fullPath);
-    renamedFile.fullPath = renamedPath;
-    renamedFile.name = renamedPath.split('/').pop();
-    console.log('files-page: renameAction', { file, renamedFile });
-    this.$currentFiles.next(currentFiles);
-    await this.fp.Rename(file.fullPath, renamedPath);
-    this.refreshExplorer();
+    ref.afterClosed().subscribe(renamedPath => {
+      this.clientsCache.HandleRename(file, renamedPath);
+    });
   }
 
-  private async HandleDelete(fArray: ResFile[]) {
+  private async onClickBulkDelete(fArray: ResFile[]) {
     const deletedPaths = fArray.map(f => f.fullPath);
-    const currentFiles = await this.currentFiles();
-    const deletedSet = new Set(deletedPaths);
-    this.$currentFiles.next(
-      currentFiles.filter(cf => !deletedSet.has(cf.fullPath))
-    );
-    await this.fp.Remove(deletedPaths);
+    this.clientsCache.HandleDelete(deletedPaths);
     this.refreshExplorer();
   }
 
-  addIconPath(file: ResFile) {
-    if (file.type === 'file') {
-      file['icon'] = getFileIcon(file.name);
-    } else {
-      file['icon'] = getFolderIcon(file.name);
-    }
-    return file;
-  }
-
-  private async setExplorerPath(path: string) {
-    const response = await this.fp.List(path);
-    const newFiles = [...response.result];
-    console.log('files-page: setExplorerPath', { newFiles });
-    this.$currentPath.next(path);
-    this.$currentFiles.next(newFiles);
-    const firstFile = [...newFiles].shift();
-    this.$selectedFile.next(firstFile);
-    this.$triggerSelectItem.next(firstFile);
-  }
-
-  private async refreshExplorer() {
-    const currentPath = await this.$currentPath.pipe(take(1)).toPromise();
-    this.setExplorerPath(currentPath);
-  }
-
-  private async currentFiles() {
-    const currentFiles = await this.$currentFiles.pipe(take(1)).toPromise();
-    return currentFiles;
-  }
-
-  async onClickNewFolder() {
+  public async onClickNewFolder() {
     console.log('files-page: onClickNewFolder');
     const ref = this.dialog.open(AppDialogNewFolderComponent, {
       width: '300px',
@@ -285,39 +222,24 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
       console.log('files-page: onClickNewFolder   no folder created...');
       return;
     }
-    const currentPath = await this.$currentPath.pipe(take(1)).toPromise();
-    const newDirPath = currentPath + newDirName;
-    const currentFiles = await this.currentFiles();
-    const tempDir = MakeClientDirectory(newDirName, newDirPath);
-    this.addIconPath(tempDir);
-    const newFiles = [...currentFiles, tempDir];
-    console.log('files-page: onClickNewFolder, making new folder', {
-      newDirName,
-      currentPath
-    });
-    this.$currentFiles.next(newFiles);
-    await this.fp.CreateFolder(newDirPath);
+    this.clientsCache.HandleNewFolder(newDirName);
     this.refreshExplorer();
-  }
-
-  get $NoParentFolder() {
-    return this.$currentPath.pipe(
-      filter(p => !!p),
-      map(path => path.split('/').length < 2)
-    );
   }
 
   async onClickUpFolder() {
     console.log('files-page: onClickUpFolder');
-    const currentPath = await this.$currentPath.pipe(take(1)).toPromise();
-    const slashSegments = currentPath.split('/');
-    slashSegments.pop();
-    const parentPath = slashSegments.join('/');
-    console.log('files-page: onClickUpFolder', { currentPath, parentPath });
-    this.setExplorerPath(parentPath);
+    this.clientsCache.HandleNavigateUp();
+    this.refreshExplorer();
   }
 
-  onClickUpload() {
+  async onClickUpload() {
     console.log('files-page: onClickUpload');
+  }
+
+  private async refreshExplorer() {
+    const currentPath = await this.clientsCache.$currentPath
+      .pipe(take(1))
+      .toPromise();
+    this.clientsCache.HandleLoadPath(currentPath);
   }
 }

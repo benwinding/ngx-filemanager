@@ -30,6 +30,7 @@ import { FileSizePipe } from './services/file-size.pipe';
 import { NgxFileManagerComponent } from './components/file-manager.component';
 import { FilesSystemProviderService } from './services/files-provider.service';
 import { HttpClientModule } from '@angular/common/http';
+import { FilesClientCacheService } from './services/files-client-cache.service';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,6 @@ import { HttpClientModule } from '@angular/common/http';
     MatSidenavModule
   ],
   exports: [NgxFileManagerComponent],
-  providers: [FilesSystemProviderService]
+  providers: [FilesSystemProviderService, FilesClientCacheService]
 })
 export class NgxFilemanagerClientFirebaseModule {}
