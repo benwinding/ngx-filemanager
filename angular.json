@@ -168,7 +168,8 @@
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
             "tsConfig": "projects/ngx-filemanager-api-firebase/tsconfig.lib.json",
-            "project": "projects/ngx-filemanager-api-firebase/ng-package.json"
+            "project": "projects/ngx-filemanager-api-firebase/ng-package.json",
+            "preserveSymlinks": true
           }
         },
         "test": {

@@ -24,18 +24,27 @@ import {
   MatSidenavModule,
   MatTooltipModule
 } from '@angular/material';
-import { AutoTableModule } from 'ngx-auto-table/dist/public_api';
-import { ReactiveFormsModule } from '@angular/forms';
+import { AutoTableModule } from 'ngx-auto-table/dist';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { FileSizePipe } from './services/file-size.pipe';
+import { AppDialogNewFolderComponent } from './components/dialog-new-folder.component';
+import { AppDialogRenameComponent } from './components/dialog-rename.component';
 
 const sharedComponents = [NgxFileManagerComponent];
 
 @NgModule({
-  declarations: [...sharedComponents, FileDetailsComponent, FileSizePipe],
+  declarations: [
+    ...sharedComponents,
+    FileDetailsComponent,
+    FileSizePipe,
+    AppDialogRenameComponent,
+    AppDialogNewFolderComponent,
+  ],
   exports: sharedComponents,
   imports: [
     CommonModule,
     AppRoutingModule,
+    FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     BrowserModule,
@@ -56,7 +65,6 @@ const sharedComponents = [NgxFileManagerComponent];
     MatTableModule,
     MatToolbarModule,
     MatTooltipModule,
-
     MatSidenavModule
   ]
 })

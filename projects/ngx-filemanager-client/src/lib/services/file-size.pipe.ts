@@ -21,7 +21,8 @@ export class FileSizePipe implements PipeTransform {
     'PB'
   ];
 
-  transform(bytes: number = 0, precision: number = 0 ): string {
+  transform(bytesInput, precision: number = 0 ): string {
+    let bytes = +bytesInput;
     if (!isFinite( bytes )) {
       return '?';
     }
@@ -31,6 +32,6 @@ export class FileSizePipe implements PipeTransform {
       unit ++;
     }
 
-    return (+bytes).toFixed( + precision ) + ' ' + this.units[ unit ];
+    return bytes.toFixed( + precision ) + ' ' + this.units[ unit ];
   }
 }

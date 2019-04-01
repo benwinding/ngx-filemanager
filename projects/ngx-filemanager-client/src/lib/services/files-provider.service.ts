@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { FileSystemProvider } from './BucketTypes';
-import { AuthQueriesService } from 'src/app/services/auth/auth-queries.service';
 import {
   ReqBodyList,
   ReqBodyRename,
@@ -18,8 +16,9 @@ import {
   ResBodyEdit,
   ResBodyGetContent,
   ResBodyCreateFolder,
-  ReqBodyAction
-} from './files-api-types';
+  ReqBodyAction,
+  FileSystemProvider
+} from 'ngx-filemanager-core/public_api';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()

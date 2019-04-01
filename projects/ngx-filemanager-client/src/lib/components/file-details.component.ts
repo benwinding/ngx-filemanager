@@ -1,9 +1,10 @@
-import { ResFile } from './files-api-types';
 import { Component, Input } from '@angular/core';
-import { getFileIconName } from 'src/app/subcomponents/doc-viewer/file-icon';
+import { getFileIconName } from '../utils/file-icon-guesser';
+import { ResFile } from 'ngx-filemanager-core/public_api';
 
 @Component({
-  selector: 'app-file-details',
+  // tslint:disable-next-line:component-selector
+  selector: 'ngx-filemanager-file-details',
   template: `
     <div class="details-container">
       <div *ngIf="!hasInput" class="none-selected">

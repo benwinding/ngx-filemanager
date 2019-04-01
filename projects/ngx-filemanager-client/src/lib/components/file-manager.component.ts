@@ -1,6 +1,6 @@
 import { OnInit, Component, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subscription, Subject } from 'rxjs';
-import { AutoTableConfig } from 'ngx-auto-table/dist';
+import { AutoTableConfig } from 'ngx-auto-table/dist/public_api';
 import { take, map, tap, filter } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { AppDialogNewFolderComponent } from './dialog-new-folder.component';
@@ -11,8 +11,8 @@ import {
 } from './dialog-rename.component';
 import { FilesSystemProviderService } from '../services/files-provider.service';
 import { ResFile } from 'ngx-filemanager-core/public_api';
-import { getFileIcon, getFolderIcon } from '../getIcons/file-icon-guesser';
-import { MakeClientDirectory } from '../getIcons/file.factory';
+import { getFileIcon, getFolderIcon } from '../utils/file-icon-guesser';
+import { MakeClientDirectory } from '../utils/file.factory';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -80,7 +80,8 @@ import { MakeClientDirectory } from '../getIcons/file.factory';
           position="end"
           opened
         >
-          <app-file-details [file]="$selectedFile | async"> </app-file-details>
+          <ngx-filemanager-file-details [file]="$selectedFile | async">
+          </ngx-filemanager-file-details>
         </mat-drawer>
       </mat-drawer-container>
     </div>

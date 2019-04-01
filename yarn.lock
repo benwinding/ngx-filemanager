@@ -4388,7 +4388,7 @@ ng-packagr@^4.2.0:
     uglify-js "^3.0.7"
     update-notifier "^2.3.0"
 
-ngx-auto-table@0.1.8:
+ngx-auto-table@^0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/ngx-auto-table/-/ngx-auto-table-0.1.8.tgz#91e52258b9127e2cc99f68cb005673dc3ab984ef"
   integrity sha512-0jiID55uI1jpkQMcP/pQr39pChaBcv5vLILjDjVGxklKLnDFudTVmOJ3KThce397PQkAWRQsdrvo6oZc+F63gQ==
@@ -4408,11 +4408,6 @@ ngx-auto-table@0.1.8:
     core-js "^2.5.4"
     rxjs "~6.3.3"
     zone.js "~0.8.26"
-
-ngx-filemanager-core@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/ngx-filemanager-core/-/ngx-filemanager-core-0.0.1.tgz#a39f9bcaaf730174f6b79219a27c47caca7d8e39"
-  integrity sha512-9x17G9DNLUPlnUpIAPihEZZtj02JWv7SrvamhbAsT05/9LLhdjghn0rMv9T2G5gv+U9ZQh13oX8Yfb/VVw5BFA==
 
 nice-try@^1.0.4:
   version "1.0.5"

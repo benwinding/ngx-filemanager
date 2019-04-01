@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 
 @Component({
-  selector: 'app-new-folder-dialog',
+  // tslint:disable-next-line:component-selector
+  selector: 'ngx-filemanager-new-folder-dialog',
   template: `
     <form (submit)="onSubmit()">
       <h2>Create Folder</h2>

@@ -7,7 +7,8 @@ export interface RenameInterface {
 }
 
 @Component({
-  selector: 'app-rename-file-dialog',
+  // tslint:disable-next-line:component-selector
+  selector: 'ngx-filemanager-rename-file-dialog',
   template: `
     <form (submit)="onSubmit()">
       <h2>Rename Item</h2>
@@ -49,10 +50,10 @@ export class AppDialogRenameComponent {
   }
 
   onSubmit() {
-    const slashSegments = this.data.currentPath.split('/')
-    slashSegments.pop()
-    const parent = slashSegments.join('/')
-    const renamedFullPath = parent + "/"  +  this.renamedItem
+    const slashSegments = this.data.currentPath.split('/');
+    slashSegments.pop();
+    const parent = slashSegments.join('/');
+    const renamedFullPath = parent + '/' + this.renamedItem;
     this.dialogRef.close(renamedFullPath);
   }
   onCancel(e) {
