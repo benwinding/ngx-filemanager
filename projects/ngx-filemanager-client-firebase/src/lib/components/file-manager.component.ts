@@ -125,16 +125,14 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
   @Input()
   clientConfig: ClientConfiguration;
 
-  $currentFiles = new BehaviorSubject<ResFile[]>([]);
-  $currentPath = new BehaviorSubject<string>(null);
+  private $currentFiles = new BehaviorSubject<ResFile[]>([]);
+  private $currentPath = new BehaviorSubject<string>(null);
 
-  $selectedFile = new BehaviorSubject<ResFile>(null);
-  $triggerSelectItem = new Subject<ResFile>();
+  private $triggerSelectItem = new Subject<ResFile>();
+  public $selectedFile = new BehaviorSubject<ResFile>(null);
 
-  config: AutoTableConfig<ResFile>;
-
-  isFileDetailsOpen = true;
-  querySubscription: Subscription;
+  public config: AutoTableConfig<ResFile>;
+  public isFileDetailsOpen = true;
 
   constructor(
     private fp: FilesSystemProviderService,
@@ -149,7 +147,6 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.querySubscription.unsubscribe();
   }
 
   makeConfig() {

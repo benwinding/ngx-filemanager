@@ -27,9 +27,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxFilemanagerClientFirebaseModule } from 'ngx-filemanager-client-firebase';
 import { HttpClientModule } from '@angular/common/http';
+import { AppTestPageComponent } from './test-page.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent,AppTestPageComponent],
   imports: [
     CommonModule,
     BrowserAnimationsModule,

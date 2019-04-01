@@ -8,26 +8,21 @@ import { ReqBodyCopy } from 'ngx-filemanager-core/public_api';
   selector: 'app-root',
   template: `
     <div style="text-align:center">
-      Test App for NgxFilemanager
+      <a [routerLink]="['/']"> Test App for NgxFilemanager </a>
     </div>
 
-    <h2>File Explorer</h2>
-    <!--
-    -->
-    <div>
-      <ngx-filemanager
-        [clientConfig]="config"
-      >
-      </ngx-filemanager>
-    </div>
+    <ol>
+      <li>
+        <a [routerLink]="['/test-blank']"> Test Blank </a>
+      </li>
+      <li>
+        <a [routerLink]="['/test-page']"> Test 1 </a>
+      </li>
+    </ol>
 
     <router-outlet></router-outlet>
   `
 })
 export class AppComponent implements OnInit {
-  config: ClientConfiguration = {
-    functionsendpoint: 'https://'
-  };
-
-  ngOnInit() { }
+  ngOnInit() {}
 }
