@@ -35,6 +35,12 @@
       ],
       "ngx-filemanager-api-firebase/*": [
         "dist/ngx-filemanager-api-firebase/*"
+      ],
+      "ngx-filemanager-client-firebase": [
+        "dist/ngx-filemanager-client-firebase"
+      ],
+      "ngx-filemanager-client-firebase/*": [
+        "dist/ngx-filemanager-client-firebase/*"
       ]
     }
   }
