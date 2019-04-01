@@ -29,6 +29,7 @@ import { FileDetailsComponent } from './components/file-details.component';
 import { FileSizePipe } from './services/file-size.pipe';
 import { NgxFileManagerComponent } from './components/file-manager.component';
 import { FilesSystemProviderService } from './services/files-provider.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { FilesSystemProviderService } from './services/files-provider.service';
   imports: [
     CommonModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
     BrowserModule,

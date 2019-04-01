@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --watch",
     "build": "ng build",
     "build-core": "ng build --project=ngx-filemanager-core",
-    "build-client": "ng build --project=ngx-filemanager-client",
+    "build-client": "ng build --project=ngx-filemanager-client-firebase",
     "watch-core": "ng build --project=ngx-filemanager-core --watch",
-    "watch-client": "ng build --project=ngx-filemanager-client --watch",
+    "watch-client": "ng build --project=ngx-filemanager-client-firebase --watch",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

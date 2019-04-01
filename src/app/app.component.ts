@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AutoTableConfig } from 'ngx-auto-table/dist/public_api';
+import { AutoTableConfig } from 'ngx-auto-table/dist';
 import { of } from 'rxjs';
+import { ClientConfiguration } from 'ngx-filemanager-client-firebase/public_api';
 import { ReqBodyCopy } from 'ngx-filemanager-core/public_api';
 
 @Component({
@@ -14,31 +15,19 @@ import { ReqBodyCopy } from 'ngx-filemanager-core/public_api';
     <!--
     -->
     <div>
-      <ngx-auto-table
-        [config]="config"
-        [columnDefinitions]="{
-          name: {}
-        }"
+      <ngx-filemanager
+        [clientConfig]="config"
       >
-      </ngx-auto-table>
+      </ngx-filemanager>
     </div>
 
     <router-outlet></router-outlet>
   `
 })
 export class AppComponent implements OnInit {
-  config: AutoTableConfig<any>;
+  config: ClientConfiguration = {
+    functionsendpoint: 'https://'
+  };
 
-  ngOnInit() {
-    this.config = {
-      debug: true,
-      data$: of([
-        { name: '14' },
-        { name: '27' },
-        { name: '25' },
-        { name: '22' },
-        { name: '24' }
-      ])
-    };
-  }
+  ngOnInit() { }
 }

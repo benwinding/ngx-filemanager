@@ -1,10 +1,9 @@
-import { OnInit, Component, OnDestroy } from '@angular/core';
+import { OnInit, Component, OnDestroy, Input } from '@angular/core';
 import { BehaviorSubject, Subscription, Subject } from 'rxjs';
 import { AutoTableConfig } from 'ngx-auto-table/dist/public_api';
 import { take, map, tap, filter } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { AppDialogNewFolderComponent } from './dialog-new-folder.component';
-import { ActivatedRoute, Router } from '@angular/router';
 import {
   AppDialogRenameComponent,
   RenameInterface
@@ -13,10 +12,11 @@ import { FilesSystemProviderService } from '../services/files-provider.service';
 import { ResFile } from 'ngx-filemanager-core/public_api';
 import { getFileIcon, getFolderIcon } from '../utils/file-icon-guesser';
 import { MakeClientDirectory } from '../utils/file.factory';
+import {ClientConfiguration} from './client-configuration';
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'ngx-file-manager',
+  selector: 'ngx-filemanager',
   template: `
     <div class="page-container">
       <mat-drawer-container>
@@ -33,7 +33,6 @@ import { MakeClientDirectory } from '../utils/file.factory';
               >expand_more</mat-icon
             >
           </div>
-          <h2>File Explorer</h2>
           <ngx-auto-table
             [config]="config"
             [columnDefinitions]="{
@@ -66,11 +65,6 @@ import { MakeClientDirectory } from '../utils/file.factory';
               </div>
             </ng-template>
           </ngx-auto-table>
-
-          <pre>
-          {{ $currentFiles | async | json }}
-          </pre
-          >
         </mat-drawer-content>
         <mat-drawer
           #drawer
@@ -128,6 +122,9 @@ import { MakeClientDirectory } from '../utils/file.factory';
   ]
 })
 export class NgxFileManagerComponent implements OnInit, OnDestroy {
+  @Input()
+  clientConfig: ClientConfiguration;
+
   $currentFiles = new BehaviorSubject<ResFile[]>([]);
   $currentPath = new BehaviorSubject<string>(null);
 
@@ -142,9 +139,12 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
   constructor(
     private fp: FilesSystemProviderService,
     private dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit() {
+    if (!this.clientConfig) {
+      throw new Error('<ngx-filemanager> must have input selector [clientConfig] set');
+    }
     this.makeConfig();
   }
 

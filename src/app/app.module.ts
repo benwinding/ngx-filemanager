@@ -20,10 +20,13 @@ import {
   MatProgressSpinnerModule,
   MatSelectModule,
   MatSortModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatDialogModule
 } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxFilemanagerClientFirebaseModule } from 'ngx-filemanager-client-firebase';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +35,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
+    NgxFilemanagerClientFirebaseModule,
     MatTableModule,
     AutoTableModule,
     ReactiveFormsModule,
@@ -41,6 +46,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatCheckboxModule,
     MatFormFieldModule,
     MatIconModule,
+    MatDialogModule,
     MatInputModule,
     MatMenuModule,
     MatPaginatorModule,
