@@ -25,9 +25,19 @@ import {
   MatTooltipModule,
   MatSidenavModule
 } from '@angular/material';
+import { AppDialogRenameComponent } from './components/dialog-rename.component';
+import { AppDialogNewFolderComponent } from './components/dialog-new-folder.component';
+import { FileDetailsComponent } from './components/file-details.component';
+import { FileSizePipe } from './services/file-size.pipe';
 
 @NgModule({
-  declarations: [NgxFilemanagerClientFirebaseComponent],
+  declarations: [
+    NgxFilemanagerClientFirebaseComponent,
+    AppDialogRenameComponent,
+    AppDialogNewFolderComponent,
+    FileDetailsComponent,
+    FileSizePipe,
+  ],
   imports: [
     CommonModule,
     AppRoutingModule,
