@@ -119,10 +119,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@angular/cdk@7.1.1":
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-7.1.1.tgz#6916b2303af5e0a56a9b64ff4d54642cf191c54f"
-  integrity sha512-woW9lWDBKRuxZipMzWofrAY7YpuZd4vf/J1YPjmAqV7U94MaDFyizRLyFolbTZVYo8ggh9U3SQAWRrEBvJNsjg==
+"@angular/cdk@^7.3.6":
+  version "7.3.6"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-7.3.6.tgz#4c330cacd11df4adade6c1cd3ed587745f9912fd"
+  integrity sha512-ZuOz8nQk0bdo8YyNFcwnmSl4MPaQDAFTbLK29w4Vd/LfPnhBI3pAr0wVuPFb0fl3eSvvUrfTb/+kPbQcE07A0A==
   dependencies:
     tslib "^1.7.1"
   optionalDependencies:
@@ -201,13 +201,6 @@
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-7.0.4.tgz#db221f183725ff54c1188aec7acb2948e29f4c50"
   integrity sha512-CuJ2Ii97sNoN1HOZOLxG1lEHsQFi8K/RSB/k2suWPKzdM53ldSkKoYRac38zW/uqNABYItgvxb7w0Vi7HhxLsg==
 
-"@angular/material@7.1.1":
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/@angular/material/-/material-7.1.1.tgz#147b7565262e04d504c8dab7317632967a3db02a"
-  integrity sha512-wjYAWsdWpb8/BgoIfoUomnycoljU00avJ3hRIgPNnEpZhB7zqiBA8tCitzDS4NK8dKBJjM9WRAOj6yl6x3+9wA==
-  dependencies:
-    tslib "^1.7.1"
-
 "@angular/material@^7.3.6":
   version "7.3.6"
   resolved "https://registry.yarnpkg.com/@angular/material/-/material-7.3.6.tgz#38e985bb623ba682dca60e06ff7de53047ecf1f5"
@@ -236,7 +229,7 @@
   dependencies:
     tslib "^1.9.0"
 
-"@ctrl/ngx-csv@^1.1.4":
+"@ctrl/ngx-csv@^1.1.6":
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/@ctrl/ngx-csv/-/ngx-csv-1.1.6.tgz#21dc747c1c00f491b3cbfcc40d6e38ea0766cf95"
   integrity sha512-t/72B3yjfLeAX0vgn+kWrgdrD1jsQuqpu82a9wd6y6CnIVq002h3nGkGOrYs1F3uiTGWC77ZvB6qZAReQhndPg==
@@ -4388,26 +4381,12 @@ ng-packagr@^4.2.0:
     uglify-js "^3.0.7"
     update-notifier "^2.3.0"
 
-ngx-auto-table@^0.1.8:
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/ngx-auto-table/-/ngx-auto-table-0.1.8.tgz#91e52258b9127e2cc99f68cb005673dc3ab984ef"
-  integrity sha512-0jiID55uI1jpkQMcP/pQr39pChaBcv5vLILjDjVGxklKLnDFudTVmOJ3KThce397PQkAWRQsdrvo6oZc+F63gQ==
+ngx-auto-table@^0.1.10:
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/ngx-auto-table/-/ngx-auto-table-0.1.10.tgz#5bcf10c88a131c7b1e44507d275704155ab94b33"
+  integrity sha512-n+QZYk/4SpDYE1vKDHnp7e8FyhtAcrp3bcz/mXvzzipTsBzohGprvTBw3JGVIHaJaRROKz5CWwJ/N01qe6rkjA==
   dependencies:
-    "@angular/animations" "~7.0.0"
-    "@angular/cdk" "7.1.1"
-    "@angular/common" "~7.0.0"
-    "@angular/compiler" "~7.0.0"
-    "@angular/core" "~7.0.0"
-    "@angular/forms" "~7.0.0"
-    "@angular/http" "~7.0.0"
-    "@angular/material" "7.1.1"
-    "@angular/platform-browser" "~7.0.0"
-    "@angular/platform-browser-dynamic" "~7.0.0"
-    "@angular/router" "~7.0.0"
-    "@ctrl/ngx-csv" "^1.1.4"
-    core-js "^2.5.4"
-    rxjs "~6.3.3"
-    zone.js "~0.8.26"
+    tslib "^1.9.0"
 
 nice-try@^1.0.4:
   version "1.0.5"

@@ -23,7 +23,8 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class FilesSystemProviderService implements FileSystemProvider {
-  private filesEndpoint =
+  private bucketname: string;
+  private apiEndpoint =
     'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/storage/api';
 
   constructor(private http: HttpClient) {}
@@ -42,8 +43,13 @@ export class FilesSystemProviderService implements FileSystemProvider {
   private makeBaseRequest(action: string): ReqBodyAction {
     return {
       action: action,
-      bucketname: 'cl-building-storage'
+      bucketname: this.bucketname
     };
+  }
+
+  Initialize(bucketname: string, apiEndpoint: string) {
+    this.bucketname = bucketname;
+    this.apiEndpoint = apiEndpoint;
   }
 
   List(path: string): Promise<ResBodyList> {
@@ -51,7 +57,7 @@ export class FilesSystemProviderService implements FileSystemProvider {
       ...this.makeBaseRequest('list'),
       path: path
     };
-    return this.fetchPostAuth(this.filesEndpoint, req);
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
   Rename(item: string, newItemPath: string): Promise<ResBodyRename> {
     const req: ReqBodyRename = {
@@ -59,7 +65,7 @@ export class FilesSystemProviderService implements FileSystemProvider {
       item: item,
       newItemPath: newItemPath
     };
-    return this.fetchPostAuth(this.filesEndpoint, req);
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
   Move(items: string[], newPath: string): Promise<ResBodyMove> {
     const req: ReqBodyMove = {
@@ -67,7 +73,7 @@ export class FilesSystemProviderService implements FileSystemProvider {
       items: items,
       newPath: newPath
     };
-    return this.fetchPostAuth(this.filesEndpoint, req);
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
   Copy(singleFileName: string, newPath: string): Promise<ResBodyCopy> {
     const req: ReqBodyCopy = {
@@ -75,7 +81,7 @@ export class FilesSystemProviderService implements FileSystemProvider {
       singleFileName: singleFileName,
       newPath: newPath
     };
-    return this.fetchPostAuth(this.filesEndpoint, req);
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
   CopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy> {
     const req: ReqBodyCopy = {
@@ -83,14 +89,14 @@ export class FilesSystemProviderService implements FileSystemProvider {
       items: items,
       newPath: newPath
     };
-    return this.fetchPostAuth(this.filesEndpoint, req);
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
   Remove(items: string[]): Promise<ResBodyRemove> {
     const req: ReqBodyRemove = {
       ...this.makeBaseRequest('remove'),
       items: items
     };
-    return this.fetchPostAuth(this.filesEndpoint, req);
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
   Edit(item: string, content: string): Promise<ResBodyEdit> {
     const req: ReqBodyEdit = {
@@ -98,20 +104,20 @@ export class FilesSystemProviderService implements FileSystemProvider {
       item: item,
       content: content
     };
-    return this.fetchPostAuth(this.filesEndpoint, req);
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
   Getcontent(item: string): Promise<ResBodyGetContent> {
     const req: ReqBodyGetContent = {
       ...this.makeBaseRequest('getContent'),
       item: item
     };
-    return this.fetchPostAuth(this.filesEndpoint, req);
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
   CreateFolder(newPath: string): Promise<ResBodyCreateFolder> {
     const req: ReqBodyCreateFolder = {
       ...this.makeBaseRequest('createFolder'),
       newPath: newPath
     };
-    return this.fetchPostAuth(this.filesEndpoint, req);
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
 }

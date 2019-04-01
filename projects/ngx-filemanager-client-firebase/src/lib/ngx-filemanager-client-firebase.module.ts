@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
-import { AutoTableModule } from 'ngx-auto-table/dist';
+import { AutoTableModule } from 'ngx-auto-table';
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -21,7 +21,9 @@ import {
   MatTableModule,
   MatToolbarModule,
   MatTooltipModule,
-  MatSidenavModule
+  MatSidenavModule,
+  MatDialogModule,
+  MatTabsModule
 } from '@angular/material';
 import { AppDialogRenameComponent } from './components/dialog-rename.component';
 import { AppDialogNewFolderComponent } from './components/dialog-new-folder.component';
@@ -48,10 +50,12 @@ import { FilesClientCacheService } from './services/files-client-cache.service';
     BrowserAnimationsModule,
     BrowserModule,
     AutoTableModule,
+
     MatAutocompleteModule,
     MatButtonModule,
     MatButtonToggleModule,
     MatCheckboxModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -60,11 +64,12 @@ import { FilesClientCacheService } from './services/files-client-cache.service';
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatSelectModule,
+    MatSidenavModule,
     MatSortModule,
     MatTableModule,
+    MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    MatSidenavModule
   ],
   exports: [NgxFileManagerComponent],
   providers: [FilesSystemProviderService, FilesClientCacheService]

@@ -1,14 +1,13 @@
 import { OnInit, Component, Input } from '@angular/core';
-import { AutoTableConfig } from 'ngx-auto-table/dist/public_api';
-import { take, map, filter } from 'rxjs/operators';
+import { AutoTableConfig } from 'ngx-auto-table/public_api';
+import { take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { AppDialogNewFolderComponent } from './dialog-new-folder.component';
-import {
-  AppDialogRenameComponent,
-  RenameInterface
-} from './dialog-rename.component';
-import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
+import { RenameInterface } from './dialog-rename.component';
+import { AppDialogRenameComponent } from './dialog-rename.component';
+import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
 import { FilesClientCacheService } from '../services/files-client-cache.service';
+import { FileManagerConfig } from './client-configuration';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -17,20 +16,23 @@ import { FilesClientCacheService } from '../services/files-client-cache.service'
     <div class="page-container">
       <mat-drawer-container>
         <mat-drawer-content>
-          <div
-            class="mat-elevation-z8 expander-container has-pointer"
-            (click)="isFileDetailsOpen = !isFileDetailsOpen"
-          >
-            <mat-icon
-              matTooltip="View File Details"
-              class="expander-icon"
-              [class.drawer-out]="isFileDetailsOpen"
-              [class.drawer-in]="!isFileDetailsOpen"
-              >expand_more</mat-icon
+          <div class="flex-h space-between">
+            <strong>Files</strong>
+            <div
+              class="mat-elevation-z8 expander-container has-pointer mat-table"
+              (click)="isFileDetailsOpen = !isFileDetailsOpen"
             >
+              <mat-icon
+                matTooltip="View File Details"
+                class="expander-icon"
+                [class.drawer-out]="isFileDetailsOpen"
+                [class.drawer-in]="!isFileDetailsOpen"
+                >expand_more</mat-icon
+              >
+            </div>
           </div>
           <ngx-auto-table
-            [config]="config"
+            [config]="autoTableConfig"
             [columnDefinitions]="{
               icon: { template: iconTemplate },
               name: { template: nameTemplate, forceWrap: true },
@@ -92,11 +94,13 @@ import { FilesClientCacheService } from '../services/files-client-cache.service'
         height: 35px;
       }
       .expander-container {
-        position: absolute;
+        flex-direction: row-reverse;
         right: 0;
         top: 0;
         display: flex;
         align-items: center;
+        z-index: 1;
+        cursor: pointer;
       }
       .expander-icon {
         transition: transform 500ms;
@@ -114,14 +118,24 @@ import { FilesClientCacheService } from '../services/files-client-cache.service'
       .break-word {
         overflow-wrap: break-word;
       }
+      .flex-h {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      .space-between {
+        justify-content: space-between;
+      }
     `
   ]
 })
 export class NgxFileManagerComponent implements OnInit {
   @Input()
   fileSystem: FileSystemProvider;
+  @Input()
+  config: FileManagerConfig;
 
-  public config: AutoTableConfig<ResFile>;
+  public autoTableConfig: AutoTableConfig<ResFile>;
   public isFileDetailsOpen = true;
 
   constructor(
@@ -132,16 +146,19 @@ export class NgxFileManagerComponent implements OnInit {
   ngOnInit() {
     if (!this.fileSystem) {
       throw new Error(
-        '<ngx-filemanager> must have input selector [clientConfig] set'
+        '<ngx-filemanager> must have input selector [fileSystem] set'
       );
     }
     this.clientsCache.initialize(this.fileSystem);
     this.makeConfig();
+    if (this.config && this.config.initialPath) {
+      this.clientsCache.HandleLoadPath(this.config.initialPath);
+    }
   }
 
   makeConfig() {
     const filesWithIcons$ = this.clientsCache.$FilesWithIcons;
-    this.config = {
+    this.autoTableConfig = {
       data$: filesWithIcons$,
       debug: true,
       actions: [
@@ -203,7 +220,7 @@ export class NgxFileManagerComponent implements OnInit {
 
   private async onClickBulkDelete(fArray: ResFile[]) {
     const deletedPaths = fArray.map(f => f.fullPath);
-    this.clientsCache.HandleDelete(deletedPaths);
+    await this.clientsCache.HandleDelete(deletedPaths);
     this.refreshExplorer();
   }
 

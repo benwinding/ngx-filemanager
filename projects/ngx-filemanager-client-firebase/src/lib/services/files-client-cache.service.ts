@@ -55,7 +55,7 @@ export class FilesClientCacheService {
   public async HandleLoadPath(path: string) {
     const response = await this.fileSystem.List(path);
     const newFiles = [...response.result];
-    console.log('files-page: setExplorerPath', { newFiles });
+    console.log('files-page: setExplorerPath', { path, newFiles });
     this.$currentPath.next(path);
     this.$currentFiles.next(newFiles);
     const firstFile = [...newFiles].shift();

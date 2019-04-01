@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AutoTableModule } from 'ngx-auto-table/dist';
+import { AutoTableModule } from 'ngx-auto-table';
 import { CommonModule } from '@angular/common';
 import {
   MatTableModule,
