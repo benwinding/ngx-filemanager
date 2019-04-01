@@ -141,20 +141,8 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
 
   constructor(
     private fp: FilesSystemProviderService,
-    private dialog: MatDialog,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {
-    this.querySubscription = this.route.queryParams.subscribe(params => {
-      const path = params.path;
-      console.log('files-page: route.queryParams.subscribe', { path });
-      if (!path) {
-        this.goToPath('Home');
-        return;
-      }
-      this.setExplorerPath(path);
-    });
-  }
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit() {
     this.makeConfig();
@@ -162,13 +150,6 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.querySubscription.unsubscribe();
-  }
-
-  goToPath(path: string) {
-    const url = this.router.url;
-    const urlNoQuery = url.split('?').shift();
-    console.log('files-page: goToPath', { path, url, urlNoQuery });
-    this.router.navigateByUrl(urlNoQuery + '?path=' + path);
   }
 
   makeConfig() {
@@ -213,7 +194,7 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
       onSelectItemDoubleClick: async (item: ResFile) => {
         console.log('files-page: onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
-          this.goToPath(item.fullPath);
+          this.setExplorerPath(item.fullPath);
         }
       },
       onSelectItem: (item: ResFile) => {
@@ -336,7 +317,7 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
     slashSegments.pop();
     const parentPath = slashSegments.join('/');
     console.log('files-page: onClickUpFolder', { currentPath, parentPath });
-    this.goToPath(parentPath);
+    this.setExplorerPath(parentPath);
   }
 
   onClickUpload() {

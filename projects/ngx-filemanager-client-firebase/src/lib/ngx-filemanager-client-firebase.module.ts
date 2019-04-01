@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { NgxFilemanagerClientFirebaseComponent } from './ngx-filemanager-client-firebase.component';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -29,14 +28,16 @@ import { AppDialogRenameComponent } from './components/dialog-rename.component';
 import { AppDialogNewFolderComponent } from './components/dialog-new-folder.component';
 import { FileDetailsComponent } from './components/file-details.component';
 import { FileSizePipe } from './services/file-size.pipe';
+import { NgxFileManagerComponent } from './components/file-manager.component';
+import { FilesSystemProviderService } from './services/files-provider.service';
 
 @NgModule({
   declarations: [
-    NgxFilemanagerClientFirebaseComponent,
+    NgxFileManagerComponent,
     AppDialogRenameComponent,
     AppDialogNewFolderComponent,
     FileDetailsComponent,
-    FileSizePipe,
+    FileSizePipe
   ],
   imports: [
     CommonModule,
@@ -64,6 +65,7 @@ import { FileSizePipe } from './services/file-size.pipe';
     MatTooltipModule,
     MatSidenavModule
   ],
-  exports: [NgxFilemanagerClientFirebaseComponent]
+  exports: [NgxFileManagerComponent],
+  providers: [FilesSystemProviderService]
 })
 export class NgxFilemanagerClientFirebaseModule {}
