@@ -18,6 +18,8 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
         <h6>{{ file.size | fileSize }}</h6>
         <h5>Date</h5>
         <h6>{{ file.date | date: 'short' }}</h6>
+        <h5>Permissions</h5>
+        <h6>{{ file.rights }}</h6>
         <h5>Type</h5>
         <h6>Directory</h6>
       </div>

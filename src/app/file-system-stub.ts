@@ -16,7 +16,7 @@ function MakeFakeFile(path: string, isDir?: boolean): ResFile {
   return {
     name: path.split('/').pop(),
     fullPath: path,
-    rights: null,
+    rights: 'zzrwrws',
     size: '111',
     date: new Date().toISOString(),
     type: isDir ? 'dir' : 'file'
