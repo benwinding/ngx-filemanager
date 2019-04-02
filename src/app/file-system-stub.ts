@@ -8,7 +8,8 @@ import {
   ResBodyEdit,
   ResBodyGetContent,
   ResBodyCreateFolder,
-  ResFile
+  ResFile,
+  ResBodySetPermissions
 } from 'ngx-filemanager-core/public_api';
 
 function MakeFakeFile(path: string, isDir?: boolean): ResFile {
@@ -40,11 +41,16 @@ export class FileSystemStub implements FileSystemProvider {
       }, 800);
     });
   }
+  private getMatches(items: string[]) {
+    const itemsSet = new Set(items);
+    const matches = this.files
+    .filter(f => itemsSet.has(f.fullPath));
+    return matches;
+  }
 
   async List(path: string): Promise<ResBodyList> {
     await this.fakeDelay();
-    const matches = this.files
-      .filter(k => k.fullPath.indexOf(path) === 0);
+    const matches = this.files.filter(k => k.fullPath.indexOf(path) === 0);
     return {
       result: matches
     };
@@ -61,10 +67,10 @@ export class FileSystemStub implements FileSystemProvider {
   }
   async Move(items: string[], newPath: string): Promise<ResBodyMove> {
     await this.fakeDelay();
-    const itemsSet = new Set(items);
-    const matches = this.files.filter(f => itemsSet.has(f.fullPath)).map(f => {
-      f.fullPath = newPath;
-    });
+    this.getMatches(items)
+      .map(f => {
+        f.fullPath = newPath;
+      });
     return null;
   }
   async Copy(singleFileName: string, newPath: string): Promise<ResBodyCopy> {
@@ -93,6 +99,18 @@ export class FileSystemStub implements FileSystemProvider {
   async CreateFolder(newPath: string): Promise<ResBodyCreateFolder> {
     await this.fakeDelay();
     this.files.push(MakeFakeFile(newPath, true));
+    return null;
+  }
+  async SetPermissions(
+    items: string[],
+    perms: string,
+    permsCode: string,
+    recursive?: boolean
+  ): Promise<ResBodySetPermissions> {
+    this.getMatches(items)
+      .map(f => {
+        f.rights = perms;
+      });
     return null;
   }
 }

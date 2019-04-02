@@ -130,4 +130,10 @@ export interface FileSystemProvider {
   Edit(item: string, content: string): Promise<ResBodyEdit>;
   Getcontent(item: string): Promise<ResBodyGetContent>;
   CreateFolder(newPath: string): Promise<ResBodyCreateFolder>;
+  SetPermissions(
+    items: string[],
+    perms: string,
+    permsCode: string,
+    recursive?: boolean
+  ): Promise<ResBodySetPermissions>;
 }

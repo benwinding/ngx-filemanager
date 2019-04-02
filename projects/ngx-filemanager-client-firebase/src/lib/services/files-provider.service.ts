@@ -17,7 +17,8 @@ import {
   ResBodyGetContent,
   ResBodyCreateFolder,
   ReqBodyAction,
-  FileSystemProvider
+  FileSystemProvider,
+  ResBodySetPermissions
 } from 'ngx-filemanager-core/public_api';
 import { HttpClient } from '@angular/common/http';
 
@@ -119,5 +120,13 @@ export class FilesSystemProviderService implements FileSystemProvider {
       newPath: newPath
     };
     return this.fetchPostAuth(this.apiEndpoint, req);
+  }
+  SetPermissions(
+    items: string[],
+    perms: string,
+    permsCode: string,
+    recursive?: boolean
+  ): Promise<ResBodySetPermissions> {
+    throw new Error('Method not implemented.');
   }
 }

@@ -33,12 +33,21 @@ import { NgxFileManagerComponent } from './components/file-manager.component';
 import { FilesSystemProviderService } from './services/files-provider.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FilesClientCacheService } from './services/files-client-cache.service';
+import { AppDialogSetPermissionsComponent } from './components/dialog-setpermissions.component';
+
+const dialogComponents = [
+  AppDialogRenameComponent,
+  AppDialogNewFolderComponent,
+  AppDialogSetPermissionsComponent
+];
 
 @NgModule({
+  entryComponents: [
+    ...dialogComponents
+  ],
   declarations: [
+    ...dialogComponents,
     NgxFileManagerComponent,
-    AppDialogRenameComponent,
-    AppDialogNewFolderComponent,
     FileDetailsComponent,
     FileSizePipe
   ],

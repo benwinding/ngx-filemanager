@@ -3,11 +3,13 @@ import { AutoTableConfig } from 'ngx-auto-table/public_api';
 import { take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { AppDialogNewFolderComponent } from './dialog-new-folder.component';
-import { RenameInterface } from './dialog-rename.component';
+import { RenameDialogInterface } from './dialog-rename.component';
 import { AppDialogRenameComponent } from './dialog-rename.component';
 import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
 import { FilesClientCacheService } from '../services/files-client-cache.service';
 import { FileManagerConfig } from './client-configuration';
+import { AppDialogSetPermissionsComponent } from './dialog-setpermissions.component';
+import { PermissionsDialogInterface } from './dialog-setpermissions.component';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -17,7 +19,7 @@ import { FileManagerConfig } from './client-configuration';
       <mat-drawer-container>
         <mat-drawer-content>
           <div class="flex-h space-between">
-            <strong>Files</strong>
+            <strong class="heading">Files</strong>
             <div
               class="mat-elevation-z8 expander-container has-pointer mat-table"
               (click)="isFileDetailsOpen = !isFileDetailsOpen"
@@ -80,6 +82,10 @@ import { FileManagerConfig } from './client-configuration';
   `,
   styles: [
     `
+      .heading {
+        font-family: sans-serif;
+        margin-left: 10px;
+      }
       mat-drawer {
         width: 300px;
       }
@@ -175,7 +181,7 @@ export class NgxFileManagerComponent implements OnInit {
         {
           label: 'Permissions',
           icon: 'lock_outline',
-          onClick: async (file: ResFile) => this.onClickSingleRename(file)
+          onClick: async (file: ResFile) => this.onClickSingleSetPermissions(file)
         }
       ],
       actionsBulk: [
@@ -211,11 +217,35 @@ export class NgxFileManagerComponent implements OnInit {
       data: {
         currentFilename: file.name,
         currentPath: file.fullPath
-      } as RenameInterface
+      } as RenameDialogInterface
     });
     ref.afterClosed().subscribe(renamedPath => {
+      if (!renamedPath) {
+        return;
+      }
       this.clientsCache.HandleRename(file, renamedPath);
     });
+  }
+
+  onClickSingleSetPermissions(file: ResFile): any {
+    const files = [file];
+    const ref = this.dialog.open(AppDialogSetPermissionsComponent, {
+      width: '300px',
+      hasBackdrop: true,
+      disableClose: false,
+      data: {
+        files: files
+      } as PermissionsDialogInterface
+    });
+    ref.afterClosed().subscribe(newPermissions => {
+      if (!newPermissions) {
+        return;
+      }
+      const paths = files.map(f => f.fullPath);
+      this.clientsCache.HandleSetPermissions(paths, newPermissions, null);
+    });
+
+    throw new Error('Method not implemented.');
   }
 
   private async onClickBulkDelete(fArray: ResFile[]) {

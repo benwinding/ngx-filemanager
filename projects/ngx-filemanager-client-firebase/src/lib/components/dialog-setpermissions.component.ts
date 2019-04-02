@@ -1,27 +1,34 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { ResFile } from 'ngx-filemanager-core/public_api';
 
-export interface RenameDialogInterface {
-  currentPath: string;
-  currentFilename: string;
+export interface PermissionsDialogInterface {
+  files: ResFile[];
 }
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'ngx-filemanager-rename-file-dialog',
+  selector: 'ngx-filemanager-setpermissions-dialog',
   template: `
     <form (submit)="onSubmit()">
-      <h2>Rename Item</h2>
-      <h5>Old Name: {{ data.currentFilename }}</h5>
+      <h2>Set Permissions</h2>
+      <div>
+        <h5>Selected Items</h5>
+        <ol>
+          <li *ngFor="let file of items">
+            {{file.name}}
+          </li >
+        </ol>
+      </div>
       <input
         matInput
-        [(ngModel)]="renamedItem"
+        [(ngModel)]="newPermissions"
         [ngModelOptions]="{ standalone: true }"
       />
       <div class="flexRow">
         <button mat-raised-button color="primary" type="submit">
           <mat-icon>done</mat-icon>
-          Create Folder
+          Set Permissions
         </button>
         <button mat-raised-button (click)="onCancel($event)">
           <mat-icon>clear</mat-icon>
@@ -39,22 +46,19 @@ export interface RenameDialogInterface {
     `
   ]
 })
-export class AppDialogRenameComponent {
-  renamedItem = '';
+export class AppDialogSetPermissionsComponent {
+  newPermissions = '';
+  items: ResFile[];
 
   constructor(
-    public dialogRef: MatDialogRef<AppDialogRenameComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: RenameDialogInterface
+    public dialogRef: MatDialogRef<AppDialogSetPermissionsComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: PermissionsDialogInterface
   ) {
-    this.renamedItem = data.currentFilename;
+    this.items = data.files;
   }
 
   onSubmit() {
-    const slashSegments = this.data.currentPath.split('/');
-    slashSegments.pop();
-    const parent = slashSegments.join('/');
-    const renamedFullPath = parent + '/' + this.renamedItem;
-    this.dialogRef.close(renamedFullPath);
+    this.dialogRef.close(this.newPermissions);
   }
   onCancel(e) {
     e.preventDefault();

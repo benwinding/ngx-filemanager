@@ -18,21 +18,28 @@ export class FilesClientCacheService {
     this.fileSystem = fileSystem;
   }
 
-  public async HandleDelete(deletedPaths: string[]) {
+  private async getMatches(paths: string[], notMatches?: boolean) {
     const currentFiles = await this.currentFiles();
-    const deletedSet = new Set(deletedPaths);
-    this.$currentFiles.next(
-      currentFiles.filter(cf => !deletedSet.has(cf.fullPath))
-    );
+    const matchSet = new Set(paths);
+    if (notMatches) {
+      return currentFiles.filter(cf => !matchSet.has(cf.fullPath));
+    } else {
+      return currentFiles.filter(cf => matchSet.has(cf.fullPath));
+    }
+  }
+
+  public async HandleDelete(deletedPaths: string[]) {
+    const filesNotDeleted = await this.getMatches(deletedPaths, true);
+    this.$currentFiles.next(filesNotDeleted);
     await this.fileSystem.Remove(deletedPaths);
   }
 
   public async HandleRename(file: ResFile, renamedPath: string) {
+    console.log('files-page: renameAction', { file, renamedPath });
     const currentFiles = await this.currentFiles();
     const renamedFile = currentFiles.find(cf => cf.fullPath === file.fullPath);
     renamedFile.fullPath = renamedPath;
     renamedFile.name = renamedPath.split('/').pop();
-    console.log('files-page: renameAction', { renamedFile });
     this.$currentFiles.next(currentFiles);
     await this.fileSystem.Rename(file.fullPath, renamedPath);
   }
@@ -69,6 +76,15 @@ export class FilesClientCacheService {
     slashSegments.pop();
     const parentPath = slashSegments.join('/');
     console.log('files-page: onClickUpFolder', { currentPath, parentPath });
+  }
+
+  public async HandleSetPermissions(items: string[], perms: string, permsCode: string, recursive?: boolean) {
+    const filesToChange = await this.getMatches(items);
+    const filesToNotChange = await this.getMatches(items, true);
+    filesToChange.map(f => f.rights = perms);
+    const allFiles = [...filesToChange, ...filesToNotChange];
+    this.$currentFiles.next(allFiles);
+    await this.fileSystem.SetPermissions(items, perms, permsCode, recursive);
   }
 
   public get $FilesWithIcons(): Observable<ResFile[]> {

@@ -8,7 +8,7 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
   template: `
     <div class="details-container">
       <div *ngIf="!hasInput" class="none-selected">
-        No item selected ...
+        <h2>No item selected ...</h2>
       </div>
       <div *ngIf="hasInput && !isFile">
         <h2>Directory Details</h2>
@@ -29,6 +29,8 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
         <h6>{{ file.size | fileSize }}</h6>
         <h5>Date</h5>
         <h6>{{ file.date | date: 'short' }}</h6>
+        <h5>Permissions</h5>
+        <h6>{{ file.rights }}</h6>
         <h5>Type</h5>
         <h6 class="capitalize">{{ getFileType(file.name) }}</h6>
         <div *ngIf="isImage">
@@ -46,11 +48,15 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
         margin: 8px;
       }
       .none-selected {
-        font-size: 1.5em;
         color: grey;
         text-align: center;
         width: 100%;
         margin-top: 100px;
+      }
+      h2,
+      h5,
+      h6 {
+        font-family: sans-serif;
       }
       h5 {
         margin: 0px;
