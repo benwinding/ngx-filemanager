@@ -47,10 +47,10 @@ export class FileSystemStub implements FileSystemProvider {
     .filter(f => itemsSet.has(f.fullPath));
     return matches;
   }
-
   async List(path: string): Promise<ResBodyList> {
     await this.fakeDelay();
     const matches = this.files.filter(k => k.fullPath.indexOf(path) === 0);
+    console.log('file-system-stub: List', {files: this.files, matches});
     return {
       result: matches
     };

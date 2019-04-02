@@ -201,7 +201,8 @@ export class NgxFileManagerComponent implements OnInit {
         console.log('files-page: onSelectItem!', { item });
         this.clientsCache.onSelectItem(item);
       },
-      filterText: 'Search files...'
+      $triggerSelectItem: this.clientsCache.$selectedFile,
+      filterText: 'Search files...',
     };
   }
 
@@ -219,15 +220,14 @@ export class NgxFileManagerComponent implements OnInit {
         currentPath: file.fullPath
       } as RenameDialogInterface
     });
-    ref.afterClosed().subscribe(renamedPath => {
-      if (!renamedPath) {
-        return;
-      }
-      this.clientsCache.HandleRename(file, renamedPath);
-    });
+    const renamedPath = await ref.afterClosed().toPromise();
+    if (!renamedPath) {
+      return;
+    }
+    this.clientsCache.HandleRename(file, renamedPath);
   }
 
-  onClickSingleSetPermissions(file: ResFile): any {
+  private onClickSingleSetPermissions(file: ResFile): any {
     const files = [file];
     const ref = this.dialog.open(AppDialogSetPermissionsComponent, {
       width: '300px',
@@ -237,15 +237,13 @@ export class NgxFileManagerComponent implements OnInit {
         files: files
       } as PermissionsDialogInterface
     });
-    ref.afterClosed().subscribe(newPermissions => {
+    ref.afterClosed().subscribe(async newPermissions => {
       if (!newPermissions) {
         return;
       }
       const paths = files.map(f => f.fullPath);
-      this.clientsCache.HandleSetPermissions(paths, newPermissions, null);
+      await this.clientsCache.HandleSetPermissions(paths, newPermissions, null);
     });
-
-    throw new Error('Method not implemented.');
   }
 
   private async onClickBulkDelete(fArray: ResFile[]) {
