@@ -41,60 +41,57 @@ export class FileSystemStub implements FileSystemProvider {
       }, 800);
     });
   }
-  private getMatches(items: string[]) {
+  private selectMatches(items: string[], isMatch: boolean) {
     const itemsSet = new Set(items);
-    const matches = this.files
-    .filter(f => itemsSet.has(f.fullPath));
-    return matches;
+    if (isMatch) {
+      return this.files.filter(f => itemsSet.has(f.fullPath));
+    } else {
+      return this.files.filter(f => !itemsSet.has(f.fullPath));
+    }
   }
   async List(path: string): Promise<ResBodyList> {
     await this.fakeDelay();
     const matches = this.files.filter(k => k.fullPath.indexOf(path) === 0);
-    console.log('file-system-stub: List', {files: this.files, matches});
+    console.log('file-system-stub: List', { files: this.files, matches });
     return {
       result: matches
     };
   }
   async Rename(item: string, newItemPath: string): Promise<ResBodyRename> {
     await this.fakeDelay();
-    const match = this.files.find(f => f.fullPath === item);
-    if (!match) {
-      return null;
-    }
-    match.name = newItemPath.split('/').pop();
-    match.fullPath = newItemPath;
+    this.selectMatches([item], true).map(match => {
+      match.name = newItemPath.split('/').pop();
+      match.fullPath = newItemPath;
+    });
     return null;
   }
-  async Move(items: string[], newPath: string): Promise<ResBodyMove> {
+  async Move(item: string, newPath: string): Promise<ResBodyMove> {
     await this.fakeDelay();
-    this.getMatches(items)
-      .map(f => {
-        f.fullPath = newPath;
-      });
+    this.selectMatches([item], true).map(match => {
+      match.fullPath = newPath;
+    });
     return null;
   }
   async Copy(singleFileName: string, newPath: string): Promise<ResBodyCopy> {
     await this.fakeDelay();
-    return null;
-  }
-  async CopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy> {
-    await this.fakeDelay();
-    return null;
-  }
-  async Remove(items: string[]): Promise<ResBodyRemove> {
-    await this.fakeDelay();
-    const itemsSet = new Set(items);
-    const itemsNotDeleted = this.files.filter(f => !itemsSet.has(f.fullPath));
-    this.files = itemsNotDeleted;
+    this.selectMatches([singleFileName], true).map(match => {
+      const copy = { ...match };
+      copy.fullPath = newPath;
+      this.files.push(copy);
+    });
     return null;
   }
   async Edit(item: string, content: string): Promise<ResBodyEdit> {
     await this.fakeDelay();
+    this.selectMatches([item], true).map(match => {
+      match['content'] = content;
+    });
     return null;
   }
   async Getcontent(item: string): Promise<ResBodyGetContent> {
     await this.fakeDelay();
-    return null;
+    const matches = this.selectMatches([item], true);
+    return matches.pop()['content'];
   }
   async CreateFolder(newPath: string): Promise<ResBodyCreateFolder> {
     await this.fakeDelay();
@@ -102,15 +99,60 @@ export class FileSystemStub implements FileSystemProvider {
     return null;
   }
   async SetPermissions(
+    item: string,
+    perms: string,
+    permsCode: string,
+    recursive?: boolean
+  ): Promise<ResBodySetPermissions> {
+    await this.fakeDelay();
+    this.selectMatches([item], true).map(f => {
+      f.rights = perms;
+      if (recursive) {
+        this.SetPermissions(f.fullPath, perms, permsCode, recursive);
+      }
+    });
+    return null;
+  }
+  async CopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy> {
+    await this.fakeDelay();
+    this.selectMatches(items, true).map(f => {
+      const copy = {...f};
+      const slashes = copy.fullPath.split('/');
+      const fileName = slashes.pop();
+      copy.fullPath = newPath + '/' + fileName;
+      this.files.push(copy);
+    });
+    return null;
+  }
+  async MoveMultiple(items: string[], newPath: string): Promise<ResBodyMove> {
+    await this.fakeDelay();
+    this.selectMatches(items, true).map(f => {
+      const slashes = f.fullPath.split('/');
+      const fileName = slashes.pop();
+      f.fullPath = newPath + '/' + fileName;
+    });
+    return null;
+  }
+  async SetPermissionsMultiple(
     items: string[],
     perms: string,
     permsCode: string,
     recursive?: boolean
   ): Promise<ResBodySetPermissions> {
-    this.getMatches(items)
-      .map(f => {
-        f.rights = perms;
-      });
+    await this.fakeDelay();
+    this.selectMatches(items, true).map(f => {
+      f.rights = perms;
+      if (recursive) {
+        this.SetPermissions(f.fullPath, perms, permsCode, recursive);
+      }
+    });
+    return null;
+  }
+  async Remove(items: string[]): Promise<ResBodyRemove> {
+    await this.fakeDelay();
+    const itemsSet = new Set(items);
+    const itemsNotDeleted = this.files.filter(f => !itemsSet.has(f.fullPath));
+    this.files = itemsNotDeleted;
     return null;
   }
 }

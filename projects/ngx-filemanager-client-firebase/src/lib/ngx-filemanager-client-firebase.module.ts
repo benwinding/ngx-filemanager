@@ -25,20 +25,22 @@ import {
   MatDialogModule,
   MatTabsModule
 } from '@angular/material';
-import { AppDialogRenameComponent } from './components/dialog-rename.component';
-import { AppDialogNewFolderComponent } from './components/dialog-new-folder.component';
-import { FileDetailsComponent } from './components/file-details.component';
+import { AppDialogRenameComponent } from './dialogs/dialog-rename.component';
+import { AppDialogNewFolderComponent } from './dialogs/dialog-new-folder.component';
+import { FileDetailsComponent } from './file-details/file-details.component';
 import { FileSizePipe } from './services/file-size.pipe';
-import { NgxFileManagerComponent } from './components/file-manager.component';
+import { NgxFileManagerComponent } from './file-manager/file-manager.component';
 import { FilesSystemProviderService } from './services/files-provider.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FilesClientCacheService } from './services/files-client-cache.service';
-import { AppDialogSetPermissionsComponent } from './components/dialog-setpermissions.component';
+import { AppDialogSetPermissionsComponent } from './dialogs/dialog-setpermissions.component';
+import { AppDialogCopyComponent } from './dialogs/dialog-copy.component';
 
 const dialogComponents = [
   AppDialogRenameComponent,
   AppDialogNewFolderComponent,
-  AppDialogSetPermissionsComponent
+  AppDialogSetPermissionsComponent,
+  AppDialogCopyComponent
 ];
 
 @NgModule({

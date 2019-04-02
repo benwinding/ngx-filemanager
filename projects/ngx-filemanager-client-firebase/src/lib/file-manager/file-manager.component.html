@@ -1,0 +1,70 @@
+<div class="page-container">
+  <mat-drawer-container>
+    <mat-drawer-content>
+      <div class="flex-h space-between">
+        <strong class="heading">Files</strong>
+        <div
+          class="mat-elevation-z8 expander-container has-pointer mat-table"
+          (click)="isFileDetailsOpen = !isFileDetailsOpen"
+        >
+          <mat-icon
+            matTooltip="View File Details"
+            class="expander-icon"
+            [class.drawer-out]="isFileDetailsOpen"
+            [class.drawer-in]="!isFileDetailsOpen"
+            >expand_more</mat-icon
+          >
+        </div>
+      </div>
+      <ngx-auto-table
+        [config]="autoTableConfig"
+        [columnDefinitions]="{
+          icon: { template: iconTemplate },
+          name: { template: nameTemplate, forceWrap: true },
+          size: { template: sizeTemplate },
+          date: { template: dateTemplate },
+          actions: { template: actionsTemplate, header: ''}
+        }"
+      >
+        <ng-template #iconTemplate let-row>
+          <img
+            class="icon"
+            [src]="row.icon"
+            matTooltip="Click For Details"
+          />
+        </ng-template>
+        <ng-template #nameTemplate let-row>
+          <div class="break-word" matTooltip="Click For Details">
+            {{ row.name }}
+          </div>
+        </ng-template>
+        <ng-template #sizeTemplate let-row>
+          <div matTooltip="Click For Details">
+            {{ row.size | fileSize }}
+          </div>
+        </ng-template>
+        <ng-template #dateTemplate let-row>
+          <div matTooltip="Click For Details">
+            {{ row.date | date: 'short' }}
+          </div>
+        </ng-template>
+        <ng-template #actionsTemplate let-row>
+          <button mat-mini-fab color="primary" (click)="onClickDownload(row)">
+            <mat-icon>file_download</mat-icon>
+          </button>
+        </ng-template>
+      </ngx-auto-table>
+    </mat-drawer-content>
+    <mat-drawer
+      #drawer
+      [(opened)]="isFileDetailsOpen"
+      class="history-drawer"
+      mode="side"
+      position="end"
+      opened
+    >
+      <ngx-filemanager-file-details [file]="$SelectedFile | async">
+      </ngx-filemanager-file-details>
+    </mat-drawer>
+  </mat-drawer-container>
+</div>

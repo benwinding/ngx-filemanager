@@ -1,0 +1,50 @@
+.heading {
+  font-family: sans-serif;
+  margin-left: 10px;
+}
+mat-drawer {
+  width: 300px;
+}
+mat-drawer-container {
+  width: 100%;
+}
+.page-container {
+  height: calc(100% - 65px);
+  display: flex;
+}
+.icon {
+  height: 35px;
+}
+.expander-container {
+  flex-direction: row-reverse;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  cursor: pointer;
+}
+.expander-icon {
+  transition: transform 500ms;
+  font-size: 2.5em;
+  width: 1em;
+  height: 1em;
+}
+
+.drawer-out {
+  transform: rotate(-90deg);
+}
+.drawer-in {
+  transform: rotate(90deg);
+}
+.break-word {
+  overflow-wrap: break-word;
+}
+.flex-h {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.space-between {
+  justify-content: space-between;
+}

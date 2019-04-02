@@ -60,18 +60,9 @@ export class FilesSystemProviderService implements FileSystemProvider {
     };
     return this.fetchPostAuth(this.apiEndpoint, req);
   }
-  Rename(item: string, newItemPath: string): Promise<ResBodyRename> {
-    const req: ReqBodyRename = {
-      ...this.makeBaseRequest('rename'),
-      item: item,
-      newItemPath: newItemPath
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
-  }
-  Move(items: string[], newPath: string): Promise<ResBodyMove> {
-    const req: ReqBodyMove = {
-      ...this.makeBaseRequest('move'),
-      items: items,
+  CreateFolder(newPath: string): Promise<ResBodyCreateFolder> {
+    const req: ReqBodyCreateFolder = {
+      ...this.makeBaseRequest('createFolder'),
       newPath: newPath
     };
     return this.fetchPostAuth(this.apiEndpoint, req);
@@ -84,18 +75,19 @@ export class FilesSystemProviderService implements FileSystemProvider {
     };
     return this.fetchPostAuth(this.apiEndpoint, req);
   }
-  CopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy> {
-    const req: ReqBodyCopy = {
-      ...this.makeBaseRequest('copy'),
-      items: items,
+  Move(item: string, newPath: string): Promise<ResBodyMove> {
+    const req: ReqBodyMove = {
+      ...this.makeBaseRequest('move'),
+      items: [item],
       newPath: newPath
     };
     return this.fetchPostAuth(this.apiEndpoint, req);
   }
-  Remove(items: string[]): Promise<ResBodyRemove> {
-    const req: ReqBodyRemove = {
-      ...this.makeBaseRequest('remove'),
-      items: items
+  Rename(item: string, newItemPath: string): Promise<ResBodyRename> {
+    const req: ReqBodyRename = {
+      ...this.makeBaseRequest('rename'),
+      item: item,
+      newItemPath: newItemPath
     };
     return this.fetchPostAuth(this.apiEndpoint, req);
   }
@@ -114,19 +106,43 @@ export class FilesSystemProviderService implements FileSystemProvider {
     };
     return this.fetchPostAuth(this.apiEndpoint, req);
   }
-  CreateFolder(newPath: string): Promise<ResBodyCreateFolder> {
-    const req: ReqBodyCreateFolder = {
-      ...this.makeBaseRequest('createFolder'),
+  SetPermissions(
+    item: string,
+    perms: string,
+    permsCode: string,
+    recursive?: boolean
+  ): Promise<ResBodySetPermissions> {
+    throw new Error('Method not implemented.');
+  }
+  MoveMultiple(items: string[], newPath: string): Promise<ResBodyMove> {
+    const req: ReqBodyMove = {
+      ...this.makeBaseRequest('move'),
+      items: items,
       newPath: newPath
     };
     return this.fetchPostAuth(this.apiEndpoint, req);
   }
-  SetPermissions(
+  CopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy> {
+    const req: ReqBodyCopy = {
+      ...this.makeBaseRequest('copy'),
+      items: items,
+      newPath: newPath
+    };
+    return this.fetchPostAuth(this.apiEndpoint, req);
+  }
+  SetPermissionsMultiple(
     items: string[],
     perms: string,
     permsCode: string,
     recursive?: boolean
   ): Promise<ResBodySetPermissions> {
     throw new Error('Method not implemented.');
+  }
+  Remove(items: string[]): Promise<ResBodyRemove> {
+    const req: ReqBodyRemove = {
+      ...this.makeBaseRequest('remove'),
+      items: items
+    };
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
 }

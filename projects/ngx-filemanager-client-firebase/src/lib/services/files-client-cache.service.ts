@@ -1,12 +1,56 @@
 import { take, map, tap, filter } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, Observable } from 'rxjs';
-import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
+import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  ResFile,
+  FileSystemProvider,
+  ResBodyEdit,
+  ResBodyRename,
+  ResBodyRemove,
+  ResBodyCreateFolder,
+  ResBodyList,
+  ResBodyCopy,
+  ResBodyMove,
+  ResBodyGetContent,
+  ResBodySetPermissions
+} from 'ngx-filemanager-core/public_api';
 import { getFileIcon, getFolderIcon } from '../utils/file-icon-guesser';
 import { MakeClientDirectory } from '../utils/file.factory';
 
+export interface FilesClientCache {
+  // Actions
+  HandleList(path: string): Promise<ResBodyList>;
+  HandleCreateFolder(newPath: string): Promise<ResBodyCreateFolder>;
+
+  // File/Directory Actions
+
+  HandleCopy(singleFileName: string, newPath: string): Promise<ResBodyCopy>;
+  HandleMove(item: string, newPath: string): Promise<ResBodyMove>;
+  HandleRename(item: string, newItemPath: string): Promise<ResBodyRename>;
+  HandleEdit(item: string, content: string): Promise<ResBodyEdit>;
+  HandleGetcontent(item: string): Promise<ResBodyGetContent>;
+  HandleSetPermissions(
+    item: string,
+    perms: string,
+    permsCode: string,
+    recursive?: boolean
+  ): Promise<ResBodySetPermissions>;
+
+  // File/Directory Bulk Actions
+
+  HandleMoveMultiple(items: string[], newPath: string): Promise<ResBodyMove>;
+  HandleCopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy>;
+  HandleSetPermissionsMultiple(
+    items: string[],
+    perms: string,
+    permsCode: string,
+    recursive?: boolean
+  ): Promise<ResBodySetPermissions>;
+  HandleRemove(items: string[]): Promise<ResBodyRemove>;
+}
+
 @Injectable()
-export class FilesClientCacheService {
+export class FilesClientCacheService implements FilesClientCache {
   private fileSystem: FileSystemProvider;
   public $currentFiles = new BehaviorSubject<ResFile[]>([]);
   public $currentPath = new BehaviorSubject<string>(null);
@@ -16,50 +60,7 @@ export class FilesClientCacheService {
     this.fileSystem = fileSystem;
   }
 
-  private async getMatches(paths: string[], notMatches?: boolean) {
-    const currentFiles = await this.currentFiles();
-    const matchSet = new Set(paths);
-    if (notMatches) {
-      return currentFiles.filter(cf => !matchSet.has(cf.fullPath));
-    } else {
-      return currentFiles.filter(cf => matchSet.has(cf.fullPath));
-    }
-  }
-
-  public async HandleDelete(deletedPaths: string[]) {
-    const filesNotDeleted = await this.getMatches(deletedPaths, true);
-    this.$currentFiles.next(filesNotDeleted);
-    this.selectFirstFrom(filesNotDeleted);
-    await this.fileSystem.Remove(deletedPaths);
-  }
-
-  public async HandleRename(file: ResFile, renamedPath: string) {
-    console.log('files-client-cache: renameAction', { file, renamedPath });
-    const currentFiles = await this.currentFiles();
-    const renamedFile = currentFiles.find(cf => cf.fullPath === file.fullPath);
-    renamedFile.fullPath = renamedPath;
-    renamedFile.name = renamedPath.split('/').pop();
-    this.$currentFiles.next(currentFiles);
-    this.selectFirstFrom([renamedFile]);
-    await this.fileSystem.Rename(file.fullPath, renamedPath);
-  }
-
-  public async HandleNewFolder(newDirName: string) {
-    const currentPath = await this.$currentPath.pipe(take(1)).toPromise();
-    const newDirPath = currentPath + newDirName;
-    const currentFiles = await this.currentFiles();
-    const tempDir = MakeClientDirectory(newDirName, newDirPath);
-    this.addIconPath(tempDir);
-    const newFiles = [...currentFiles, tempDir];
-    console.log('files-client-cache: onClickNewFolder, making new folder', {
-      newDirName,
-      currentPath
-    });
-    this.$currentFiles.next(newFiles);
-    await this.fileSystem.CreateFolder(newDirPath);
-  }
-
-  public async HandleLoadPath(path: string) {
+  public async HandleList(path: string): Promise<ResBodyList> {
     const response = await this.fileSystem.List(path);
     const newFiles = [...response.result];
     console.log('files-client-cache: setExplorerPath', { path, newFiles });
@@ -79,6 +80,120 @@ export class FilesClientCacheService {
       return;
     }
     this.selectFirstFrom(newFiles);
+    return response;
+  }
+  public async HandleCreateFolder(
+    newDirName: string
+  ): Promise<ResBodyCreateFolder> {
+    const currentPath = await this.$currentPath.pipe(take(1)).toPromise();
+    const newDirPath = currentPath + newDirName;
+    const currentFiles = await this.currentFiles();
+    const tempDir = MakeClientDirectory(newDirName, newDirPath);
+    this.addIconPath(tempDir);
+    const newFiles = [...currentFiles, tempDir];
+    console.log('files-client-cache: onClickNewFolder, making new folder', {
+      newDirName,
+      currentPath
+    });
+    this.$currentFiles.next(newFiles);
+    return await this.fileSystem.CreateFolder(newDirPath);
+  }
+  public async HandleCopy(
+    singleFileName: string,
+    newPath: string
+  ): Promise<ResBodyCopy> {
+    return null;
+  }
+  public async HandleMove(item: string, newPath: string): Promise<ResBodyMove> {
+    return null;
+  }
+  public async HandleRename(
+    item: string,
+    newItemPath: string
+  ): Promise<ResBodyRename> {
+    console.log('files-client-cache: renameAction', { item, newItemPath });
+    const currentFiles = await this.currentFiles();
+    const renamedFile = currentFiles.find(cf => cf.fullPath === item);
+    renamedFile.fullPath = newItemPath;
+    renamedFile.name = newItemPath.split('/').pop();
+    this.$currentFiles.next(currentFiles);
+    this.selectFirstFrom([renamedFile]);
+    return await this.fileSystem.Rename(item, newItemPath);
+  }
+  public async HandleEdit(item: string, content: string): Promise<ResBodyEdit> {
+    return null;
+  }
+  public async HandleGetcontent(item: string): Promise<ResBodyGetContent> {
+    return null;
+  }
+  public async HandleSetPermissions(
+    item: string,
+    perms: string,
+    permsCode: string,
+    recursive?: boolean
+  ): Promise<ResBodySetPermissions> {
+    const currentFiles = await this.currentFiles();
+    const renamedFile = currentFiles.find(cf => cf.fullPath === item);
+    renamedFile.rights = perms;
+    this.$currentFiles.next(currentFiles);
+    this.selectFirstFrom([renamedFile]);
+    return await this.fileSystem.SetPermissions(
+      item,
+      perms,
+      permsCode,
+      recursive
+    );
+  }
+  public async HandleMoveMultiple(
+    items: string[],
+    newFolderPath: string
+  ): Promise<ResBodyMove> {
+    const currentFiles = await this.currentFiles();
+    const matches = await this.selectMatches(currentFiles, items, false);
+    this.$currentFiles.next(matches);
+    this.selectFirstFrom(matches);
+    return await this.fileSystem.MoveMultiple(
+      items,
+      newFolderPath
+    );
+  }
+  public async HandleCopyMultiple(
+    items: string[],
+    newFolderPath: string
+  ): Promise<ResBodyCopy> {
+    const currentFiles = await this.currentFiles();
+    const matches = await this.selectMatches(currentFiles, items, false);
+    this.$currentFiles.next(matches);
+    this.selectFirstFrom(matches);
+    return await this.fileSystem.MoveMultiple(
+      items,
+      newFolderPath
+    );
+  }
+  public async HandleSetPermissionsMultiple(
+    items: string[],
+    perms: string,
+    permsCode: string,
+    recursive?: boolean
+  ): Promise<ResBodySetPermissions> {
+    const currentFiles = await this.currentFiles();
+    const filesChanged = await this.selectMatches(currentFiles, items, true);
+    filesChanged.map(f => (f.rights = perms));
+    this.$currentFiles.next(currentFiles);
+    this.selectFirstFrom(filesChanged);
+    return await this.fileSystem.SetPermissionsMultiple(
+      items,
+      perms,
+      permsCode,
+      recursive
+    );
+  }
+  public async HandleRemove(items: string[]): Promise<ResBodyRemove> {
+    const currentFiles = await this.currentFiles();
+    const filesNotDeleted = await this.selectMatches(currentFiles, items, false);
+    this.$currentFiles.next(filesNotDeleted);
+    this.selectFirstFrom(filesNotDeleted);
+    return await this.fileSystem.Remove(items);
   }
 
   public async HandleNavigateUp() {
@@ -92,21 +207,6 @@ export class FilesClientCacheService {
       currentPath,
       parentPath
     });
-  }
-
-  public async HandleSetPermissions(
-    items: string[],
-    perms: string,
-    permsCode: string,
-    recursive?: boolean
-  ) {
-    const filesToChange = await this.getMatches(items);
-    const filesToNotChange = await this.getMatches(items, true);
-    filesToChange.map(f => (f.rights = perms));
-    const allFiles = [...filesToChange, ...filesToNotChange];
-    this.$currentFiles.next(allFiles);
-    this.selectFirstFrom(filesToChange);
-    await this.fileSystem.SetPermissions(items, perms, permsCode, recursive);
   }
 
   public get $FilesWithIcons(): Observable<ResFile[]> {
@@ -137,11 +237,18 @@ export class FilesClientCacheService {
     this.$selectedFile.next(item);
   }
 
+  private async selectMatches(currentFiles: ResFile[], paths: string[], doesMatch?: boolean) {
+    const matchSet = new Set(paths);
+    if (doesMatch) {
+      return currentFiles.filter(cf => matchSet.has(cf.fullPath));
+    } else {
+      return currentFiles.filter(cf => !matchSet.has(cf.fullPath));
+    }
+  }
+
   private selectFirstFrom(items: ResFile[]) {
-    setTimeout(() => {
-      const firstSelected = [...items].shift();
-      this.$selectedFile.next(firstSelected);
-    }, 0);
+    const firstSelected = [...items].shift();
+    this.$selectedFile.next(firstSelected);
   }
 
   private addIconPath(file: ResFile) {

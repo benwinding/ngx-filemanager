@@ -121,19 +121,33 @@ export interface ResBodyUploadFile extends ResBodySuccess {}
 // CLIENT
 
 export interface FileSystemProvider {
+  // Actions
   List(path: string): Promise<ResBodyList>;
-  Rename(item: string, newItemPath: string): Promise<ResBodyRename>;
-  Move(items: string[], newPath: string): Promise<ResBodyMove>;
+  CreateFolder(newPath: string): Promise<ResBodyCreateFolder>;
+
+  // File/Directory Actions
+
   Copy(singleFileName: string, newPath: string): Promise<ResBodyCopy>;
-  CopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy>;
-  Remove(items: string[]): Promise<ResBodyRemove>;
+  Move(item: string, newPath: string): Promise<ResBodyMove>;
+  Rename(item: string, newItemPath: string): Promise<ResBodyRename>;
   Edit(item: string, content: string): Promise<ResBodyEdit>;
   Getcontent(item: string): Promise<ResBodyGetContent>;
-  CreateFolder(newPath: string): Promise<ResBodyCreateFolder>;
   SetPermissions(
+    item: string,
+    perms: string,
+    permsCode: string,
+    recursive?: boolean
+  ): Promise<ResBodySetPermissions>;
+
+  // File/Directory Bulk Actions
+
+  MoveMultiple(items: string[], newPath: string): Promise<ResBodyMove>;
+  CopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy>;
+  SetPermissionsMultiple(
     items: string[],
     perms: string,
     permsCode: string,
     recursive?: boolean
   ): Promise<ResBodySetPermissions>;
+  Remove(items: string[]): Promise<ResBodyRemove>;
 }
