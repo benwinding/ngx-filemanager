@@ -39,12 +39,16 @@ import { AppFileTableComponent } from './file-table/file-table.component';
 import { AppBreadCrumbsComponent } from './bread-crumbs/bread-crumbs.component';
 import { AppBulkActionsComponent } from './actions-toolbars/bulk-actions.component';
 import { AppFolderActionsComponent } from './actions-toolbars/folder-actions.component';
+import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component';
+import { AngularFileUploaderModule } from 'angular-file-uploader';
+import { AppBtnsCancelOkComponent } from './dialogs/btns-cancel-ok.component';
 
 const dialogComponents = [
   AppDialogRenameComponent,
   AppDialogNewFolderComponent,
   AppDialogSetPermissionsComponent,
-  AppDialogCopyComponent
+  AppDialogCopyComponent,
+  AppDialogUploadFilesComponent
 ];
 
 @NgModule({
@@ -58,6 +62,7 @@ const dialogComponents = [
     AppBreadCrumbsComponent,
     AppBulkActionsComponent,
     AppFolderActionsComponent,
+    AppBtnsCancelOkComponent,
     FileDetailsComponent,
     FileSizePipe
   ],
@@ -70,6 +75,7 @@ const dialogComponents = [
     BrowserModule,
     AutoTableModule,
 
+    AngularFileUploaderModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatButtonToggleModule,

@@ -25,16 +25,13 @@ export interface CopyDialogInterface {
         [(ngModel)]="folderName"
         [ngModelOptions]="{ standalone: true }"
       />
-      <div class="flexRow">
-        <button mat-raised-button (click)="onCancel($event)">
-          <mat-icon>clear</mat-icon>
-          Cancel
-        </button>
-        <button mat-raised-button color="primary" type="submit">
-          <mat-icon>content_copy</mat-icon>
-          Copy
-        </button>
-      </div>
+      <btns-cancel-ok
+        okIcon="content_copy"
+        okText="Copy"
+        (clickedCancel)="onCancel($event)"
+        (clickedOk)="onSubmit()"
+      >
+      </btns-cancel-ok>
     </form>
   `,
   styles: [

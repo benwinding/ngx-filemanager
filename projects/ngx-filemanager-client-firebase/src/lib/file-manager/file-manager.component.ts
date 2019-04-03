@@ -15,6 +15,7 @@ import {
   CopyDialogInterface
 } from '../dialogs/dialog-copy.component';
 import { Subject, BehaviorSubject } from 'rxjs';
+import { AppDialogUploadFilesComponent } from '../dialogs/dialog-upload.component';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -43,6 +44,13 @@ export class NgxFileManagerComponent implements OnInit {
     return this.clientsCache.$currentPath;
   }
 
+  private async getCurrentPath() {
+    const currentPath = await this.clientsCache.$currentPath
+      .pipe(take(1))
+      .toPromise();
+    return currentPath;
+  }
+
   get $CurrentPathIsRoot() {
     return this.$CurrentPath.pipe(map(p => p === this.config.initialPath));
   }
@@ -58,6 +66,9 @@ export class NgxFileManagerComponent implements OnInit {
     if (this.config && this.config.initialPath) {
       this.clientsCache.HandleList(this.config.initialPath);
     }
+    setTimeout(() => {
+      this.onClickUploadFiles();
+    }, 1500);
   }
 
   makeConfig() {
@@ -219,6 +230,8 @@ export class NgxFileManagerComponent implements OnInit {
 
   public async onClickUploadFiles() {
     console.log('file-manager: onClickUpload');
+    const currentPath = await this.getCurrentPath();
+    const res = await this.openDialog(AppDialogUploadFilesComponent, currentPath);
     this.refreshExplorer();
   }
 
@@ -258,15 +271,13 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   private async refreshExplorer() {
-    const currentPath = await this.clientsCache.$currentPath
-      .pipe(take(1))
-      .toPromise();
+    const currentPath = await this.getCurrentPath();
     await this.clientsCache.HandleList(currentPath);
   }
 
   private async openDialog(comp: any, data?: any) {
     const ref = this.dialog.open(comp, {
-      width: '300px',
+      width: '400px',
       hasBackdrop: true,
       disableClose: false,
       data: data

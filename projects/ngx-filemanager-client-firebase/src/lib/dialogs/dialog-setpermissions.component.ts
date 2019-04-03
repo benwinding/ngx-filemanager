@@ -26,16 +26,13 @@ export interface PermissionsDialogInterface {
         [ngModelOptions]="{ standalone: true }"
         (keyup.enter)="onSubmit($event)"
       />
-      <div class="flexRow">
-        <button mat-raised-button (click)="onCancel($event)">
-          <mat-icon>clear</mat-icon>
-          Cancel
-        </button>
-        <button mat-raised-button color="primary" (click)="onSubmit($event)">
-          <mat-icon>done</mat-icon>
-          Set Permissions
-        </button>
-      </div>
+      <btns-cancel-ok
+        okIcon="done"
+        okText="Set Permissions"
+        (clickedCancel)="onCancel($event)"
+        (clickedOk)="onSubmit($event)"
+      >
+      </btns-cancel-ok>
     </form>
   `,
   styles: [

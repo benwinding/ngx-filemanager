@@ -18,16 +18,13 @@ export interface RenameDialogInterface {
         [(ngModel)]="renamedItem"
         [ngModelOptions]="{ standalone: true }"
       />
-      <div class="flexRow">
-        <button mat-raised-button (click)="onCancel($event)">
-          <mat-icon>clear</mat-icon>
-          Cancel
-        </button>
-        <button mat-raised-button color="primary" type="submit">
-          <mat-icon>done</mat-icon>
-          Rename Folder
-        </button>
-      </div>
+      <btns-cancel-ok
+        okIcon="done"
+        okText="Rename Folder"
+        (clickedCancel)="onCancel($event)"
+        (clickedOk)="onSubmit()"
+      >
+      </btns-cancel-ok>
     </form>
   `,
   styles: [
