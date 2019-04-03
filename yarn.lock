@@ -4520,10 +4520,10 @@ ng-packagr@^4.2.0:
     uglify-js "^3.0.7"
     update-notifier "^2.3.0"
 
-ngx-auto-table@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/ngx-auto-table/-/ngx-auto-table-0.2.3.tgz#1952997417f386562bdd2c4ceda2be65f3946063"
-  integrity sha512-xC6CnK/wRf1SObc0D8WW9VtyhHNVVloRSJUQCdCyZygTjR/p2475NMioLTebFnDYHPEo9ZzCa5lfOsuTuAAfGg==
+ngx-auto-table@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/ngx-auto-table/-/ngx-auto-table-0.2.4.tgz#4cd6e48a12164a68dacce8540f789fe585fd64bd"
+  integrity sha512-Qn0ipnYizsblACb9l0aFzXnNAGabNtggU6pEG8ud0GI90/KAOk68lSAYsTrLd2BcSeF9Nt85n0bcsBQFpaCzdw==
   dependencies:
     tslib "^1.9.0"
 

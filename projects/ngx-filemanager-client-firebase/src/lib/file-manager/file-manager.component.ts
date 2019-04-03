@@ -35,6 +35,10 @@ export class NgxFileManagerComponent implements OnInit {
     private clientsCache: FilesClientCacheService
   ) {}
 
+  get $CurrentPath() {
+    return this.clientsCache.$currentPath;
+  }
+
   ngOnInit() {
     if (!this.fileSystem) {
       throw new Error(
@@ -52,7 +56,7 @@ export class NgxFileManagerComponent implements OnInit {
     const filesWithIcons$ = this.clientsCache.$FilesWithIcons;
     this.autoTableConfig = {
       data$: filesWithIcons$,
-      debug: true,
+      // debug: true,
       actions: [
         {
           label: 'Copy',
@@ -104,7 +108,9 @@ export class NgxFileManagerComponent implements OnInit {
         this.clientsCache.onSelectItem(item);
       },
       $triggerSelectItem: this.clientsCache.$selectedFile,
-      filterText: 'Search files...'
+      filterText: 'Search here...',
+      hideChooseColumns: true,
+      hideFilter: true
     };
   }
 
@@ -194,13 +200,13 @@ export class NgxFileManagerComponent implements OnInit {
       console.log('file-manager: onClickNewFolder   no folder created...');
       return;
     }
-    this.clientsCache.HandleCreateFolder(newDirName);
+    await this.clientsCache.HandleCreateFolder(newDirName);
     this.refreshExplorer();
   }
 
   public async onClickUpFolder() {
     console.log('file-manager: onClickUpFolder');
-    this.clientsCache.HandleNavigateUp();
+    await this.clientsCache.HandleNavigateUp();
     this.refreshExplorer();
   }
 
@@ -208,11 +214,15 @@ export class NgxFileManagerComponent implements OnInit {
     console.log('file-manager: onClickUpload');
   }
 
+  public onClickCrumb(newPath: string) {
+    this.clientsCache.HandleList(newPath);
+  }
+
   private async refreshExplorer() {
     const currentPath = await this.clientsCache.$currentPath
       .pipe(take(1))
       .toPromise();
-    this.clientsCache.HandleList(currentPath);
+    await this.clientsCache.HandleList(currentPath);
   }
 
   private async openDialog(comp: any, data?: any) {

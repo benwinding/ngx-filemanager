@@ -152,10 +152,7 @@ export class FilesClientCacheService implements FilesClientCache {
     const matches = await this.selectMatches(currentFiles, items, false);
     this.$currentFiles.next(matches);
     this.selectFirstFrom(matches);
-    return await this.fileSystem.MoveMultiple(
-      items,
-      newFolderPath
-    );
+    return await this.fileSystem.MoveMultiple(items, newFolderPath);
   }
   public async HandleCopyMultiple(
     items: string[],
@@ -165,10 +162,7 @@ export class FilesClientCacheService implements FilesClientCache {
     const matches = await this.selectMatches(currentFiles, items, false);
     this.$currentFiles.next(matches);
     this.selectFirstFrom(matches);
-    return await this.fileSystem.MoveMultiple(
-      items,
-      newFolderPath
-    );
+    return await this.fileSystem.MoveMultiple(items, newFolderPath);
   }
   public async HandleSetPermissionsMultiple(
     items: string[],
@@ -190,7 +184,11 @@ export class FilesClientCacheService implements FilesClientCache {
   }
   public async HandleRemove(items: string[]): Promise<ResBodyRemove> {
     const currentFiles = await this.currentFiles();
-    const filesNotDeleted = await this.selectMatches(currentFiles, items, false);
+    const filesNotDeleted = await this.selectMatches(
+      currentFiles,
+      items,
+      false
+    );
     this.$currentFiles.next(filesNotDeleted);
     this.selectFirstFrom(filesNotDeleted);
     return await this.fileSystem.Remove(items);
@@ -202,6 +200,7 @@ export class FilesClientCacheService implements FilesClientCache {
     slashSegments.pop();
     const parentPath = slashSegments.join('/');
     const currentFiles = await this.currentFiles();
+    await this.HandleList(parentPath);
     this.selectFirstFrom(currentFiles);
     console.log('files-client-cache: onClickUpFolder', {
       currentPath,
@@ -237,7 +236,11 @@ export class FilesClientCacheService implements FilesClientCache {
     this.$selectedFile.next(item);
   }
 
-  private async selectMatches(currentFiles: ResFile[], paths: string[], doesMatch?: boolean) {
+  private async selectMatches(
+    currentFiles: ResFile[],
+    paths: string[],
+    doesMatch?: boolean
+  ) {
     const matchSet = new Set(paths);
     if (doesMatch) {
       return currentFiles.filter(cf => matchSet.has(cf.fullPath));

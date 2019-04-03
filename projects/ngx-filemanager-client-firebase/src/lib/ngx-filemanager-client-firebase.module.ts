@@ -36,6 +36,9 @@ import { FilesClientCacheService } from './services/files-client-cache.service';
 import { AppDialogSetPermissionsComponent } from './dialogs/dialog-setpermissions.component';
 import { AppDialogCopyComponent } from './dialogs/dialog-copy.component';
 import { AppFileTableComponent } from './file-table/file-table.component';
+import { AppBreadCrumbsComponent } from './bread-crumbs/bread-crumbs.component';
+import { AppBulkActionsComponent } from './actions-toolbars/bulk-actions.component';
+import { AppFolderActionsComponent } from './actions-toolbars/folder-actions.component';
 
 const dialogComponents = [
   AppDialogRenameComponent,
@@ -52,6 +55,9 @@ const dialogComponents = [
     ...dialogComponents,
     NgxFileManagerComponent,
     AppFileTableComponent,
+    AppBreadCrumbsComponent,
+    AppBulkActionsComponent,
+    AppFolderActionsComponent,
     FileDetailsComponent,
     FileSizePipe
   ],

@@ -11,11 +11,11 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         <h2>No item selected ...</h2>
       </div>
       <div *ngIf="hasInput && !isFile">
-        <span class="">
+        <span class="flex-r center">
           <h2>Directory Details</h2>
           <button
             mat-mini-fab
-            color="primary"
+            color="warn"
             (click)="this.clickedDelete.emit(file)"
           >
             <mat-icon>delete</mat-icon>
@@ -33,22 +33,15 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         <h6>Directory</h6>
       </div>
       <div *ngIf="hasInput && isFile">
-        <span class="flex-r">
+        <span class="flex-r center">
           <h2>File Details</h2>
           <span>
             <button
               mat-mini-fab
-              color="primary"
+              color="warn"
               (click)="this.clickedDelete.emit(file)"
             >
               <mat-icon>delete</mat-icon>
-            </button>
-            <button
-              mat-mini-fab
-              color="primary"
-              (click)="this.clickedDownload.emit(file)"
-            >
-              <mat-icon>file_download</mat-icon>
             </button>
           </span>
         </span>
@@ -68,11 +61,21 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
             <img [src]="getImageUrl()" />
           </a>
         </div>
+        <button
+          mat-mini-fab
+          color="primary"
+          (click)="this.clickedDownload.emit(file)"
+        >
+          <mat-icon>file_download</mat-icon>
+        </button>
       </div>
     </div>
   `,
   styles: [
     `
+      .center {
+        align-items: center;
+      }
       .flex-r {
         display: flex;
         flex-direction: row;

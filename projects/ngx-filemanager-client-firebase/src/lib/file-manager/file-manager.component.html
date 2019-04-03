@@ -1,8 +1,17 @@
 <div class="page-container">
   <mat-drawer-container>
     <mat-drawer-content>
+      <folder-actions
+        (clickedNewFolder)="this.onClickNewFolder()"
+        (clickedUpFolder)="this.onClickUpFolder()"
+      >
+      </folder-actions>
       <div class="flex-h space-between">
-        <strong class="heading">Files</strong>
+        <bread-crumbs
+          [currentPath]="$CurrentPath | async"
+          (clickedCrumb)="this.onClickCrumb($event)"
+        >
+        </bread-crumbs>
         <div
           class="mat-elevation-z8 expander-container has-pointer mat-table"
           (click)="isFileDetailsOpen = !isFileDetailsOpen"
@@ -16,10 +25,7 @@
           >
         </div>
       </div>
-      <app-file-table
-        [config]="autoTableConfig"
-      >
-      </app-file-table>
+      <app-file-table [config]="autoTableConfig"> </app-file-table>
     </mat-drawer-content>
     <mat-drawer
       #drawer
