@@ -53,10 +53,12 @@ export class FileSystemStub implements FileSystemProvider {
       return this.files.filter(f => !itemsSet.has(f.fullPath));
     }
   }
-  async List(path: string): Promise<ResBodyList> {
+  async List(inputPath: string): Promise<ResBodyList> {
     await this.fakeDelay();
+    const hasTrailing = inputPath.slice(-1) === '/';
+    const path = hasTrailing ? inputPath : inputPath + '/';
     const matches = this.files.filter(k => k.fullPath.indexOf(path) === 0);
-    console.log('file-system-stub: List', { files: this.files, matches });
+    console.log('file-system-stub: List', { path, files: this.files, matches });
     return {
       result: matches
     };
@@ -120,7 +122,7 @@ export class FileSystemStub implements FileSystemProvider {
   async CopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy> {
     await this.fakeDelay();
     this.selectMatches(items, true).map(f => {
-      const copy = {...f};
+      const copy = { ...f };
       const slashes = copy.fullPath.split('/');
       const fileName = slashes.pop();
       copy.fullPath = newPath + '/' + fileName;
