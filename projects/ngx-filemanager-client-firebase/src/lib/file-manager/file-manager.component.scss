@@ -27,6 +27,22 @@ mat-drawer-container {
   width: 1em;
   height: 1em;
 }
+.bulk-actions-container {
+  position: absolute;
+  overflow: hidden;
+  height: 80px;
+  width: 100%;
+  z-index: 2;
+  transition: top 0.7s;
+  top: 0px;
+}
+.folder-actions-container {
+
+}
+
+.hidden {
+  top: -90px;
+}
 
 .drawer-out {
   transform: rotate(-90deg);

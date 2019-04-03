@@ -5,12 +5,12 @@ import { ActionButton } from './ActionButton';
   // tslint:disable-next-line:component-selector
   selector: 'bulk-actions',
   template: `
-    <mat-toolbar>
+    <mat-toolbar color="primary">
       <mat-toolbar-row>
         <div class="flexr">
           <div *ngFor="let action of bulkActions">
             <button
-              class="action"
+              class="action flexr"
               mat-raised-button
               [color]="action.color"
               (click)="action.onClick(action)"
@@ -26,6 +26,7 @@ import { ActionButton } from './ActionButton';
   styles: [
     `
       button.action {
+        margin-right: 10px;
       }
       .flexr {
         display: flex;
@@ -42,20 +43,30 @@ export class AppBulkActionsComponent implements OnInit {
   clickedNewFolder = new EventEmitter<void>();
   @Output()
   clickedUpFolder = new EventEmitter<void>();
+  @Output()
+  clickedCancelBulk = new EventEmitter<void>();
 
   ngOnInit() {
     this.bulkActions = [
       {
-        label: 'Back',
-        icon: 'arrow_left',
+        label: 'Cancel',
+        icon: 'clear',
         onClick: (item: ActionButton) => {
-          this.clickedUpFolder.emit();
+          this.clickedCancelBulk.emit();
         },
         color: 'secondary'
       },
       {
-        label: 'New Folder',
-        icon: 'create_folder',
+        label: 'Copy',
+        icon: 'content_copy',
+        onClick: (item: ActionButton) => {
+          this.clickedNewFolder.emit();
+        },
+        color: 'secondary'
+      },
+      {
+        label: 'Move',
+        icon: 'forward',
         onClick: (item: ActionButton) => {
           this.clickedNewFolder.emit();
         },

@@ -19,13 +19,13 @@ export interface RenameDialogInterface {
         [ngModelOptions]="{ standalone: true }"
       />
       <div class="flexRow">
-        <button mat-raised-button color="primary" type="submit">
-          <mat-icon>done</mat-icon>
-          Create Folder
-        </button>
         <button mat-raised-button (click)="onCancel($event)">
           <mat-icon>clear</mat-icon>
           Cancel
+        </button>
+        <button mat-raised-button color="primary" type="submit">
+          <mat-icon>done</mat-icon>
+          Rename Folder
         </button>
       </div>
     </form>

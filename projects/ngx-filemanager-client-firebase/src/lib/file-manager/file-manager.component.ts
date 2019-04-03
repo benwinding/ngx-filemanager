@@ -14,6 +14,7 @@ import {
   AppDialogCopyComponent,
   CopyDialogInterface
 } from '../dialogs/dialog-copy.component';
+import { Subject, BehaviorSubject } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -29,6 +30,9 @@ export class NgxFileManagerComponent implements OnInit {
 
   public autoTableConfig: AutoTableConfig<ResFile>;
   public isFileDetailsOpen = true;
+
+  public $BulkSelected = new BehaviorSubject<ResFile[]>([]);
+  private $triggerClearSelected = new Subject<void>();
 
   constructor(
     private dialog: MatDialog,
@@ -77,8 +81,15 @@ export class NgxFileManagerComponent implements OnInit {
           label: 'Delete',
           icon: 'delete',
           onClick: async (file: ResFile) => this.onDelete([file])
-        },
+        }
       ],
+      onSelectedBulk: (files: ResFile[]) => {
+        console.log('file-manager: onSelectedBulk', {
+          files,
+          length: files.length
+        });
+        this.$BulkSelected.next(files);
+      },
       actionsBulk: [
         {
           label: 'Copy',
@@ -108,6 +119,7 @@ export class NgxFileManagerComponent implements OnInit {
         this.clientsCache.onSelectItem(item);
       },
       $triggerSelectItem: this.clientsCache.$selectedFile,
+      $triggerClearSelected: this.$triggerClearSelected,
       filterText: 'Search here...',
       hideChooseColumns: true,
       hideFilter: true
@@ -119,13 +131,10 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   private async onRename(file: ResFile) {
-    const renamedPath = await this.openDialog(
-      AppDialogRenameComponent,
-      {
-        currentFilename: file.name,
-        currentPath: file.fullPath
-      } as RenameDialogInterface
-    );
+    const renamedPath = await this.openDialog(AppDialogRenameComponent, {
+      currentFilename: file.name,
+      currentPath: file.fullPath
+    } as RenameDialogInterface);
     if (!renamedPath) {
       return;
     }
@@ -179,11 +188,11 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   public async onClickDownload(file: ResFile) {
-    console.log('file-manager: downloading file', {row: file});
+    console.log('file-manager: downloading file', { row: file });
   }
 
   private async onDelete(files: ResFile[]) {
-    console.log('file-manager: deleting files', {files});
+    console.log('file-manager: deleting files', { files });
     const deletedPaths = files.map(f => f.fullPath);
     await this.clientsCache.HandleRemove(deletedPaths);
     this.refreshExplorer();
@@ -212,6 +221,12 @@ export class NgxFileManagerComponent implements OnInit {
 
   public async onClickUpload() {
     console.log('file-manager: onClickUpload');
+  }
+
+  public async onClickCancelBulk() {
+    console.log('file-manager: onClickCancelBulk');
+    this.$triggerClearSelected.next();
+    this.$BulkSelected.next([]);
   }
 
   public onClickCrumb(newPath: string) {

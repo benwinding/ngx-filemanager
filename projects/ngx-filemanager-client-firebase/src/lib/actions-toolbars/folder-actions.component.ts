@@ -14,7 +14,7 @@ import { ActionButton } from './ActionButton';
             [color]="action.color"
             (click)="action.onClick(action)"
           >
-            <mat-icon>{{ action.icon }}</mat-icon>
+            <mat-icon inline="true" >{{ action.icon }}</mat-icon>
             {{ action.label }}
           </button>
         </div>
@@ -46,7 +46,7 @@ export class AppFolderActionsComponent implements OnInit {
     this.bulkActions = [
       {
         label: 'Back',
-        icon: 'arrow_left',
+        icon: 'reply',
         onClick: (item: ActionButton) => {
           this.clickedUpFolder.emit();
         },

@@ -1,11 +1,24 @@
 <div class="page-container">
   <mat-drawer-container>
     <mat-drawer-content>
-      <folder-actions
-        (clickedNewFolder)="this.onClickNewFolder()"
-        (clickedUpFolder)="this.onClickUpFolder()"
+      <div
+        class="bulk-actions-container"
+        [class.hidden]="($BulkSelected | async).length < 1"
       >
-      </folder-actions>
+        <bulk-actions
+          (clickedNewFolder)="this.onClickNewFolder()"
+          (clickedUpFolder)="this.onClickUpFolder()"
+          (clickedCancelBulk)="this.onClickCancelBulk()"
+        >
+        </bulk-actions>
+      </div>
+      <div class="folder-actions-container">
+        <folder-actions
+          (clickedNewFolder)="this.onClickNewFolder()"
+          (clickedUpFolder)="this.onClickUpFolder()"
+        >
+        </folder-actions>
+      </div>
       <div class="flex-h space-between">
         <bread-crumbs
           [currentPath]="$CurrentPath | async"

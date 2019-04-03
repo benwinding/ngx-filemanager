@@ -26,13 +26,13 @@ export interface PermissionsDialogInterface {
         [ngModelOptions]="{ standalone: true }"
       />
       <div class="flexRow">
-        <button mat-raised-button color="primary" type="submit">
-          <mat-icon>done</mat-icon>
-          Set Permissions
-        </button>
         <button mat-raised-button (click)="onCancel($event)">
           <mat-icon>clear</mat-icon>
           Cancel
+        </button>
+        <button mat-raised-button color="primary" type="submit">
+          <mat-icon>done</mat-icon>
+          Set Permissions
         </button>
       </div>
     </form>

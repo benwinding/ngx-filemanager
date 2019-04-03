@@ -10,8 +10,7 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
       [columnDefinitions]="{
         icon: { template: iconTemplate },
         name: { template: nameTemplate, forceWrap: true },
-        date: { template: dateTemplate },
-        actions: { template: actionsTemplate, header: '' }
+        date: { template: dateTemplate }
       }"
     >
       <ng-template #iconTemplate let-row>
