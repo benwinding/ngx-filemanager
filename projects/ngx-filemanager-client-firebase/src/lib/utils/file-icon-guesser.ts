@@ -229,7 +229,7 @@ export const fileIcons: FileIcons = {
   ]
 };
 
-export const folderIcons: FolderTheme[] = [
+const folderIcons: FolderTheme[] = [
   {
     name: 'specific',
     defaultIcon: { name: 'folder-aws' },
@@ -479,11 +479,11 @@ export const folderIcons: FolderTheme[] = [
   { name: 'none', defaultIcon: { name: '' } }
 ];
 
-export const getFileIconName = (filename: string) => {
-  filename = filename.toLowerCase();
-  if (!filename || !filename.includes('.')) {
+const getFileIconName = (input: string) => {
+  if (!input || !input.includes('.')) {
     return fileIcons.defaultIcon.name;
   }
+  const filename = input.toLowerCase();
   const ext = getFileExtension(filename);
 
   const matchesExt = fileIcons.icons.filter(
@@ -501,12 +501,11 @@ export const getFileIconName = (filename: string) => {
   return fileIcons.defaultIcon.name;
 };
 
-export const isFileImage = (filename: string) =>
-  getFileIconName(filename) === 'image';
+const isFileImage = (filename: string) => getFileIconName(filename) === 'image';
 
-export const getFileExtension = (filename: string) => filename.split('.').pop();
+const getFileExtension = (filename: string) => filename.split('.').pop();
 
-export const getFileName = (filename: string) => {
+const getFileName = (filename: string) => {
   const slashSegments = filename.split('/');
   const filenameWithExt = slashSegments.pop();
   const dotSegments = filenameWithExt.split('.');
@@ -517,7 +516,8 @@ export const getFileName = (filename: string) => {
   return dotSegments.join('.');
 };
 
-export const getFolderIconName = (filename: string) => {
+const getFolderIconName = (filename: string) => {
+  return 'folder-other';
   filename = filename.toLowerCase();
   const matches = folderIcons[0].icons.filter(
     x => !!x.folderNames && !!x.folderNames.filter(y => y === filename).length
@@ -529,9 +529,10 @@ export const getFolderIconName = (filename: string) => {
   return folderIcons[0].defaultIcon.name;
 };
 
-export const getFileIcon = (filename: string) => {
-  return '/assets/fileicons/' + getFileIconName(filename) + '.svg';
-};
-export const getFolderIcon = (filename: string) => {
-  return '/assets/fileicons/' + getFolderIconName(filename) + '.svg';
+export const guesser = {
+  isFileImage,
+  getFileExtension,
+  getFileName,
+  getFolderIconName,
+  getFileIconName,
 };

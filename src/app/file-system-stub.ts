@@ -25,7 +25,11 @@ function MakeFakeFile(path: string, isDir?: boolean): ResFile {
 
 export class FileSystemStub implements FileSystemProvider {
   files: ResFile[] = [
+    MakeFakeFile('/image1.png'),
+    MakeFakeFile('/image2.jpeg'),
     MakeFakeFile('/subfile.txt'),
+    MakeFakeFile('/subfile.mp3'),
+    MakeFakeFile('/subfile.mp4'),
     MakeFakeFile('/tables.csv'),
     MakeFakeFile('/time.docx'),
     MakeFakeFile('/emptyFolder', true),

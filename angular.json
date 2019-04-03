@@ -25,7 +25,12 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./dist/ngx-filemanager-client-firebase/assets",
+                "output": "./assets/fileicons"
+              }
             ],
             "styles": [
               "src/styles.scss"
@@ -185,10 +190,13 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@linnenschmidt/build-ng-packagr:build",
           "options": {
             "tsConfig": "projects/ngx-filemanager-client-firebase/tsconfig.lib.json",
-            "project": "projects/ngx-filemanager-client-firebase/ng-package.json"
+            "project": "projects/ngx-filemanager-client-firebase/ng-package.json",
+            "assets": [
+              "src/assets"
+            ]
           }
         },
         "test": {

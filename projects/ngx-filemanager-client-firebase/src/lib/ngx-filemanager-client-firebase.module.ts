@@ -35,6 +35,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FilesClientCacheService } from './services/files-client-cache.service';
 import { AppDialogSetPermissionsComponent } from './dialogs/dialog-setpermissions.component';
 import { AppDialogCopyComponent } from './dialogs/dialog-copy.component';
+import { AppFileTableComponent } from './file-table/file-table.component';
 
 const dialogComponents = [
   AppDialogRenameComponent,
@@ -50,6 +51,7 @@ const dialogComponents = [
   declarations: [
     ...dialogComponents,
     NgxFileManagerComponent,
+    AppFileTableComponent,
     FileDetailsComponent,
     FileSizePipe
   ],

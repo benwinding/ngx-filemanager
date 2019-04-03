@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
-import { getFileIconName } from '../utils/file-icon-guesser';
-import { ResFile } from 'ngx-filemanager-core/public_api';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { guesser } from '../utils/file-icon-guesser';
+import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -11,7 +11,16 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
         <h2>No item selected ...</h2>
       </div>
       <div *ngIf="hasInput && !isFile">
-        <h2>Directory Details</h2>
+        <span class="">
+          <h2>Directory Details</h2>
+          <button
+            mat-mini-fab
+            color="primary"
+            (click)="this.clickedDelete.emit(file)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </span>
         <h5>Name</h5>
         <h6>{{ file.name }}</h6>
         <h5>Size</h5>
@@ -24,7 +33,25 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
         <h6>Directory</h6>
       </div>
       <div *ngIf="hasInput && isFile">
-        <h2>File Details</h2>
+        <span class="flex-r">
+          <h2>File Details</h2>
+          <span>
+            <button
+              mat-mini-fab
+              color="primary"
+              (click)="this.clickedDelete.emit(file)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button
+              mat-mini-fab
+              color="primary"
+              (click)="this.clickedDownload.emit(file)"
+            >
+              <mat-icon>file_download</mat-icon>
+            </button>
+          </span>
+        </span>
         <h5>Name</h5>
         <h6>{{ file.name }}</h6>
         <h5>Size</h5>
@@ -46,6 +73,11 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
   `,
   styles: [
     `
+      .flex-r {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
       .details-container {
         margin: 8px;
       }
@@ -82,9 +114,13 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
 export class FileDetailsComponent {
   @Input()
   file: ResFile;
+  @Output()
+  clickedDownload = new EventEmitter<ResFile>();
+  @Output()
+  clickedDelete = new EventEmitter<ResFile>();
 
   getFileType(fileName: string) {
-    return getFileIconName(fileName);
+    return guesser.getFileIconName(fileName);
   }
 
   get hasInput() {
@@ -94,7 +130,7 @@ export class FileDetailsComponent {
     return this.file.type === 'file';
   }
   get isImage() {
-    return getFileIconName(this.file.name) === 'image';
+    return guesser.getFileIconName(this.file.name) === 'image';
   }
 
   getImageUrl() {

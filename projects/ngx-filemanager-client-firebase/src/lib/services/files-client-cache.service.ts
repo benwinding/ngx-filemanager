@@ -14,8 +14,8 @@ import {
   ResBodyGetContent,
   ResBodySetPermissions
 } from 'ngx-filemanager-core/public_api';
-import { getFileIcon, getFolderIcon } from '../utils/file-icon-guesser';
 import { MakeClientDirectory } from '../utils/file.factory';
+import { getFileIcon, getFolderIcon } from '../utils/icon-url-resolver';
 
 export interface FilesClientCache {
   // Actions

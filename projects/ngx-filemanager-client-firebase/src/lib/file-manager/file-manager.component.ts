@@ -109,7 +109,7 @@ export class NgxFileManagerComponent implements OnInit {
 
   private async onRename(file: ResFile) {
     const renamedPath = await this.openDialog(
-      AppDialogSetPermissionsComponent,
+      AppDialogRenameComponent,
       {
         currentFilename: file.name,
         currentPath: file.fullPath
@@ -171,10 +171,15 @@ export class NgxFileManagerComponent implements OnInit {
     console.log('file-manager: downloading file', {row: file});
   }
 
-  private async onDelete(fArray: ResFile[]) {
-    const deletedPaths = fArray.map(f => f.fullPath);
+  private async onDelete(files: ResFile[]) {
+    console.log('file-manager: deleting files', {files});
+    const deletedPaths = files.map(f => f.fullPath);
     await this.clientsCache.HandleRemove(deletedPaths);
     this.refreshExplorer();
+  }
+
+  public async onClickDelete(file: ResFile) {
+    await this.onDelete([file]);
   }
 
   public async onClickNewFolder() {
