@@ -1,6 +1,6 @@
 import { OnInit, Component, Input } from '@angular/core';
 import { AutoTableConfig } from 'ngx-auto-table/public_api';
-import { take } from 'rxjs/operators';
+import { take, map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
 import { RenameDialogInterface } from '../dialogs/dialog-rename.component';
@@ -43,6 +43,10 @@ export class NgxFileManagerComponent implements OnInit {
     return this.clientsCache.$currentPath;
   }
 
+  get $CurrentPathIsRoot() {
+    return this.$CurrentPath.pipe(map(p => p === this.config.initialPath));
+  }
+
   ngOnInit() {
     if (!this.fileSystem) {
       throw new Error(
@@ -61,6 +65,13 @@ export class NgxFileManagerComponent implements OnInit {
     this.autoTableConfig = {
       data$: filesWithIcons$,
       // debug: true,
+      actionsBulk: [
+        {
+          label: 'Copy',
+          icon: 'content_copy',
+          onClick: async (files: ResFile[]) => this.onCopyMultiple(files)
+        }
+      ],
       actions: [
         {
           label: 'Copy',
@@ -90,24 +101,6 @@ export class NgxFileManagerComponent implements OnInit {
         });
         this.$BulkSelected.next(files);
       },
-      actionsBulk: [
-        {
-          label: 'Copy',
-          icon: 'content_copy',
-          onClick: async (files: ResFile[]) => this.onCopyMultiple(files)
-        },
-        {
-          label: 'Permissions',
-          icon: 'lock_outline',
-          onClick: async (files: ResFile[]) =>
-            this.onSetPermissionsMultiple(files)
-        },
-        {
-          label: 'Delete',
-          icon: 'delete',
-          onClick: async (files: ResFile[]) => this.onDelete(files)
-        }
-      ],
       onSelectItemDoubleClick: async (item: ResFile) => {
         console.log('file-manager: onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
@@ -139,6 +132,7 @@ export class NgxFileManagerComponent implements OnInit {
       return;
     }
     this.clientsCache.HandleRename(file.fullPath, renamedPath);
+    this.refreshExplorer();
   }
 
   private async onSetPermissions(file: ResFile) {
@@ -156,6 +150,7 @@ export class NgxFileManagerComponent implements OnInit {
       newPermissions,
       null
     );
+    this.refreshExplorer();
   }
 
   private async onSetPermissionsMultiple(files: ResFile[]) {
@@ -174,6 +169,7 @@ export class NgxFileManagerComponent implements OnInit {
       newPermissions,
       null
     );
+    this.refreshExplorer();
   }
 
   private async onCopyMultiple(files: ResFile[]) {
@@ -185,6 +181,7 @@ export class NgxFileManagerComponent implements OnInit {
     }
     const filePaths = files.map(f => f.fullPath);
     await this.clientsCache.HandleCopyMultiple(filePaths, newFolderPath);
+    this.refreshExplorer();
   }
 
   public async onClickDownload(file: ResFile) {
@@ -200,6 +197,7 @@ export class NgxFileManagerComponent implements OnInit {
 
   public async onClickDelete(file: ResFile) {
     await this.onDelete([file]);
+    this.refreshExplorer();
   }
 
   public async onClickNewFolder() {
@@ -219,18 +217,44 @@ export class NgxFileManagerComponent implements OnInit {
     this.refreshExplorer();
   }
 
-  public async onClickUpload() {
+  public async onClickUploadFiles() {
     console.log('file-manager: onClickUpload');
+    this.refreshExplorer();
   }
 
-  public async onClickCancelBulk() {
+  public async onClickRefresh() {
+    this.refreshExplorer();
+  }
+
+  public async onClickedCancelBulk() {
     console.log('file-manager: onClickCancelBulk');
-    this.$triggerClearSelected.next();
-    this.$BulkSelected.next([]);
+    this.clearBulkSelected();
+  }
+  public async onClickedBulkCopy() {
+    console.log('file-manager: clickedBulkCopy');
+    const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
+    await this.onCopyMultiple(selected);
+    this.clearBulkSelected();
+  }
+  public async onClickedBulkMove() {
+    console.log('file-manager: clickedBulkMove');
+    this.clearBulkSelected();
+  }
+  public async onClickedBulkPermissions() {
+    console.log('file-manager: clickedBulkPermissions');
+    const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
+    await this.onSetPermissionsMultiple(selected);
+    this.clearBulkSelected();
   }
 
   public onClickCrumb(newPath: string) {
     this.clientsCache.HandleList(newPath);
+    this.clearBulkSelected();
+  }
+
+  private clearBulkSelected() {
+    this.$triggerClearSelected.next();
+    this.$BulkSelected.next([]);
   }
 
   private async refreshExplorer() {

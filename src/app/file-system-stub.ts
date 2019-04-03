@@ -146,6 +146,7 @@ export class FileSystemStub implements FileSystemProvider {
     recursive?: boolean
   ): Promise<ResBodySetPermissions> {
     await this.fakeDelay();
+    console.log('file-system-stub: SetPermissionsMultiple', { items, files: this.files });
     this.selectMatches(items, true).map(f => {
       f.rights = perms;
       if (recursive) {
@@ -154,6 +155,7 @@ export class FileSystemStub implements FileSystemProvider {
     });
     return null;
   }
+
   async Remove(items: string[]): Promise<ResBodyRemove> {
     await this.fakeDelay();
     const itemsSet = new Set(items);

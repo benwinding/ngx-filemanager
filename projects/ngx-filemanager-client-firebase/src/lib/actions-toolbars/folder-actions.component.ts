@@ -1,5 +1,6 @@
 import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
 import { ActionButton } from './ActionButton';
+import { of, BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -13,6 +14,7 @@ import { ActionButton } from './ActionButton';
             mat-raised-button
             [color]="action.color"
             (click)="action.onClick(action)"
+            [disabled]="action.$disabled | async"
           >
             <mat-icon inline="true" >{{ action.icon }}</mat-icon>
             {{ action.label }}
@@ -38,11 +40,19 @@ export class AppFolderActionsComponent implements OnInit {
   @Input()
   bulkActions: ActionButton[];
   @Output()
+  clickedUpFolder = new EventEmitter<void>();
+  @Output()
+  clickedRefresh = new EventEmitter<void>();
+  @Output()
   clickedNewFolder = new EventEmitter<void>();
   @Output()
-  clickedUpFolder = new EventEmitter<void>();
+  clickedUploadFiles = new EventEmitter<void>();
+
+  @Input()
+  $CurrentPathIsRoot: Observable<boolean>;
 
   ngOnInit() {
+    const $isRefreshing = new BehaviorSubject<boolean>(false);
     this.bulkActions = [
       {
         label: 'Back',
@@ -50,7 +60,21 @@ export class AppFolderActionsComponent implements OnInit {
         onClick: (item: ActionButton) => {
           this.clickedUpFolder.emit();
         },
-        color: 'secondary'
+        color: 'secondary',
+        $disabled: this.$CurrentPathIsRoot
+      },
+      {
+        label: 'Refresh',
+        icon: 'refresh',
+        onClick: (item: ActionButton) => {
+          $isRefreshing.next(true);
+          setTimeout(() => {
+            $isRefreshing.next(false);
+          }, 1000);
+          this.clickedRefresh.emit();
+        },
+        color: 'secondary',
+        $disabled: $isRefreshing
       },
       {
         label: 'New Folder',
@@ -58,7 +82,17 @@ export class AppFolderActionsComponent implements OnInit {
         onClick: (item: ActionButton) => {
           this.clickedNewFolder.emit();
         },
-        color: 'secondary'
+        color: 'secondary',
+        $disabled: of(false)
+      },
+      {
+        label: 'Upload Files',
+        icon: 'file_upload',
+        onClick: (item: ActionButton) => {
+          this.clickedUploadFiles.emit();
+        },
+        color: 'secondary',
+        $disabled: of(false)
       }
     ];
   }

@@ -40,11 +40,13 @@ export class AppBulkActionsComponent implements OnInit {
   @Input()
   bulkActions: ActionButton[];
   @Output()
-  clickedNewFolder = new EventEmitter<void>();
-  @Output()
-  clickedUpFolder = new EventEmitter<void>();
-  @Output()
   clickedCancelBulk = new EventEmitter<void>();
+  @Output()
+  clickedBulkCopy = new EventEmitter<void>();
+  @Output()
+  clickedBulkMove = new EventEmitter<void>();
+  @Output()
+  clickedBulkPermissions = new EventEmitter<void>();
 
   ngOnInit() {
     this.bulkActions = [
@@ -60,7 +62,7 @@ export class AppBulkActionsComponent implements OnInit {
         label: 'Copy',
         icon: 'content_copy',
         onClick: (item: ActionButton) => {
-          this.clickedNewFolder.emit();
+          this.clickedBulkCopy.emit();
         },
         color: 'secondary'
       },
@@ -68,7 +70,15 @@ export class AppBulkActionsComponent implements OnInit {
         label: 'Move',
         icon: 'forward',
         onClick: (item: ActionButton) => {
-          this.clickedNewFolder.emit();
+          this.clickedBulkMove.emit();
+        },
+        color: 'secondary'
+      },
+      {
+        label: 'Set Permissions',
+        icon: 'lock_outline',
+        onClick: (item: ActionButton) => {
+          this.clickedBulkPermissions.emit();
         },
         color: 'secondary'
       }

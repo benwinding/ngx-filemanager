@@ -6,9 +6,10 @@
         [class.hidden]="($BulkSelected | async).length < 1"
       >
         <bulk-actions
-          (clickedNewFolder)="this.onClickNewFolder()"
-          (clickedUpFolder)="this.onClickUpFolder()"
-          (clickedCancelBulk)="this.onClickCancelBulk()"
+          (clickedCancelBulk)="this.onClickedCancelBulk()"
+          (clickedBulkCopy)="this.onClickedBulkCopy()"
+          (clickedBulkMove)="this.onClickedBulkMove()"
+          (clickedBulkPermissions)="this.onClickedBulkPermissions()"
         >
         </bulk-actions>
       </div>
@@ -16,6 +17,9 @@
         <folder-actions
           (clickedNewFolder)="this.onClickNewFolder()"
           (clickedUpFolder)="this.onClickUpFolder()"
+          (clickedRefresh)="this.onClickRefresh()"
+          (clickedUploadFiles)="this.onClickUploadFiles()"
+          [$CurrentPathIsRoot]="$CurrentPathIsRoot"
         >
         </folder-actions>
       </div>
