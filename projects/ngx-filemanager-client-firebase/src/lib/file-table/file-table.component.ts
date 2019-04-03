@@ -10,7 +10,6 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
       [columnDefinitions]="{
         icon: { template: iconTemplate },
         name: { template: nameTemplate, forceWrap: true },
-        size: { template: sizeTemplate },
         date: { template: dateTemplate },
         actions: { template: actionsTemplate, header: '' }
       }"
@@ -21,6 +20,11 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
       <ng-template #nameTemplate let-row>
         <div class="break-word" matTooltip="Click For Details">
           {{ row.name }}
+        </div>
+      </ng-template>
+      <ng-template #sizeTemplate let-row>
+        <div matTooltip="Click For Details">
+          {{ row.size | fileSize }}
         </div>
       </ng-template>
       <ng-template #dateTemplate let-row>
