@@ -55,9 +55,9 @@ export class NgxFileManagerComponent implements OnInit {
       debug: true,
       actions: [
         {
-          label: 'Delete',
-          icon: 'delete',
-          onClick: async (file: ResFile) => this.onDelete([file])
+          label: 'Copy',
+          icon: 'content_copy',
+          onClick: async (files: ResFile) => this.onCopyMultiple([files])
         },
         {
           label: 'Rename',
@@ -68,7 +68,12 @@ export class NgxFileManagerComponent implements OnInit {
           label: 'Permissions',
           icon: 'lock_outline',
           onClick: async (file: ResFile) => this.onSetPermissions(file)
-        }
+        },
+        {
+          label: 'Delete',
+          icon: 'delete',
+          onClick: async (file: ResFile) => this.onDelete([file])
+        },
       ],
       actionsBulk: [
         {
