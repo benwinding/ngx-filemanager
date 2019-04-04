@@ -27,8 +27,8 @@ export function IsCurrentPathFile(
 ): boolean {
   const relativePath = GetRelativePath(currentDirectoryPath, absObjectPath);
   const slashSegments = relativePath.split('/');
-  const IsCurrentPathFile = slashSegments.length < 2;
-  return IsCurrentPathFile;
+  const isCurrentPathFile = slashSegments.length < 2;
+  return isCurrentPathFile;
 }
 
 export function GetSubDirectory(
