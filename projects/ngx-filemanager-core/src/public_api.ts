@@ -7,8 +7,22 @@ export * from './lib/ngx-filemanager-core.module';
 // Based on the api from: https://github.com/joni2back/angular-filemanager/blob/master/API.md
 // tslint:disable:no-empty-interface
 
+export type FileManagerAction =
+  | 'list'
+  | 'rename'
+  | 'move'
+  | 'copy'
+  | 'remove'
+  | 'edit'
+  | 'getContent'
+  | 'createFolder'
+  | 'changePermissions'
+  | 'compress'
+  | 'extract'
+  | 'downloadMultiple';
+
 export interface ReqBodyAction {
-  action: string;
+  action: FileManagerAction;
   bucketname: string;
 }
 

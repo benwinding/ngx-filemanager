@@ -162,7 +162,7 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/jest:run",
           "options": {
             "main": "projects/ngx-filemanager-api-firebase/src/test.ts",
             "tsConfig": "projects/ngx-filemanager-api-firebase/tsconfig.spec.json",
