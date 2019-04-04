@@ -2100,6 +2100,11 @@ dot-prop@^4.1.0:
   dependencies:
     is-obj "^1.0.0"
 
+dropzone@^5.5.0:
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/dropzone/-/dropzone-5.5.1.tgz#06e2f513e61d6aa363d4b556f18574f47cf7ba26"
+  integrity sha512-3VduRWLxx9hbVr42QieQN25mx/I61/mRdUSuxAmDGdDqZIN8qtP7tcKMa3KfpJjuGjOJGYYUzzeq6eGDnkzesA==
+
 duplexer3@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer3/-/duplexer3-0.1.4.tgz#ee01dd1cac0ed3cbc7fdbea37dc0a8f1ce002ce2"
@@ -4533,6 +4538,13 @@ ngx-auto-table@^0.2.4:
   integrity sha512-Qn0ipnYizsblACb9l0aFzXnNAGabNtggU6pEG8ud0GI90/KAOk68lSAYsTrLd2BcSeF9Nt85n0bcsBQFpaCzdw==
   dependencies:
     tslib "^1.9.0"
+
+ngx-dropzone-wrapper@^7.2.1:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/ngx-dropzone-wrapper/-/ngx-dropzone-wrapper-7.2.1.tgz#99f1fcad1f6dd4f72fba8787c2fedd4ab28fc187"
+  integrity sha512-gE09T4ombTSFzf9R+HmiVkxOjxa+JX9udC6rotpo3yhvNzTrSL1nFXmF9VKw6Yr1SUFl2xGyHDZ/Tkgk1jEczQ==
+  dependencies:
+    dropzone "^5.5.0"
 
 nice-try@^1.0.4:
   version "1.0.5"

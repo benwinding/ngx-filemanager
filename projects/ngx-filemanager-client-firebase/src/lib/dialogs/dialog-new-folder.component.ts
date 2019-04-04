@@ -5,21 +5,22 @@ import { MatDialogRef } from '@angular/material';
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-new-folder-dialog',
   template: `
-    <form (submit)="onSubmit()">
+    <div>
       <h2>Create Folder</h2>
       <input
         matInput
         [(ngModel)]="folderName"
         [ngModelOptions]="{ standalone: true }"
+        (keyup.enter)="onSubmit()"
       />
       <btns-cancel-ok
         okIcon="done"
-        okText="Create Folder"
-        (clickedCancel)="onCancel($event)"
+        okLabel="Create Folder"
+        (clickedCancel)="onCancel()"
         (clickedOk)="onSubmit()"
       >
       </btns-cancel-ok>
-    </form>
+    </div>
   `,
   styles: [
     `
@@ -38,8 +39,7 @@ export class AppDialogNewFolderComponent {
   onSubmit() {
     this.dialogRef.close(this.folderName);
   }
-  onCancel(e) {
-    e.preventDefault();
+  onCancel() {
     this.dialogRef.close();
   }
 }

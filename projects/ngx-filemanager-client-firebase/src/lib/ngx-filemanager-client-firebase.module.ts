@@ -42,6 +42,7 @@ import { AppFolderActionsComponent } from './actions-toolbars/folder-actions.com
 import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component';
 import { AngularFileUploaderModule } from 'angular-file-uploader';
 import { AppBtnsCancelOkComponent } from './dialogs/btns-cancel-ok.component';
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 const dialogComponents = [
   AppDialogRenameComponent,
@@ -52,9 +53,7 @@ const dialogComponents = [
 ];
 
 @NgModule({
-  entryComponents: [
-    ...dialogComponents
-  ],
+  entryComponents: [...dialogComponents],
   declarations: [
     ...dialogComponents,
     NgxFileManagerComponent,
@@ -74,8 +73,9 @@ const dialogComponents = [
     BrowserAnimationsModule,
     BrowserModule,
     AutoTableModule,
-
+    DropzoneModule,
     AngularFileUploaderModule,
+
     MatAutocompleteModule,
     MatButtonModule,
     MatButtonToggleModule,
@@ -94,7 +94,7 @@ const dialogComponents = [
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule,
+    MatTooltipModule
   ],
   exports: [NgxFileManagerComponent],
   providers: [FilesSystemProviderService, FilesClientCacheService]

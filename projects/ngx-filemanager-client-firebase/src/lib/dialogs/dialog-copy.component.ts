@@ -10,7 +10,7 @@ export interface CopyDialogInterface {
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-copy-dialog',
   template: `
-    <form (submit)="onSubmit()">
+    <div>
       <h2>Copy Items</h2>
       <div>
         <h5>Selected Items</h5>
@@ -24,15 +24,16 @@ export interface CopyDialogInterface {
         matInput
         [(ngModel)]="folderName"
         [ngModelOptions]="{ standalone: true }"
+        (keyup.enter)="onSubmit()"
       />
       <btns-cancel-ok
         okIcon="content_copy"
-        okText="Copy"
-        (clickedCancel)="onCancel($event)"
+        okLabel="Copy"
+        (clickedCancel)="onCancel()"
         (clickedOk)="onSubmit()"
       >
       </btns-cancel-ok>
-    </form>
+    </div>
   `,
   styles: [
     `
@@ -57,8 +58,7 @@ export class AppDialogCopyComponent {
   onSubmit() {
     this.dialogRef.close(this.folderName);
   }
-  onCancel(e) {
-    e.preventDefault();
+  onCancel() {
     this.dialogRef.close();
   }
 }

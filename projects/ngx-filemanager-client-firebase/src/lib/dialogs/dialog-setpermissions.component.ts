@@ -10,30 +10,30 @@ export interface PermissionsDialogInterface {
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-setpermissions-dialog',
   template: `
-    <form>
+    <div>
       <h2>Set Permissions</h2>
       <div>
         <h5>Selected Items</h5>
         <ol>
           <li *ngFor="let file of items">
-            {{file.name}}
-          </li >
+            {{ file.name }}
+          </li>
         </ol>
       </div>
       <input
         matInput
         [(ngModel)]="newPermissions"
         [ngModelOptions]="{ standalone: true }"
-        (keyup.enter)="onSubmit($event)"
+        (keyup.enter)="onSubmit()"
       />
       <btns-cancel-ok
         okIcon="done"
-        okText="Set Permissions"
-        (clickedCancel)="onCancel($event)"
-        (clickedOk)="onSubmit($event)"
+        okLabel="Set Permissions"
+        (clickedCancel)="onCancel()"
+        (clickedOk)="onSubmit()"
       >
       </btns-cancel-ok>
-    </form>
+    </div>
   `,
   styles: [
     `
@@ -55,12 +55,10 @@ export class AppDialogSetPermissionsComponent {
     this.items = data.files;
   }
 
-  onSubmit(e) {
-    e.preventDefault();
+  onSubmit() {
     this.dialogRef.close(this.newPermissions);
   }
-  onCancel(e) {
-    e.preventDefault();
+  onCancel() {
     this.dialogRef.close();
   }
 }

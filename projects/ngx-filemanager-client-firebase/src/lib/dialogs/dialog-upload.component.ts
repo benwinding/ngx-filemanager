@@ -1,24 +1,9 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
-export interface RenameDialogInterface {
+export interface UploadDialogInterface {
   currentPath: string;
-}
-
-interface UploadConfig {
-  multiple: boolean;
-  formatsAllowed: string;
-  maxSize: string;
-  uploadAPI: {
-    url: string;
-    headers: {
-      [a: string]: string;
-    };
-  };
-  theme: string;
-  hideProgressBar: boolean;
-  hideResetBtn: boolean;
-  hideSelectBtn: boolean;
 }
 
 @Component({
@@ -27,32 +12,27 @@ interface UploadConfig {
   template: `
     <div class="dialog">
       <h2>Upload Files</h2>
-      <h5>To Folder: {{ data.currentPath }}</h5>
-      <form (submit)="onSubmit()">
-        <angular-file-uploader [config]="afuConfig"> </angular-file-uploader>
-        <!--
-          <input
-            matInput
-            [(ngModel)]="renamedItem"
-            [ngModelOptions]="{ standalone: true }"
-          />
-        -->
-      </form>
+      <h5>To Folder: {{ currentDirectory }}</h5>
+      <div>
+        <dropzone
+          *ngIf="dropzoneConfig"
+          [config]="dropzoneConfig"
+          (success)="onUploadSuccess($event)"
+          (processing)="onProcessingBegin($event)"
+        ></dropzone>
+      </div>
     </div>
     <btns-cancel-ok
       okIcon="done"
-      okText="Rename Folder"
-      (clickedCancel)="onCancel($event)"
+      okLabel="Finish"
+      (clickedCancel)="onCancel()"
       (clickedOk)="onSubmit()"
+      [okDisabled]="!isDoneUploading"
     >
     </btns-cancel-ok>
   `,
   styles: [
     `
-      .flexRow {
-        display: flex;
-        flex-direction: row;
-      }
       form {
         max-height: 50vh;
         overflow-y: scroll;
@@ -64,49 +44,51 @@ interface UploadConfig {
     `
   ]
 })
-export class AppDialogUploadFilesComponent implements OnInit {
-  renamedItem = '';
-  afuConfig = {
-    multiple: true,
-    theme: 'dragNDrop',
-    hideResetBtn: true,
-    uploadAPI: {
-      url: 'https://example-file-upload-api'
-    }
+export class AppDialogUploadFilesComponent {
+  currentDirectory = '';
+  dropzoneConfig: DropzoneConfigInterface = {
+    url: 'https://httpbin.org/post',
+    maxFilesize: 50,
+    acceptedFiles: 'image/*'
   };
+
+  uploadQueue: {} = {};
+  get isDoneUploading() {
+    return Object.keys(this.uploadQueue).length < 1;
+  }
 
   constructor(
     public dialogRef: MatDialogRef<AppDialogUploadFilesComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: RenameDialogInterface
+    @Inject(MAT_DIALOG_DATA) public data: UploadDialogInterface
   ) {
-    this.renamedItem = data.currentPath;
-  }
-
-  ngOnInit(): void {
-    setTimeout(() => {
-      this.setStyles();
-    });
-  }
-
-  setStyles() {
-    const btnSelectStyle = (document.querySelector(
-      '.afu-select-btn'
-    ) as HTMLElement).style;
-    btnSelectStyle.backgroundColor = 'grey';
-    btnSelectStyle.padding = '8px 15px';
-    btnSelectStyle.borderRadius = '4px';
-    btnSelectStyle.fontFamily = 'sans-serif';
-    btnSelectStyle.fontSize = '0.9em';
-    btnSelectStyle.cursor = 'pointer';
-    btnSelectStyle['webkitBoxShadow'] = 'rgba(0, 0, 0, 0.75) 0px 1px 5px -1px';
-    btnSelectStyle.boxShadow = 'rgba(0, 0, 0, 0.75) 0px 1px 5px -1px';
+    this.currentDirectory = data.currentPath;
   }
 
   onSubmit() {
     this.dialogRef.close();
   }
-  onCancel(e) {
-    e.preventDefault();
+
+  onCancel() {
     this.dialogRef.close();
+  }
+
+  onProcessingBegin($event) {
+    const uuid = $event.upload.uuid;
+    console.log('onProcessingBegin', { $event, uuid });
+    this.addToQueue(uuid);
+  }
+
+  onUploadSuccess($event) {
+    const uuid = $event.shift().upload.uuid;
+    console.log('onUploadSuccess', { $event, uuid });
+    this.removeFromQueue(uuid);
+  }
+
+  addToQueue(uuid: string) {
+    this.uploadQueue[uuid] = true;
+  }
+
+  removeFromQueue(uuid: string) {
+    delete this.uploadQueue[uuid];
   }
 }
