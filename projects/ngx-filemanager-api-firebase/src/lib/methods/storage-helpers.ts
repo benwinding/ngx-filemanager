@@ -2,7 +2,12 @@ import * as request from 'request';
 import { Readable } from 'stream';
 import { ResFile, ResultObj } from 'ngx-filemanager-core/public_api';
 import { File, Bucket } from './google-cloud-types';
-import { EnsureTrailingSlash, IsCurrentPath, IsCurrentPathFile, GetSubDirectory } from './path-helpers';
+import {
+  EnsureTrailingSlash,
+  IsCurrentPath,
+  IsCurrentPathFile,
+  GetSubDirectory
+} from './path-helpers';
 import * as path from 'path';
 
 export interface FileFromStorage {
@@ -12,7 +17,9 @@ export interface FileFromStorage {
   fullPath: string;
 }
 
-export async function translateStorageDirToResFile(f: FileFromStorage): Promise<ResFile> {
+export async function translateStorageDirToResFile(
+  f: FileFromStorage
+): Promise<ResFile> {
   const metaResponse = await f.ref.getMetadata();
   const meta = metaResponse[0];
   return {
@@ -25,7 +32,9 @@ export async function translateStorageDirToResFile(f: FileFromStorage): Promise<
   };
 }
 
-export async function translateStorageFileToResFile(f: FileFromStorage): Promise<ResFile> {
+export async function translateStorageFileToResFile(
+  f: FileFromStorage
+): Promise<ResFile> {
   const metaResponse = await f.ref.getMetadata();
   const meta = metaResponse[0];
   return {
@@ -38,22 +47,12 @@ export async function translateStorageFileToResFile(f: FileFromStorage): Promise
   };
 }
 
-export async function parseFilesInDirectory(storageObjects: File[], currentDirectoryPath) {
+export async function parseFilesInDirectory(
+  storageObjects: File[],
+  currentDirectoryPath
+) {
   const files: FileFromStorage[] = [];
   const subDirNames = new Set<string>();
-
-  const storageObjectsRelativeFiles = storageObjects.filter(storageObject => {
-    const objectPath = storageObject.name;
-    if (IsCurrentPath(currentDirectoryPath, storageObject.name)) {
-      return;
-    }
-  });
-  const storageObjectsRelativeDirs = storageObjects.filter(storageObject => {
-    const objectPath = storageObject.name;
-    if (IsCurrentPath(currentDirectoryPath, storageObject.name)) {
-      return;
-    }
-  });
 
   storageObjects.forEach((storageObject: File) => {
     const filePath = storageObject.name;
@@ -69,7 +68,6 @@ export async function parseFilesInDirectory(storageObjects: File[], currentDirec
       });
       return;
     }
-    // must be subpath
     const subDirName = GetSubDirectory(currentDirectoryPath, filePath);
     if (subDirNames.has(subDirName)) {
       return;
@@ -83,23 +81,28 @@ export async function parseFilesInDirectory(storageObjects: File[], currentDirec
       isDir: true
     });
   });
-  return Promise.all(files.map(f => {
-    if (f.isDir) {
-      return translateStorageDirToResFile(f);
-    } else {
-      return translateStorageFileToResFile(f);
-    }
-  }));
+  return Promise.all(
+    files.map(f => {
+      if (f.isDir) {
+        return translateStorageDirToResFile(f);
+      } else {
+        return translateStorageFileToResFile(f);
+      }
+    })
+  );
 }
 
-async function getRootList(bucket: Bucket) {
+export async function GetRootList(bucket: Bucket) {
   const result = await bucket.getFiles();
   const storageObjects = result[0];
   const files = await parseFilesInDirectory(storageObjects, '');
   return files;
 }
 
-async function getSubList(bucket: Bucket, inputDirectoryPath: string) {
+export async function GetSubList(
+  bucket: Bucket,
+  inputDirectoryPath: string
+): Promise<ResFile[]> {
   const pathParsed = EnsureTrailingSlash(inputDirectoryPath);
   const result = await bucket.getFiles({ prefix: pathParsed });
   const storageObjects = result[0];
@@ -107,12 +110,15 @@ async function getSubList(bucket: Bucket, inputDirectoryPath: string) {
   return files;
 }
 
-export async function getList(bucket: Bucket, directoryPath: string): Promise<ResFile[]> {
+export async function getList(
+  bucket: Bucket,
+  directoryPath: string
+): Promise<ResFile[]> {
   const isRoot = directoryPath === '/';
   if (isRoot) {
-    return getRootList(bucket);
+    return GetRootList(bucket);
   } else {
-    return getSubList(bucket, directoryPath);
+    return GetSubList(bucket, directoryPath);
   }
 }
 
@@ -128,8 +134,10 @@ export async function StreamToPromise(stream: Readable): Promise<string> {
       resolve(stringRes);
     });
     stream.on('error', err => {
-      const errmsg = 'StreamToPromise(stream: Readable), Error reading stream: ' + err.message;
-      console.error(errmsg, {err});
+      const errmsg =
+        'StreamToPromise(stream: Readable), Error reading stream: ' +
+        err.message;
+      console.error(errmsg, { err });
       reject(errmsg);
     });
   });
