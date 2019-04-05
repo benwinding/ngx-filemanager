@@ -1,5 +1,5 @@
 // Add middle ware to this route
-import * as express from 'express';
+const express = require('express');
 import * as admin from 'firebase-admin';
 import {
   OptionRequestsAreOk,
