@@ -6,9 +6,12 @@ import {
   EnsureTrailingSlash,
   IsCurrentPath,
   IsCurrentPathFile,
-  GetSubDirectory
+  GetSubDirectory,
+  HasTrailingSlash,
+  EnsureNoPrefixSlash
 } from './path-helpers';
 import * as path from 'path';
+import { GetFilesOptions } from '@google-cloud/storage';
 
 export interface FileFromStorage {
   ref: File;
@@ -92,6 +95,26 @@ export async function parseFilesInDirectory(
   );
 }
 
+export function translateStorageToFileFromStorage(
+  storageObject: File
+): FileFromStorage {
+  const filePath = storageObject.name;
+  return {
+    ref: storageObject,
+    name: path.basename(filePath),
+    fullPath: filePath,
+    isDir: HasTrailingSlash(filePath)
+  };
+}
+
+export async function GetAllFilesInBucketDangerously(
+  bucket: Bucket
+): Promise<FileFromStorage[]> {
+  const result = await bucket.getFiles();
+  const storageObjects = result[0];
+  return storageObjects.map(o => translateStorageToFileFromStorage(o));
+}
+
 export async function GetRootList(bucket: Bucket) {
   const result = await bucket.getFiles();
   const storageObjects = result[0];
@@ -104,10 +127,37 @@ export async function GetSubList(
   inputDirectoryPath: string
 ): Promise<ResFile[]> {
   const pathParsed = EnsureTrailingSlash(inputDirectoryPath);
-  const result = await bucket.getFiles({ prefix: pathParsed });
+  const options: GetFilesOptions = {
+    delimiter: '/',
+    includeTrailingDelimiter: true,
+  } as any;
+  const isRoot = pathParsed === '/';
+  if (!isRoot) {
+    options.directory = pathParsed;
+  }
+  const result = await bucket.getFiles(options);
   const storageObjects = result[0];
   const files = await parseFilesInDirectory(storageObjects, pathParsed);
   return files;
+}
+
+export async function GetListFromStorage(
+  bucket: Bucket,
+  inputDirectoryPath: string
+): Promise<FileFromStorage[]> {
+  const pathParsed1 = EnsureNoPrefixSlash(inputDirectoryPath);
+  const pathParsed = EnsureTrailingSlash(pathParsed1);
+  const options: GetFilesOptions = {
+    delimiter: '/',
+    includeTrailingDelimiter: true,
+  } as any;
+  const isRoot = pathParsed === '/';
+  if (!isRoot) {
+    options.directory = pathParsed;
+  }
+  const result = await bucket.getFiles(options);
+  const storageObjects = result[0];
+  return storageObjects.map(o => translateStorageToFileFromStorage(o));
 }
 
 export async function getList(
