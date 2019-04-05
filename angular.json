@@ -157,16 +157,13 @@
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
             "tsConfig": "projects/ngx-filemanager-api-firebase/tsconfig.lib.json",
-            "project": "projects/ngx-filemanager-api-firebase/ng-package.json",
-            "preserveSymlinks": true
+            "project": "projects/ngx-filemanager-api-firebase/ng-package.json"
           }
         },
         "test": {
           "builder": "@angular-builders/jest:run",
           "options": {
-            "main": "projects/ngx-filemanager-api-firebase/src/test.ts",
-            "tsConfig": "projects/ngx-filemanager-api-firebase/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-filemanager-api-firebase/karma.conf.js"
+            "configPath": "projects/ngx-filemanager-api-firebase/jest.config.js"
           }
         },
         "lint": {

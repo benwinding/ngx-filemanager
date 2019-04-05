@@ -19,7 +19,8 @@ admin.initializeApp({
 const testStorage = admin.storage();
 const testBucket = testStorage.bucket(testbucketname);
 
-test('Test list some files', async () => {
+test('try GetSubList', async () => {
+  const a = 1;
   const response = await GetSubList(testBucket, '/');
-  console.log(JSON.stringify(response, null, 2));
+  console.log(JSON.stringify(response, null, 2), a);
 });

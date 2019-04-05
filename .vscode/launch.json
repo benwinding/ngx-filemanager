@@ -22,7 +22,7 @@
       "args": [
         "${fileBasenameNoExtension}",
         "--config",
-        "jest.config.js"
+        "${workspaceFolder}/projects/ngx-filemanager-api-firebase/jest.config.js"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
