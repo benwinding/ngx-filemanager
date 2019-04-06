@@ -1,4 +1,4 @@
-import { ResultObj, ResFile } from 'ngx-filemanager-core/public_api';
+import { ResultObj, ResFile } from './core-types';
 import { HasTrailingSlash } from './path-helpers';
 import { FileFromStorage, File } from './google-cloud-types';
 import { Readable } from 'stream';

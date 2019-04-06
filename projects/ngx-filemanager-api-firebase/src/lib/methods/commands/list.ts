@@ -6,7 +6,7 @@ import {
   translateStorageDirToResFile,
   translateStorageFileToResFile
 } from '../translation-helpers';
-import { ResFile } from 'ngx-filemanager-core/public_api';
+import { ResFile } from '../core-types';
 
 export async function GetListFromStorage(
   bucket: Bucket,

@@ -1,4 +1,4 @@
-import * as api from 'ngx-filemanager-core';
+import { api } from './core-types';
 import { Storage } from './google-cloud-types';
 import {
   EditFile,

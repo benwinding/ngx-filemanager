@@ -1,7 +1,7 @@
 import { Bucket, File } from '../google-cloud-types';
 import { GetFilesOptions } from '@google-cloud/storage';
 import { EnsureNoPrefixSlash, EnsureTrailingSlash } from '../path-helpers';
-import { ResultObj } from 'ngx-filemanager-core/public_api';
+import { ResultObj } from '../core-types';
 
 export async function getAllChildren(
   bucket: Bucket,

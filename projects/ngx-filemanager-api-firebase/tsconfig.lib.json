@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/ngx-filemanager-api-firebase/lib",
+    "outDir": "../../out-tsc/lib",
     "target": "es2015",
     "module": "es2015",
     "moduleResolution": "node",
@@ -13,7 +13,8 @@
     "importHelpers": true,
     "types": [],
     "lib": [
-      "es2018", "dom"
+      "dom",
+      "es2018"
     ]
   },
   "angularCompilerOptions": {
@@ -27,5 +28,8 @@
   "exclude": [
     "src/test.ts",
     "**/*.spec.ts"
+  ],
+  "paths": [
+    
   ]
 }

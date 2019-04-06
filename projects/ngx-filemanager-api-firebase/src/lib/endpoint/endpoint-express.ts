@@ -6,7 +6,7 @@ import {
   PostRequestsOnly,
   HasBodyProp
 } from './middleware-helpers';
-import { FileManagerAction } from 'ngx-filemanager-core';
+import { FileManagerAction } from '../methods/core-types';
 import { NgxFileMangerApiFireBaseClass } from '../methods/firebase-storage-api';
 
 const api = new NgxFileMangerApiFireBaseClass(admin.storage());

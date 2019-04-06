@@ -2,15 +2,19 @@
   "name": "ngx-filemanager",
   "version": "0.0.0",
   "scripts": {
+    "ng": "ng",
     "core-build": "ng build --project=ngx-filemanager-core",
     "core-watch": "ng build --project=ngx-filemanager-core --watch",
     "client-build": "ng build --project=ngx-filemanager-client-firebase",
     "client-watch": "ng build --project=ngx-filemanager-client-firebase --watch",
     "client-demo-build": "ng build --project=ngx-filemanager-client-firebase-demo",
     "client-demo-start": "BROWSER=none ng serve --project=ngx-filemanager-client-firebase-demo --watch",
-    "api-firebase-build": "tsc --project projects/ngx-filemanager-api-firebase/tsconfig.lib.json",
-    "api-firebase-watch": "tsc --project projects/ngx-filemanager-api-firebase/tsconfig.lib.json --watch",
-    "api-firebase-test": "jest --config projects/ngx-filemanager-api-firebase/jest.config.js"
+    "api-firebase-build": "ng build --project=ngx-filemanager-api-firebase",
+    "api-firebase-watch": "ng build --project=ngx-filemanager-api-firebase --watch",
+    "api-firebase-test": "jest --config projects/ngx-filemanager-api-firebase/jest.config.js",
+    "api-firebase-demo-debug": "npm run api-firebase-demo-init && functions deploy api_files --trigger-http --timeout=5000s && functions inspect api_files",
+    "api-firebase-demo-init": "functions config set projectId resvu-integration-tests && functions restart && tsc",
+    "api-firebase-demo-build": ""
   },
   "private": true,
   "dependencies": {
@@ -42,6 +46,7 @@
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^7.4.3",
     "@angular-builders/jest": "^7.4.1",
     "@angular-devkit/build-angular": "~0.10.0",
     "@angular-devkit/build-ng-packagr": "~0.10.0",

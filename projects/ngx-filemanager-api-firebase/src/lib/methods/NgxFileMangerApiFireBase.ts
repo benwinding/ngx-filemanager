@@ -1,4 +1,4 @@
-import * as api from 'ngx-filemanager-core';
+import { api } from './core-types';
 
 export interface NgxFileMangerApiFireBase {
   HandleList(body: api.ReqBodyList): Promise<api.ResBodyList>;
@@ -8,5 +8,7 @@ export interface NgxFileMangerApiFireBase {
   HandleRemove(body: api.ReqBodyRemove): Promise<api.ResBodyRemove>;
   HandleEdit(body: api.ReqBodyEdit): Promise<api.ResBodyEdit>;
   HandleGetContent(body: api.ReqBodyGetContent): Promise<api.ResBodyGetContent>;
-  HandleCreateFolder(body: api.ReqBodyCreateFolder): Promise<api.ResBodyCreateFolder>;
+  HandleCreateFolder(
+    body: api.ReqBodyCreateFolder
+  ): Promise<api.ResBodyCreateFolder>;
 }
