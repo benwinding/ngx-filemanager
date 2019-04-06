@@ -1,5 +1,6 @@
 // Add middle ware to this route
 const express = require('express');
+import * as Express from 'express';
 import * as admin from 'firebase-admin';
 import {
   OptionRequestsAreOk,
@@ -11,7 +12,7 @@ import { NgxFileMangerApiFireBaseClass } from '../methods/firebase-storage-api';
 
 const api = new NgxFileMangerApiFireBaseClass(admin.storage());
 
-const endpoint = express();
+const endpoint: Express.Application = express();
 endpoint.use(OptionRequestsAreOk);
 
 endpoint.get('/hello', async (req, res) => {
@@ -78,7 +79,6 @@ async function notImplemented(req, res) {
 }
 /*
 Use by attaching to a firebase function
-
 exports.FileManagerApi = StorageEndpoint;
 */
 export const FileManagerEndpointExpress = endpoint;
