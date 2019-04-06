@@ -2,19 +2,14 @@
   "name": "ngx-filemanager",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "BROWSER=none ng serve --watch",
-    "build": "ng build",
+    "start-client-demo": "BROWSER=none ng serve --project=ngx-filemanager-client-firebase-demo --watch",
     "build-core": "ng build --project=ngx-filemanager-core",
     "build-client": "ng build --project=ngx-filemanager-client-firebase",
     "watch-core": "ng build --project=ngx-filemanager-core --watch",
     "watch-client": "ng build --project=ngx-filemanager-client-firebase --watch",
     "build-api-firebase": "tsc --project projects/ngx-filemanager-api-firebase/tsconfig.lib.json",
     "watch-api-firebase": "tsc --project projects/ngx-filemanager-api-firebase/tsconfig.lib.json --watch",
-    "test-api-firebase": "jest --config projects/ngx-filemanager-api-firebase/jest.config.js",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "test-api-firebase": "jest --config projects/ngx-filemanager-api-firebase/jest.config.js"
   },
   "private": true,
   "dependencies": {

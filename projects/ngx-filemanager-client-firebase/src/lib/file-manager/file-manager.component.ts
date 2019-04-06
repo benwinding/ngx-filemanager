@@ -66,9 +66,9 @@ export class NgxFileManagerComponent implements OnInit {
     if (this.config && this.config.initialPath) {
       this.clientsCache.HandleList(this.config.initialPath);
     }
-    setTimeout(() => {
-      this.onClickUploadFiles();
-    }, 1500);
+    // setTimeout(() => {
+    //   this.onClickUploadFiles();
+    // }, 1500);
   }
 
   makeConfig() {
