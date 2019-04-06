@@ -1,11 +1,9 @@
-import * as functions from 'firebase-functions';
+const express = require('express');
+const app = express();
 import { FileManagerEndpointExpress } from 'ngx-filemanager-api-firebase/public_api';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
-
-exports.api_files = functions.https.onRequest(FileManagerEndpointExpress);
+app.use(FileManagerEndpointExpress);
+const PORT = process.env.PORT || 4444;
+app.listen(PORT, () => {
+  console.log('listening on PORT=' + PORT);
+});
