@@ -24,7 +24,8 @@ export async function GetListFromStorage(
   }
   const result = await bucket.getFiles(options);
   const storageObjects = result[0];
-  return storageObjects.map(o => translateStorageToFileFromStorage(o));
+  const files = storageObjects.map(o => translateStorageToFileFromStorage(o));
+  return files;
 }
 
 export async function GetList(
