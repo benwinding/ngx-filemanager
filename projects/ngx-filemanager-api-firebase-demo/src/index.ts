@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import {FileManagerEndpointExpress} from '../../../dist/ngx-filemanager-api-firebase/main';
+import { FileManagerEndpointExpress } from 'ngx-filemanager-api-firebase/public_api';
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
