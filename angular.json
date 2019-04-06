@@ -80,7 +80,7 @@
           "builder": "@angular-builders/custom-webpack:server",
           "options": {
             "outputPath": "dist/ngx-filemanager-api-firebase-demo",
-            "main": "projects/ngx-filemanager-api-firebase-demo/src",
+            "main": "projects/ngx-filemanager-api-firebase-demo/src/index.ts",
             "tsConfig": "projects/ngx-filemanager-api-firebase-demo/tsconfig.lib.json"
           }
         },
