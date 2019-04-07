@@ -1,16 +1,16 @@
 // Add middle ware to this route
 const express = require('express');
 import * as Express from 'express';
-import * as admin from 'firebase-admin';
 import {
   OptionRequestsAreOk,
   PostRequestsOnly,
   HasBodyProp
 } from './middleware-helpers';
 import { FileManagerAction } from '../methods/core-types';
+import { Storage } from '../methods/google-cloud-types';
 import { NgxFileMangerApiFireBaseClass } from '../methods/firebase-storage-api';
 
-const api = new NgxFileMangerApiFireBaseClass(admin.storage());
+let api: NgxFileMangerApiFireBaseClass;
 
 const endpoint: Express.Application = express();
 endpoint.use(OptionRequestsAreOk);
@@ -81,4 +81,7 @@ async function notImplemented(req, res) {
 Use by attaching to a firebase function
 exports.FileManagerApi = StorageEndpoint;
 */
-export const FileManagerEndpointExpress = endpoint;
+export const FileManagerEndpointExpress = (storage: Storage) => {
+  api =  new NgxFileMangerApiFireBaseClass(storage);
+  return endpoint;
+};

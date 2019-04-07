@@ -18,8 +18,9 @@ import {
   ResBodyCreateFolder,
   ReqBodyAction,
   FileSystemProvider,
-  ResBodySetPermissions
-} from 'ngx-filemanager-core/public_api';
+  ResBodySetPermissions,
+  FileManagerAction
+} from 'ngx-filemanager-core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
@@ -41,7 +42,7 @@ export class FilesSystemProviderService implements FileSystemProvider {
     return response as T;
   }
 
-  private makeBaseRequest(action: string): ReqBodyAction {
+  private makeBaseRequest(action: FileManagerAction): ReqBodyAction {
     return {
       action: action,
       bucketname: this.bucketname

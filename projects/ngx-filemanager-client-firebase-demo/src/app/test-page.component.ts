@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FilesSystemProviderService } from 'ngx-filemanager-client-firebase';
+import { FilesSystemProviderService, FileManagerConfig } from 'ngx-filemanager-client-firebase';
 
 @Component({
   selector: 'app-test-page',
@@ -8,15 +8,18 @@ import { FilesSystemProviderService } from 'ngx-filemanager-client-firebase';
     <!--
   -->
     <div>
-      <ngx-filemanager [fileSystem]="firebaseClientProvider"> </ngx-filemanager>
+      <ngx-filemanager [fileSystem]="firebaseClientProvider" [config]="config"> </ngx-filemanager>
     </div>
   `
 })
 export class AppTestPageComponent {
+  public config: FileManagerConfig = {
+    initialPath: '/'
+  };
   constructor(public firebaseClientProvider: FilesSystemProviderService) {
     this.firebaseClientProvider.Initialize(
-      'cl-building-storage',
-      'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/storage/api'
+      'resvu-integration-tests.appspot.com',
+      'http://localhost:4444/api_files'
     );
   }
 }
