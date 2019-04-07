@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { FilesSystemProviderService, FileManagerConfig } from 'ngx-filemanager-client-firebase';
+import {
+  FilesSystemProviderService,
+  FileManagerConfig
+} from 'ngx-filemanager-client-firebase';
 
 @Component({
   selector: 'app-test-page',
@@ -8,7 +11,8 @@ import { FilesSystemProviderService, FileManagerConfig } from 'ngx-filemanager-c
     <!--
   -->
     <div>
-      <ngx-filemanager [fileSystem]="firebaseClientProvider" [config]="config"> </ngx-filemanager>
+      <ngx-filemanager [fileSystem]="firebaseClientProvider" [config]="config">
+      </ngx-filemanager>
     </div>
   `
 })
