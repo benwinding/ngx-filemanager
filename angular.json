@@ -159,7 +159,12 @@
             "tsConfig": "projects/ngx-filemanager-client-firebase-demo/tsconfig.app.json",
             "assets": [
               "projects/ngx-filemanager-client-firebase-demo/src/favicon.ico",
-              "projects/ngx-filemanager-client-firebase-demo/src/assets"
+              "projects/ngx-filemanager-client-firebase-demo/src/assets",
+              {
+                "glob": "**/*",
+                "input": "./dist/ngx-filemanager-client-firebase/assets",
+                "output": "./assets/fileicons"
+              }
             ],
             "styles": [
               "projects/ngx-filemanager-client-firebase-demo/src/styles.scss"
