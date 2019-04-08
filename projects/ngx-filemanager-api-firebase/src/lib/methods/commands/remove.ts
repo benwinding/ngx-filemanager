@@ -1,6 +1,6 @@
 import { Bucket, File } from '../google-cloud-types';
 import { GetFilesOptions } from '@google-cloud/storage';
-import { EnsureNoPrefixSlash, EnsureTrailingSlash } from '../path-helpers';
+import { EnsureNoPrefixSlash } from '../path-helpers';
 import { ResultObj } from '../core-types';
 
 export async function getAllChildren(
@@ -8,27 +8,38 @@ export async function getAllChildren(
   fileOrDirectoryPath: string
 ): Promise<File[]> {
   const pathNoPrefix = EnsureNoPrefixSlash(fileOrDirectoryPath);
-  const pathParsed = EnsureTrailingSlash(pathNoPrefix);
-  const options: GetFilesOptions = {
-    prefix: pathParsed,
-    includeTrailingDelimiter: true
-  } as any;
+  const options: GetFilesOptions = {};
+  options['includeTrailingDelimiter'] = true;
+  options.prefix = pathNoPrefix;
   const result = await bucket.getFiles(options);
   const files = result[0];
   return files;
 }
 
-export async function deleteAllFiles(bucket: Bucket, files: File[]) {
-  return Promise.all(files.map(c => bucket.file(c.name).delete()));
+export async function RemoveFileWithChildren(bucket: Bucket, item: string) {
+  const itemPath = EnsureNoPrefixSlash(item);
+  let parent;
+  try {
+    parent = bucket.file(itemPath);
+  } catch (e) {
+    console.log('error getting file: ', e.message);
+    return;
+  }
+  const children = await getAllChildren(bucket, itemPath);
+  const allFiles = [...children, parent];
+  return Promise.all(
+    allFiles.map(f => {
+      try {
+        f.delete();
+      } catch (e) {
+        console.log('error deleting file: ', e.message);
+      }
+    })
+  );
 }
 
 export async function RemoveFiles(bucket: Bucket, items: string[]) {
-  const fileCollectionsToRemove = await Promise.all(
-    items.map(itemPath => getAllChildren(bucket, itemPath))
-  );
-  await Promise.all(
-    fileCollectionsToRemove.map(files => deleteAllFiles(bucket, files))
-  );
+  await Promise.all(items.map(files => RemoveFileWithChildren(bucket, files)));
   const results: ResultObj = {
     success: true
   };
