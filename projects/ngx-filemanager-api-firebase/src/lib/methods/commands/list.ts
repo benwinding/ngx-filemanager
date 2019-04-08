@@ -25,7 +25,7 @@ export async function GetListFromStorage(
   const result = await bucket.getFiles(options);
   const storageObjects = result[0];
   const files = storageObjects.map(o => translateStorageToFileFromStorage(o));
-  console.log('file paths: ' + JSON.stringify(files.map(f => f.fullPath), null, 2));
+  // console.log('file paths: ' + JSON.stringify(files.map(f => f.fullPath), null, 2));
   const filesWithoutCurrentDirectory = files.filter(f => f.fullPath !== pathParsed);
   return filesWithoutCurrentDirectory;
 }
