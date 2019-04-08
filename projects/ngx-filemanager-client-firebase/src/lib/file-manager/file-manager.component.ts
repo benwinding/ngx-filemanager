@@ -69,9 +69,6 @@ export class NgxFileManagerComponent implements OnInit {
     if (this.config && this.config.initialPath) {
       this.clientsCache.HandleList(this.config.initialPath);
     }
-    // setTimeout(() => {
-    //   this.onClickUploadFiles();
-    // }, 1500);
   }
 
   makeConfig() {
@@ -199,7 +196,13 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   public async onClickDownload(file: ResFile) {
-    console.log('file-manager: downloading file', { row: file });
+    const url = await this.fileSystem.CreateDownloadLink(file);
+    console.log('file-manager: downloading file', { file, url });
+    const link = document.createElement('a');
+    link.download = file.name;
+    link.target = '_blank';
+    link.href = url;
+    link.click();
   }
 
   private async onDelete(files: ResFile[]) {
@@ -250,16 +253,19 @@ export class NgxFileManagerComponent implements OnInit {
     console.log('file-manager: onClickCancelBulk');
     this.clearBulkSelected();
   }
+
   public async onClickedBulkCopy() {
     console.log('file-manager: clickedBulkCopy');
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
     await this.onCopyMultiple(selected);
     this.clearBulkSelected();
   }
+
   public async onClickedBulkMove() {
     console.log('file-manager: clickedBulkMove');
     this.clearBulkSelected();
   }
+
   public async onClickedBulkPermissions() {
     console.log('file-manager: clickedBulkPermissions');
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();

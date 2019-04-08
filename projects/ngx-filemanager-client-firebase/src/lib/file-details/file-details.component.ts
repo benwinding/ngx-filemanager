@@ -57,8 +57,8 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         <h6 class="capitalize">{{ getFileType(file.name) }}</h6>
         <div *ngIf="isImage">
           <h5>Preview</h5>
-          <a [href]="getImageUrl()" target="_blank">
-            <img [src]="getImageUrl()" />
+          <a [href]="imageUrl" target="_blank">
+            <img [src]="imageUrl" />
           </a>
         </div>
         <button
@@ -109,14 +109,26 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         text-transform: capitalize;
       }
       img {
-        width: 100%;
+        max-width: 100%;
+        max-height: 400px;
       }
     `
   ]
 })
 export class FileDetailsComponent {
+  imageUrl: string;
+
+  _file: ResFile;
   @Input()
-  file: ResFile;
+  set file(newFile) {
+    this._file = newFile;
+    this.setImageUrl();
+  }
+  get file() {
+    return this._file;
+  }
+  @Input()
+  fileSystem: FileSystemProvider;
   @Output()
   clickedDownload = new EventEmitter<ResFile>();
   @Output()
@@ -136,8 +148,12 @@ export class FileDetailsComponent {
     return guesser.getFileIconName(this.file.name) === 'image';
   }
 
-  getImageUrl() {
-    return 'https://upload.wikimedia.org/wikipedia/commons/8/85/Exponential_Function_%28Abs_Imag_Part_at_Infinity%29_Density.png';
-    // return this.file.fullPath;
+  setImageUrl() {
+    setTimeout(async () => {
+      if (!this.file) {
+        return;
+      }
+      this.imageUrl = await this.fileSystem.CreateDownloadLink(this.file);
+    }, 300);
   }
 }

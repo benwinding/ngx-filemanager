@@ -9,7 +9,8 @@ import {
   RemoveFiles,
   GetFileContent,
   CreateFolder,
-  UploadFile
+  UploadFile,
+  GetFileMeta
 } from './commands';
 
 export class NgxFileMangerApiFireBaseClass {
@@ -98,6 +99,19 @@ export class NgxFileMangerApiFireBaseClass {
     const result = await GetFileContent(bucket, body.item);
     const response: api.ResBodyGetContent = {
       result: result
+    };
+    return response;
+  }
+
+  async HandleGetMeta(
+    body: api.ReqBodyGetMeta
+  ): Promise<api.ResBodyGetMeta> {
+    const bucket = await this.getBucket(body.bucketname);
+    const result = await GetFileMeta(bucket, body.item);
+    const response: api.ResBodyGetMeta = {
+      result: {
+        url: result
+      }
     };
     return response;
   }

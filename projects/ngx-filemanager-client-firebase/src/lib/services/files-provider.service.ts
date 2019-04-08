@@ -19,7 +19,10 @@ import {
   ReqBodyAction,
   FileSystemProvider,
   ResBodySetPermissions,
-  FileManagerAction
+  FileManagerAction,
+  ResFile,
+  ReqBodyGetMeta,
+  ResBodyGetMeta
 } from 'ngx-filemanager-core';
 import { HttpClient } from '@angular/common/http';
 
@@ -155,5 +158,19 @@ export class FilesSystemProviderService implements FileSystemProvider {
       '&directoryPath=' +
       currentPath;
     return uploadApiEndpoint;
+  }
+
+  async CreateDownloadLink(file: ResFile): Promise<string> {
+    // const bucketname = this.bucketname;
+    // const objectName = file.fullPath;
+    // const publicUrl = `https://${bucketname}.storage.googleapis.com/${objectName}`;
+    // return publicUrl;
+    const req: ReqBodyGetMeta = {
+      ...this.makeBaseRequest('getMeta'),
+      item: file.fullPath
+    };
+    const response = await this.fetchPostAuth(this.apiEndpoint, req) as ResBodyGetMeta;
+    const url = response.result.url;
+    return url;
   }
 }

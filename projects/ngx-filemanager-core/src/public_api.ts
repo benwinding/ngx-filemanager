@@ -15,6 +15,7 @@ export type FileManagerAction =
   | 'remove'
   | 'edit'
   | 'getContent'
+  | 'getMeta'
   | 'createFolder'
   | 'changePermissions'
   | 'compress'
@@ -132,6 +133,18 @@ export interface ResBodySetPermissions extends ResBodySuccess {}
 
 export interface ResBodyUploadFile extends ResBodySuccess {}
 
+// UPLOAD FILE
+
+export interface ReqBodyGetMeta extends ReqBodyAction {
+  item: string;
+}
+
+export interface ResBodyGetMeta {
+  result: {
+    url: string;
+  };
+}
+
 // CLIENT
 
 export interface FileSystemProvider {
@@ -165,4 +178,5 @@ export interface FileSystemProvider {
   ): Promise<ResBodySetPermissions>;
   Remove(items: string[]): Promise<ResBodyRemove>;
   GetUploadApiUrl(currentPath: string): string;
+  CreateDownloadLink(file: ResFile): Promise<string>;
 }

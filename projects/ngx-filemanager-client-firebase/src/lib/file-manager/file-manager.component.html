@@ -54,6 +54,7 @@
     >
       <ngx-filemanager-file-details
         [file]="$SelectedFile | async"
+        [fileSystem]="fileSystem"
         (clickedDelete)="onClickDelete($event)"
         (clickedDownload)="onClickDownload($event)"
       >

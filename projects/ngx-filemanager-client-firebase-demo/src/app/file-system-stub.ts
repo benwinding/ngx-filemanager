@@ -167,4 +167,8 @@ export class FileSystemStub implements FileSystemProvider {
   GetUploadApiUrl(currentPath: string): string {
     return 'https://httpbin.org/post';
   }
+
+  async CreateDownloadLink(file: ResFile): Promise<string> {
+    return 'https://upload.wikimedia.org/wikipedia/commons/8/85/Exponential_Function_%28Abs_Imag_Part_at_Infinity%29_Density.png';
+  }
 }

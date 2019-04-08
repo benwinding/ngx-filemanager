@@ -7,6 +7,7 @@ export * from './edit';
 export * from './getContent';
 export * from './createFolder';
 export * from './uploadFile';
+export * from './getMeta';
 // export * from './changePermissions';
 // export * from './compress';
 // export * from './extract';

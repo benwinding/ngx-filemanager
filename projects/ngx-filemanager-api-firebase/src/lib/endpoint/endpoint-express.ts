@@ -93,6 +93,9 @@ endpoint.use(
         case 'createFolder':
           body = await api.HandleCreateFolder(req.body);
           break;
+        case 'getMeta':
+          body = await api.HandleGetMeta(req.body);
+          break;
         case 'changePermissions':
         case 'compress':
         case 'extract':
