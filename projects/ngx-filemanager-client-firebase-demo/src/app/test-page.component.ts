@@ -8,8 +8,6 @@ import {
   selector: 'app-test-page',
   template: `
     <h2>File Explorer</h2>
-    <!--
-  -->
     <div>
       <ngx-filemanager [fileSystem]="firebaseClientProvider" [config]="config">
       </ngx-filemanager>

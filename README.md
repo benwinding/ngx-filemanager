@@ -1,27 +1,120 @@
 # NgxFilemanager
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.6.
+A filemanager for Angular (ngx).
 
-## Development server
+## Features
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Using Angular Material Design
+- Optimistic actions, (actions shown on client then confirmed on server)
+- File type icons
+- Actions
 
-## Code scaffolding
+  - Files / Folders
+    - Download
+    - Rename
+    - Delete
+    - Copy
+    - Move
+    - Set permissions
+  - Bulk Actions
+    - Delete
+    - Rename
+    - Move
+    - Copy
+    - Set permissions
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Side Panel Previewer
+  - Image Preview
+  - Name
+  - File size
+  - Last modified
+  - Permissions
 
-## Build
+## Supported Backends
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+- [x] Google Cloud Storage (firebase storage)
+- [ ] FTP
 
-## Running unit tests
+## Firebase - Get Started
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+This package has been designed to be easy to install on an Angular app.
 
-## Running end-to-end tests
+1. In your `functions` file for Firebase, navigate to the folder and install the 'filemanager' backend npm package.
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+`yarn add ngx-filemanager-api-firebase`
 
-## Further help
+2. Then add the dependency to the cloud functions as an endpoint like so:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+``` typescript
+import { FileManagerEndpointExpress } from '../../ngx-filemanager-api-firebase/src/public_api';
+exports.files_endpoint = functions.https.onRequest(FileManagerEndpointExpress(admin.storage()))
+```
+
+Now add the client-side npm package to the Angular App.
+
+`yarn add ngx-filemanager-client-firebase`
+
+Then import the module into your `app.module.ts`.
+
+``` typescript
+import { NgxFilemanagerClientFirebaseModule } from 'ngx-filemanager-client-firebase';
+
+imports: [
+  ...,
+  NgxFilemanagerClientFirebaseModule
+]
+```
+
+Then add the icon assets to the `angular.json` file:
+
+``` json
+"ngx-filemanager-client-firebase-demo": {
+  ...,
+  "architect": {
+    "build": {
+      ...,
+      "options": {
+        ...,
+        "assets": [
+          ...,
+          {
+            "glob": "**/*",
+            "input": "node_modules/ngx-filemanager-client-firebase/assets",
+            "output": "./assets/fileicons"
+          }
+```
+
+Finally add the filemanager component where you want, with the correct configuration details to read your cloud function and the bucket name you want.
+
+``` javascript
+import { Component } from '@angular/core';
+import {
+  FilesSystemProviderService,
+  FileManagerConfig
+} from 'ngx-filemanager-client-firebase';
+
+@Component({
+  selector: 'app-test-page',
+  template: `
+    <h2>File Explorer</h2>
+    <div>
+      <ngx-filemanager [fileSystem]="firebaseClientProvider" [config]="config">
+      </ngx-filemanager>
+    </div>
+  `
+})
+export class AppTestPageComponent {
+  public config: FileManagerConfig = {
+    initialPath: '/'
+  };
+  constructor(
+    public firebaseClientProvider: FilesSystemProviderService
+  ) {
+    const bucketName = 'myspecial-bucket.appspot.com';
+    const apiEndpoint = 'http://myfirebase.cloudfunction.com/files_endpoint';
+    this.firebaseClientProvider.Initialize(bucketName, apiEndpoint);
+  }
+}
+```
+
+Enjoy! Please file an issue if there's any problems.
