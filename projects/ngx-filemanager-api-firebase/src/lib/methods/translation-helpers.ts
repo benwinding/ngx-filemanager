@@ -26,7 +26,7 @@ export async function translateStorageDirToResFile(
     name: f.name,
     rights: 'rxrxrx',
     fullPath: f.fullPath,
-    size: meta.size,
+    size: '0',
     date: meta.updated,
     type: 'dir'
   };
@@ -41,7 +41,7 @@ export async function translateStorageFileToResFile(
     name: f.name,
     rights: 'rxrxrx',
     fullPath: f.fullPath,
-    size: '0',
+    size: meta.size,
     date: meta.updated,
     type: 'file'
   };
