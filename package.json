@@ -12,7 +12,7 @@
     "api-firebase-build": "ng build --project=ngx-filemanager-api-firebase",
     "api-firebase-watch": "ng build --project=ngx-filemanager-api-firebase --watch",
     "api-firebase-test": "jest --config projects/ngx-filemanager-api-firebase/jest.config.js",
-    "api-firebase-demo-debug": "npm run api-firebase-demo-build && node ./dist/ngx-filemanager-api-firebase-demo",
+    "api-firebase-demo-debug": "npm run api-firebase-demo-build && node  --trace-warnings ./dist/ngx-filemanager-api-firebase-demo/main.js",
     "api-firebase-demo-build": "ng build --project=ngx-filemanager-api-firebase-demo"
   },
   "private": true,
