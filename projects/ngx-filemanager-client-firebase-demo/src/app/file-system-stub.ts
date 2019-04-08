@@ -163,4 +163,8 @@ export class FileSystemStub implements FileSystemProvider {
     this.files = itemsNotDeleted;
     return null;
   }
+
+  GetUploadApiUrl(currentPath: string): string {
+    return 'https://httpbin.org/post';
+  }
 }

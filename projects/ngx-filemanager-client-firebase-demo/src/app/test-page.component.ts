@@ -20,10 +20,11 @@ export class AppTestPageComponent {
   public config: FileManagerConfig = {
     initialPath: '/'
   };
-  constructor(public firebaseClientProvider: FilesSystemProviderService) {
-    this.firebaseClientProvider.Initialize(
-      'resvu-integration-tests.appspot.com',
-      'http://localhost:4444/api_files'
-    );
+  constructor(
+    public firebaseClientProvider: FilesSystemProviderService
+  ) {
+    const bucketName = 'resvu-integration-tests.appspot.com';
+    const apiEndpoint = 'http://localhost:4444/api_files';
+    this.firebaseClientProvider.Initialize(bucketName, apiEndpoint);
   }
 }

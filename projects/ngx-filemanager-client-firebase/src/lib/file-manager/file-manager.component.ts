@@ -15,7 +15,10 @@ import {
   CopyDialogInterface
 } from '../dialogs/dialog-copy.component';
 import { Subject, BehaviorSubject } from 'rxjs';
-import { AppDialogUploadFilesComponent } from '../dialogs/dialog-upload.component';
+import {
+  AppDialogUploadFilesComponent,
+  UploadDialogInterface
+} from '../dialogs/dialog-upload.component';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -231,7 +234,11 @@ export class NgxFileManagerComponent implements OnInit {
   public async onClickUploadFiles() {
     console.log('file-manager: onClickUpload');
     const currentPath = await this.getCurrentPath();
-    const res = await this.openDialog(AppDialogUploadFilesComponent, currentPath);
+    const data: UploadDialogInterface = {
+      currentPath: currentPath,
+      uploadApiUrl: this.fileSystem.GetUploadApiUrl(currentPath)
+    };
+    const res = await this.openDialog(AppDialogUploadFilesComponent, data);
     this.refreshExplorer();
   }
 

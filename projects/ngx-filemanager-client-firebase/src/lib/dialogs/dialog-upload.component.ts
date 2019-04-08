@@ -4,6 +4,7 @@ import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 
 export interface UploadDialogInterface {
   currentPath: string;
+  uploadApiUrl: string;
 }
 
 @Component({
@@ -46,8 +47,10 @@ export interface UploadDialogInterface {
 })
 export class AppDialogUploadFilesComponent {
   currentDirectory = '';
+
   dropzoneConfig: DropzoneConfigInterface = {
-    url: 'http://localhost:4444/api_files/upload?bucketname=resvu-integration-tests.appspot.com&directoryPath=/',
+    url:
+      'http://localhost:4444/api_files/upload?bucketname=resvu-integration-tests.appspot.com&directoryPath=/',
     maxFilesize: 50,
     acceptedFiles: 'image/*',
     uploadMultiple: false
@@ -63,6 +66,7 @@ export class AppDialogUploadFilesComponent {
     @Inject(MAT_DIALOG_DATA) public data: UploadDialogInterface
   ) {
     this.currentDirectory = data.currentPath;
+    this.dropzoneConfig.url = data.uploadApiUrl;
   }
 
   onSubmit() {

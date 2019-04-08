@@ -26,8 +26,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class FilesSystemProviderService implements FileSystemProvider {
   private bucketname: string;
-  private apiEndpoint =
-    'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/storage/api';
+  private apiEndpoint: string;
 
   constructor(private http: HttpClient) {}
 
@@ -145,5 +144,16 @@ export class FilesSystemProviderService implements FileSystemProvider {
       items: items
     };
     return this.fetchPostAuth(this.apiEndpoint, req);
+  }
+
+  GetUploadApiUrl(currentPath: string): string {
+    const uploadApiEndpoint =
+      this.apiEndpoint +
+      '/upload?' +
+      'bucketname=' +
+      this.bucketname +
+      '&directoryPath=' +
+      currentPath;
+    return uploadApiEndpoint;
   }
 }

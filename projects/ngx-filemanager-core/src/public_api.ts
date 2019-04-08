@@ -164,4 +164,5 @@ export interface FileSystemProvider {
     recursive?: boolean
   ): Promise<ResBodySetPermissions>;
   Remove(items: string[]): Promise<ResBodyRemove>;
+  GetUploadApiUrl(currentPath: string): string;
 }
