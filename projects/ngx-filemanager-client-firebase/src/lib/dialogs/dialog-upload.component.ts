@@ -47,9 +47,10 @@ export interface UploadDialogInterface {
 export class AppDialogUploadFilesComponent {
   currentDirectory = '';
   dropzoneConfig: DropzoneConfigInterface = {
-    url: 'https://httpbin.org/post',
+    url: 'http://localhost:4444/api_files/upload?bucketname=resvu-integration-tests.appspot.com&directoryPath=/',
     maxFilesize: 50,
-    acceptedFiles: 'image/*'
+    acceptedFiles: 'image/*',
+    uploadMultiple: false
   };
 
   uploadQueue: {} = {};

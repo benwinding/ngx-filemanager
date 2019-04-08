@@ -15,7 +15,7 @@ let api: NgxFileMangerApiFireBaseClass;
 const endpoint = express();
 endpoint.use(OptionRequestsAreOk);
 
-endpoint.get('/hello', async (req, res) => {
+endpoint.use('/hello', async (req, res) => {
   console.log('HELLO');
   res.status(200).send('HELLO');
 });
@@ -28,38 +28,21 @@ const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage });
 endpoint.post(
   '/upload',
-  upload.array('files', 12),
+  upload.single('file'),
   HasQueryParam('bucketname'),
   HasQueryParam('directoryPath'),
   async (req, res, next) => {
-    // req.files is array of `photos` files
-    // req.body will contain the text fields, if there were any
     const bucketname: string = req.query.bucketname;
     const directoryPath: string = req.query.directoryPath;
-    if (!Array.isArray(req.files)) {
-      res
-        .status(400)
-        .send('The uploaded file form fields were not in an array');
-      return;
-    }
-    const files = req.files as Express.Multer.File[];
-    let allResults: ApiTypes.ResBodyUploadFile[];
+    const file = req.file as Express.Multer.File;
     try {
-      allResults = await Promise.all(
-        files.map(f => trySaveFile(bucketname, directoryPath, f))
-      );
+      const response = await trySaveFile(bucketname, directoryPath, file);
+      res.status(200).send(response);
     } catch (error) {
       console.log('Error occurred while uploading: ', { error });
       res.status(400).send('Error while uploading: ' + error.message);
       return;
     }
-    const response = allResults.reduce((acc, curr) => {
-      if (!curr.result.success) {
-        acc = curr;
-      }
-      return acc;
-    }, allResults.pop());
-    res.status(200).send(response);
   }
 );
 

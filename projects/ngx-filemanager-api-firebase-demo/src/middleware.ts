@@ -15,8 +15,13 @@ export async function AddCors(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
-export async function LogBody(req: Request, res: Response, next: NextFunction) {
+export async function LogRequest(req: Request, res: Response, next: NextFunction) {
   const body = req.body;
-  console.log('body: ' + JSON.stringify(body, null, 4));
+  const msg = `
+---- request: ${req.url}
+query: ${JSON.stringify(req.query, null, 4)}
+ body: ${JSON.stringify(body, null, 4)}
+----`;
+  console.log(msg);
   next();
 }

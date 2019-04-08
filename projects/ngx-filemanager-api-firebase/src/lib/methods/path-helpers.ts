@@ -1,9 +1,15 @@
 export function HasPrefixSlash(inputPath: string): boolean {
+  if (!inputPath || !inputPath.length) {
+    return false;
+  }
   const hasPrefix = inputPath.slice(0) === '/';
   return hasPrefix;
 }
 
 export function HasTrailingSlash(inputPath: string): boolean {
+  if (!inputPath || !inputPath.length) {
+    return false;
+  }
   const hasTrailing = inputPath.slice(-1) === '/';
   return hasTrailing;
 }
