@@ -18,7 +18,7 @@ admin.initializeApp({
   storageBucket: testbucketname
 });
 
-import { FileManagerEndpointExpress } from 'ngx-filemanager-api-firebase';
+import { FileManagerEndpointExpress } from 'ngx-filemanager-api-firebase/public_api';
 app.use(FileManagerEndpointExpress(admin.storage()));
 
 const PORT = process.env.PORT || 4444;
