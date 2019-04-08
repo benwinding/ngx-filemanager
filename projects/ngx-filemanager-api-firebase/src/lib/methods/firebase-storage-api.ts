@@ -1,5 +1,5 @@
 import { api } from './core-types';
-import { Storage } from './google-cloud-types';
+import { Storage, Bucket } from './google-cloud-types';
 import {
   EditFile,
   GetList,
@@ -15,8 +15,20 @@ import {
 export class NgxFileMangerApiFireBaseClass {
   constructor(private storage: Storage) {}
 
+  private async getBucket(bucketname: string): Promise<Bucket> {
+    if (!bucketname) {
+      throw new Error('No bucketname provided');
+    }
+    const bucket = this.storage.bucket(bucketname);
+    const exists = (await bucket.exists()).shift();
+    if (!exists) {
+      throw new Error('The bucket: ' + bucketname + ' does not exist');
+    }
+    return bucket;
+  }
+
   async HandleList(body: api.ReqBodyList): Promise<api.ResBodyList> {
-    const bucket = this.storage.bucket(body.bucketname);
+    const bucket = await this.getBucket(body.bucketname);
     const resFiles = await GetList(bucket, body.path);
     const response: api.ResBodyList = {
       result: resFiles
@@ -25,7 +37,7 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleRename(body: api.ReqBodyRename): Promise<api.ResBodyRename> {
-    const bucket = this.storage.bucket(body.bucketname);
+    const bucket = await this.getBucket(body.bucketname);
     const result = await RenameFile(bucket, body.item, body.newItemPath);
     const response: api.ResBodyRename = {
       result: result
@@ -34,7 +46,7 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleMove(body: api.ReqBodyMove): Promise<api.ResBodyMove> {
-    const bucket = this.storage.bucket(body.bucketname);
+    const bucket = await this.getBucket(body.bucketname);
     const result = await MoveFiles(bucket, body.items, body.newPath);
     const response: api.ResBodyMove = {
       result: result
@@ -43,7 +55,7 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleCopy(body: api.ReqBodyCopy): Promise<api.ResBodyCopy> {
-    const bucket = this.storage.bucket(body.bucketname);
+    const bucket = await this.getBucket(body.bucketname);
     let filesToCopy;
     if (body.items) {
       filesToCopy = body.items;
@@ -62,7 +74,7 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleRemove(body: api.ReqBodyRemove): Promise<api.ResBodyRemove> {
-    const bucket = this.storage.bucket(body.bucketname);
+    const bucket = await this.getBucket(body.bucketname);
     const result = await RemoveFiles(bucket, body.items);
     const response: api.ResBodyRemove = {
       result: result
@@ -71,7 +83,7 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleEdit(body: api.ReqBodyEdit): Promise<api.ResBodyEdit> {
-    const bucket = this.storage.bucket(body.bucketname);
+    const bucket = await this.getBucket(body.bucketname);
     const result = await EditFile(bucket, body.item, body.content);
     const response: api.ResBodyEdit = {
       result: result
@@ -82,7 +94,7 @@ export class NgxFileMangerApiFireBaseClass {
   async HandleGetContent(
     body: api.ReqBodyGetContent
   ): Promise<api.ResBodyGetContent> {
-    const bucket = this.storage.bucket(body.bucketname);
+    const bucket = await this.getBucket(body.bucketname);
     const result = await GetFileContent(bucket, body.item);
     const response: api.ResBodyGetContent = {
       result: result
@@ -93,7 +105,7 @@ export class NgxFileMangerApiFireBaseClass {
   async HandleCreateFolder(
     body: api.ReqBodyCreateFolder
   ): Promise<api.ResBodyCreateFolder> {
-    const bucket = this.storage.bucket(body.bucketname);
+    const bucket = await this.getBucket(body.bucketname);
     const result = await CreateFolder(bucket, body.newPath);
     const response: api.ResBodyCreateFolder = {
       result: result
@@ -108,7 +120,7 @@ export class NgxFileMangerApiFireBaseClass {
     mimetype: string,
     buffer: Buffer
   ): Promise<api.ResBodyUploadFile> {
-    const bucket = this.storage.bucket(bucketname);
+    const bucket = await this.getBucket(bucketname);
     await UploadFile(bucket, directoryPath, originalname, mimetype, buffer);
     const result = {
       result: {

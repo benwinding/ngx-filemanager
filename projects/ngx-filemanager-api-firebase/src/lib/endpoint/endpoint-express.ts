@@ -1,19 +1,18 @@
 // Add middle ware to this route
 const express = require('express');
-import * as Express from 'express';
 import {
   OptionRequestsAreOk,
   PostRequestsOnly,
   HasBodyProp,
   HasQueryParam
 } from './middleware-helpers';
-import { FileManagerAction } from '../methods/core-types';
+import { FileManagerAction, api as ApiTypes } from '../methods/core-types';
 import { Storage } from '../methods/google-cloud-types';
 import { NgxFileMangerApiFireBaseClass } from '../methods/firebase-storage-api';
 
 let api: NgxFileMangerApiFireBaseClass;
 
-const endpoint: Express.Application = express();
+const endpoint = express();
 endpoint.use(OptionRequestsAreOk);
 
 endpoint.get('/hello', async (req, res) => {
@@ -32,25 +31,51 @@ endpoint.post(
   upload.array('files', 12),
   HasQueryParam('bucketname'),
   HasQueryParam('directoryPath'),
-  (req, res, next) => {
+  async (req, res, next) => {
     // req.files is array of `photos` files
     // req.body will contain the text fields, if there were any
-    const files = req.files;
-    if (Array.isArray(files)) {
-      files.map(f => {
-        const bucketname: string = req.params.bucketname;
-        const directoryPath: string = req.params.directoryPath;
-        api.HandleSaveFile(
-          bucketname,
-          directoryPath,
-          f.originalname,
-          f.mimetype,
-          f.buffer
-        );
-      });
+    const bucketname: string = req.query.bucketname;
+    const directoryPath: string = req.query.directoryPath;
+    if (!Array.isArray(req.files)) {
+      res
+        .status(400)
+        .send('The uploaded file form fields were not in an array');
+      return;
     }
+    const files = req.files as Express.Multer.File[];
+    let allResults: ApiTypes.ResBodyUploadFile[];
+    try {
+      allResults = await Promise.all(
+        files.map(f => trySaveFile(bucketname, directoryPath, f))
+      );
+    } catch (error) {
+      console.log('Error occurred while uploading: ', { error });
+      res.status(400).send('Error while uploading: ' + error.message);
+      return;
+    }
+    const response = allResults.reduce((acc, curr) => {
+      if (!curr.result.success) {
+        acc = curr;
+      }
+      return acc;
+    }, allResults.pop());
+    res.status(200).send(response);
   }
 );
+
+async function trySaveFile(
+  bucketname: string,
+  directoryPath: string,
+  f: Express.Multer.File
+) {
+  return api.HandleSaveFile(
+    bucketname,
+    directoryPath,
+    f.originalname,
+    f.mimetype,
+    f.buffer
+  );
+}
 
 endpoint.use(
   '/',
