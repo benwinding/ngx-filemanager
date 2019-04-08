@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import { logObj } from '../../utils/logger';
-import { RemoveFileWithChildren } from './remove';
+import { RemoveFileWithChildren, RemoveFiles } from './remove';
 
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../../serviceAccountKey.json');
@@ -14,9 +14,16 @@ admin.initializeApp({
 const testStorage = admin.storage();
 const testBucket = testStorage.bucket(testbucketname);
 
-test('get directory and all children /', async () => {
-  const result = await RemoveFileWithChildren(testBucket, '/test-222/');
+test('remove item that dont exist', async () => {
+  const result = await RemoveFileWithChildren(testBucket, '/cacsascas/');
   // files.map(f => (f.ref = null));
   logObj(result);
-  expect(result.length).toBe(1);
+  expect(result).toBe(false);
 });
+
+// test('get directory and all children /', async () => {
+//   const result = await RemoveFileWithChildren(testBucket, '/test-222/');
+//   // files.map(f => (f.ref = null));
+//   logObj(result);
+//   expect(result.length).toBe(1);
+// });

@@ -16,32 +16,30 @@ export async function getAllChildren(
   return files;
 }
 
-export async function RemoveFileWithChildren(bucket: Bucket, item: string) {
-  const itemPath = EnsureNoPrefixSlash(item);
-  let parent;
-  try {
-    parent = bucket.file(itemPath);
-  } catch (e) {
-    console.log('error getting file: ', e.message);
-    return;
+export async function tryDeleteFile(file: File): Promise<boolean> {
+  const exists = (await file.exists()).shift();
+  if (exists) {
+    await file.delete();
+    return true;
   }
+  return false;
+}
+
+export async function RemoveFileWithChildren(bucket: Bucket, item: string): Promise<boolean> {
+  const itemPath = EnsureNoPrefixSlash(item);
+  const parent = bucket.file(itemPath);
   const children = await getAllChildren(bucket, itemPath);
   const allFiles = [...children, parent];
-  return Promise.all(
-    allFiles.map(f => {
-      try {
-        f.delete();
-      } catch (e) {
-        console.log('error deleting file: ', e.message);
-      }
-    })
-  );
+  const successArray = await Promise.all(allFiles.map(f => tryDeleteFile(f)));
+  const allSuccesses = successArray.reduce((acc, cur) => acc = acc && cur, true);
+  return allSuccesses;
 }
 
 export async function RemoveFiles(bucket: Bucket, items: string[]) {
-  await Promise.all(items.map(files => RemoveFileWithChildren(bucket, files)));
+  const successArray = await Promise.all(items.map(files => RemoveFileWithChildren(bucket, files)));
+  const allSuccesses = successArray.reduce((acc, cur) => acc = acc && cur, true);
   const results: ResultObj = {
-    success: true
+    success: allSuccesses
   };
   return results;
 }
