@@ -1,17 +1,22 @@
+export function HasPrefixSlash(inputPath: string): boolean {
+  const hasPrefix = inputPath.slice(0) === '/';
+  return hasPrefix;
+}
+
 export function HasTrailingSlash(inputPath: string): boolean {
   const hasTrailing = inputPath.slice(-1) === '/';
   return hasTrailing;
 }
 
 export function EnsureTrailingSlash(inputPath: string): string {
-  const hasTrailing = inputPath.slice(-1) === '/';
+  const hasTrailing = HasTrailingSlash(inputPath);
   const pathParsed = hasTrailing ? inputPath : inputPath + '/';
   return pathParsed;
 }
 
 export function EnsureNoPrefixSlash(inputPath: string): string {
-  const hasPrefix = inputPath.slice(0) === '/';
-  const pathParsed = hasPrefix ? inputPath : inputPath.slice(1);
+  const hasPrefix = HasPrefixSlash(inputPath);
+  const pathParsed = hasPrefix ? inputPath.slice(1) : inputPath;
   return pathParsed;
 }
 
