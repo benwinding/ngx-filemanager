@@ -8,7 +8,8 @@ import {
   CopyFiles,
   RemoveFiles,
   GetFileContent,
-  CreateFolder
+  CreateFolder,
+  UploadFile
 } from './commands';
 
 export class NgxFileMangerApiFireBaseClass {
@@ -98,5 +99,22 @@ export class NgxFileMangerApiFireBaseClass {
       result: result
     };
     return response;
+  }
+
+  async HandleSaveFile(
+    bucketname: string,
+    directoryPath: string,
+    originalname: string,
+    mimetype: string,
+    buffer: Buffer
+  ): Promise<api.ResBodyUploadFile> {
+    const bucket = this.storage.bucket(bucketname);
+    await UploadFile(bucket, directoryPath, originalname, mimetype, buffer);
+    const result = {
+      result: {
+        success: true
+      }
+    };
+    return result;
   }
 }

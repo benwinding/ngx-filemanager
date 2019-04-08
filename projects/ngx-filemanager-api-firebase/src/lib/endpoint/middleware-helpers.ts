@@ -38,3 +38,15 @@ export function HasBodyProp(bodyFieldName: string): RequestHandler {
     next();
   };
 }
+
+export function HasQueryParam(paramName: string): RequestHandler {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.query[paramName]) {
+      const msg = 'Request is missing property in req.params: ' + paramName;
+      console.warn(msg);
+      res.status(400).send(msg);
+      return;
+    }
+    next();
+  };
+}

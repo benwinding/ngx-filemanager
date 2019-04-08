@@ -79,6 +79,10 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:server",
           "options": {
+            "customWebpackConfig": {
+              "path": "projects/ngx-filemanager-api-firebase-demo/webpack.config.js",
+              "mergeStrategies": { "externals": "replace" }
+            },
             "outputPath": "dist/ngx-filemanager-api-firebase-demo",
             "main": "projects/ngx-filemanager-api-firebase-demo/src/index.ts",
             "tsConfig": "projects/ngx-filemanager-api-firebase-demo/tsconfig.lib.json"
