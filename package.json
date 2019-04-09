@@ -32,7 +32,6 @@
     "@angular/router": "~7.0.0",
     "@ctrl/ngx-csv": "^1.1.6",
     "@firebase/storage": "^0.2.12",
-    "angular-file-uploader": "^5.0.2",
     "circular-json": "^0.5.9",
     "core-js": "^2.5.4",
     "cors": "^2.8.5",

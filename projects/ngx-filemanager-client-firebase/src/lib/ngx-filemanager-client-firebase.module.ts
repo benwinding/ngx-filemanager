@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule } from '@angular/platform-browser';
 import { AutoTableModule } from 'ngx-auto-table';
 import {
   MatAutocompleteModule,
@@ -40,7 +39,6 @@ import { AppBreadCrumbsComponent } from './bread-crumbs/bread-crumbs.component';
 import { AppBulkActionsComponent } from './actions-toolbars/bulk-actions.component';
 import { AppFolderActionsComponent } from './actions-toolbars/folder-actions.component';
 import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component';
-import { AngularFileUploaderModule } from 'angular-file-uploader';
 import { AppBtnsCancelOkComponent } from './dialogs/btns-cancel-ok.component';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
@@ -71,10 +69,8 @@ const dialogComponents = [
     HttpClientModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    BrowserModule,
     AutoTableModule,
     DropzoneModule,
-    AngularFileUploaderModule,
 
     MatAutocompleteModule,
     MatButtonModule,
