@@ -47,6 +47,8 @@ export class AppBulkActionsComponent implements OnInit {
   clickedBulkMove = new EventEmitter<void>();
   @Output()
   clickedBulkPermissions = new EventEmitter<void>();
+  @Output()
+  clickedBulkDelete = new EventEmitter<void>();
 
   ngOnInit() {
     this.bulkActions = [
@@ -79,6 +81,14 @@ export class AppBulkActionsComponent implements OnInit {
         icon: 'lock_outline',
         onClick: (item: ActionButton) => {
           this.clickedBulkPermissions.emit();
+        },
+        color: 'secondary'
+      },
+      {
+        label: 'Delete',
+        icon: 'delete',
+        onClick: (item: ActionButton) => {
+          this.clickedBulkDelete.emit();
         },
         color: 'secondary'
       }

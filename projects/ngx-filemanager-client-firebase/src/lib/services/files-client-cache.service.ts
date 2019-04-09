@@ -16,42 +16,46 @@ import {
 } from 'ngx-filemanager-core/public_api';
 import { MakeClientDirectory } from '../utils/file.factory';
 import { getFileIcon, getFolderIcon } from '../utils/icon-url-resolver';
+import { FilesClientCache } from './FilesClientCache';
 
-export interface FilesClientCache {
-  // Actions
-  HandleList(path: string): Promise<ResBodyList>;
-  HandleCreateFolder(newPath: string): Promise<ResBodyCreateFolder>;
+class FolderCache {
+  private cachedFolders: {
+    [folderPath: string]: ResFile[];
+  } = {};
+  private cacheLimit = 20;
 
-  // File/Directory Actions
+  public IsCached(folderPath: string) {
+    return !!this.cachedFolders[folderPath];
+  }
 
-  HandleCopy(singleFileName: string, newPath: string): Promise<ResBodyCopy>;
-  HandleMove(item: string, newPath: string): Promise<ResBodyMove>;
-  HandleRename(item: string, newItemPath: string): Promise<ResBodyRename>;
-  HandleEdit(item: string, content: string): Promise<ResBodyEdit>;
-  HandleGetcontent(item: string): Promise<ResBodyGetContent>;
-  HandleSetPermissions(
-    item: string,
-    perms: string,
-    permsCode: string,
-    recursive?: boolean
-  ): Promise<ResBodySetPermissions>;
+  public GetCached(folderPath: string) {
+    return this.cachedFolders[folderPath];
+  }
 
-  // File/Directory Bulk Actions
+  public SetCached(folderPath: string, folderFiles: ResFile[]) {
+    if (this.cachedCount > this.cacheLimit) {
+      this.removeRandomFolderPath();
+    }
+    this.cachedFolders[folderPath] = folderFiles;
+  }
 
-  HandleMoveMultiple(items: string[], newPath: string): Promise<ResBodyMove>;
-  HandleCopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy>;
-  HandleSetPermissionsMultiple(
-    items: string[],
-    perms: string,
-    permsCode: string,
-    recursive?: boolean
-  ): Promise<ResBodySetPermissions>;
-  HandleRemove(items: string[]): Promise<ResBodyRemove>;
+  private get cachedCount() {
+    return Object.keys(this.cachedFolders).length;
+  }
+
+  private removeRandomFolderPath() {
+    const randomIndex = Math.floor(Math.random() * this.cachedCount);
+    const randomKey = Object.keys(this.cachedFolders)[randomIndex];
+    delete this.cachedFolders[randomKey];
+  }
 }
 
 @Injectable()
 export class FilesClientCacheService implements FilesClientCache {
   private fileSystem: FileSystemProvider;
+
+  private folderCache = new FolderCache();
+
   public $currentFiles = new BehaviorSubject<ResFile[]>([]);
   public $currentPath = new BehaviorSubject<string>(null);
   public $selectedFile = new BehaviorSubject<ResFile>(null);
@@ -61,10 +65,14 @@ export class FilesClientCacheService implements FilesClientCache {
   }
 
   public async HandleList(path: string): Promise<ResBodyList> {
+    this.$currentPath.next(path);
+    if (this.folderCache.IsCached(path)) {
+      const cachedFiles = this.folderCache.GetCached(path);
+      this.$currentFiles.next(cachedFiles);
+    }
     const response = await this.fileSystem.List(path);
     const newFiles = [...response.result];
-    console.log('files-client-cache: setExplorerPath', { path, newFiles });
-    this.$currentPath.next(path);
+    this.folderCache.SetCached(path, newFiles);
     this.$currentFiles.next(newFiles);
     const newFilePaths = new Set(newFiles.map(f => f.fullPath));
     const currentSelection = await this.$selectedFile.pipe(take(1)).toPromise();
@@ -82,6 +90,7 @@ export class FilesClientCacheService implements FilesClientCache {
     this.selectFirstFrom(newFiles);
     return response;
   }
+
   public async HandleCreateFolder(
     newDirName: string
   ): Promise<ResBodyCreateFolder> {
@@ -98,15 +107,18 @@ export class FilesClientCacheService implements FilesClientCache {
     this.$currentFiles.next(newFiles);
     return await this.fileSystem.CreateFolder(newDirPath);
   }
+
   public async HandleCopy(
     singleFileName: string,
     newPath: string
   ): Promise<ResBodyCopy> {
     return null;
   }
+
   public async HandleMove(item: string, newPath: string): Promise<ResBodyMove> {
     return null;
   }
+
   public async HandleRename(
     item: string,
     newItemPath: string
@@ -120,12 +132,15 @@ export class FilesClientCacheService implements FilesClientCache {
     this.selectFirstFrom([renamedFile]);
     return await this.fileSystem.Rename(item, newItemPath);
   }
+
   public async HandleEdit(item: string, content: string): Promise<ResBodyEdit> {
     return null;
   }
+
   public async HandleGetcontent(item: string): Promise<ResBodyGetContent> {
     return null;
   }
+
   public async HandleSetPermissions(
     item: string,
     perms: string,
@@ -144,6 +159,7 @@ export class FilesClientCacheService implements FilesClientCache {
       recursive
     );
   }
+
   public async HandleMoveMultiple(
     items: string[],
     newFolderPath: string
@@ -154,6 +170,7 @@ export class FilesClientCacheService implements FilesClientCache {
     this.selectFirstFrom(matches);
     return await this.fileSystem.MoveMultiple(items, newFolderPath);
   }
+
   public async HandleCopyMultiple(
     items: string[],
     newFolderPath: string
@@ -164,6 +181,7 @@ export class FilesClientCacheService implements FilesClientCache {
     this.selectFirstFrom(matches);
     return await this.fileSystem.MoveMultiple(items, newFolderPath);
   }
+
   public async HandleSetPermissionsMultiple(
     items: string[],
     perms: string,
@@ -182,6 +200,7 @@ export class FilesClientCacheService implements FilesClientCache {
       recursive
     );
   }
+
   public async HandleRemove(items: string[]): Promise<ResBodyRemove> {
     const currentFiles = await this.currentFiles();
     const filesNotDeleted = await this.selectMatches(
@@ -196,14 +215,15 @@ export class FilesClientCacheService implements FilesClientCache {
 
   public async HandleNavigateUp() {
     const currentPath = await this.$currentPath.pipe(take(1)).toPromise();
-    const slashSegments = currentPath.split('/');
+    const currentPathParsed = !!currentPath ? currentPath : '';
+    const slashSegments = currentPathParsed.split('/');
     slashSegments.pop();
     const parentPath = slashSegments.join('/');
     const currentFiles = await this.currentFiles();
     await this.HandleList(parentPath);
     this.selectFirstFrom(currentFiles);
     console.log('files-client-cache: onClickUpFolder', {
-      currentPath,
+      currentPathParsed,
       parentPath
     });
   }

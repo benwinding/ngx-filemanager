@@ -1372,13 +1372,6 @@ amdefine@>=0.0.4:
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
   integrity sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
 
-angular-file-uploader@^5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/angular-file-uploader/-/angular-file-uploader-5.0.2.tgz#68d893b6a98b6e19dc694460617aeb7b885a169f"
-  integrity sha512-QeU1wBezfp9epzQF2WQdz3xTLf6Tlne1iN/6NxAgNSQ2UWaMEzlW2tKdLF/TM9ttBbygKsgfx4PGNQxDuCVtJw==
-  dependencies:
-    tslib "^1.9.0"
-
 ansi-align@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ansi-align/-/ansi-align-2.0.0.tgz#c36aeccba563b89ceb556f3690f0b1d9e3547f7f"
@@ -2103,7 +2096,7 @@ bun@^0.0.12:
   dependencies:
     readable-stream "~1.0.32"
 
-busboy@^0.2.11:
+busboy@^0.2.11, busboy@^0.2.14:
   version "0.2.14"
   resolved "https://registry.yarnpkg.com/busboy/-/busboy-0.2.14.tgz#6c2a622efcf47c57bbbe1e2a9c37ad36c7925453"
   integrity sha1-bCpiLvz0fFe7vh4qnDetNseSVFM=
@@ -2609,7 +2602,7 @@ content-disposition@0.5.2:
   resolved "https://registry.yarnpkg.com/content-disposition/-/content-disposition-0.5.2.tgz#0cf68bb9ddf5f2be7961c3a85178cb85dba78cb4"
   integrity sha1-DPaLud318r55YcOoUXjLhdunjLQ=
 
-content-type@~1.0.4:
+content-type@^1.0.4, content-type@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.4.tgz#e138cc75e040c727b1966fe5e5f8c9aee256fe3b"
   integrity sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
@@ -3495,6 +3488,15 @@ expect@^24.7.1:
     jest-matcher-utils "^24.7.0"
     jest-message-util "^24.7.1"
     jest-regex-util "^24.3.0"
+
+express-multipart-file-parser@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/express-multipart-file-parser/-/express-multipart-file-parser-0.1.2.tgz#c11caccd67feedeb9e61a051c1d64ac9e11b2666"
+  integrity sha512-1AxthYfFv/yvM4pWfXBr13WQ6NX9aCYlNHU6LH8ozlFMq8MIuNJPUCHTvwYfGEn/TXvdV2OIHBIAfdJ0++MKyQ==
+  dependencies:
+    busboy "^0.2.14"
+    content-type "^1.0.4"
+    raw-body "^2.3.2"
 
 express@^4.16.2, express@^4.16.4:
   version "4.16.4"
@@ -7822,7 +7824,7 @@ range-parser@^1.0.3, range-parser@~1.2.0:
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.0.tgz#f49be6b487894ddc40dcc94a322f611092e00d5e"
   integrity sha1-9JvmtIeJTdxA3MlKMi9hEJLgDV4=
 
-raw-body@2.3.3:
+raw-body@2.3.3, raw-body@^2.3.2:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/raw-body/-/raw-body-2.3.3.tgz#1b324ece6b5706e153855bc1148c65bb7f6ea0c3"
   integrity sha512-9esiElv1BrZoI3rCDuOuKCBRbuApGGaDPQfjSflGxdy4oyzqghxu6klEkkVIvBje+FF0BX9coEv8KqW6X/7njw==

@@ -115,6 +115,7 @@ export class NgxFileManagerComponent implements OnInit {
       onSelectItemDoubleClick: async (item: ResFile) => {
         console.log('file-manager: onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
+          this.$triggerClearSelected.next();
           this.clientsCache.HandleList(item.fullPath);
         }
       },
@@ -264,6 +265,12 @@ export class NgxFileManagerComponent implements OnInit {
   public async onClickedBulkMove() {
     console.log('file-manager: clickedBulkMove');
     this.clearBulkSelected();
+  }
+
+  public async onClickedBulkDelete() {
+    const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
+    await this.onDelete(selected);
+    this.refreshExplorer();
   }
 
   public async onClickedBulkPermissions() {

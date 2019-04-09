@@ -7,7 +7,7 @@ import { of, BehaviorSubject, Observable } from 'rxjs';
   selector: 'folder-actions',
   template: `
     <mat-toolbar>
-      <mat-toolbar-row>
+      <mat-toolbar-row class="scroll-x">
         <div *ngFor="let action of bulkActions">
           <button
             class="action"
@@ -32,6 +32,9 @@ import { of, BehaviorSubject, Observable } from 'rxjs';
         display: flex;
         flex-direction: row;
         align-items: center;
+      }
+      .scroll-x {
+        overflow-x: auto;
       }
     `
   ]
@@ -64,6 +67,15 @@ export class AppFolderActionsComponent implements OnInit {
         $disabled: this.$CurrentPathIsRoot
       },
       {
+        label: 'Upload Files',
+        icon: 'file_upload',
+        onClick: (item: ActionButton) => {
+          this.clickedUploadFiles.emit();
+        },
+        color: 'secondary',
+        $disabled: of(false)
+      },
+      {
         label: 'Refresh',
         icon: 'refresh',
         onClick: (item: ActionButton) => {
@@ -85,15 +97,6 @@ export class AppFolderActionsComponent implements OnInit {
         color: 'secondary',
         $disabled: of(false)
       },
-      {
-        label: 'Upload Files',
-        icon: 'file_upload',
-        onClick: (item: ActionButton) => {
-          this.clickedUploadFiles.emit();
-        },
-        color: 'secondary',
-        $disabled: of(false)
-      }
     ];
   }
 }
