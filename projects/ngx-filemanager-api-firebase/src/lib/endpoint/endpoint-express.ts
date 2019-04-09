@@ -22,22 +22,34 @@ endpoint.use('/hello', async (req, res) => {
 
 endpoint.use(PostRequestsOnly);
 
-import 'multer';
-const multer = require('multer');
-const multerStorage = multer.memoryStorage();
-const upload = multer({ storage: multerStorage });
+// import 'multer';
+import { ParseUploadFile, UploadedFile } from './middleware-upload';
+// const multer = require('multer');
+// const multerStorage = multer.memoryStorage();
+// const upload = multer({ storage: multerStorage });
 endpoint.post(
   '/upload',
-  upload.single('file'),
   HasQueryParam('bucketname'),
   HasQueryParam('directoryPath'),
+  ParseUploadFile,
   async (req, res, next) => {
     const bucketname: string = req.query.bucketname;
     const directoryPath: string = req.query.directoryPath;
-    const file = req.file as Express.Multer.File;
+    const files = req.files as UploadedFile[];
     try {
-      const response = await trySaveFile(bucketname, directoryPath, file);
-      res.status(200).send(response);
+      const results = await Promise.all(files.map(file => trySaveFile(bucketname, directoryPath, file)));
+      const success = {
+        result: {
+          success: true
+        }
+      };
+      const finalResult = results.reduce((acc, cur) => {
+        if (cur.result.error) {
+          return cur;
+        }
+        return success;
+      }, success);
+      res.status(200).send(finalResult);
     } catch (error) {
       console.log('Error occurred while uploading: ', { error });
       res.status(400).send('Error while uploading: ' + error.message);
@@ -49,7 +61,7 @@ endpoint.post(
 async function trySaveFile(
   bucketname: string,
   directoryPath: string,
-  f: Express.Multer.File
+  f: UploadedFile
 ) {
   return api.HandleSaveFile(
     bucketname,
@@ -120,6 +132,10 @@ endpoint.use(notImplemented);
 async function notImplemented(req, res) {
   const bodyString = JSON.stringify(req.body);
   res.status(501).send('That request has not been implemented: ' + bodyString);
+}
+
+function CheckStorageInitialized(storage: Storage) {
+  // storage.app();
 }
 /*
 Use by attaching to a firebase function

@@ -103,16 +103,21 @@ export class NgxFileMangerApiFireBaseClass {
     return response;
   }
 
-  async HandleGetMeta(
-    body: api.ReqBodyGetMeta
-  ): Promise<api.ResBodyGetMeta> {
+  async HandleGetMeta(body: api.ReqBodyGetMeta): Promise<api.ResBodyGetMeta> {
     const bucket = await this.getBucket(body.bucketname);
-    const result = await GetFileMeta(bucket, body.item);
     const response: api.ResBodyGetMeta = {
       result: {
-        url: result
+        success: null
       }
     };
+    try {
+      const downloadUrl = await GetFileMeta(bucket, body.item);
+      response.result.url = downloadUrl;
+      response.result.success = true;
+    } catch (error) {
+      response.result.success = false;
+      response.result.error = error.message;
+    }
     return response;
   }
 

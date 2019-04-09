@@ -4,7 +4,7 @@ export function OptionRequestsAreOk(
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): RequestHandler {
   if (req.method === 'OPTIONS') {
     console.log('Recieved OPTIONS request sending OK');
     res.status(200).send('Options are OK\n');
@@ -17,7 +17,7 @@ export function PostRequestsOnly(
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): RequestHandler {
   if (req.method !== 'POST') {
     const msg = 'Only POST requests are supported\n';
     console.warn(msg);
