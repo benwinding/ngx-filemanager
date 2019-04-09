@@ -52,7 +52,7 @@ export class AppDialogUploadFilesComponent {
     url:
       'http://localhost:4444/api_files/upload?bucketname=resvu-integration-tests.appspot.com&directoryPath=/',
     maxFilesize: 50,
-    acceptedFiles: 'image/*',
+    // acceptedFiles: 'image/*',
     uploadMultiple: false
   };
 
