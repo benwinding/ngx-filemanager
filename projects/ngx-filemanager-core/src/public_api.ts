@@ -139,9 +139,11 @@ export interface ReqBodyGetMeta extends ReqBodyAction {
   item: string;
 }
 
-export interface ResBodyGetMeta {
+export interface ResBodyGetMeta extends ResBodySuccess {
   result: {
-    url: string;
+    url?: string;
+    success: boolean;
+    error?: string;
   };
 }
 
