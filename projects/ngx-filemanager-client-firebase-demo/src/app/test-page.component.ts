@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {
-  FilesSystemProviderService,
-  FileManagerConfig
+  FileManagerConfig,
+  ServerFilesystemProviderService
 } from 'ngx-filemanager-client-firebase';
 
 @Component({
@@ -18,12 +18,11 @@ export class AppTestPageComponent {
   public config: FileManagerConfig = {
     initialPath: '/'
   };
-  constructor(
-    public firebaseClientProvider: FilesSystemProviderService
-  ) {
+  constructor(public firebaseClientProvider: ServerFilesystemProviderService) {
     const bucketName = 'cl-building-storage';
     // const apiEndpoint = 'http://localhost:4444/ApiPublic/files';
-    const apiEndpoint = 'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files';
+    const apiEndpoint =
+      'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files';
     this.firebaseClientProvider.Initialize(bucketName, apiEndpoint);
   }
 }

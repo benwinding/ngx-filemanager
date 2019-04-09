@@ -27,11 +27,9 @@ import {
 import { AppDialogRenameComponent } from './dialogs/dialog-rename.component';
 import { AppDialogNewFolderComponent } from './dialogs/dialog-new-folder.component';
 import { FileDetailsComponent } from './file-details/file-details.component';
-import { FileSizePipe } from './services/file-size.pipe';
+import { FileSizePipe } from './utils/file-size.pipe';
 import { NgxFileManagerComponent } from './file-manager/file-manager.component';
-import { FilesSystemProviderService } from './services/files-provider.service';
 import { HttpClientModule } from '@angular/common/http';
-import { FilesClientCacheService } from './services/files-client-cache.service';
 import { AppDialogSetPermissionsComponent } from './dialogs/dialog-setpermissions.component';
 import { AppDialogCopyComponent } from './dialogs/dialog-copy.component';
 import { AppFileTableComponent } from './file-table/file-table.component';
@@ -41,6 +39,9 @@ import { AppFolderActionsComponent } from './actions-toolbars/folder-actions.com
 import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component';
 import { AppBtnsCancelOkComponent } from './dialogs/btns-cancel-ok.component';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { ServerFilesystemProviderService } from './filesystem/server-filesystem.service';
+import { ClientFileSystemService } from './filesystem/client-filesystem.service';
+import { OptimisticFilesystemService } from './filesystem/optimistic-filesystem.service';
 
 const dialogComponents = [
   AppDialogRenameComponent,
@@ -93,6 +94,10 @@ const dialogComponents = [
     MatTooltipModule
   ],
   exports: [NgxFileManagerComponent],
-  providers: [FilesSystemProviderService, FilesClientCacheService]
+  providers: [
+    ClientFileSystemService,
+    ServerFilesystemProviderService,
+    OptimisticFilesystemService
+  ]
 })
 export class NgxFilemanagerClientFirebaseModule {}

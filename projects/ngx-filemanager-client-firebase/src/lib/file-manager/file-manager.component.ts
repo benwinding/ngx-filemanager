@@ -6,8 +6,7 @@ import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.compon
 import { RenameDialogInterface } from '../dialogs/dialog-rename.component';
 import { AppDialogRenameComponent } from '../dialogs/dialog-rename.component';
 import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
-import { FilesClientCacheService } from '../services/files-client-cache.service';
-import { FileManagerConfig } from '../services/client-configuration';
+import { FileManagerConfig } from '../configuration/client-configuration';
 import { AppDialogSetPermissionsComponent } from '../dialogs/dialog-setpermissions.component';
 import { PermissionsDialogInterface } from '../dialogs/dialog-setpermissions.component';
 import {
@@ -19,6 +18,8 @@ import {
   AppDialogUploadFilesComponent,
   UploadDialogInterface
 } from '../dialogs/dialog-upload.component';
+import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
+import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -40,15 +41,17 @@ export class NgxFileManagerComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private clientsCache: FilesClientCacheService
+    private optimisticFs: OptimisticFilesystemService
   ) {}
 
+  // Getters
+
   get $CurrentPath() {
-    return this.clientsCache.$currentPath;
+    return this.optimisticFs.$CurrentPath;
   }
 
   private async getCurrentPath() {
-    const currentPath = await this.clientsCache.$currentPath
+    const currentPath = await this.$CurrentPath
       .pipe(take(1))
       .toPromise();
     return currentPath;
@@ -58,21 +61,25 @@ export class NgxFileManagerComponent implements OnInit {
     return this.$CurrentPath.pipe(map(p => p === this.config.initialPath));
   }
 
-  ngOnInit() {
+  get $SelectedFile() {
+    return this.optimisticFs.$SelectedFile;
+  }
+
+  async ngOnInit() {
     if (!this.fileSystem) {
       throw new Error(
         '<ngx-filemanager> must have input selector [fileSystem] set'
       );
     }
-    this.clientsCache.initialize(this.fileSystem);
+    this.optimisticFs.initialize(this.fileSystem);
     this.makeConfig();
     if (this.config && this.config.initialPath) {
-      this.clientsCache.HandleList(this.config.initialPath);
+      await this.optimisticFs.HandleList(this.config.initialPath);
     }
   }
 
   makeConfig() {
-    const filesWithIcons$ = this.clientsCache.$FilesWithIcons;
+    const filesWithIcons$ = this.optimisticFs.$FilesWithIcons;
     this.autoTableConfig = {
       data$: filesWithIcons$,
       // debug: true,
@@ -116,23 +123,19 @@ export class NgxFileManagerComponent implements OnInit {
         console.log('file-manager: onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
           this.$triggerClearSelected.next();
-          this.clientsCache.HandleList(item.fullPath);
+          await this.optimisticFs.HandleList(item.fullPath);
         }
       },
       onSelectItem: (item: ResFile) => {
         console.log('file-manager: onSelectItem!', { item });
-        this.clientsCache.onSelectItem(item);
+        this.optimisticFs.onSelectItem(item);
       },
-      $triggerSelectItem: this.clientsCache.$selectedFile,
+      $triggerSelectItem: this.$SelectedFile,
       $triggerClearSelected: this.$triggerClearSelected,
       filterText: 'Search here...',
       hideChooseColumns: true,
       hideFilter: true
     };
-  }
-
-  public get $SelectedFile() {
-    return this.clientsCache.$selectedFile;
   }
 
   private async onRename(file: ResFile) {
@@ -143,7 +146,7 @@ export class NgxFileManagerComponent implements OnInit {
     if (!renamedPath) {
       return;
     }
-    this.clientsCache.HandleRename(file.fullPath, renamedPath);
+    await this.optimisticFs.HandleRename(file.fullPath, renamedPath);
     this.refreshExplorer();
   }
 
@@ -157,7 +160,7 @@ export class NgxFileManagerComponent implements OnInit {
     if (!newPermissions) {
       return;
     }
-    await this.clientsCache.HandleSetPermissions(
+    await this.optimisticFs.HandleSetPermissions(
       file.fullPath,
       newPermissions,
       null
@@ -176,7 +179,7 @@ export class NgxFileManagerComponent implements OnInit {
       return;
     }
     const filePaths = files.map(f => f.fullPath);
-    await this.clientsCache.HandleSetPermissionsMultiple(
+    await this.optimisticFs.HandleSetPermissionsMultiple(
       filePaths,
       newPermissions,
       null
@@ -192,7 +195,7 @@ export class NgxFileManagerComponent implements OnInit {
       return;
     }
     const filePaths = files.map(f => f.fullPath);
-    await this.clientsCache.HandleCopyMultiple(filePaths, newFolderPath);
+    await this.optimisticFs.HandleCopyMultiple(filePaths, newFolderPath);
     this.refreshExplorer();
   }
 
@@ -209,7 +212,7 @@ export class NgxFileManagerComponent implements OnInit {
   private async onDelete(files: ResFile[]) {
     console.log('file-manager: deleting files', { files });
     const deletedPaths = files.map(f => f.fullPath);
-    await this.clientsCache.HandleRemove(deletedPaths);
+    await this.optimisticFs.HandleRemove(deletedPaths);
     this.refreshExplorer();
   }
 
@@ -225,13 +228,13 @@ export class NgxFileManagerComponent implements OnInit {
       console.log('file-manager: onClickNewFolder   no folder created...');
       return;
     }
-    await this.clientsCache.HandleCreateFolder(newDirName);
+    await this.optimisticFs.HandleCreateFolder(newDirName);
     this.refreshExplorer();
   }
 
   public async onClickUpFolder() {
     console.log('file-manager: onClickUpFolder');
-    await this.clientsCache.HandleNavigateUp();
+    await this.optimisticFs.HandleNavigateUp();
     this.refreshExplorer();
   }
 
@@ -280,9 +283,9 @@ export class NgxFileManagerComponent implements OnInit {
     this.clearBulkSelected();
   }
 
-  public onClickCrumb(newPath: string) {
-    this.clientsCache.HandleList(newPath);
+  public async onClickCrumb(newPath: string) {
     this.clearBulkSelected();
+    await this.optimisticFs.HandleList(newPath);
   }
 
   private clearBulkSelected() {
@@ -292,7 +295,7 @@ export class NgxFileManagerComponent implements OnInit {
 
   private async refreshExplorer() {
     const currentPath = await this.getCurrentPath();
-    await this.clientsCache.HandleList(currentPath);
+    await this.optimisticFs.HandleList(currentPath);
   }
 
   private async openDialog(comp: any, data?: any) {
