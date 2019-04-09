@@ -3,5 +3,6 @@
   "dest": "../../dist/ngx-filemanager-api-firebase",
   "lib": {
     "entryFile": "src/public_api.ts"
-  }
+  },
+  "whitelistedNonPeerDependencies": ["."]
 }
