@@ -55,19 +55,18 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         <h6>{{ file.rights }}</h6>
         <h5>Type</h5>
         <h6 class="capitalize">{{ getFileType(file.name) }}</h6>
-        <div *ngIf="isImage">
-          <h5>Preview</h5>
-          <a [href]="imageUrl" target="_blank">
-            <img [src]="imageUrl" />
-          </a>
-        </div>
         <button
           mat-mini-fab
           color="primary"
           (click)="this.clickedDownload.emit(file)"
         >
           <mat-icon>file_download</mat-icon>
-        </button>
+        </button>        <div class="preview" [class.hidden]="!(isImage && imageUrl)">
+          <h5>Preview</h5>
+          <a [href]="imageUrl" target="_blank">
+            <img [src]="imageUrl" />
+          </a>
+        </div>
       </div>
     </div>
   `,
@@ -112,6 +111,15 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         max-width: 100%;
         max-height: 400px;
       }
+      .preview {
+        opacity: 1;
+        transition: opacity 1s;
+      }
+      .hidden {
+        opacity: 0;
+        height: 0px;
+        overflow: hidden;
+      }
     `
   ]
 })
@@ -149,6 +157,7 @@ export class FileDetailsComponent {
   }
 
   setImageUrl() {
+    this.imageUrl = null;
     setTimeout(async () => {
       if (!this.file) {
         return;
