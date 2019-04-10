@@ -3,30 +3,15 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AutoTableModule } from 'ngx-auto-table';
 import { CommonModule } from '@angular/common';
 import {
-  MatTableModule,
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatButtonToggleModule,
-  MatCheckboxModule,
   MatFormFieldModule,
-  MatIconModule,
   MatInputModule,
-  MatMenuModule,
-  MatPaginatorModule,
-  MatProgressBarModule,
-  MatProgressSpinnerModule,
-  MatSelectModule,
-  MatSortModule,
-  MatToolbarModule,
-  MatDialogModule
+  MatCardModule
 } from '@angular/material';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxFilemanagerClientFirebaseModule } from 'ngx-filemanager-client-firebase';
-import { HttpClientModule } from '@angular/common/http';
 import { AppTestFunctionsLocallyComponent } from './test-functions-locally.component';
 import { AppTestStubFilesystemComponent } from './test-stub-filesystem.component';
 import { AppTestFunctionsRemoteComponent } from './test-functions-remote.component';
@@ -43,28 +28,12 @@ import { AppTestFunctionsRemoteComponent } from './test-functions-remote.compone
     BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
     NgxFilemanagerClientFirebaseModule,
-    MatTableModule,
-    AutoTableModule,
+    FormsModule,
     ReactiveFormsModule,
-    MatAutocompleteModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCheckboxModule,
     MatFormFieldModule,
-    MatIconModule,
-    MatDialogModule,
     MatInputModule,
-    MatMenuModule,
-    MatPaginatorModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatSelectModule,
-    MatSortModule,
-    MatTableModule,
-    MatToolbarModule,
-    CommonModule
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -67,7 +67,7 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         <div class="preview" [class.hidden]="!(isImage && imageUrl)">
           <h5>Preview</h5>
           <a [href]="imageUrl" target="_blank">
-            <img [src]="imageUrl" />
+            <img *ngIf="imageUrl" [src]="imageUrl" />
           </a>
         </div>
       </div>
