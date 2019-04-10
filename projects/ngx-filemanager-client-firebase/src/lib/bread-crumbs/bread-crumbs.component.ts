@@ -9,9 +9,9 @@ interface BreadCrumb {
   // tslint:disable-next-line:component-selector
   selector: 'bread-crumbs',
   template: `
-    <div class="flex-row">
+    <div class="flex-row align-center">
       <div
-        class="flex-row"
+        class="flex-row align-center"
         *ngFor="let crumb of crumbs; let first = first; let last = last"
       >
         <div class="divider" *ngIf="!first">
