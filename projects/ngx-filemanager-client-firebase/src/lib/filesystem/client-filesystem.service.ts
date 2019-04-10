@@ -63,26 +63,28 @@ export class ClientFileSystemService implements ClientFileSystem {
     this.$currentFiles.next(res.result);
   }
 
-  private async removeFromList(resFileName: string) {
+  private async removeFromList(filePath: string) {
     const path = await this.$currentPath.pipe(take(1)).toPromise();
     const cachedFiles = this.folderCache.GetCached(path);
-    const cachedFilesWithout = cachedFiles.filter(f => f.name !== resFileName);
-    this.folderCache.SetCached(path, cachedFiles);
+    const filePathSafe = filePath || '';
+    const fileName = filePathSafe.split('/').pop();
+    const cachedFilesWithout = cachedFiles.filter(f => f.name !== fileName);
+    this.folderCache.SetCached(path, cachedFilesWithout);
     this.$currentFiles.next(cachedFilesWithout);
   }
 
   public get $FilesWithIcons(): Observable<core.ResFile[]> {
     return this.$currentFiles.pipe(
-      map(files => files ? files : []),
+      map(files => (files ? files : [])),
       map(files => files.map(file => this.addIconPath(file))),
       map(files =>
         files.map(file => {
           return { ...file };
         })
       ),
-      tap(files => {
-        console.log('files-client-cache: added files to filesWithIcons$', {
-          files
+      tap(filesWithIcons => {
+        console.log('client-filesystem: $FilesWithIcons, tap()', {
+          filesWithIcons
         });
       })
     );
@@ -96,7 +98,6 @@ export class ClientFileSystemService implements ClientFileSystem {
   }
 
   public onSelectItem(item: core.ResFile): any {
-    console.log('files-client-cache: onSelectItem', { item });
     this.$selectedFile.next(item);
   }
 

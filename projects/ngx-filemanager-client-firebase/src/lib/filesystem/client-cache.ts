@@ -11,11 +11,16 @@ export class ClientCache {
   public GetCached(folderPath: string) {
     return this.cachedFolders[folderPath];
   }
-  public SetCached(folderPath: string, folderFiles: core.ResFile[]) {
+  public SetCached(folderPath: string, newFolderFiles: core.ResFile[]) {
+    const oldFolders = this.cachedFolders[folderPath] || [];
+    console.log('client-cache: SetCached()', {
+      _before: [...oldFolders],
+      after: [...newFolderFiles]
+    });
     if (this.cachedCount > this.cacheLimit) {
       this.removeRandomFolderPath();
     }
-    this.cachedFolders[folderPath] = folderFiles;
+    this.cachedFolders[folderPath] = newFolderFiles;
   }
   private get cachedCount() {
     return Object.keys(this.cachedFolders).length;
