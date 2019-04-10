@@ -1,5 +1,5 @@
 import { Bucket, FileFromStorage } from '../google-cloud-types';
-import { EnsureTrailingSlash, EnsureNoPrefixSlash } from '../path-helpers';
+import { EnsureTrailingSlash, EnsureNoPrefixSlash, EnsureNoTrailingSlash } from '../path-helpers';
 import { GetFilesOptions } from '@google-cloud/storage';
 import {
   translateStorageToFileFromStorage,
@@ -8,23 +8,25 @@ import {
 } from '../translation-helpers';
 import { ResFile } from '../core-types';
 
+export async function GetFiles(bucket: Bucket, options: GetFilesOptions): Promise<FileFromStorage[]> {
+  const result = await bucket.getFiles(options);
+  const storageObjects = result[0];
+  const files = storageObjects.map(o => translateStorageToFileFromStorage(o));
+  return files;
+}
+
 export async function GetListFromStorage(
   bucket: Bucket,
   inputDirectoryPath: string
 ): Promise<FileFromStorage[]> {
   const pathNoPrefix = EnsureNoPrefixSlash(inputDirectoryPath);
-  const pathParsed = EnsureTrailingSlash(pathNoPrefix);
+  const pathParsed = EnsureNoTrailingSlash(pathNoPrefix);
   const options: GetFilesOptions = {
     delimiter: '/',
-    includeTrailingDelimiter: true
+    includeTrailingDelimiter: true,
+    prefix: pathParsed
   } as any;
-  const isRoot = pathParsed === '/';
-  if (!isRoot) {
-    options.directory = pathParsed;
-  }
-  const result = await bucket.getFiles(options);
-  const storageObjects = result[0];
-  const files = storageObjects.map(o => translateStorageToFileFromStorage(o));
+  const files = await GetFiles(bucket, options);
   // console.log('file paths: ' + JSON.stringify(files.map(f => f.fullPath), null, 2));
   const filesWithoutCurrentDirectory = files.filter(f => f.fullPath !== pathParsed);
   return filesWithoutCurrentDirectory;

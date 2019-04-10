@@ -26,6 +26,12 @@ export function EnsureNoPrefixSlash(inputPath: string): string {
   return pathParsed;
 }
 
+export function EnsureNoTrailingSlash(inputPath: string): string {
+  const hasTrailing = HasTrailingSlash(inputPath);
+  const pathParsed = hasTrailing ? inputPath.slice(0, -1) : inputPath;
+  return pathParsed;
+}
+
 export function GetRelativePath(
   currentDirectoryPath: string,
   absObjectPath: string
