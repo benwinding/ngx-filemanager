@@ -3,7 +3,8 @@ import * as core from 'ngx-filemanager-core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-export class ServerFilesystemProviderService implements core.FileSystemProvider {
+export class ServerFilesystemProviderService
+  implements core.FileSystemProvider {
   private bucketname: string;
   private apiEndpoint: string;
 
@@ -16,7 +17,7 @@ export class ServerFilesystemProviderService implements core.FileSystemProvider 
     options['responseType'] = 'json';
     options.headers['Content-Type'] = 'application/json';
     const response = await this.http.post(url, body, options).toPromise();
-    console.log({ response });
+    console.log('fetchPostAuth: ', { action: body.action, response });
     return response as T;
   }
 
@@ -152,7 +153,10 @@ export class ServerFilesystemProviderService implements core.FileSystemProvider 
       ...this.makeBaseRequest('getMeta'),
       item: file.fullPath
     };
-    const response = await this.fetchPostAuth(this.apiEndpoint, req) as core.ResBodyGetMeta;
+    const response = (await this.fetchPostAuth(
+      this.apiEndpoint,
+      req
+    )) as core.ResBodyGetMeta;
     const url = response.result.url;
     return url;
   }

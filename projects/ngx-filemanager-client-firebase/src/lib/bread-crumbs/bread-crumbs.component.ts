@@ -59,17 +59,15 @@ export class AppBreadCrumbsComponent {
   private makeCrumbs(newPath: string) {
     const segments = newPath.split('/').filter(s => s !== '');
     this.crumbs = [];
-    segments.reduce(
-      (segmentsSoFar, cur) => {
-        segmentsSoFar.push(cur);
-        this.crumbs.push({
-          label: cur,
-          path: segmentsSoFar.join('/')
-        });
-        return segmentsSoFar;
-      },
-      ['']
-    );
+    segments.reduce((segmentsSoFar, cur) => {
+      segmentsSoFar.push(cur);
+      const crumbPath = segmentsSoFar.join('/') + '/';
+      this.crumbs.push({
+        label: cur,
+        path: crumbPath
+      });
+      return segmentsSoFar;
+    }, []);
     this.crumbs.unshift({
       label: 'Home',
       path: '/'
