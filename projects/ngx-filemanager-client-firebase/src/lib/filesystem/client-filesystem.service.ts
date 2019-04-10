@@ -31,7 +31,7 @@ export class ClientFileSystemService implements ClientFileSystem {
   }
   async OnCopy(singleFileName: string, newPath: string): Promise<void> {}
   async OnMove(item: string, newPath: string): Promise<void> {
-    await this.removeFromList(item);
+    await this.removeSingleFromList(item);
   }
   async OnRename(item: string, newItemPath: string): Promise<void> {}
   async OnEdit(item: string, content: string): Promise<void> {}
@@ -43,7 +43,7 @@ export class ClientFileSystemService implements ClientFileSystem {
     recursive?: boolean
   ): Promise<void> {}
   async OnMoveMultiple(items: string[], newPath: string): Promise<void> {
-    await Promise.all(items.map(item => this.removeFromList(item)));
+    await this.removeArrayFromList(items);
   }
   async OnCopyMultiple(items: string[], newPath: string): Promise<void> {}
   async OnSetPermissionsMultiple(
@@ -55,7 +55,7 @@ export class ClientFileSystemService implements ClientFileSystem {
     throw new Error('Method not implemented.');
   }
   async OnRemove(items: string[]): Promise<void> {
-    await Promise.all(items.map(item => this.removeFromList(item)));
+    await this.removeArrayFromList(items);
   }
   async UpdateCurrentList(res: core.ResBodyList): Promise<void> {
     const path = await this.$currentPath.pipe(take(1)).toPromise();
@@ -63,12 +63,35 @@ export class ClientFileSystemService implements ClientFileSystem {
     this.$currentFiles.next(res.result);
   }
 
-  private async removeFromList(filePath: string) {
+  private async removeSingleFromList(filePath: string) {
     const path = await this.$currentPath.pipe(take(1)).toPromise();
     const cachedFiles = this.folderCache.GetCached(path);
-    const filePathSafe = filePath || '';
-    const fileName = filePathSafe.split('/').pop();
-    const cachedFilesWithout = cachedFiles.filter(f => f.name !== fileName);
+    const itemName = this.GetFileNameFromPath(filePath);
+    const cachedFilesWithout = cachedFiles.filter(f => f.name !== itemName);
+    this.folderCache.SetCached(path, cachedFilesWithout);
+    this.$currentFiles.next(cachedFilesWithout);
+  }
+
+  private EnsureNoTrailingSlash(inputPath: string): string {
+    const hasTrailing = inputPath.slice(-1) === '/';
+    const pathParsed = hasTrailing ? inputPath.slice(0, -1) : inputPath;
+    return pathParsed;
+  }
+
+  private GetFileNameFromPath(inputPath: string): string {
+    const safePath = inputPath || '';
+    const parsedPath = this.EnsureNoTrailingSlash(safePath);
+    const basename = parsedPath.split('/').pop();
+    return basename;
+  }
+
+  private async removeArrayFromList(filePaths: string[]) {
+    const path = await this.$currentPath.pipe(take(1)).toPromise();
+    const cachedFiles = this.folderCache.GetCached(path);
+    const removeSet = new Set(
+      filePaths.map(filePath => this.GetFileNameFromPath(filePath))
+    );
+    const cachedFilesWithout = cachedFiles.filter(f => !removeSet.has(f.name));
     this.folderCache.SetCached(path, cachedFilesWithout);
     this.$currentFiles.next(cachedFilesWithout);
   }
@@ -81,12 +104,7 @@ export class ClientFileSystemService implements ClientFileSystem {
         files.map(file => {
           return { ...file };
         })
-      ),
-      tap(filesWithIcons => {
-        console.log('client-filesystem: $FilesWithIcons, tap()', {
-          filesWithIcons
-        });
-      })
+      )
     );
   }
 

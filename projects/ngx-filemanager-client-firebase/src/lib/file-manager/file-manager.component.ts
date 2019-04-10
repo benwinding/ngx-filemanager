@@ -274,6 +274,7 @@ export class NgxFileManagerComponent implements OnInit {
 
   public async onClickedBulkDelete() {
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
+    this.clearBulkSelected();
     await this.onDelete(selected);
     this.refreshExplorer();
   }

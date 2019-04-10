@@ -14,8 +14,8 @@ export class ClientCache {
   public SetCached(folderPath: string, newFolderFiles: core.ResFile[]) {
     const oldFolders = this.cachedFolders[folderPath] || [];
     console.log('client-cache: SetCached()', {
-      _before: [...oldFolders],
-      after: [...newFolderFiles]
+      from: oldFolders.length,
+      to: newFolderFiles.length
     });
     if (this.cachedCount > this.cacheLimit) {
       this.removeRandomFolderPath();
