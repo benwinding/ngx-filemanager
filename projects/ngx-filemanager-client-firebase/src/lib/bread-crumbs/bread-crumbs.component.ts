@@ -9,9 +9,9 @@ interface BreadCrumb {
   // tslint:disable-next-line:component-selector
   selector: 'bread-crumbs',
   template: `
-    <div class="flexr">
+    <div class="flex-row">
       <div
-        class="flexr"
+        class="flex-row"
         *ngFor="let crumb of crumbs; let first = first; let last = last"
       >
         <div class="divider" *ngIf="!first">
@@ -30,16 +30,8 @@ interface BreadCrumb {
       </div>
     </div>
   `,
-  styles: [
-    `
-      .crumb {
-      }
-      .flexr {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
-    `
+  styleUrls: [
+    '../shared-utility-styles.scss'
   ]
 })
 export class AppBreadCrumbsComponent {

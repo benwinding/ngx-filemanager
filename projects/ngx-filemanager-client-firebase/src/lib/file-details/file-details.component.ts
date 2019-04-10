@@ -6,12 +6,12 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-file-details',
   template: `
-    <div class="details-container">
+    <div class="details-container p5">
       <div *ngIf="!hasInput" class="none-selected">
         <h2>No item selected ...</h2>
       </div>
       <div *ngIf="hasInput && !isFile">
-        <span class="flex-r center">
+        <span class="flex-row space-between align-center">
           <h2>Directory Details</h2>
           <button
             mat-mini-fab
@@ -33,7 +33,7 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         <h6>Directory</h6>
       </div>
       <div *ngIf="hasInput && isFile">
-        <span class="flex-r center">
+        <span class="flex-row space-between align-center">
           <h2>File Details</h2>
           <span>
             <button
@@ -75,20 +75,6 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
   `,
   styles: [
     `
-      .has-pointer {
-        cursor: pointer;
-      }
-      .center {
-        align-items: center;
-      }
-      .flex-r {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-      }
-      .details-container {
-        margin: 8px;
-      }
       .none-selected {
         color: grey;
         text-align: center;
@@ -110,9 +96,6 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         font-weight: normal;
         margin-bottom: 10px;
       }
-      .capitalize {
-        text-transform: capitalize;
-      }
       img {
         max-width: 100%;
         max-height: 400px;
@@ -127,7 +110,8 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         overflow: hidden;
       }
     `
-  ]
+  ],
+  styleUrls: ['../shared-utility-styles.scss']
 })
 export class FileDetailsComponent {
   imageUrl: string;

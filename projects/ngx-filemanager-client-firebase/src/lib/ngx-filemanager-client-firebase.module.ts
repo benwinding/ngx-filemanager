@@ -22,7 +22,8 @@ import {
   MatTooltipModule,
   MatSidenavModule,
   MatDialogModule,
-  MatTabsModule
+  MatTabsModule,
+  MatCardModule
 } from '@angular/material';
 import { AppDialogRenameComponent } from './dialogs/dialog-rename.component';
 import { AppDialogNewFolderComponent } from './dialogs/dialog-new-folder.component';
@@ -42,12 +43,14 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { ServerFilesystemProviderService } from './filesystem/server-filesystem.service';
 import { ClientFileSystemService } from './filesystem/client-filesystem.service';
 import { OptimisticFilesystemService } from './filesystem/optimistic-filesystem.service';
+import { AppDialogMoveComponent } from './dialogs/dialog-move.component';
 
 const dialogComponents = [
   AppDialogRenameComponent,
   AppDialogNewFolderComponent,
   AppDialogSetPermissionsComponent,
   AppDialogCopyComponent,
+  AppDialogMoveComponent,
   AppDialogUploadFilesComponent
 ];
 
@@ -77,6 +80,7 @@ const dialogComponents = [
     MatButtonModule,
     MatButtonToggleModule,
     MatCheckboxModule,
+    MatCardModule,
     MatDialogModule,
     MatFormFieldModule,
     MatIconModule,

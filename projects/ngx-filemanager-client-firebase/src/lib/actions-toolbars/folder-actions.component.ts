@@ -25,21 +25,13 @@ import { of, BehaviorSubject, Observable } from 'rxjs';
   `,
   styles: [
     `
-      .has-pointer {
-        cursor: pointer;
-      }
       button.action {
         margin-right: 10px;
       }
-      .flexr {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
-      .scroll-x {
-        overflow-x: auto;
-      }
     `
+  ],
+  styleUrls: [
+    '../shared-utility-styles.scss'
   ]
 })
 export class AppFolderActionsComponent implements OnInit {

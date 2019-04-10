@@ -1,0 +1,41 @@
+.is-red {
+  background: red;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+.align-center {
+  align-items: center;
+}
+.fit-content {
+  width: fit-content;
+}
+.sans-serif {
+  font-family: sans-serif;
+}
+.has-pointer {
+  cursor: pointer;
+}
+.scroll-x {
+  overflow-x: auto;
+}
+.full-width {
+  width: 100%;
+}
+.text-center {
+  text-align: center;
+}
+.space-between {
+  justify-content: space-between;
+}
+.capitalize {
+  text-transform: capitalize;
+}
+.p5 {
+  padding: 5px;
+}

@@ -3,16 +3,16 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ResFile } from 'ngx-filemanager-core/public_api';
 import { FormControl } from '@angular/forms';
 
-export interface CopyDialogInterface {
+export interface MoveDialogInterface {
   files: ResFile[];
 }
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'ngx-filemanager-copy-dialog',
+  selector: 'ngx-filemanager-move-dialog',
   template: `
-    <div class="sans-serif">
-      <h2>Copy Items</h2>
+    <div>
+      <h2>Move Items</h2>
       <div>
         <h5>Selected Items</h5>
         <ol>
@@ -22,7 +22,11 @@ export interface CopyDialogInterface {
         </ol>
       </div>
       <mat-form-field>
-        <input matInput [formControl]="folderName" (keyup.enter)="onSubmit()" />
+        <input
+          matInput
+          [formControl]="folderName"
+          (keyup.enter)="onSubmit()"
+        />
       </mat-form-field>
       <btns-cancel-ok
         okIcon="content_copy"
@@ -37,13 +41,13 @@ export interface CopyDialogInterface {
     '../shared-utility-styles.scss'
   ]
 })
-export class AppDialogCopyComponent {
-  folderName = new FormControl('New folder');
+export class AppDialogMoveComponent {
+  folderName = new FormControl('');
   items: ResFile[];
 
   constructor(
-    public dialogRef: MatDialogRef<AppDialogCopyComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: CopyDialogInterface
+    public dialogRef: MatDialogRef<AppDialogMoveComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: MoveDialogInterface
   ) {
     this.items = data.files;
   }

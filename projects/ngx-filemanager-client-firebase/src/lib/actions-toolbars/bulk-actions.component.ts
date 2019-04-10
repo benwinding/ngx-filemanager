@@ -7,10 +7,10 @@ import { ActionButton } from './ActionButton';
   template: `
     <mat-toolbar color="primary">
       <mat-toolbar-row>
-        <div class="flexr">
+        <div class="flex-row">
           <div *ngFor="let action of bulkActions">
             <button
-              class="action flexr"
+              class="action flex-row align-center"
               mat-raised-button
               [color]="action.color"
               (click)="action.onClick(action)"
@@ -28,12 +28,10 @@ import { ActionButton } from './ActionButton';
       button.action {
         margin-right: 10px;
       }
-      .flexr {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
     `
+  ],
+  styleUrls: [
+    '../shared-utility-styles.scss'
   ]
 })
 export class AppBulkActionsComponent implements OnInit {

@@ -1,18 +1,23 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
+import { FormControl } from '@angular/forms';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-new-folder-dialog',
   template: `
-    <div>
-      <h2>Create Folder</h2>
-      <input
-        matInput
-        [(ngModel)]="folderName"
-        [ngModelOptions]="{ standalone: true }"
-        (keyup.enter)="onSubmit()"
-      />
+    <div class="sans-serif flex-col align-center">
+      <div class="is-red">
+        <h2>Create Folder</h2>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="New Folder Name"
+            [formControl]="folderName"
+            (keyup.enter)="onSubmit()"
+          />
+        </mat-form-field>
+      </div>
       <btns-cancel-ok
         okIcon="done"
         okLabel="Create Folder"
@@ -22,22 +27,17 @@ import { MatDialogRef } from '@angular/material';
       </btns-cancel-ok>
     </div>
   `,
-  styles: [
-    `
-      .flexRow {
-        display: flex;
-        flex-direction: row;
-      }
-    `
+  styleUrls: [
+    '../shared-utility-styles.scss'
   ]
 })
 export class AppDialogNewFolderComponent {
-  folderName = 'New folder';
+  folderName = new FormControl('New folder');
 
   constructor(public dialogRef: MatDialogRef<AppDialogNewFolderComponent>) {}
 
   onSubmit() {
-    this.dialogRef.close(this.folderName);
+    this.dialogRef.close(this.folderName.value);
   }
   onCancel() {
     this.dialogRef.close();

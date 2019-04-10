@@ -10,7 +10,7 @@ export interface CopyDialogInterface {
   // tslint:disable-next-line:component-selector
   selector: 'btns-cancel-ok',
   template: `
-    <div class="full-c">
+    <div class="full-width text-center">
       <button mat-raised-button (click)="clickedCancel.emit()">
         <mat-icon>clear</mat-icon>
         Cancel
@@ -28,10 +28,6 @@ export interface CopyDialogInterface {
   `,
   styles: [
     `
-      .full-c {
-        width: 100%;
-        text-align: center;
-      }
       button {
         margin: 5px;
       }

@@ -28,13 +28,8 @@ export interface RenameDialogInterface {
       </btns-cancel-ok>
     </div>
   `,
-  styles: [
-    `
-      .flexRow {
-        display: flex;
-        flex-direction: row;
-      }
-    `
+  styleUrls: [
+    '../shared-utility-styles.scss'
   ]
 })
 export class AppDialogRenameComponent {

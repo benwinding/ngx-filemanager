@@ -43,6 +43,9 @@ export interface UploadDialogInterface {
         overflow: hidden;
       }
     `
+  ],
+  styleUrls: [
+    '../shared-utility-styles.scss'
   ]
 })
 export class AppDialogUploadFilesComponent {

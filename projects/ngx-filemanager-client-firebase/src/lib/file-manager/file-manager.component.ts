@@ -18,14 +18,17 @@ import {
   AppDialogUploadFilesComponent,
   UploadDialogInterface
 } from '../dialogs/dialog-upload.component';
-import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
 import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
+import {
+  AppDialogMoveComponent,
+  MoveDialogInterface
+} from '../dialogs/dialog-move.component';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager',
   templateUrl: 'file-manager.component.html',
-  styleUrls: ['file-manager.component.scss']
+  styleUrls: ['file-manager.component.scss', '../shared-utility-styles.scss']
 })
 export class NgxFileManagerComponent implements OnInit {
   @Input()
@@ -51,9 +54,7 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   private async getCurrentPath() {
-    const currentPath = await this.$CurrentPath
-      .pipe(take(1))
-      .toPromise();
+    const currentPath = await this.$CurrentPath.pipe(take(1)).toPromise();
     return currentPath;
   }
 
@@ -94,7 +95,12 @@ export class NgxFileManagerComponent implements OnInit {
         {
           label: 'Copy',
           icon: 'content_copy',
-          onClick: async (files: ResFile) => this.onCopyMultiple([files])
+          onClick: async (file: ResFile) => this.onCopyMultiple([file])
+        },
+        {
+          label: 'Move',
+          icon: 'border_color',
+          onClick: async (file: ResFile) => this.onMoveMultiple([file])
         },
         {
           label: 'Rename',
@@ -109,7 +115,7 @@ export class NgxFileManagerComponent implements OnInit {
         {
           label: 'Delete',
           icon: 'delete',
-          onClick: async (file: ResFile) => this.onDelete([file])
+          onClick: async (file: ResFile) => this.onDeleteMultiple([file])
         }
       ],
       onSelectedBulk: (files: ResFile[]) => {
@@ -147,6 +153,18 @@ export class NgxFileManagerComponent implements OnInit {
       return;
     }
     await this.optimisticFs.HandleRename(file.fullPath, renamedPath);
+    this.refreshExplorer();
+  }
+
+  private async onMoveMultiple(files: ResFile[]) {
+    const renamedPath = await this.openDialog(AppDialogMoveComponent, {
+      files: files
+    } as MoveDialogInterface);
+    if (!renamedPath) {
+      return;
+    }
+    const filePaths = files.map(f => f.fullPath);
+    await this.optimisticFs.HandleMoveMultiple(filePaths, renamedPath);
     this.refreshExplorer();
   }
 
@@ -209,7 +227,7 @@ export class NgxFileManagerComponent implements OnInit {
     link.click();
   }
 
-  private async onDelete(files: ResFile[]) {
+  private async onDeleteMultiple(files: ResFile[]) {
     console.log('file-manager: deleting files', { files });
     const deletedPaths = files.map(f => f.fullPath);
     await this.optimisticFs.HandleRemove(deletedPaths);
@@ -217,7 +235,7 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   public async onClickDelete(file: ResFile) {
-    await this.onDelete([file]);
+    await this.onDeleteMultiple([file]);
     this.refreshExplorer();
   }
 
@@ -269,13 +287,15 @@ export class NgxFileManagerComponent implements OnInit {
 
   public async onClickedBulkMove() {
     console.log('file-manager: clickedBulkMove');
+    const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
+    await this.onMoveMultiple(selected);
     this.clearBulkSelected();
   }
 
   public async onClickedBulkDelete() {
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
     this.clearBulkSelected();
-    await this.onDelete(selected);
+    await this.onDeleteMultiple(selected);
     this.refreshExplorer();
   }
 
