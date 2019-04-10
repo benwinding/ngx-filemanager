@@ -27,11 +27,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxFilemanagerClientFirebaseModule } from 'ngx-filemanager-client-firebase';
 import { HttpClientModule } from '@angular/common/http';
-import { AppTestPageComponent } from './test-page.component';
-import { AppTestBlankComponent } from './test-blank.component';
+import { AppTestFunctionsLocallyComponent } from './test-functions-locally.component';
+import { AppTestStubFilesystemComponent } from './test-stub-filesystem.component';
+import { AppTestFunctionsRemoteComponent } from './test-functions-remote.component';
 
 @NgModule({
-  declarations: [AppComponent, AppTestPageComponent, AppTestBlankComponent],
+  declarations: [
+    AppComponent,
+    AppTestFunctionsLocallyComponent,
+    AppTestFunctionsRemoteComponent,
+    AppTestStubFilesystemComponent
+  ],
   imports: [
     CommonModule,
     BrowserAnimationsModule,

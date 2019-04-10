@@ -103,7 +103,7 @@ import {
     </div>
   `
 })
-export class AppTestPageComponent {
+export class AppTestFunctionsLocallyComponent {
   public config: FileManagerConfig = {
     initialPath: '/'
   };

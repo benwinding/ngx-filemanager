@@ -1,16 +1,21 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppTestPageComponent } from './test-page.component';
-import { AppTestBlankComponent } from './test-blank.component';
+import { AppTestFunctionsRemoteComponent } from './test-functions-remote.component';
+import { AppTestFunctionsLocallyComponent } from './test-functions-locally.component';
+import { AppTestStubFilesystemComponent } from './test-stub-filesystem.component';
 
 const routes: Routes = [
   {
-    path: 'test-page',
-    component: AppTestPageComponent
+    path: 'test-functions-locally',
+    component: AppTestFunctionsLocallyComponent
   },
   {
-    path: 'test-blank',
-    component: AppTestBlankComponent
+    path: 'test-functions-remote',
+    component: AppTestFunctionsRemoteComponent
+  },
+  {
+    path: 'test-stub-filesystem',
+    component: AppTestStubFilesystemComponent
   }
 ];
 

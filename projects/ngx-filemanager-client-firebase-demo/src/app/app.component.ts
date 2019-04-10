@@ -9,10 +9,13 @@ import { Component, OnInit } from '@angular/core';
 
     <ol>
       <li>
-        <a [routerLink]="['/test-blank']"> Test Blank </a>
+        <a [routerLink]="['/test-functions-locally']"> Test functions locally </a>
       </li>
       <li>
-        <a [routerLink]="['/test-page']"> Test 1 </a>
+        <a [routerLink]="['/test-functions-remote']"> Test functions remote </a>
+      </li>
+      <li>
+        <a [routerLink]="['/test-stub-filesystem']"> Test stub filesystem </a>
       </li>
     </ol>
 

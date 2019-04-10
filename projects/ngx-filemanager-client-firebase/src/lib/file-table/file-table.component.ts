@@ -32,17 +32,27 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
         </div>
       </ng-template>
       <ng-template #actionsTemplate let-row>
-        <button mat-mini-fab color="primary" (click)="this.clickedDownload.emit(row)">
-          <mat-icon>file_download</mat-icon>
+        <button
+          mat-mini-fab
+          color="primary"
+          (click)="this.clickedDownload.emit(row)"
+        >
+          <mat-icon>launch</mat-icon>
         </button>
       </ng-template>
     </ngx-auto-table>
   `,
-  styles: [`
-  .icon {
-    height: 35px;
-  }
-  `]
+  styles: [
+    `
+      .icon {
+        height: 35px;
+      }
+      .break-word {
+        overflow-wrap: break-word;
+        word-break: break-all;
+      }
+    `
+  ]
 })
 export class AppFileTableComponent {
   @Input()

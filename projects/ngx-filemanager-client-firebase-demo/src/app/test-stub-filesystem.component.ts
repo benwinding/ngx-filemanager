@@ -13,7 +13,7 @@ import { FileManagerConfig } from 'ngx-filemanager-client-firebase';
     </div>
   `
 })
-export class AppTestBlankComponent {
+export class AppTestStubFilesystemComponent {
   public blankFileSystem: FileSystemProvider = new FileSystemStub();
   public config: FileManagerConfig = {
     initialPath: '/'
