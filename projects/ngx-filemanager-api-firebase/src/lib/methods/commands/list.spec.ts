@@ -18,7 +18,13 @@ const testStorage = admin.storage();
 const testBucket = testStorage.bucket(testbucketname);
 
 test('ls getFiles 1 /test-subfiles', async () => {
-  const result = await GetListFromStorage(testBucket, '');
+  const options = {
+    delimiter: '/',
+    includeTrailingDelimiter: true,
+    autoPaginate: false
+  } as any;
+
+  const result = await GetFilesAndPrefixes(testBucket, options);
   // files.map(f => (f.ref = null));
   logObj(result);
   // expect(files.length).toBe(4);

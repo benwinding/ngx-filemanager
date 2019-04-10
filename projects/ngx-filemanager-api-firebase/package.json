@@ -1,6 +1,6 @@
 {
   "name": "ngx-filemanager-api-firebase",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "peerDependencies": {
     "express": "~4.16.4",
     "firebase-admin": "~7.2.0"
@@ -9,7 +9,7 @@
     "circular-json": "^0.5.9",
     "@google-cloud/storage": "^2.4.3",
     "@firebase/storage": "^0.2.12",
-    "ngx-filemanager-core": "^0.0.2",
+    "ngx-filemanager-core": "^0.0.4",
     "express-multipart-file-parser": "^0.1.2",
     "request": "^2.88.0"
   }

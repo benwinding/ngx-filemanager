@@ -228,7 +228,9 @@ export class NgxFileManagerComponent implements OnInit {
       console.log('file-manager: onClickNewFolder   no folder created...');
       return;
     }
-    await this.optimisticFs.HandleCreateFolder(newDirName);
+    const currentDirectory = await this.getCurrentPath();
+    const newDirectoryPath = currentDirectory + newDirName;
+    await this.optimisticFs.HandleCreateFolder(newDirectoryPath);
     this.refreshExplorer();
   }
 

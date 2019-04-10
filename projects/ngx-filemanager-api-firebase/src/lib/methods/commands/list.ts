@@ -1,11 +1,11 @@
 import { Bucket, FileFromStorage, File } from '../google-cloud-types';
-import { EnsureNoPrefixSlash, EnsureNoTrailingSlash } from '../path-helpers';
+import { EnsureNoPrefixSlash, EnsureNoTrailingSlash, EnsureTrailingSlash } from '../path-helpers';
 import { GetFilesOptions } from '@google-cloud/storage';
 import {
   translateRawStorage,
   translateStorageDirToResFile,
   translateStorageFileToResFile,
-  makePhantomStorageFolder,
+  makePhantomStorageFolder
 } from '../translation-helpers';
 import { ResFile } from '../core-types';
 import * as request from 'request';
@@ -15,17 +15,29 @@ interface FilesAndPrefixes {
   prefixes: string[];
 }
 
-export async function GetFilesAndPrefixes(
-  bucket: Bucket,
-  prefix: string
-): Promise<FilesAndPrefixes> {
-  const options: GetFilesOptions = {
+export function MakeOptionsListRoot(): GetFilesOptions {
+  return {
     delimiter: '/',
     includeTrailingDelimiter: true,
-    prefix: prefix,
     autoPaginate: false
   } as any;
+}
 
+export function MakeOptionsList(inputDirectoryPath: string) {
+  const pathNoPrefix = EnsureNoPrefixSlash(inputDirectoryPath);
+  const pathParsed = EnsureNoTrailingSlash(pathNoPrefix);
+  return {
+    delimiter: '/',
+    includeTrailingDelimiter: true,
+    directory: pathParsed,
+    autoPaginate: false
+  } as any;
+}
+
+export async function GetFilesAndPrefixes(
+  bucket: Bucket,
+  options: GetFilesOptions
+): Promise<FilesAndPrefixes> {
   return new Promise<FilesAndPrefixes>((resolve, reject) => {
     const callback = (
       err: Error | null,
@@ -38,7 +50,10 @@ export async function GetFilesAndPrefixes(
         return;
       }
       const prefixes = apiResponse['prefixes'] || [];
-      const result: FilesAndPrefixes = { files: files || [], prefixes: prefixes };
+      const result: FilesAndPrefixes = {
+        files: files || [],
+        prefixes: prefixes
+      };
       resolve(result);
     };
     bucket.getFiles(options, callback);
@@ -59,21 +74,28 @@ export async function GetListFromStorage(
   bucket: Bucket,
   inputDirectoryPath: string
 ): Promise<FileFromStorage[]> {
-  const pathNoPrefix = EnsureNoPrefixSlash(inputDirectoryPath);
-  const pathParsed = EnsureNoTrailingSlash(pathNoPrefix);
-  const result = await GetFilesAndPrefixes(bucket, pathParsed);
+  const isRootPath = inputDirectoryPath === '/' || '';
+  let options;
+  if (isRootPath) {
+    options = MakeOptionsListRoot();
+  } else {
+    options = MakeOptionsList(inputDirectoryPath);
+  }
+  const result = await GetFilesAndPrefixes(bucket, options);
   const allObjects = result.files.map(o => translateRawStorage(o));
 
   const allObjectsPathsSet = new Set(allObjects.map(f => f.ref.name));
-  const phantomPrefixes = result.prefixes.filter(prefix => !allObjectsPathsSet.has(prefix));
+  const phantomPrefixes = result.prefixes.filter(
+    prefix => !allObjectsPathsSet.has(prefix)
+  );
 
-  const newPhantomFolders = phantomPrefixes.map(phantomPath => makePhantomStorageFolder(phantomPath));
-  // console.log('file paths: ' + JSON.stringify(files.map(f => f.fullPath), null, 2));
-  const combinedList = [
-    ...allObjects,
-    ...newPhantomFolders
-  ];
-  return combinedList;
+  const newPhantomFolders = phantomPrefixes.map(phantomPath =>
+    makePhantomStorageFolder(phantomPath)
+  );
+  const combinedList = [...allObjects, ...newPhantomFolders];
+  const pathParsed = EnsureNoPrefixSlash(EnsureTrailingSlash(inputDirectoryPath));
+  const filesWithoutCurrentDirectory = combinedList.filter(f => f.fullPath !== pathParsed);
+  return filesWithoutCurrentDirectory;
 }
 
 export async function GetList(

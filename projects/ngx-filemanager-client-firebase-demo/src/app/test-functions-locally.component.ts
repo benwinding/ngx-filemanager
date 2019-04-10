@@ -19,9 +19,11 @@ export class AppTestFunctionsLocallyComponent {
     initialPath: '/'
   };
   constructor(public firebaseClientProvider: ServerFilesystemProviderService) {
-    const bucketName = 'cl-building-storage';
-    const apiEndpoint =
-      'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files';
+    const bucketName = 'cl-system-content';
+    // const bucketName = 'cl-building-storage';
+    const apiEndpoint = 'http://localhost:4444/ApiPublic/files';
+    // const apiEndpoint =
+    //   'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files';
     this.firebaseClientProvider.Initialize(bucketName, apiEndpoint);
   }
 }
