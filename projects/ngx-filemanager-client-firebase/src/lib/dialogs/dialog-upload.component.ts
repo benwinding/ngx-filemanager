@@ -11,7 +11,7 @@ export interface UploadDialogInterface {
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-upload-files-dialog',
   template: `
-    <div class="dialog">
+    <div class="dialog sans-serif">
       <h2>Upload Files</h2>
       <h5>To Folder: {{ currentDirectory }}</h5>
       <div>
@@ -44,9 +44,7 @@ export interface UploadDialogInterface {
       }
     `
   ],
-  styleUrls: [
-    '../shared-utility-styles.scss'
-  ]
+  styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogUploadFilesComponent {
   currentDirectory = '';

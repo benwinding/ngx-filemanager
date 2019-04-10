@@ -11,31 +11,45 @@ export interface CopyDialogInterface {
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-copy-dialog',
   template: `
-    <div class="sans-serif">
-      <h2>Copy Items</h2>
-      <div>
-        <h5>Selected Items</h5>
-        <ol>
-          <li *ngFor="let file of items">
-            {{ file.name }}
-          </li>
-        </ol>
-      </div>
-      <mat-form-field>
-        <input matInput [formControl]="folderName" (keyup.enter)="onSubmit()" />
-      </mat-form-field>
-      <btns-cancel-ok
-        okIcon="content_copy"
-        okLabel="Copy"
-        (clickedCancel)="onCancel()"
-        (clickedOk)="onSubmit()"
-      >
-      </btns-cancel-ok>
-    </div>
+    <base-dialog
+      [header]="headerTemplate"
+      [body]="bodyTemplate"
+      [actions]="actionsTemplate"
+    >
+      <ng-template #headerTemplate>
+        <h2 class="sans-serif">Copy Items</h2>
+      </ng-template>
+      <ng-template #bodyTemplate>
+        <div class="sans-serif flex-col align-center">
+          <div>
+            <h5>Selected Items</h5>
+            <ol>
+              <li *ngFor="let file of items">
+                {{ file.name }}
+              </li>
+            </ol>
+          </div>
+          <mat-form-field>
+            <input
+              matInput
+              [formControl]="folderName"
+              (keyup.enter)="onSubmit()"
+            />
+          </mat-form-field>
+        </div>
+      </ng-template>
+      <ng-template #actionsTemplate>
+        <btns-cancel-ok
+          okIcon="content_copy"
+          okLabel="Copy"
+          (clickedCancel)="onCancel()"
+          (clickedOk)="onSubmit()"
+        >
+        </btns-cancel-ok>
+      </ng-template>
+    </base-dialog>
   `,
-  styleUrls: [
-    '../shared-utility-styles.scss'
-  ]
+  styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogCopyComponent {
   folderName = new FormControl('New folder');

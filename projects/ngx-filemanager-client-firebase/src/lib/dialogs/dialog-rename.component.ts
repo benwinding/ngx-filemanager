@@ -10,15 +10,17 @@ export interface RenameDialogInterface {
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-rename-file-dialog',
   template: `
-    <div>
-      <h2>Rename Item</h2>
-      <h5>Old Path: {{ data.currentFilename }}</h5>
-      <input
-        matInput
-        [(ngModel)]="renamedItem"
-        [ngModelOptions]="{ standalone: true }"
-        (keyup.enter)="onSubmit()"
-      />
+    <div class="sans-serif flex-col align-center">
+      <div>
+        <h2>Rename Item</h2>
+        <h5>Old Path: {{ data.currentFilename }}</h5>
+        <input
+          matInput
+          [(ngModel)]="renamedItem"
+          [ngModelOptions]="{ standalone: true }"
+          (keyup.enter)="onSubmit()"
+        />
+      </div>
       <btns-cancel-ok
         okIcon="done"
         okLabel="Rename Folder"
@@ -28,9 +30,7 @@ export interface RenameDialogInterface {
       </btns-cancel-ok>
     </div>
   `,
-  styleUrls: [
-    '../shared-utility-styles.scss'
-  ]
+  styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogRenameComponent {
   renamedItem = '';

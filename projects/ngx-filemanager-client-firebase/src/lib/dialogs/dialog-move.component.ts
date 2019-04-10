@@ -11,9 +11,9 @@ export interface MoveDialogInterface {
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-move-dialog',
   template: `
-    <div>
-      <h2>Move Items</h2>
+    <div class="sans-serif flex-col align-center">
       <div>
+        <h2>Move Items</h2>
         <h5>Selected Items</h5>
         <ol>
           <li *ngFor="let file of items">
@@ -22,11 +22,7 @@ export interface MoveDialogInterface {
         </ol>
       </div>
       <mat-form-field>
-        <input
-          matInput
-          [formControl]="folderName"
-          (keyup.enter)="onSubmit()"
-        />
+        <input matInput [formControl]="folderName" (keyup.enter)="onSubmit()" />
       </mat-form-field>
       <btns-cancel-ok
         okIcon="content_copy"
@@ -37,9 +33,7 @@ export interface MoveDialogInterface {
       </btns-cancel-ok>
     </div>
   `,
-  styleUrls: [
-    '../shared-utility-styles.scss'
-  ]
+  styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogMoveComponent {
   folderName = new FormControl('');

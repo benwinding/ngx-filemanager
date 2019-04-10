@@ -44,8 +44,10 @@ import { ServerFilesystemProviderService } from './filesystem/server-filesystem.
 import { ClientFileSystemService } from './filesystem/client-filesystem.service';
 import { OptimisticFilesystemService } from './filesystem/optimistic-filesystem.service';
 import { AppDialogMoveComponent } from './dialogs/dialog-move.component';
+import { BaseDialogComponent } from './dialogs/base-dialog.component';
 
 const dialogComponents = [
+  BaseDialogComponent,
   AppDialogRenameComponent,
   AppDialogNewFolderComponent,
   AppDialogSetPermissionsComponent,
