@@ -39,6 +39,7 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
             <button
               mat-mini-fab
               color="warn"
+              class="has-pointer"
               (click)="this.clickedDelete.emit(file)"
             >
               <mat-icon>delete</mat-icon>
@@ -58,10 +59,12 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         <button
           mat-mini-fab
           color="primary"
+          class="has-pointer"
           (click)="this.clickedDownload.emit(file)"
         >
           <mat-icon>file_download</mat-icon>
-        </button>        <div class="preview" [class.hidden]="!(isImage && imageUrl)">
+        </button>
+        <div class="preview" [class.hidden]="!(isImage && imageUrl)">
           <h5>Preview</h5>
           <a [href]="imageUrl" target="_blank">
             <img [src]="imageUrl" />
@@ -72,6 +75,9 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
   `,
   styles: [
     `
+      .has-pointer {
+        cursor: pointer;
+      }
       .center {
         align-items: center;
       }

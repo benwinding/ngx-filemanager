@@ -10,7 +10,7 @@ import { of, BehaviorSubject, Observable } from 'rxjs';
       <mat-toolbar-row class="scroll-x">
         <div *ngFor="let action of bulkActions">
           <button
-            class="action"
+            class="action has-pointer"
             mat-raised-button
             [color]="action.color"
             (click)="action.onClick(action)"
@@ -25,6 +25,9 @@ import { of, BehaviorSubject, Observable } from 'rxjs';
   `,
   styles: [
     `
+      .has-pointer {
+        cursor: pointer;
+      }
       button.action {
         margin-right: 10px;
       }
