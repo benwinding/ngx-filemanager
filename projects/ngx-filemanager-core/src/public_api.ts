@@ -49,6 +49,7 @@ export interface ResFile {
   size: string; // bytes
   date: string; // iso format
   type: 'dir' | 'file';
+  isPhantomFolder?: boolean;
 }
 
 export interface ResBodyList {

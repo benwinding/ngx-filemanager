@@ -5,6 +5,7 @@ import '@firebase/storage';
 export interface FileFromStorage {
   ref: File;
   isDir: boolean;
+  isPhantomFolder?: boolean;
   name: string;
   fullPath: string;
 }

@@ -5,7 +5,7 @@ import { Readable } from 'stream';
 import * as request from 'request';
 import * as path from 'path';
 
-export function translateStorageToFileFromStorage(
+export function translateRawStorage(
   storageObject: File
 ): FileFromStorage {
   const filePath = storageObject.name;
@@ -17,26 +17,41 @@ export function translateStorageToFileFromStorage(
   };
 }
 
+export function makePhantomStorageFolder(
+  folderPath: string
+): FileFromStorage {
+  return {
+    ref: null,
+    name: path.basename(folderPath),
+    fullPath: folderPath,
+    isDir: true,
+    isPhantomFolder: true
+  };
+}
+
 export async function translateStorageDirToResFile(
   f: FileFromStorage
 ): Promise<ResFile> {
-  const metaResponse = await f.ref.getMetadata();
-  const meta = metaResponse[0];
+  let metaUpdated = null;
+  if (!f.isPhantomFolder) {
+    const meta = await GetMeta(f);
+    metaUpdated = meta.updated;
+  }
   return {
     name: f.name,
     rights: 'rxrxrx',
     fullPath: f.fullPath,
     size: '0',
-    date: meta.updated,
-    type: 'dir'
+    date: metaUpdated,
+    type: 'dir',
+    isPhantomFolder: f.isPhantomFolder
   };
 }
 
 export async function translateStorageFileToResFile(
   f: FileFromStorage
 ): Promise<ResFile> {
-  const metaResponse = await f.ref.getMetadata();
-  const meta = metaResponse[0];
+  const meta = await GetMeta(f);
   return {
     name: f.name,
     rights: 'rxrxrx',
@@ -45,6 +60,12 @@ export async function translateStorageFileToResFile(
     date: meta.updated,
     type: 'file'
   };
+}
+
+export async function GetMeta(f: FileFromStorage) {
+  const metaResponse = await f.ref.getMetadata();
+  const meta: any = metaResponse[0];
+  return meta;
 }
 
 export async function StreamToPromise(stream: Readable): Promise<string> {
