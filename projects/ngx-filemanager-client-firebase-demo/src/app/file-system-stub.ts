@@ -68,7 +68,7 @@ export class FileSystemStub implements FileSystemProvider {
 
   async List(inputPath: string): Promise<ResBodyList> {
     await this.fakeDelay();
-    const folderPath = this.ensureTrailingSlash(inputPath);
+    const folderPath = this.ensurePrefixSlash(this.ensureTrailingSlash(inputPath));
     const matches = this.files.filter(k => this.isInDirectory(folderPath, k.fullPath));
     this.logger.info('List', { folderPath, files: this.files, matches });
     return {
@@ -179,6 +179,13 @@ export class FileSystemStub implements FileSystemProvider {
       return inputPath;
     }
     return inputPath + '/';
+  }
+  private ensurePrefixSlash(inputPath: string) {
+    const hasPrefix = inputPath.slice(0, 1) === '/';
+    if (hasPrefix) {
+      return inputPath;
+    }
+    return '/' + inputPath;
   }
 
   GetUploadApiUrl(currentPath: string): string {

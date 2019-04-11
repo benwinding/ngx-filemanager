@@ -49,6 +49,7 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         <h6 *ngIf="!isFile">Directory</h6>
         <h6 *ngIf="isFile" class="capitalize">{{ getFileType(file.name) }}</h6>
         <button
+          *ngIf="isFile"
           mat-mini-fab
           color="primary"
           class="has-pointer"

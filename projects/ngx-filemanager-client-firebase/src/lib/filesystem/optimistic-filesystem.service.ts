@@ -141,18 +141,18 @@ export class OptimisticFilesystemService implements OptimisticFilesystem {
     const currentPath = await this.$CurrentPath.pipe(take(1)).toPromise();
     const parentPath = path.dirname(currentPath);
     await this.HandleList(parentPath);
-    const currentFiles = await this.clientFilesystem.$currentFiles
-      .pipe(take(1))
-      .toPromise();
-    this.selectFirstFrom(currentFiles);
+    this.selectFirstInCurrentDirectory();
   }
 
   async onSelectItem(file: core.ResFile) {
     this.clientFilesystem.onSelectItem(file);
   }
 
-  selectFirstFrom(items) {
-    const firstSelected = [...items].shift();
+  async selectFirstInCurrentDirectory() {
+    const currentFiles = await this.clientFilesystem.$currentFiles
+      .pipe(take(1))
+      .toPromise();
+    const firstSelected = [...currentFiles].shift();
     this.$SelectedFile.next(firstSelected);
   }
 }
