@@ -1,19 +1,44 @@
 import { take, map, tap, filter } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as core from 'ngx-filemanager-core';
 import { MakeClientDirectory } from '../utils/file.factory';
 import { getFileIcon, getFolderIcon } from '../utils/icon-url-resolver';
 import { ClientFileSystem } from './client-filesystem';
 import { ClientCache } from './client-cache';
+import { LoggerService } from '../logging/logger.service';
 
 @Injectable()
-export class ClientFileSystemService implements ClientFileSystem {
-  private folderCache = new ClientCache();
-
+export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   public $currentFiles = new BehaviorSubject<core.ResFile[]>([]);
   public $currentPath = new BehaviorSubject<string>(null);
   public $selectedFile = new BehaviorSubject<core.ResFile>(null);
+
+  private folderCache = new ClientCache();
+
+  // tslint:disable-next-line:member-ordering
+  private static instanceCount = 0;
+  private instanceCountIncr() {
+    ClientFileSystemService.instanceCount++;
+    this.logger.info('new instance created', {instances: this.instances});
+  }
+  private instanceCountDecr() {
+    ClientFileSystemService.instanceCount--;
+    this.logger.info('instance destroyed', {instances: this.instances});
+  }
+  get instances() {
+    return ClientFileSystemService.instanceCount;
+  }
+
+  constructor(
+    private logger: LoggerService,
+  ) {
+    this.instanceCountIncr();
+  }
+
+  ngOnDestroy() {
+    this.instanceCountDecr();
+  }
 
   async OnList(path: string): Promise<void> {
     this.$currentPath.next(path);

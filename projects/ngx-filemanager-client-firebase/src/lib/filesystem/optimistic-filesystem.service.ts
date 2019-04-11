@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { FileSystemProvider } from 'ngx-filemanager-core/public_api';
 import { OptimisticFilesystem } from './optimistic-filesystem';
 import * as core from 'ngx-filemanager-core';
@@ -10,13 +10,31 @@ import * as path from 'path-browserify';
 // tslint:disable:member-ordering
 
 @Injectable()
-export class OptimisticFilesystemService implements OptimisticFilesystem {
+export class OptimisticFilesystemService
+  implements OptimisticFilesystem, OnDestroy {
   private serverFilesystem: FileSystemProvider;
+  private clientFilesystem: ClientFileSystemService;
 
-  constructor(
-    private clientFilesystem: ClientFileSystemService,
-    private logger: LoggerService
-  ) {}
+  private static instanceCount = 0;
+  private instanceCountIncr() {
+    OptimisticFilesystemService.instanceCount++;
+    this.logger.info('new instance created', { instances: this.instances });
+  }
+  private instanceCountDecr() {
+    OptimisticFilesystemService.instanceCount--;
+    this.logger.info('instance destroyed', { instances: this.instances });
+  }
+  get instances() {
+    return OptimisticFilesystemService.instanceCount;
+  }
+
+  constructor(private logger: LoggerService) {
+    this.instanceCountIncr();
+  }
+
+  ngOnDestroy() {
+    this.instanceCountDecr();
+  }
 
   get $CurrentPath() {
     return this.clientFilesystem.$currentPath;
@@ -30,8 +48,13 @@ export class OptimisticFilesystemService implements OptimisticFilesystem {
     return this.clientFilesystem.$FilesWithIcons;
   }
 
-  initialize(serverFilesystem: FileSystemProvider) {
+  initialize(
+    serverFilesystem: FileSystemProvider,
+    clientFilesystem: ClientFileSystemService
+  ) {
+    this.logger.info('initializing...', { serverFilesystem, clientFilesystem });
     this.serverFilesystem = serverFilesystem;
+    this.clientFilesystem = clientFilesystem;
   }
 
   async HandleList(directoryPath: string): Promise<void> {

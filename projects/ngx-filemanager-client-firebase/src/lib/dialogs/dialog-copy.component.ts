@@ -1,10 +1,14 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ResFile } from 'ngx-filemanager-core/public_api';
+import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
 import { FormControl } from '@angular/forms';
+import { AutoTableConfig } from 'ngx-auto-table';
+import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
+import { LoggerService } from '../logging/logger.service';
 
 export interface CopyDialogInterface {
   files: ResFile[];
+  serverFilesystem: FileSystemProvider;
 }
 
 @Component({
@@ -27,13 +31,12 @@ export interface CopyDialogInterface {
           </li>
         </ol>
         <div>
-          <mat-form-field>
-            <input
-              matInput
-              [formControl]="folderName"
-              (keyup.enter)="onSubmit()"
-            />
-          </mat-form-field>
+          <app-file-table-mini-folder-browser
+            (clickedOk)="onClickOk($event)"
+            [serverFilesystem]="this.serverFilesystem"
+            currentDirectory="/"
+          >
+          </app-file-table-mini-folder-browser>
         </div>
       </ng-template>
       <ng-template #actionsTemplate>
@@ -52,12 +55,20 @@ export interface CopyDialogInterface {
 export class AppDialogCopyComponent {
   folderName = new FormControl('New folder');
   items: ResFile[];
+  serverFilesystem: FileSystemProvider;
 
   constructor(
+    private logger: LoggerService,
     public dialogRef: MatDialogRef<AppDialogCopyComponent>,
     @Inject(MAT_DIALOG_DATA) public data: CopyDialogInterface
   ) {
+    this.logger.info('initializing dialog:', {data: this.data});
     this.items = data.files;
+    this.serverFilesystem = data.serverFilesystem;
+  }
+
+  onClickOk(file: ResFile) {
+    this.logger.info('clicked this folder:', {file});
   }
 
   onSubmit() {

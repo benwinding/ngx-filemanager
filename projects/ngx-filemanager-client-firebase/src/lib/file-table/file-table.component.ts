@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ResFile } from 'ngx-filemanager-core/public_api';
+import { AutoTableConfig } from 'ngx-auto-table';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -56,7 +57,7 @@ import { ResFile } from 'ngx-filemanager-core/public_api';
 })
 export class AppFileTableComponent {
   @Input()
-  config: any;
+  config: AutoTableConfig<ResFile>;
 
   @Output()
   clickedDownload = new EventEmitter<ResFile>();

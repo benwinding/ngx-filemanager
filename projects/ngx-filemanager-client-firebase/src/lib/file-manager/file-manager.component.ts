@@ -25,12 +25,17 @@ import {
 } from '../dialogs/dialog-move.component';
 import * as path from 'path-browserify';
 import { LoggerService } from '../logging/logger.service';
+import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager',
   templateUrl: 'file-manager.component.html',
-  styleUrls: ['file-manager.component.scss', '../shared-utility-styles.scss']
+  styleUrls: ['file-manager.component.scss', '../shared-utility-styles.scss'],
+  providers: [
+    ClientFileSystemService,
+    OptimisticFilesystemService
+  ]
 })
 export class NgxFileManagerComponent implements OnInit {
   @Input()
@@ -46,6 +51,7 @@ export class NgxFileManagerComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
+    private clientFilesystem: ClientFileSystemService,
     private optimisticFs: OptimisticFilesystemService,
     private logger: LoggerService
   ) {}
@@ -75,7 +81,7 @@ export class NgxFileManagerComponent implements OnInit {
         '<ngx-filemanager> must have input selector [fileSystem] set'
       );
     }
-    this.optimisticFs.initialize(this.fileSystem);
+    this.optimisticFs.initialize(this.fileSystem, this.clientFilesystem);
     this.makeConfig();
     if (this.config && this.config.initialPath) {
       await this.optimisticFs.HandleList(this.config.initialPath);
@@ -114,7 +120,7 @@ export class NgxFileManagerComponent implements OnInit {
         {
           label: 'Permissions',
           icon: 'lock_outline',
-          onClick: async (file: ResFile) => this.onSetPermissions(file)
+          onClick: async (file: ResFile) => this.onSetPermissionsMultiple([file])
         },
         {
           label: 'Delete',
@@ -150,10 +156,11 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   private async onRename(file: ResFile) {
-    const renamedPath = await this.openDialog(AppDialogRenameComponent, {
+    const data: RenameDialogInterface = {
       currentFilename: file.name,
       currentPath: file.fullPath
-    } as RenameDialogInterface);
+    };
+    const renamedPath = await this.openDialog(AppDialogRenameComponent, data);
     if (!renamedPath) {
       return;
     }
@@ -162,41 +169,25 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   private async onMoveMultiple(files: ResFile[]) {
-    const renamedPath = await this.openDialog(AppDialogMoveComponent, {
+    const data: MoveDialogInterface = {
       files: files
-    } as MoveDialogInterface);
-    if (!renamedPath) {
+    };
+    const newFolderPath = await this.openDialog(AppDialogMoveComponent, data);
+    if (!newFolderPath) {
       return;
     }
     const filePaths = files.map(f => f.fullPath);
-    await this.optimisticFs.HandleMoveMultiple(filePaths, renamedPath);
-    this.refreshExplorer();
-  }
-
-  private async onSetPermissions(file: ResFile) {
-    const newPermissions = await this.openDialog(
-      AppDialogSetPermissionsComponent,
-      {
-        files: [file]
-      } as PermissionsDialogInterface
-    );
-    if (!newPermissions) {
-      return;
-    }
-    await this.optimisticFs.HandleSetPermissions(
-      file.fullPath,
-      newPermissions,
-      null
-    );
+    await this.optimisticFs.HandleMoveMultiple(filePaths, newFolderPath);
     this.refreshExplorer();
   }
 
   private async onSetPermissionsMultiple(files: ResFile[]) {
+    const data: PermissionsDialogInterface = {
+      files: files
+    };
     const newPermissions = await this.openDialog(
       AppDialogSetPermissionsComponent,
-      {
-        files: files
-      } as PermissionsDialogInterface
+      data
     );
     if (!newPermissions) {
       return;
@@ -211,9 +202,11 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   private async onCopyMultiple(files: ResFile[]) {
-    const newFolderPath = await this.openDialog(AppDialogCopyComponent, {
-      files: files
-    } as CopyDialogInterface);
+    const data: CopyDialogInterface = {
+      files: files,
+      serverFilesystem: this.fileSystem
+    };
+    const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
     if (!newFolderPath) {
       return;
     }

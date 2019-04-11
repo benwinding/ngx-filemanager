@@ -50,6 +50,7 @@ import { AppDialogCopyComponent } from './dialogs/dialog-copy.component';
 import { AppDialogMoveComponent } from './dialogs/dialog-move.component';
 import { LoggerService } from './logging/logger.service';
 import { ConsoleLoggerService } from './logging/console-logger.service';
+import { AppFileTableMiniFolderBrowserComponent } from './file-table/file-table-mini-folder-browser.component';
 
 const dialogComponents = [
   BaseDialogComponent,
@@ -67,6 +68,7 @@ const dialogComponents = [
     ...dialogComponents,
     NgxFileManagerComponent,
     AppFileTableComponent,
+    AppFileTableMiniFolderBrowserComponent,
     AppBreadCrumbsComponent,
     AppBulkActionsComponent,
     AppFolderActionsComponent,
@@ -106,9 +108,8 @@ const dialogComponents = [
   ],
   exports: [NgxFileManagerComponent],
   providers: [
-    ClientFileSystemService,
     ServerFilesystemProviderService,
-    OptimisticFilesystemService,
+    // OptimisticFilesystemService,
     { provide: LoggerService, useClass: ConsoleLoggerService }
   ]
 })
