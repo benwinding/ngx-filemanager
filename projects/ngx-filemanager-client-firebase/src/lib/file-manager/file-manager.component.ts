@@ -122,21 +122,21 @@ export class NgxFileManagerComponent implements OnInit {
         }
       ],
       onSelectedBulk: (files: ResFile[]) => {
-        this.logger.info('file-manager: onSelectedBulk', {
+        this.logger.info('onSelectedBulk', {
           files,
           length: files.length
         });
         this.$BulkSelected.next(files);
       },
       onSelectItemDoubleClick: async (item: ResFile) => {
-        this.logger.info('file-manager: onSelectItemDoubleClick!', { item });
+        this.logger.info('onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
           this.$triggerClearSelected.next();
           await this.optimisticFs.HandleList(item.fullPath);
         }
       },
       onSelectItem: (item: ResFile) => {
-        this.logger.info('file-manager: onSelectItem!', { item });
+        this.logger.info('onSelectItem!', { item });
         this.optimisticFs.onSelectItem(item);
       },
       $triggerSelectItem: this.$SelectedFile,
@@ -222,7 +222,7 @@ export class NgxFileManagerComponent implements OnInit {
 
   public async onClickDownload(file: ResFile) {
     const url = await this.fileSystem.CreateDownloadLink(file);
-    this.logger.info('file-manager: downloading file', { file, url });
+    this.logger.info('downloading file', { file, url });
     const link = document.createElement('a');
     link.download = file.name;
     link.target = '_blank';
@@ -235,7 +235,7 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   private async onDeleteMultiple(files: ResFile[]) {
-    this.logger.info('file-manager: deleting files', { files });
+    this.logger.info('deleting files', { files });
     const deletedPaths = files.map(f => f.fullPath);
     await this.optimisticFs.HandleRemove(deletedPaths);
     this.refreshExplorer();
@@ -247,10 +247,10 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   public async onClickNewFolder() {
-    this.logger.info('file-manager: onClickNewFolder');
+    this.logger.info('onClickNewFolder');
     const newDirName = await this.openDialog(AppDialogNewFolderComponent);
     if (!newDirName) {
-      this.logger.info('file-manager: onClickNewFolder   no folder created...');
+      this.logger.info('onClickNewFolder   no folder created...');
       return;
     }
     const currentDirectory = await this.getCurrentPath();
@@ -260,13 +260,13 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   public async onClickUpFolder() {
-    this.logger.info('file-manager: onClickUpFolder');
+    this.logger.info('onClickUpFolder');
     await this.optimisticFs.HandleNavigateUp();
     this.refreshExplorer();
   }
 
   public async onClickUploadFiles() {
-    this.logger.info('file-manager: onClickUpload');
+    this.logger.info('onClickUpload');
     const currentPath = await this.getCurrentPath();
     const data: UploadDialogInterface = {
       currentPath: currentPath,
@@ -281,19 +281,19 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   public async onClickedCancelBulk() {
-    this.logger.info('file-manager: onClickCancelBulk');
+    this.logger.info('onClickCancelBulk');
     this.clearBulkSelected();
   }
 
   public async onClickedBulkCopy() {
-    this.logger.info('file-manager: clickedBulkCopy');
+    this.logger.info('clickedBulkCopy');
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
     await this.onCopyMultiple(selected);
     this.clearBulkSelected();
   }
 
   public async onClickedBulkMove() {
-    this.logger.info('file-manager: clickedBulkMove');
+    this.logger.info('clickedBulkMove');
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
     await this.onMoveMultiple(selected);
     this.clearBulkSelected();
@@ -307,7 +307,7 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   public async onClickedBulkPermissions() {
-    this.logger.info('file-manager: clickedBulkPermissions');
+    this.logger.info('clickedBulkPermissions');
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
     await this.onSetPermissionsMultiple(selected);
     this.clearBulkSelected();
