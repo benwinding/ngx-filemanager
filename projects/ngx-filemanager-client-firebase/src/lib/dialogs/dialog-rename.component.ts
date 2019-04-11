@@ -1,5 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { FormControl } from '@angular/forms';
+import * as path from 'path-browserify';
 
 export interface RenameDialogInterface {
   currentPath: string;
@@ -10,46 +12,67 @@ export interface RenameDialogInterface {
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-rename-file-dialog',
   template: `
-    <div class="sans-serif flex-col align-center">
-      <div>
+    <base-dialog
+      [header]="headerTemplate"
+      [body]="bodyTemplate"
+      [actions]="actionsTemplate"
+    >
+      <ng-template #headerTemplate>
         <h2>Rename Item</h2>
-        <h5>Old Path: {{ data.currentFilename }}</h5>
-        <input
-          matInput
-          [(ngModel)]="renamedItem"
-          [ngModelOptions]="{ standalone: true }"
-          (keyup.enter)="onSubmit()"
-        />
-      </div>
-      <btns-cancel-ok
-        okIcon="done"
-        okLabel="Rename Folder"
-        (clickedCancel)="onCancel()"
-        (clickedOk)="onSubmit()"
-      >
-      </btns-cancel-ok>
-    </div>
+      </ng-template>
+      <ng-template #bodyTemplate>
+        <h5 class="p5 m0">Old Path: {{ data.currentFilename }}</h5>
+        <h5 class="p5 m0">New Path: {{ newPath }}</h5>
+
+        <div>
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="New Name"
+              [formControl]="renamedItem"
+              (keyup.enter)="onSubmit()"
+            />
+          </mat-form-field>
+        </div>
+      </ng-template>
+      <ng-template #actionsTemplate>
+        <btns-cancel-ok
+          okIcon="done"
+          okLabel="Rename Item"
+          (clickedCancel)="onCancel()"
+          (clickedOk)="onSubmit()"
+        >
+        </btns-cancel-ok>
+      </ng-template>
+    </base-dialog>
   `,
+  styles: [`
+
+  `],
   styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogRenameComponent {
-  renamedItem = '';
+  renamedItem = new FormControl();
 
   constructor(
     public dialogRef: MatDialogRef<AppDialogRenameComponent>,
     @Inject(MAT_DIALOG_DATA) public data: RenameDialogInterface
   ) {
-    this.renamedItem = data.currentFilename;
+    this.renamedItem.setValue(data.currentFilename);
   }
 
   onSubmit() {
-    const slashSegments = this.data.currentPath.split('/');
-    slashSegments.pop();
-    const parent = slashSegments.join('/');
-    const renamedFullPath = parent + '/' + this.renamedItem;
+    const renamedFullPath = this.newPath;
     this.dialogRef.close(renamedFullPath);
   }
   onCancel() {
     this.dialogRef.close();
+  }
+
+  get newPath() {
+    const directoryPath = path.dirname(this.data.currentPath);
+    const newItemName = this.renamedItem.value;
+    const renamedFullPath = path.join(directoryPath, newItemName);
+    return renamedFullPath;
   }
 }

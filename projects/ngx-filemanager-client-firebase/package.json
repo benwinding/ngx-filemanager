@@ -15,6 +15,7 @@
   "dependencies": {
     "@angular/cdk": "^7.3.6",
     "@ctrl/ngx-csv": "^1.1.6",
+    "path-browserify": "1.0.0",
     "ngx-auto-table": "^0.2.4",
     "ngx-dropzone-wrapper": "^7.2.1",
     "ngx-filemanager-core": "^0.0.2"

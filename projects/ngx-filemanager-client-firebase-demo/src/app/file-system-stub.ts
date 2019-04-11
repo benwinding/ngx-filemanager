@@ -11,11 +11,13 @@ import {
   ResFile,
   ResBodySetPermissions
 } from 'ngx-filemanager-core/public_api';
+import * as path from 'path-browserify';
+import { ConsoleLoggerService } from './logger';
 
-function MakeFakeFile(path: string, isDir?: boolean): ResFile {
+function MakeFakeFile(filePath: string, isDir?: boolean): ResFile {
   return {
-    name: path.split('/').pop(),
-    fullPath: path,
+    name: path.basename(filePath),
+    fullPath: filePath,
     rights: 'zzrwrws',
     size: '111',
     date: new Date().toISOString(),
@@ -24,6 +26,8 @@ function MakeFakeFile(path: string, isDir?: boolean): ResFile {
 }
 
 export class FileSystemStub implements FileSystemProvider {
+  logger = new ConsoleLoggerService();
+
   files: ResFile[] = [
     MakeFakeFile('/image1.png'),
     MakeFakeFile('/image2.jpeg'),
@@ -35,7 +39,10 @@ export class FileSystemStub implements FileSystemProvider {
     MakeFakeFile('/emptyFolder', true),
     MakeFakeFile('/subfolder', true),
     MakeFakeFile('/subfolder/fake.file'),
-    MakeFakeFile('/subfolder/fake2.file')
+    MakeFakeFile('/subfolder/fake2.file'),
+    MakeFakeFile('/subfolder/sub2/', true),
+    MakeFakeFile('/subfolder/sub2/fa_ke.file'),
+    MakeFakeFile('/subfolder/sub2/fa_ke2.file')
   ];
 
   private async fakeDelay() {
@@ -53,20 +60,26 @@ export class FileSystemStub implements FileSystemProvider {
       return this.files.filter(f => !itemsSet.has(f.fullPath));
     }
   }
+  private isInDirectory(dirPath, filePath) {
+    const relative = path.relative(dirPath, filePath);
+    const isSubdir = relative && !relative.startsWith('..') && !relative.includes('/');
+    return isSubdir;
+  }
+
   async List(inputPath: string): Promise<ResBodyList> {
     await this.fakeDelay();
-    const hasTrailing = inputPath.slice(-1) === '/';
-    const path = hasTrailing ? inputPath : inputPath + '/';
-    const matches = this.files.filter(k => k.fullPath.indexOf(path) === 0);
-    console.log('file-system-stub: List', { path, files: this.files, matches });
+    const folderPath = this.ensureTrailingSlash(inputPath);
+    const matches = this.files.filter(k => this.isInDirectory(folderPath, k.fullPath));
+    this.logger.info('List', { folderPath, files: this.files, matches });
     return {
       result: matches
     };
   }
   async Rename(item: string, newItemPath: string): Promise<ResBodyRename> {
     await this.fakeDelay();
+    const baseName = path.basename(newItemPath);
     this.selectMatches([item], true).map(match => {
-      match.name = newItemPath.split('/').pop();
+      match.name = baseName;
       match.fullPath = newItemPath;
     });
     return null;
@@ -123,9 +136,7 @@ export class FileSystemStub implements FileSystemProvider {
     await this.fakeDelay();
     this.selectMatches(items, true).map(f => {
       const copy = { ...f };
-      const slashes = copy.fullPath.split('/');
-      const fileName = slashes.pop();
-      copy.fullPath = newPath + '/' + fileName;
+      copy.fullPath = path.join(newPath, f.name);
       this.files.push(copy);
     });
     return null;
@@ -133,9 +144,7 @@ export class FileSystemStub implements FileSystemProvider {
   async MoveMultiple(items: string[], newPath: string): Promise<ResBodyMove> {
     await this.fakeDelay();
     this.selectMatches(items, true).map(f => {
-      const slashes = f.fullPath.split('/');
-      const fileName = slashes.pop();
-      f.fullPath = newPath + '/' + fileName;
+      f.fullPath = path.join(newPath, f.name);
     });
     return null;
   }
@@ -146,7 +155,7 @@ export class FileSystemStub implements FileSystemProvider {
     recursive?: boolean
   ): Promise<ResBodySetPermissions> {
     await this.fakeDelay();
-    console.log('file-system-stub: SetPermissionsMultiple', { items, files: this.files });
+    this.logger.info('file-system-stub: SetPermissionsMultiple', { items, files: this.files });
     this.selectMatches(items, true).map(f => {
       f.rights = perms;
       if (recursive) {
@@ -162,6 +171,14 @@ export class FileSystemStub implements FileSystemProvider {
     const itemsNotDeleted = this.files.filter(f => !itemsSet.has(f.fullPath));
     this.files = itemsNotDeleted;
     return null;
+  }
+
+  private ensureTrailingSlash(inputPath: string) {
+    const hasTrailing = inputPath.slice(-1) === '/';
+    if (hasTrailing) {
+      return inputPath;
+    }
+    return inputPath + '/';
   }
 
   GetUploadApiUrl(currentPath: string): string {

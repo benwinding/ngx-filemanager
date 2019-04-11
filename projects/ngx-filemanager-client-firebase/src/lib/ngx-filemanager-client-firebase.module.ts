@@ -25,26 +25,31 @@ import {
   MatTabsModule,
   MatCardModule
 } from '@angular/material';
-import { AppDialogRenameComponent } from './dialogs/dialog-rename.component';
-import { AppDialogNewFolderComponent } from './dialogs/dialog-new-folder.component';
+import { HttpClientModule } from '@angular/common/http';
+import { DropzoneModule } from 'ngx-dropzone-wrapper';
+
 import { FileDetailsComponent } from './file-details/file-details.component';
 import { FileSizePipe } from './utils/file-size.pipe';
-import { NgxFileManagerComponent } from './file-manager/file-manager.component';
-import { HttpClientModule } from '@angular/common/http';
-import { AppDialogSetPermissionsComponent } from './dialogs/dialog-setpermissions.component';
-import { AppDialogCopyComponent } from './dialogs/dialog-copy.component';
+import { ServerFilesystemProviderService } from './filesystem/server-filesystem.service';
+import { ClientFileSystemService } from './filesystem/client-filesystem.service';
+import { OptimisticFilesystemService } from './filesystem/optimistic-filesystem.service';
+
 import { AppFileTableComponent } from './file-table/file-table.component';
 import { AppBreadCrumbsComponent } from './bread-crumbs/bread-crumbs.component';
 import { AppBulkActionsComponent } from './actions-toolbars/bulk-actions.component';
 import { AppFolderActionsComponent } from './actions-toolbars/folder-actions.component';
-import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component';
-import { AppBtnsCancelOkComponent } from './dialogs/btns-cancel-ok.component';
-import { DropzoneModule } from 'ngx-dropzone-wrapper';
-import { ServerFilesystemProviderService } from './filesystem/server-filesystem.service';
-import { ClientFileSystemService } from './filesystem/client-filesystem.service';
-import { OptimisticFilesystemService } from './filesystem/optimistic-filesystem.service';
-import { AppDialogMoveComponent } from './dialogs/dialog-move.component';
+import { NgxFileManagerComponent } from './file-manager/file-manager.component';
+
 import { BaseDialogComponent } from './dialogs/base-dialog.component';
+import { AppBtnsCancelOkComponent } from './dialogs/btns-cancel-ok.component';
+import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component';
+import { AppDialogRenameComponent } from './dialogs/dialog-rename.component';
+import { AppDialogNewFolderComponent } from './dialogs/dialog-new-folder.component';
+import { AppDialogSetPermissionsComponent } from './dialogs/dialog-setpermissions.component';
+import { AppDialogCopyComponent } from './dialogs/dialog-copy.component';
+import { AppDialogMoveComponent } from './dialogs/dialog-move.component';
+import { LoggerService } from './logging/logger.service';
+import { ConsoleLoggerService } from './logging/console-logger.service';
 
 const dialogComponents = [
   BaseDialogComponent,
@@ -103,7 +108,8 @@ const dialogComponents = [
   providers: [
     ClientFileSystemService,
     ServerFilesystemProviderService,
-    OptimisticFilesystemService
+    OptimisticFilesystemService,
+    { provide: LoggerService, useClass: ConsoleLoggerService }
   ]
 })
 export class NgxFilemanagerClientFirebaseModule {}

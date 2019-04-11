@@ -12,20 +12,18 @@ import { FormControl } from '@angular/forms';
       [actions]="actionsTemplate"
     >
       <ng-template #headerTemplate>
-        <h2 class="sans-serif">Create Folder</h2>
+        <h2>Create Folder</h2>
       </ng-template>
       <ng-template #bodyTemplate>
-        <div class="flex-col align-center">
-          <div>
-            <mat-form-field>
-              <input
-                matInput
-                placeholder="New Folder Name"
-                [formControl]="folderName"
-                (keyup.enter)="onSubmit()"
-              />
-            </mat-form-field>
-          </div>
+        <div>
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="New Folder Name"
+              [formControl]="folderName"
+              (keyup.enter)="onSubmit()"
+            />
+          </mat-form-field>
         </div>
       </ng-template>
       <ng-template #actionsTemplate>

@@ -6671,6 +6671,13 @@ ngx-dropzone-wrapper@^7.2.1:
   dependencies:
     dropzone "^5.5.0"
 
+ngx-logger@^3.3.12:
+  version "3.3.12"
+  resolved "https://registry.yarnpkg.com/ngx-logger/-/ngx-logger-3.3.12.tgz#203587cf0176462ea9bc0403e3e75d5324c5c7a2"
+  integrity sha512-qO5+WUcCFGM5E+m/SEhz3FrL9UR3l2Q3ZgrlvBsCn+ihyn4G8rhFrUMsidTMSvTJq9NLF6UOqnWh4BOmXHF33Q==
+  dependencies:
+    tslib "^1.9.0"
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
@@ -7332,6 +7339,11 @@ path-browserify@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-0.0.0.tgz#a0b870729aae214005b7d5032ec2cbbb0fb4451a"
   integrity sha1-oLhwcpquIUAFt9UDLsLLuw+0RRo=
+
+path-browserify@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-1.0.0.tgz#40702a97af46ae00b0ea6fa8998c0b03c0af160d"
+  integrity sha512-Hkavx/nY4/plImrZPHRk2CL9vpOymZLgEbMNX1U0bjcBL7QN9wODxyx0yaMZURSQaUtSEvDrfAvxa9oPb0at9g==
 
 path-dirname@^1.0.0:
   version "1.0.2"

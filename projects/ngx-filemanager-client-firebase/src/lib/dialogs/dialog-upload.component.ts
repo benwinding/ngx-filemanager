@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { LoggerService } from '../logging/logger.service';
 
 export interface UploadDialogInterface {
   currentPath: string;
@@ -63,6 +64,7 @@ export class AppDialogUploadFilesComponent {
   }
 
   constructor(
+    private logger: LoggerService,
     public dialogRef: MatDialogRef<AppDialogUploadFilesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: UploadDialogInterface
   ) {
@@ -80,13 +82,13 @@ export class AppDialogUploadFilesComponent {
 
   onProcessingBegin($event) {
     const uuid = $event.upload.uuid;
-    console.log('onProcessingBegin', { $event, uuid });
+    this.logger.info('onProcessingBegin', { $event, uuid });
     this.addToQueue(uuid);
   }
 
   onUploadSuccess($event) {
     const uuid = $event.shift().upload.uuid;
-    console.log('onUploadSuccess', { $event, uuid });
+    this.logger.info('onUploadSuccess', { $event, uuid });
     this.removeFromQueue(uuid);
   }
 

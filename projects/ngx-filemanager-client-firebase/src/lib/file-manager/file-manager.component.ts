@@ -23,6 +23,8 @@ import {
   AppDialogMoveComponent,
   MoveDialogInterface
 } from '../dialogs/dialog-move.component';
+import * as path from 'path-browserify';
+import { LoggerService } from '../logging/logger.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -44,7 +46,8 @@ export class NgxFileManagerComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
-    private optimisticFs: OptimisticFilesystemService
+    private optimisticFs: OptimisticFilesystemService,
+    private logger: LoggerService
   ) {}
 
   // Getters
@@ -99,7 +102,7 @@ export class NgxFileManagerComponent implements OnInit {
         },
         {
           label: 'Move',
-          icon: 'border_color',
+          icon: 'forward',
           onClick: async (file: ResFile) => this.onMoveMultiple([file])
         },
         {
@@ -119,21 +122,21 @@ export class NgxFileManagerComponent implements OnInit {
         }
       ],
       onSelectedBulk: (files: ResFile[]) => {
-        console.log('file-manager: onSelectedBulk', {
+        this.logger.info('file-manager: onSelectedBulk', {
           files,
           length: files.length
         });
         this.$BulkSelected.next(files);
       },
       onSelectItemDoubleClick: async (item: ResFile) => {
-        console.log('file-manager: onSelectItemDoubleClick!', { item });
+        this.logger.info('file-manager: onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
           this.$triggerClearSelected.next();
           await this.optimisticFs.HandleList(item.fullPath);
         }
       },
       onSelectItem: (item: ResFile) => {
-        console.log('file-manager: onSelectItem!', { item });
+        this.logger.info('file-manager: onSelectItem!', { item });
         this.optimisticFs.onSelectItem(item);
       },
       $triggerSelectItem: this.$SelectedFile,
@@ -219,7 +222,7 @@ export class NgxFileManagerComponent implements OnInit {
 
   public async onClickDownload(file: ResFile) {
     const url = await this.fileSystem.CreateDownloadLink(file);
-    console.log('file-manager: downloading file', { file, url });
+    this.logger.info('file-manager: downloading file', { file, url });
     const link = document.createElement('a');
     link.download = file.name;
     link.target = '_blank';
@@ -227,8 +230,12 @@ export class NgxFileManagerComponent implements OnInit {
     link.click();
   }
 
+  public async onClickRename(file: ResFile) {
+    await this.onRename(file);
+  }
+
   private async onDeleteMultiple(files: ResFile[]) {
-    console.log('file-manager: deleting files', { files });
+    this.logger.info('file-manager: deleting files', { files });
     const deletedPaths = files.map(f => f.fullPath);
     await this.optimisticFs.HandleRemove(deletedPaths);
     this.refreshExplorer();
@@ -240,26 +247,26 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   public async onClickNewFolder() {
-    console.log('file-manager: onClickNewFolder');
+    this.logger.info('file-manager: onClickNewFolder');
     const newDirName = await this.openDialog(AppDialogNewFolderComponent);
     if (!newDirName) {
-      console.log('file-manager: onClickNewFolder   no folder created...');
+      this.logger.info('file-manager: onClickNewFolder   no folder created...');
       return;
     }
     const currentDirectory = await this.getCurrentPath();
-    const newDirectoryPath = currentDirectory + newDirName;
+    const newDirectoryPath = path.join(currentDirectory, newDirName);
     await this.optimisticFs.HandleCreateFolder(newDirectoryPath);
     this.refreshExplorer();
   }
 
   public async onClickUpFolder() {
-    console.log('file-manager: onClickUpFolder');
+    this.logger.info('file-manager: onClickUpFolder');
     await this.optimisticFs.HandleNavigateUp();
     this.refreshExplorer();
   }
 
   public async onClickUploadFiles() {
-    console.log('file-manager: onClickUpload');
+    this.logger.info('file-manager: onClickUpload');
     const currentPath = await this.getCurrentPath();
     const data: UploadDialogInterface = {
       currentPath: currentPath,
@@ -274,19 +281,19 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   public async onClickedCancelBulk() {
-    console.log('file-manager: onClickCancelBulk');
+    this.logger.info('file-manager: onClickCancelBulk');
     this.clearBulkSelected();
   }
 
   public async onClickedBulkCopy() {
-    console.log('file-manager: clickedBulkCopy');
+    this.logger.info('file-manager: clickedBulkCopy');
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
     await this.onCopyMultiple(selected);
     this.clearBulkSelected();
   }
 
   public async onClickedBulkMove() {
-    console.log('file-manager: clickedBulkMove');
+    this.logger.info('file-manager: clickedBulkMove');
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
     await this.onMoveMultiple(selected);
     this.clearBulkSelected();
@@ -300,7 +307,7 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   public async onClickedBulkPermissions() {
-    console.log('file-manager: clickedBulkPermissions');
+    this.logger.info('file-manager: clickedBulkPermissions');
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
     await this.onSetPermissionsMultiple(selected);
     this.clearBulkSelected();

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as core from 'ngx-filemanager-core';
 import { HttpClient } from '@angular/common/http';
+import { LoggerService } from '../logging/logger.service';
 
 @Injectable()
 export class ServerFilesystemProviderService
@@ -8,7 +9,7 @@ export class ServerFilesystemProviderService
   private bucketname: string;
   private apiEndpoint: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private logger: LoggerService) {}
 
   private async fetchPostAuth<T>(url, body): Promise<T> {
     const options = {
@@ -17,7 +18,7 @@ export class ServerFilesystemProviderService
     options['responseType'] = 'json';
     options.headers['Content-Type'] = 'application/json';
     const response = await this.http.post(url, body, options).toPromise();
-    console.log('fetchPostAuth: ', { action: body.action, response });
+    this.logger.info('fetchPostAuth: ', { action: body.action, response });
     return response as T;
   }
 

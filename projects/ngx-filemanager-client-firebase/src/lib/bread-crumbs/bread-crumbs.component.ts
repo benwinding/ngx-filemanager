@@ -1,4 +1,5 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { LoggerService } from '../logging/logger.service';
 
 interface BreadCrumb {
   label: string;
@@ -48,6 +49,8 @@ export class AppBreadCrumbsComponent {
     this.makeCrumbs(parsed);
   }
 
+  constructor(private logger: LoggerService) {}
+
   private makeCrumbs(newPath: string) {
     const segments = newPath.split('/').filter(s => s !== '');
     this.crumbs = [];
@@ -64,7 +67,7 @@ export class AppBreadCrumbsComponent {
       label: 'Home',
       path: '/'
     });
-    console.log('bread-crumbs: makeCrumbs', {
+    this.logger.info('makeCrumbs', {
       crumbs: this.crumbs,
       segments,
       newPath

@@ -10,31 +10,10 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
       <div *ngIf="!hasInput" class="none-selected">
         <h2>No item selected ...</h2>
       </div>
-      <div *ngIf="hasInput && !isFile">
+      <div *ngIf="hasInput">
         <span class="flex-row space-between align-center">
-          <h2>Directory Details</h2>
-          <button
-            mat-mini-fab
-            color="warn"
-            (click)="this.clickedDelete.emit(file)"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </span>
-        <h5>Name</h5>
-        <h6>{{ file.name }}</h6>
-        <h5>Size</h5>
-        <h6>{{ file.size | fileSize }}</h6>
-        <h5>Date</h5>
-        <h6>{{ file.date | date: 'short' }}</h6>
-        <h5>Permissions</h5>
-        <h6>{{ file.rights }}</h6>
-        <h5>Type</h5>
-        <h6>Directory</h6>
-      </div>
-      <div *ngIf="hasInput && isFile">
-        <span class="flex-row space-between align-center">
-          <h2>File Details</h2>
+          <h2 *ngIf="isFile">File Details</h2>
+          <h2 *ngIf="!isFile">Directory Details</h2>
           <span>
             <button
               mat-mini-fab
@@ -47,15 +26,28 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
           </span>
         </span>
         <h5>Name</h5>
-        <h6>{{ file.name }}</h6>
+        <span class="flex-row align-center">
+          <h6>{{ file.name }}</h6>
+          <button
+            mat-mini-fab
+            color="primary"
+            class="has-pointer"
+            (click)="this.clickedRename.emit(file)"
+          >
+            <mat-icon>border_color</mat-icon>
+          </button>
+        </span>
         <h5>Size</h5>
         <h6>{{ file.size | fileSize }}</h6>
         <h5>Date</h5>
         <h6>{{ file.date | date: 'short' }}</h6>
         <h5>Permissions</h5>
         <h6>{{ file.rights }}</h6>
+        <h5>Full Path</h5>
+        <h6>{{ file.fullPath }}</h6>
         <h5>Type</h5>
-        <h6 class="capitalize">{{ getFileType(file.name) }}</h6>
+        <h6 *ngIf="!isFile">Directory</h6>
+        <h6 *ngIf="isFile" class="capitalize">{{ getFileType(file.name) }}</h6>
         <button
           mat-mini-fab
           color="primary"
@@ -131,6 +123,8 @@ export class FileDetailsComponent {
   clickedDownload = new EventEmitter<ResFile>();
   @Output()
   clickedDelete = new EventEmitter<ResFile>();
+  @Output()
+  clickedRename = new EventEmitter<ResFile>();
 
   getFileType(fileName: string) {
     return guesser.getFileIconName(fileName);

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ClientFileSystem } from './client-filesystem';
 import { FileSystemProvider } from 'ngx-filemanager-core/public_api';
 import { OptimisticFilesystem } from './optimistic-filesystem';
 import * as core from 'ngx-filemanager-core';
 import { ClientFileSystemService } from './client-filesystem.service';
 import { take } from 'rxjs/operators';
+import { LoggerService } from '../logging/logger.service';
+import * as path from 'path-browserify';
 
 // tslint:disable:member-ordering
 
@@ -12,7 +13,10 @@ import { take } from 'rxjs/operators';
 export class OptimisticFilesystemService implements OptimisticFilesystem {
   private serverFilesystem: FileSystemProvider;
 
-  constructor(private clientFilesystem: ClientFileSystemService) {}
+  constructor(
+    private clientFilesystem: ClientFileSystemService,
+    private logger: LoggerService
+  ) {}
 
   get $CurrentPath() {
     return this.clientFilesystem.$currentPath;
@@ -30,32 +34,39 @@ export class OptimisticFilesystemService implements OptimisticFilesystem {
     this.serverFilesystem = serverFilesystem;
   }
 
-  async HandleList(path: string): Promise<void> {
-    this.clientFilesystem.OnList(path);
-    const apiResult = await this.serverFilesystem.List(path);
+  async HandleList(directoryPath: string): Promise<void> {
+    this.logger.info('HandleList', { directoryPath });
+    this.clientFilesystem.OnList(directoryPath);
+    const apiResult = await this.serverFilesystem.List(directoryPath);
     await this.clientFilesystem.UpdateCurrentList(apiResult);
   }
   async HandleCreateFolder(newPath: string): Promise<void> {
+    this.logger.info('HandleCreateFolder', { newPath });
     this.clientFilesystem.OnCreateFolder(newPath);
     await this.serverFilesystem.CreateFolder(newPath);
   }
   async HandleCopy(singleFileName: string, newPath: string): Promise<void> {
+    this.logger.info('HandleCopy', { singleFileName, newPath });
     this.clientFilesystem.OnCopy(singleFileName, newPath);
     await this.serverFilesystem.Copy(singleFileName, newPath);
   }
   async HandleMove(item: string, newPath: string): Promise<void> {
+    this.logger.info('HandleMove', { item, newPath });
     this.clientFilesystem.OnMove(item, newPath);
     await this.serverFilesystem.Move(item, newPath);
   }
   async HandleRename(item: string, newItemPath: string): Promise<void> {
+    this.logger.info('HandleRename', { item, newItemPath });
     this.clientFilesystem.OnRename(item, newItemPath);
     await this.serverFilesystem.Rename(item, newItemPath);
   }
   async HandleEdit(item: string, content: string): Promise<void> {
+    this.logger.info('HandleEdit', { item, content });
     this.clientFilesystem.OnRename(item, content);
     await this.serverFilesystem.Rename(item, content);
   }
   async HandleGetcontent(item: string): Promise<string> {
+    this.logger.info('HandleGetcontent', { item });
     this.clientFilesystem.OnGetcontent(item);
     const response = await this.serverFilesystem.Getcontent(item);
     return response.result;
@@ -66,6 +77,12 @@ export class OptimisticFilesystemService implements OptimisticFilesystem {
     permsCode: string,
     recursive?: boolean
   ): Promise<void> {
+    this.logger.info('HandleSetPermissions', {
+      item,
+      perms,
+      permsCode,
+      recursive
+    });
     this.clientFilesystem.OnSetPermissions(item, perms, permsCode, recursive);
     await this.serverFilesystem.SetPermissions(
       item,
@@ -75,10 +92,14 @@ export class OptimisticFilesystemService implements OptimisticFilesystem {
     );
   }
   async HandleMoveMultiple(items: string[], newPath: string): Promise<void> {
+    this.logger.info('HandleMoveMultiple', { items, newPath });
+
     this.clientFilesystem.OnMoveMultiple(items, newPath);
     await this.serverFilesystem.MoveMultiple(items, newPath);
   }
   async HandleCopyMultiple(items: string[], newPath: string): Promise<void> {
+    this.logger.info('HandleCopyMultiple', { items, newPath });
+
     this.clientFilesystem.OnCopyMultiple(items, newPath);
     await this.serverFilesystem.CopyMultiple(items, newPath);
   }
@@ -88,6 +109,13 @@ export class OptimisticFilesystemService implements OptimisticFilesystem {
     permsCode: string,
     recursive?: boolean
   ): Promise<void> {
+    this.logger.info('HandleSetPermissionsMultiple', {
+      items,
+      perms,
+      permsCode,
+      recursive
+    });
+
     this.clientFilesystem.OnSetPermissionsMultiple(
       items,
       perms,
@@ -102,20 +130,20 @@ export class OptimisticFilesystemService implements OptimisticFilesystem {
     );
   }
   async HandleRemove(items: string[]): Promise<void> {
+    this.logger.info('HandleRemove', { items });
+
     this.clientFilesystem.OnRemove(items);
     await this.serverFilesystem.Remove(items);
   }
 
   async HandleNavigateUp(): Promise<void> {
+    this.logger.info('HandleNavigateUp');
     const currentPath = await this.$CurrentPath.pipe(take(1)).toPromise();
-    const currentPathParsed = !!currentPath ? currentPath : '';
-    const slashSegments = currentPathParsed.split('/');
-    slashSegments.pop();
-    const parentPath = slashSegments.join('/');
+    const parentPath = path.dirname(currentPath);
+    await this.HandleList(parentPath);
     const currentFiles = await this.clientFilesystem.$currentFiles
       .pipe(take(1))
       .toPromise();
-    await this.HandleList(parentPath);
     this.selectFirstFrom(currentFiles);
   }
 

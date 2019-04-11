@@ -8,7 +8,7 @@
     "client-build": "ng build --project=ngx-filemanager-client-firebase",
     "client-watch": "ng build --project=ngx-filemanager-client-firebase --watch",
     "client-demo-build": "ng build --project=ngx-filemanager-client-firebase-demo",
-    "client-demo-start": "BROWSER=none ng serve --project=ngx-filemanager-client-firebase-demo --watch",
+    "client-demo-start": "BROWSER=none ng serve --project=ngx-filemanager-client-firebase-demo --watch --vendor-source-map",
     "api-firebase-build": "ng build --project=ngx-filemanager-api-firebase",
     "api-firebase-watch": "ng build --project=ngx-filemanager-api-firebase --watch",
     "api-firebase-test": "jest --config projects/ngx-filemanager-api-firebase/jest.config.js",
@@ -43,6 +43,7 @@
     "moment": "^2.24.0",
     "ngx-auto-table": "^0.2.4",
     "ngx-dropzone-wrapper": "^7.2.1",
+    "path-browserify": "^1.0.0",
     "request": "^2.88.0",
     "rxjs": "~6.3.3",
     "zone.js": "~0.8.26"

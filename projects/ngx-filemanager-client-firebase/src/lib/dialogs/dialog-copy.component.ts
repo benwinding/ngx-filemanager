@@ -17,18 +17,16 @@ export interface CopyDialogInterface {
       [actions]="actionsTemplate"
     >
       <ng-template #headerTemplate>
-        <h2 class="sans-serif">Copy Items</h2>
+        <h2>Copy Items</h2>
       </ng-template>
       <ng-template #bodyTemplate>
-        <div class="sans-serif flex-col align-center">
-          <div>
-            <h5>Selected Items</h5>
-            <ol>
-              <li *ngFor="let file of items">
-                {{ file.name }}
-              </li>
-            </ol>
-          </div>
+        <h5>Selected Items</h5>
+        <ol>
+          <li *ngFor="let file of items">
+            {{ file.name }}
+          </li>
+        </ol>
+        <div>
           <mat-form-field>
             <input
               matInput
