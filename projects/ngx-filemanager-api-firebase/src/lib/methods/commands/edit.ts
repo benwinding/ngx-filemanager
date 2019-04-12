@@ -1,5 +1,4 @@
 import { Bucket } from '../google-cloud-types';
-import { getResultFromArray, getResult } from '../translation-helpers';
 
 export async function EditFile(bucket: Bucket, item: string, content: string) {
   const result = { success: true };

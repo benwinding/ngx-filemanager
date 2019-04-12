@@ -9,7 +9,6 @@ export async function getAllChildren(
 ): Promise<File[]> {
   const pathNoPrefix = EnsureNoPrefixSlash(fileOrDirectoryPath);
   const options: GetFilesOptions = {};
-  options['includeTrailingDelimiter'] = true;
   options.prefix = pathNoPrefix;
   const result = await bucket.getFiles(options);
   const files = result[0];
@@ -19,24 +18,23 @@ export async function getAllChildren(
 export async function tryDeleteFile(file: File): Promise<boolean> {
   const exists = (await file.exists()).shift();
   if (exists) {
+    console.log('- deleting file: ', file.name);
     await file.delete();
     return true;
   }
   return false;
 }
 
-export async function RemoveFileWithChildren(bucket: Bucket, item: string): Promise<boolean> {
-  const itemPath = EnsureNoPrefixSlash(item);
-  const parent = bucket.file(itemPath);
-  const children = await getAllChildren(bucket, itemPath);
-  const allFiles = [...children, parent];
-  const successArray = await Promise.all(allFiles.map(f => tryDeleteFile(f)));
+export async function RemoveFileWithChildren(bucket: Bucket, itemPath: string): Promise<boolean> {
+  const allChildren = await getAllChildren(bucket, itemPath);
+  const successArray = await Promise.all(allChildren.map(f => tryDeleteFile(f)));
   const allSuccesses = successArray.reduce((acc, cur) => acc = acc && cur, true);
   return allSuccesses;
 }
 
 export async function RemoveFiles(bucket: Bucket, items: string[]) {
-  const successArray = await Promise.all(items.map(files => RemoveFileWithChildren(bucket, files)));
+  const googleStorageItemPaths = items.map(p => EnsureNoPrefixSlash(p));
+  const successArray = await Promise.all(googleStorageItemPaths.map(itemPath => RemoveFileWithChildren(bucket, itemPath)));
   const allSuccesses = successArray.reduce((acc, cur) => acc = acc && cur, true);
   const results: ResultObj = {
     success: allSuccesses
