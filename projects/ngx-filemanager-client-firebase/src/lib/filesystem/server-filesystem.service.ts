@@ -104,7 +104,14 @@ export class ServerFilesystemProviderService
     permsCode: string,
     recursive?: boolean
   ): Promise<core.ResBodySetPermissions> {
-    throw new Error('Method not implemented.');
+    const req: core.ReqBodySetPermissions = {
+      ...this.makeBaseRequest('changePermissions'),
+      items: [item],
+      perms: perms,
+      permsCode: permsCode,
+      recursive: recursive
+    };
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
 
   MoveMultiple(items: string[], newPath: string): Promise<core.ResBodyMove> {
@@ -131,7 +138,14 @@ export class ServerFilesystemProviderService
     permsCode: string,
     recursive?: boolean
   ): Promise<core.ResBodySetPermissions> {
-    throw new Error('Method not implemented.');
+    const req: core.ReqBodySetPermissions = {
+      ...this.makeBaseRequest('changePermissions'),
+      items: items,
+      perms: perms,
+      permsCode: permsCode,
+      recursive: recursive
+    };
+    return this.fetchPostAuth(this.apiEndpoint, req);
   }
 
   Remove(items: string[]): Promise<core.ResBodyRemove> {

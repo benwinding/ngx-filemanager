@@ -15,10 +15,12 @@ import { NgxFilemanagerClientFirebaseModule } from 'ngx-filemanager-client-fireb
 import { AppTestFunctionsLocallyComponent } from './test-functions-locally.component';
 import { AppTestStubFilesystemComponent } from './test-stub-filesystem.component';
 import { AppTestFunctionsRemoteComponent } from './test-functions-remote.component';
+import { AppPermissionsSelectionComponent } from './permissions-selection.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    AppPermissionsSelectionComponent,
     AppTestFunctionsLocallyComponent,
     AppTestFunctionsRemoteComponent,
     AppTestStubFilesystemComponent

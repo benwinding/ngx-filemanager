@@ -77,9 +77,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     perms: string,
     permsCode: string,
     recursive?: boolean
-  ): Promise<void> {
-    throw new Error('Method not implemented.');
-  }
+  ): Promise<void> {}
   async OnRemove(items: string[]): Promise<void> {
     await this.removeArrayFromList(items);
   }

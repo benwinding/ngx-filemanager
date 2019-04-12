@@ -109,6 +109,8 @@ endpoint.use(
           body = await api.HandleGetMeta(req.body);
           break;
         case 'changePermissions':
+          body = await api.HandleSetPermissions(req.body);
+          break;
         case 'compress':
         case 'extract':
         case 'downloadMultiple':
