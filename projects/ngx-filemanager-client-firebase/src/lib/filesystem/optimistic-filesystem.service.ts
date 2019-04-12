@@ -63,6 +63,7 @@ export class OptimisticFilesystemService
     this.clientFilesystem.OnList(directoryPath);
     const apiResult = await this.serverFilesystem.List(directoryPath);
     await this.clientFilesystem.UpdateCurrentList(apiResult);
+    await this.selectFirstInCurrentDirectory();
   }
   async HandleCreateFolder(newPath: string): Promise<void> {
     this.logger.info('HandleCreateFolder', { newPath });
@@ -165,14 +166,13 @@ export class OptimisticFilesystemService
     const currentPath = await this.$CurrentPath.pipe(take(1)).toPromise();
     const parentPath = path.dirname(currentPath);
     await this.HandleList(parentPath);
-    this.selectFirstInCurrentDirectory();
   }
 
   async onSelectItem(file: core.ResFile) {
     this.clientFilesystem.onSelectItem(file);
   }
 
-  async selectFirstInCurrentDirectory() {
+  private async selectFirstInCurrentDirectory() {
     const currentFiles = await this.clientFilesystem.$currentFiles
       .pipe(take(1))
       .toPromise();

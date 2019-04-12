@@ -85,7 +85,6 @@ export class NgxFileManagerComponent implements OnInit {
     this.makeConfig();
     if (this.config && this.config.initialPath) {
       await this.optimisticFs.HandleList(this.config.initialPath);
-      this.optimisticFs.selectFirstInCurrentDirectory();
     }
   }
 
@@ -140,7 +139,6 @@ export class NgxFileManagerComponent implements OnInit {
         if (item.type === 'dir') {
           this.$triggerClearSelected.next();
           await this.optimisticFs.HandleList(item.fullPath);
-          this.optimisticFs.selectFirstInCurrentDirectory();
         }
       },
       onSelectItem: (item: ResFile) => {
@@ -258,7 +256,6 @@ export class NgxFileManagerComponent implements OnInit {
   public async onClickUpFolder() {
     this.logger.info('onClickUpFolder');
     await this.optimisticFs.HandleNavigateUp();
-    this.refreshExplorer();
   }
 
   public async onClickUploadFiles() {

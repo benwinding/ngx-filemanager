@@ -97,7 +97,6 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
         this.logger.info('onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
           await this.optimisticFs.HandleList(item.fullPath);
-          this.optimisticFs.selectFirstInCurrentDirectory();
         }
       },
       onSelectItem: (item: ResFile) => {
