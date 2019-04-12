@@ -148,7 +148,7 @@ export class FileDetailsComponent {
   setImageUrl() {
     this.imageUrl = null;
     setTimeout(async () => {
-      if (!this.file) {
+      if (!this.hasInput || !this.isFile) {
         return;
       }
       this.imageUrl = await this.fileSystem.CreateDownloadLink(this.file);
