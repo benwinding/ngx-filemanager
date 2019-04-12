@@ -42,7 +42,17 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         <h5>Date</h5>
         <h6>{{ file.date | date: 'short' }}</h6>
         <h5>Permissions</h5>
-        <h6>{{ file.rights }}</h6>
+        <span class="flex-row align-center">
+          <h6 class="filename">{{ file.rights }}</h6>
+          <button
+            mat-mini-fab
+            color="primary"
+            class="has-pointer"
+            (click)="this.clickedSetPermissions.emit(file)"
+          >
+            <mat-icon>lock_outline</mat-icon>
+          </button>
+        </span>
         <h5>Full Path</h5>
         <h6>{{ file.fullPath }}</h6>
         <h5>Type</h5>
@@ -130,6 +140,8 @@ export class FileDetailsComponent {
   clickedDelete = new EventEmitter<ResFile>();
   @Output()
   clickedRename = new EventEmitter<ResFile>();
+  @Output()
+  clickedSetPermissions = new EventEmitter<ResFile>();
 
   getFileType(fileName: string) {
     return guesser.getFileIconName(fileName);

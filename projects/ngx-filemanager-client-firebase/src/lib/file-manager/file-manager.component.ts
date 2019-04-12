@@ -159,7 +159,10 @@ export class NgxFileManagerComponent implements OnInit {
       return;
     }
     await this.optimisticFs.HandleRename(file.fullPath, renamedPath);
-    this.refreshExplorer();
+    await this.refreshExplorer();
+    setTimeout(() => {
+      this.optimisticFs.onSelectItemByName(renamedPath);
+    }, 300);
   }
 
   private async onMoveMultiple(files: ResFile[]) {
@@ -174,7 +177,7 @@ export class NgxFileManagerComponent implements OnInit {
     }
     const filePaths = files.map(f => f.fullPath);
     await this.optimisticFs.HandleMoveMultiple(filePaths, newFolderPath);
-    this.refreshExplorer();
+    await this.refreshExplorer();
   }
 
   private async onCopyMultiple(files: ResFile[]) {
@@ -190,7 +193,7 @@ export class NgxFileManagerComponent implements OnInit {
     }
     const filePaths = files.map(f => f.fullPath);
     await this.optimisticFs.HandleCopyMultiple(filePaths, newFolderPath);
-    this.refreshExplorer();
+    await this.refreshExplorer();
   }
 
   private async onSetPermissionsMultiple(files: ResFile[]) {
@@ -210,10 +213,13 @@ export class NgxFileManagerComponent implements OnInit {
       newPermissions,
       null
     );
-    this.refreshExplorer();
+    await this.refreshExplorer();
   }
 
-  public async onClickDownload(file: ResFile) {
+  public async onDetailsClickDelete(file: ResFile) {
+    await this.onDeleteMultiple([file]);
+  }
+  public async onDetailsClickDownload(file: ResFile) {
     const url = await this.fileSystem.CreateDownloadLink(file);
     this.logger.info('downloading file', { file, url });
     const link = document.createElement('a');
@@ -222,21 +228,19 @@ export class NgxFileManagerComponent implements OnInit {
     link.href = url;
     link.click();
   }
-
-  public async onClickRename(file: ResFile) {
+  public async onDetailsClickRename(file: ResFile) {
     await this.onRename(file);
+  }
+  public async onDetailsClickSinglePermissions(file: ResFile) {
+    await this.onSetPermissionsMultiple([file]);
+    this.optimisticFs.onSelectItemByName(file.fullPath);
   }
 
   private async onDeleteMultiple(files: ResFile[]) {
     this.logger.info('deleting files', { files });
     const deletedPaths = files.map(f => f.fullPath);
     await this.optimisticFs.HandleRemove(deletedPaths);
-    this.refreshExplorer();
-  }
-
-  public async onClickDelete(file: ResFile) {
-    await this.onDeleteMultiple([file]);
-    this.refreshExplorer();
+    await this.refreshExplorer();
   }
 
   public async onClickNewFolder() {
@@ -249,7 +253,7 @@ export class NgxFileManagerComponent implements OnInit {
     const currentDirectory = await this.getCurrentPath();
     const newDirectoryPath = path.join(currentDirectory, newDirName);
     await this.optimisticFs.HandleCreateFolder(newDirectoryPath);
-    this.refreshExplorer();
+    await this.refreshExplorer();
   }
 
   public async onClickUpFolder() {
@@ -265,11 +269,11 @@ export class NgxFileManagerComponent implements OnInit {
       uploadApiUrl: this.fileSystem.GetUploadApiUrl(currentPath)
     };
     const res = await this.openDialog(AppDialogUploadFilesComponent, data);
-    this.refreshExplorer();
+    await this.refreshExplorer();
   }
 
   public async onClickRefresh() {
-    this.refreshExplorer();
+    await this.refreshExplorer();
   }
 
   public async onClickedCancelBulk() {
@@ -296,7 +300,6 @@ export class NgxFileManagerComponent implements OnInit {
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
     this.clearBulkSelected();
     await this.onDeleteMultiple(selected);
-    this.refreshExplorer();
   }
 
   public async onClickedBulkPermissions() {

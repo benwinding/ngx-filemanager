@@ -24,16 +24,14 @@ export interface RenameDialogInterface {
         <h5 class="p5 m0">Old Path: {{ data.currentFilename }}</h5>
         <h5 class="p5 m0">New Path: {{ newPath }}</h5>
 
-        <div>
-          <mat-form-field>
-            <input
-              matInput
-              placeholder="New Name"
-              [formControl]="renamedItem"
-              (keyup.enter)="onSubmit()"
-            />
-          </mat-form-field>
-        </div>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="New Name"
+            [formControl]="renamedItem"
+            (keyup.enter)="onSubmit()"
+          />
+        </mat-form-field>
       </ng-template>
       <ng-template #actionsTemplate>
         <btns-cancel-ok
@@ -46,9 +44,7 @@ export interface RenameDialogInterface {
       </ng-template>
     </base-dialog>
   `,
-  styles: [`
-
-  `],
+  styles: [``],
   styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogRenameComponent {

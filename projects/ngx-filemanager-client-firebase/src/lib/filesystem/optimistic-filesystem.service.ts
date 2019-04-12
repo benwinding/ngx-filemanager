@@ -172,10 +172,19 @@ export class OptimisticFilesystemService
     this.clientFilesystem.onSelectItem(file);
   }
 
+  GetItemByName(filePath: string) {
+    const currentFiles = this.clientFilesystem.CurrentFiles();
+    const match = currentFiles.find(f => f.fullPath === filePath);
+    return match;
+  }
+
+  onSelectItemByName(filePath: string) {
+    const match = this.GetItemByName(filePath);
+    this.clientFilesystem.onSelectItem(match);
+  }
+
   private async selectFirstInCurrentDirectory() {
-    const currentFiles = await this.clientFilesystem.$currentFiles
-      .pipe(take(1))
-      .toPromise();
+    const currentFiles = this.clientFilesystem.CurrentFiles();
     const firstSelected = [...currentFiles].shift();
     this.clientFilesystem.onSelectItem(firstSelected);
   }

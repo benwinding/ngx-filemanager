@@ -139,6 +139,10 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     this.store.SelectFile(item);
   }
 
+  public CurrentFiles() {
+    return this.store.CurrentFiles();
+  }
+
   private addIconPath(file: core.ResFile) {
     if (file.type === 'file') {
       file['icon'] = getFileIcon(file.name);
