@@ -50,8 +50,8 @@ import { AppDialogCopyComponent } from './dialogs/dialog-copy.component';
 import { AppDialogMoveComponent } from './dialogs/dialog-move.component';
 import { LoggerService } from './logging/logger.service';
 import { ConsoleLoggerService } from './logging/console-logger.service';
-import { AppFileTableMiniFolderBrowserComponent } from './file-table/file-table-mini-folder-browser.component';
-import { AppActionsMiniBrowserComponent } from './actions-toolbars/actions-mini-browser.component';
+import { AppFileTableMiniFolderBrowserComponent } from './file-table-mini/file-table-mini-folder-browser.component';
+import { AppActionsMiniBrowserComponent } from './file-table-mini/actions-mini-browser.component';
 
 const dialogComponents = [
   BaseDialogComponent,

@@ -61,9 +61,13 @@ export class FileSystemStub implements FileSystemProvider {
     }
   }
   private isInDirectory(dirPath, filePath) {
-    const relative = path.relative(dirPath, filePath);
-    const isSubdir = relative && !relative.startsWith('..') && !relative.includes('/');
-    return isSubdir;
+    try {
+      const relative = path.relative(dirPath, filePath);
+      const isSubdir = relative && !relative.startsWith('..') && !relative.includes('/');
+      return isSubdir;
+    } catch (error) {
+      return error;
+    }
   }
 
   async List(inputPath: string): Promise<ResBodyList> {

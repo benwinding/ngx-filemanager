@@ -1,10 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
-import { FormControl } from '@angular/forms';
-import { AutoTableConfig } from 'ngx-auto-table';
-import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
 import { LoggerService } from '../logging/logger.service';
+import * as path from 'path-browserify';
 
 export interface CopyDialogInterface {
   files: ResFile[];
@@ -32,7 +30,7 @@ export interface CopyDialogInterface {
         </ol>
         <div>
           <app-file-table-mini-folder-browser
-            (clickedOk)="onClickOk($event)"
+            (selectedDirectory)="onClickedItem($event)"
             [serverFilesystem]="this.serverFilesystem"
             currentDirectory="/"
           >
@@ -40,9 +38,13 @@ export interface CopyDialogInterface {
         </div>
       </ng-template>
       <ng-template #actionsTemplate>
+        <h5 class="p5 m0" *ngIf="!SelectedFolder">No folder selected</h5>
+        <h5 class="p5 m0" *ngIf="SameAsRoot">Cannot copy to the same folder</h5>
+        <h5 class="p5 m0" *ngIf="!DisableCopy">CopyTo Path: {{copyToPath}}</h5>
         <btns-cancel-ok
           okIcon="content_copy"
           okLabel="Copy"
+          [okDisabled]="DisableCopy"
           (clickedCancel)="onCancel()"
           (clickedOk)="onSubmit()"
         >
@@ -53,7 +55,8 @@ export interface CopyDialogInterface {
   styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogCopyComponent {
-  folderName = new FormControl('New folder');
+  copyToPath: string;
+  currentPath: string;
   items: ResFile[];
   serverFilesystem: FileSystemProvider;
 
@@ -65,14 +68,27 @@ export class AppDialogCopyComponent {
     this.logger.info('initializing dialog:', {data: this.data});
     this.items = data.files;
     this.serverFilesystem = data.serverFilesystem;
+    const firstFile = this.items.pop();
+    this.currentPath = path.dirname(firstFile.fullPath);
   }
 
-  onClickOk(file: ResFile) {
-    this.logger.info('clicked this folder:', {file});
+  get SelectedFolder() {
+    return !!this.copyToPath;
+  }
+  get SameAsRoot() {
+    return this.copyToPath === this.currentPath;
+  }
+  get DisableCopy() {
+    return !this.SelectedFolder || this.SameAsRoot;
+  }
+
+  onClickedItem(selectedDirectory: string) {
+    this.logger.info('clicked this item:', {file: selectedDirectory});
+    this.copyToPath = selectedDirectory;
   }
 
   onSubmit() {
-    this.dialogRef.close(this.folderName.value);
+    this.dialogRef.close(this.copyToPath);
   }
   onCancel() {
     this.dialogRef.close();

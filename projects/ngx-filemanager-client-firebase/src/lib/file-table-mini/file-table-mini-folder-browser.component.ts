@@ -6,7 +6,7 @@ import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
 
 import * as path from 'path-browserify';
-import { take } from 'rxjs/operators';
+import { take, map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
 
@@ -17,6 +17,7 @@ import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.compon
     <actions-mini-browser
       (clickedUpFolder)="onUpFolder()"
       (clickedNewFolder)="onNewFolder()"
+      [$CurrentPathIsRoot]="$CurrentPathIsRoot"
     >
     </actions-mini-browser>
     <ngx-auto-table
@@ -73,11 +74,11 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
   serverFilesystem: FileSystemProvider;
   @Input()
   currentDirectory: string;
+  @Input()
+  rootPath = '/';
 
   @Output()
-  clickedItem = new EventEmitter<ResFile>();
-  @Output()
-  clickedOk = new EventEmitter<ResFile>();
+  selectedDirectory = new EventEmitter<string>();
 
   config: AutoTableConfig<ResFile>;
 
@@ -98,6 +99,11 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
           await this.optimisticFs.HandleList(item.fullPath);
           this.optimisticFs.selectFirstInCurrentDirectory();
         }
+      },
+      onSelectItem: (item: ResFile) => {
+        if (item.type === 'dir') {
+          this.selectedDirectory.emit(item.fullPath);
+        }
       }
     };
     this.config.hideFilter = true;
@@ -105,8 +111,14 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
     this.optimisticFs.HandleList(this.currentDirectory);
   }
 
+  get $CurrentPathIsRoot() {
+    return this.optimisticFs.$CurrentPath.pipe(map(p => p === this.rootPath));
+  }
+
   async onUpFolder() {
     await this.optimisticFs.HandleNavigateUp();
+    const selectedDirectory = await this.optimisticFs.$CurrentPath.pipe(take(1)).toPromise();
+    this.selectedDirectory.emit(selectedDirectory);
   }
   async onNewFolder() {
     this.logger.info('onClickNewFolder');

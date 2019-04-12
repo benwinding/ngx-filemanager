@@ -27,7 +27,7 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         </span>
         <h5>Name</h5>
         <span class="flex-row align-center">
-          <h6>{{ file.name }}</h6>
+          <h6 class="filename">{{ file.name }}</h6>
           <button
             mat-mini-fab
             color="primary"
@@ -68,6 +68,10 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
   `,
   styles: [
     `
+      .filename {
+        margin: 0px;
+        padding-right: 10px;
+      }
       .none-selected {
         color: grey;
         text-align: center;

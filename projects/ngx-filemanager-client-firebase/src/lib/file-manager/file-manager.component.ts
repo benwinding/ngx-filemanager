@@ -207,6 +207,7 @@ export class NgxFileManagerComponent implements OnInit {
       serverFilesystem: this.fileSystem
     };
     const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
+    this.logger.info('onCopyMultiple', {files, newFolderPath});
     if (!newFolderPath) {
       return;
     }

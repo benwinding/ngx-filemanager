@@ -1,5 +1,5 @@
 import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
-import { ActionButton } from './ActionButton';
+import { ActionButton } from '../actions-toolbars/ActionButton';
 import { of, BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
