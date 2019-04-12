@@ -12,17 +12,13 @@ import { PermissionsDialogInterface } from '../dialogs/dialog-setpermissions.com
 import {
   AppDialogCopyComponent,
   CopyDialogInterface
-} from '../dialogs/dialog-copy.component';
+} from '../dialogs/dialog-copy-or-move.component';
 import { Subject, BehaviorSubject } from 'rxjs';
 import {
   AppDialogUploadFilesComponent,
   UploadDialogInterface
 } from '../dialogs/dialog-upload.component';
 import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
-import {
-  AppDialogMoveComponent,
-  MoveDialogInterface
-} from '../dialogs/dialog-move.component';
 import * as path from 'path-browserify';
 import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
@@ -167,15 +163,33 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   private async onMoveMultiple(files: ResFile[]) {
-    const data: MoveDialogInterface = {
-      files: files
+    const data: CopyDialogInterface = {
+      files: files,
+      isCopy: false,
+      serverFilesystem: this.fileSystem
     };
-    const newFolderPath = await this.openDialog(AppDialogMoveComponent, data);
+    const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
     if (!newFolderPath) {
       return;
     }
     const filePaths = files.map(f => f.fullPath);
     await this.optimisticFs.HandleMoveMultiple(filePaths, newFolderPath);
+    this.refreshExplorer();
+  }
+
+  private async onCopyMultiple(files: ResFile[]) {
+    const data: CopyDialogInterface = {
+      files: files,
+      isCopy: true,
+      serverFilesystem: this.fileSystem
+    };
+    const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
+    this.logger.info('onCopyMultiple', {files, newFolderPath});
+    if (!newFolderPath) {
+      return;
+    }
+    const filePaths = files.map(f => f.fullPath);
+    await this.optimisticFs.HandleCopyMultiple(filePaths, newFolderPath);
     this.refreshExplorer();
   }
 
@@ -196,21 +210,6 @@ export class NgxFileManagerComponent implements OnInit {
       newPermissions,
       null
     );
-    this.refreshExplorer();
-  }
-
-  private async onCopyMultiple(files: ResFile[]) {
-    const data: CopyDialogInterface = {
-      files: files,
-      serverFilesystem: this.fileSystem
-    };
-    const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
-    this.logger.info('onCopyMultiple', {files, newFolderPath});
-    if (!newFolderPath) {
-      return;
-    }
-    const filePaths = files.map(f => f.fullPath);
-    await this.optimisticFs.HandleCopyMultiple(filePaths, newFolderPath);
     this.refreshExplorer();
   }
 

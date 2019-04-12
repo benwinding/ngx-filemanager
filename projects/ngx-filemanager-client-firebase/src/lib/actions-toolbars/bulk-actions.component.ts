@@ -6,7 +6,7 @@ import { ActionButton } from './ActionButton';
   selector: 'bulk-actions',
   template: `
     <mat-toolbar color="primary">
-      <mat-toolbar-row>
+      <mat-toolbar-row class="scroll-x">
         <div class="flex-row">
           <div *ngFor="let action of bulkActions">
             <button

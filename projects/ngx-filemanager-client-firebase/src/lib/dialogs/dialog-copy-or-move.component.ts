@@ -7,6 +7,7 @@ import { EnsureTrailingSlash } from '../utils/path-helpers';
 
 export interface CopyDialogInterface {
   files: ResFile[];
+  isCopy: boolean;
   serverFilesystem: FileSystemProvider;
 }
 
@@ -20,7 +21,7 @@ export interface CopyDialogInterface {
       [actions]="actionsTemplate"
     >
       <ng-template #headerTemplate>
-        <h2>Copy Items</h2>
+        <h2>{{OkLabel}} Items</h2>
       </ng-template>
       <ng-template #bodyTemplate>
         <h5>Selected Items</h5>
@@ -43,8 +44,8 @@ export interface CopyDialogInterface {
         <h5 class="p5 m0" *ngIf="SameAsRoot">Cannot copy to the same folder</h5>
         <h5 class="p5 m0" *ngIf="!DisableCopy">CopyTo Path: {{copyToPath}}</h5>
         <btns-cancel-ok
-          okIcon="content_copy"
-          okLabel="Copy"
+          [okIcon]="OkIcon"
+          [okLabel]="OkLabel"
           [okDisabled]="DisableCopy"
           (clickedCancel)="onCancel()"
           (clickedOk)="onSubmit()"
@@ -61,6 +62,9 @@ export class AppDialogCopyComponent {
   items: ResFile[];
   serverFilesystem: FileSystemProvider;
 
+  OkLabel: string;
+  OkIcon: string;
+
   constructor(
     private logger: LoggerService,
     public dialogRef: MatDialogRef<AppDialogCopyComponent>,
@@ -68,6 +72,13 @@ export class AppDialogCopyComponent {
   ) {
     this.logger.info('initializing dialog:', {data: this.data});
     this.items = data.files;
+    if (this.data.isCopy) {
+      this.OkLabel = 'Copy';
+      this.OkIcon = 'content_copy';
+    } else {
+      this.OkLabel = 'Move';
+      this.OkIcon = 'forward';
+    }
     this.serverFilesystem = data.serverFilesystem;
     const firstFile = [...this.items].pop();
     this.currentDir = EnsureTrailingSlash(path.dirname(firstFile.fullPath));

@@ -12,39 +12,35 @@ export interface UploadDialogInterface {
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-upload-files-dialog',
   template: `
-    <div class="dialog sans-serif">
-      <h2>Upload Files</h2>
-      <h5>To Folder: {{ currentDirectory }}</h5>
-      <div>
+    <base-dialog
+      [header]="headerTemplate"
+      [body]="bodyTemplate"
+      [actions]="actionsTemplate"
+    >
+      <ng-template #headerTemplate>
+        <h2>Upload Files</h2>
+        <h5>To Folder: {{ currentDirectory }}</h5>
+      </ng-template>
+      <ng-template #bodyTemplate>
         <dropzone
           *ngIf="dropzoneConfig"
           [config]="dropzoneConfig"
           (success)="onUploadSuccess($event)"
           (processing)="onProcessingBegin($event)"
         ></dropzone>
-      </div>
-    </div>
-    <btns-cancel-ok
-      okIcon="done"
-      okLabel="Finish"
-      (clickedCancel)="onCancel()"
-      (clickedOk)="onSubmit()"
-      [okDisabled]="!isDoneUploading"
-    >
-    </btns-cancel-ok>
+      </ng-template>
+      <ng-template #actionsTemplate>
+        <btns-cancel-ok
+          okIcon="done"
+          okLabel="Finish"
+          (clickedCancel)="onCancel()"
+          (clickedOk)="onSubmit()"
+          [okDisabled]="!isDoneUploading"
+        >
+        </btns-cancel-ok>
+      </ng-template>
+    </base-dialog>
   `,
-  styles: [
-    `
-      form {
-        max-height: 50vh;
-        overflow-y: scroll;
-      }
-      .dialog {
-        max-height: 80vh;
-        overflow: hidden;
-      }
-    `
-  ],
   styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogUploadFilesComponent {
@@ -52,7 +48,7 @@ export class AppDialogUploadFilesComponent {
 
   dropzoneConfig: DropzoneConfigInterface = {
     url:
-      'http://localhost:4444/api_files/upload?bucketname=resvu-integration-tests.appspot.com&directoryPath=/',
+      'https://httpbin.org/post/upload?bucketname=resvu-integration-tests.appspot.com&directoryPath=/',
     maxFilesize: 50,
     // acceptedFiles: 'image/*',
     uploadMultiple: false

@@ -46,8 +46,7 @@ import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component
 import { AppDialogRenameComponent } from './dialogs/dialog-rename.component';
 import { AppDialogNewFolderComponent } from './dialogs/dialog-new-folder.component';
 import { AppDialogSetPermissionsComponent } from './dialogs/dialog-setpermissions.component';
-import { AppDialogCopyComponent } from './dialogs/dialog-copy.component';
-import { AppDialogMoveComponent } from './dialogs/dialog-move.component';
+import { AppDialogCopyComponent } from './dialogs/dialog-copy-or-move.component';
 import { LoggerService } from './logging/logger.service';
 import { ConsoleLoggerService } from './logging/console-logger.service';
 import { AppFileTableMiniFolderBrowserComponent } from './file-table-mini/file-table-mini-folder-browser.component';
@@ -59,7 +58,6 @@ const dialogComponents = [
   AppDialogNewFolderComponent,
   AppDialogSetPermissionsComponent,
   AppDialogCopyComponent,
-  AppDialogMoveComponent,
   AppDialogUploadFilesComponent
 ];
 
