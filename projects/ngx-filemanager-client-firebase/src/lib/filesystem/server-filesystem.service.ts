@@ -18,7 +18,11 @@ export class ServerFilesystemProviderService
     options['responseType'] = 'json';
     options.headers['Content-Type'] = 'application/json';
     const response = await this.http.post(url, body, options).toPromise();
-    this.logger.info('fetchPostAuth: ', { action: body.action, response });
+    this.logger.info('fetchPostAuth: ', {
+      action: body.action,
+      reqBody: body,
+      resBody: response
+    });
     return response as T;
   }
 

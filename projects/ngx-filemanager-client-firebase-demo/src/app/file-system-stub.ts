@@ -60,13 +60,14 @@ export class FileSystemStub implements FileSystemProvider {
       return this.files.filter(f => !itemsSet.has(f.fullPath));
     }
   }
-  private isInDirectory(dirPath, filePath) {
+  private isInDirectory(dirPath, filePath): boolean {
     try {
       const relative = path.relative(dirPath, filePath);
       const isSubdir = relative && !relative.startsWith('..') && !relative.includes('/');
       return isSubdir;
     } catch (error) {
-      return error;
+      this.logger.warn('isInDirectory error', {dirPath, filePath, error});
+      return false;
     }
   }
 

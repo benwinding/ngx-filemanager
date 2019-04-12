@@ -1,11 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { FileSystemProvider } from 'ngx-filemanager-core/public_api';
-import { OptimisticFilesystem } from './optimistic-filesystem';
+import { OptimisticFilesystem } from './optimistic-filesystem.interface';
 import * as core from 'ngx-filemanager-core';
 import { ClientFileSystemService } from './client-filesystem.service';
-import { take } from 'rxjs/operators';
+import { take, map } from 'rxjs/operators';
 import { LoggerService } from '../logging/logger.service';
 import * as path from 'path-browserify';
+import { EnsurePrefixSlash } from '../utils/path-helpers';
 
 // tslint:disable:member-ordering
 
@@ -176,6 +177,6 @@ export class OptimisticFilesystemService
       .pipe(take(1))
       .toPromise();
     const firstSelected = [...currentFiles].shift();
-    this.$SelectedFile.next(firstSelected);
+    this.clientFilesystem.onSelectItem(firstSelected);
   }
 }

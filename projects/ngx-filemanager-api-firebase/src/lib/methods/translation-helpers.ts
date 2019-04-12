@@ -1,29 +1,32 @@
 import { ResultObj, ResFile } from './core-types';
-import { HasTrailingSlash } from './path-helpers';
+import {
+  EnsurePrefixSlash,
+  HasTrailingSlash,
+  EnsureAbsolutePathDir,
+  EnsureAbsolutePathFile
+} from './path-helpers';
 import { FileFromStorage, File } from './google-cloud-types';
 import { Readable } from 'stream';
 import * as request from 'request';
 import * as path from 'path';
 
-export function translateRawStorage(
-  storageObject: File
-): FileFromStorage {
+export function translateRawStorage(storageObject: File): FileFromStorage {
   const filePath = storageObject.name;
+  const filePathParsed = EnsurePrefixSlash(filePath);
   return {
     ref: storageObject,
-    name: path.basename(filePath),
-    fullPath: filePath,
-    isDir: HasTrailingSlash(filePath)
+    name: path.basename(filePathParsed),
+    fullPath: filePathParsed,
+    isDir: HasTrailingSlash(filePathParsed)
   };
 }
 
-export function makePhantomStorageFolder(
-  folderPath: string
-): FileFromStorage {
+export function makePhantomStorageFolder(folderPath: string): FileFromStorage {
+  const pathParsed = EnsureAbsolutePathDir(folderPath);
   return {
     ref: null,
-    name: path.basename(folderPath),
-    fullPath: folderPath,
+    name: path.basename(pathParsed),
+    fullPath: pathParsed,
     isDir: true,
     isPhantomFolder: true
   };
@@ -37,10 +40,11 @@ export async function translateStorageDirToResFile(
     const meta = await GetMeta(f);
     metaUpdated = meta.updated;
   }
+  const pathParsed = EnsureAbsolutePathDir(f.fullPath);
   return {
     name: f.name,
     rights: 'rxrxrx',
-    fullPath: f.fullPath,
+    fullPath: pathParsed,
     size: '0',
     date: metaUpdated,
     type: 'dir',
@@ -52,10 +56,11 @@ export async function translateStorageFileToResFile(
   f: FileFromStorage
 ): Promise<ResFile> {
   const meta = await GetMeta(f);
+  const pathParsed = EnsureAbsolutePathFile(f.fullPath);
   return {
     name: f.name,
     rights: 'rxrxrx',
-    fullPath: f.fullPath,
+    fullPath: pathParsed,
     size: meta.size,
     date: meta.updated,
     type: 'file'

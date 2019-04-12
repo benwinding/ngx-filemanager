@@ -2,21 +2,18 @@ import * as core from 'ngx-filemanager-core';
 import { ConsoleLoggerService } from '../logging/console-logger.service';
 
 export class ClientCache {
-
   private logger = new ConsoleLoggerService();
 
   private cachedFolders: {
     [folderPath: string]: core.ResFile[];
   } = {};
   private cacheLimit = 20;
-  public IsCached(folderPath: string) {
-    return !!this.cachedFolders[folderPath];
-  }
+
   public GetCached(folderPath: string) {
-    return this.cachedFolders[folderPath];
+    return this.cachedFolders[folderPath] || [];
   }
   public SetCached(folderPath: string, newFolderFiles: core.ResFile[]) {
-    const oldFolders = this.cachedFolders[folderPath] || [];
+    const oldFolders = this.GetCached(folderPath);
     this.logger.info('SetCached()', {
       from: oldFolders.length,
       to: newFolderFiles.length
@@ -26,6 +23,7 @@ export class ClientCache {
     }
     this.cachedFolders[folderPath] = newFolderFiles;
   }
+
   private get cachedCount() {
     return Object.keys(this.cachedFolders).length;
   }

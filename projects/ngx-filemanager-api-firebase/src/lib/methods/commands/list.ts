@@ -1,5 +1,10 @@
 import { Bucket, FileFromStorage, File } from '../google-cloud-types';
-import { EnsureNoPrefixSlash, EnsureNoTrailingSlash, EnsureTrailingSlash } from '../path-helpers';
+import {
+  EnsureNoPrefixSlash,
+  EnsureTrailingSlash,
+  EnsureGoogleStoragePathDir,
+  EnsureAbsolutePathDir
+} from '../path-helpers';
 import { GetFilesOptions } from '@google-cloud/storage';
 import {
   translateRawStorage,
@@ -24,12 +29,10 @@ export function MakeOptionsListRoot(): GetFilesOptions {
 }
 
 export function MakeOptionsList(inputDirectoryPath: string) {
-  const pathNoPrefix = EnsureNoPrefixSlash(inputDirectoryPath);
-  const pathParsed = EnsureNoTrailingSlash(pathNoPrefix);
   return {
     delimiter: '/',
     includeTrailingDelimiter: true,
-    directory: pathParsed,
+    directory: inputDirectoryPath,
     autoPaginate: false
   } as any;
 }
@@ -74,12 +77,13 @@ export async function GetListFromStorage(
   bucket: Bucket,
   inputDirectoryPath: string
 ): Promise<FileFromStorage[]> {
-  const isRootPath = inputDirectoryPath === '/' || '';
+  const googleStorageDirPath = EnsureGoogleStoragePathDir(inputDirectoryPath);
+  const isRootPath = googleStorageDirPath === '/' || '';
   let options;
   if (isRootPath) {
     options = MakeOptionsListRoot();
   } else {
-    options = MakeOptionsList(inputDirectoryPath);
+    options = MakeOptionsList(googleStorageDirPath);
   }
   const result = await GetFilesAndPrefixes(bucket, options);
   const allObjects = result.files.map(o => translateRawStorage(o));
@@ -93,8 +97,9 @@ export async function GetListFromStorage(
     makePhantomStorageFolder(phantomPath)
   );
   const combinedList = [...allObjects, ...newPhantomFolders];
-  const pathParsed = EnsureNoPrefixSlash(EnsureTrailingSlash(inputDirectoryPath));
-  const filesWithoutCurrentDirectory = combinedList.filter(f => f.fullPath !== pathParsed);
+  const filesWithoutCurrentDirectory = combinedList.filter(
+    f => EnsureGoogleStoragePathDir(f.fullPath) !== googleStorageDirPath
+  );
   return filesWithoutCurrentDirectory;
 }
 

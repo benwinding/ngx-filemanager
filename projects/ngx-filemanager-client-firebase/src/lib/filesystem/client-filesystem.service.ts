@@ -1,38 +1,43 @@
-import { take, map, tap, filter } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import * as core from 'ngx-filemanager-core';
+import { Observable } from 'rxjs';
 import { MakeClientDirectory } from '../utils/file.factory';
 import { getFileIcon, getFolderIcon } from '../utils/icon-url-resolver';
-import { ClientFileSystem } from './client-filesystem';
-import { ClientCache } from './client-cache';
+import { ClientFileSystem } from './client-filesystem.interface';
 import { LoggerService } from '../logging/logger.service';
+import { ClientFileSystemDataStore } from './client-filesystem.datastore';
+import * as core from 'ngx-filemanager-core';
+import * as path from 'path-browserify';
 
+// tslint:disable:member-ordering
 @Injectable()
 export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
-  public $currentFiles = new BehaviorSubject<core.ResFile[]>([]);
-  public $currentPath = new BehaviorSubject<string>(null);
-  public $selectedFile = new BehaviorSubject<core.ResFile>(null);
+  private store = new ClientFileSystemDataStore();
 
-  private folderCache = new ClientCache();
+  get $currentFiles() {
+    return this.store.$currentFiles;
+  }
+  get $currentPath() {
+    return this.store.$currentPath;
+  }
+  get $selectedFile() {
+    return this.store.$selectedFile;
+  }
 
-  // tslint:disable-next-line:member-ordering
   private static instanceCount = 0;
   private instanceCountIncr() {
     ClientFileSystemService.instanceCount++;
-    this.logger.info('new instance created', {instances: this.instances});
+    this.logger.info('new instance created', { instances: this.instances });
   }
   private instanceCountDecr() {
     ClientFileSystemService.instanceCount--;
-    this.logger.info('instance destroyed', {instances: this.instances});
+    this.logger.info('instance destroyed', { instances: this.instances });
   }
   get instances() {
     return ClientFileSystemService.instanceCount;
   }
 
-  constructor(
-    private logger: LoggerService,
-  ) {
+  constructor(private logger: LoggerService) {
     this.instanceCountIncr();
   }
 
@@ -40,19 +45,15 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     this.instanceCountDecr();
   }
 
-  async OnList(path: string): Promise<void> {
-    this.$currentPath.next(path);
-    const cachedFiles = this.folderCache.GetCached(path);
-    this.$currentFiles.next(cachedFiles);
+  async OnList(folderPath: string): Promise<void> {
+    this.store.SetPath(folderPath);
   }
   async OnCreateFolder(newPath: string): Promise<void> {
-    const path = await this.$currentPath.pipe(take(1)).toPromise();
-    const cachedFiles = this.folderCache.GetCached(path);
-    const folderName = newPath.split('/').pop();
+    const cachedFiles = this.store.CurrentFiles();
+    const folderName = path.basename(newPath);
     const newFolder = MakeClientDirectory(folderName, newPath);
     cachedFiles.unshift(newFolder);
-    this.folderCache.SetCached(path, cachedFiles);
-    this.$currentFiles.next(cachedFiles);
+    this.store.SetCurrentFiles(cachedFiles);
   }
   async OnCopy(singleFileName: string, newPath: string): Promise<void> {}
   async OnMove(item: string, newPath: string): Promise<void> {
@@ -83,18 +84,14 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     await this.removeArrayFromList(items);
   }
   async UpdateCurrentList(res: core.ResBodyList): Promise<void> {
-    const path = await this.$currentPath.pipe(take(1)).toPromise();
-    this.folderCache.SetCached(path, res.result);
-    this.$currentFiles.next(res.result);
+    this.store.SetCurrentFiles(res.result);
   }
 
   private async removeSingleFromList(filePath: string) {
-    const path = await this.$currentPath.pipe(take(1)).toPromise();
-    const cachedFiles = this.folderCache.GetCached(path);
+    const currentFiles = this.store.CurrentFiles();
     const itemName = this.GetFileNameFromPath(filePath);
-    const cachedFilesWithout = cachedFiles.filter(f => f.name !== itemName);
-    this.folderCache.SetCached(path, cachedFilesWithout);
-    this.$currentFiles.next(cachedFilesWithout);
+    const cachedFilesWithout = currentFiles.filter(f => f.name !== itemName);
+    this.store.SetCurrentFiles(cachedFilesWithout);
   }
 
   private EnsureNoTrailingSlash(inputPath: string): string {
@@ -111,14 +108,12 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   }
 
   private async removeArrayFromList(filePaths: string[]) {
-    const path = await this.$currentPath.pipe(take(1)).toPromise();
-    const cachedFiles = this.folderCache.GetCached(path);
     const removeSet = new Set(
       filePaths.map(filePath => this.GetFileNameFromPath(filePath))
     );
-    const cachedFilesWithout = cachedFiles.filter(f => !removeSet.has(f.name));
-    this.folderCache.SetCached(path, cachedFilesWithout);
-    this.$currentFiles.next(cachedFilesWithout);
+    const currentFiles = this.store.CurrentFiles();
+    const cachedFilesWithout = currentFiles.filter(f => !removeSet.has(f.name));
+    this.store.SetCurrentFiles(cachedFilesWithout);
   }
 
   public get $FilesWithIcons(): Observable<core.ResFile[]> {
@@ -136,12 +131,12 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   public get $NoParentFolder() {
     return this.$currentPath.pipe(
       filter(p => !!p),
-      map(path => path.split('/').length < 2)
+      map(p => p.split('/').length < 2)
     );
   }
 
   public onSelectItem(item: core.ResFile): any {
-    this.$selectedFile.next(item);
+    this.store.SelectFile(item);
   }
 
   private addIconPath(file: core.ResFile) {

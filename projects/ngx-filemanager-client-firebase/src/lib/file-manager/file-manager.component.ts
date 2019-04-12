@@ -311,6 +311,7 @@ export class NgxFileManagerComponent implements OnInit {
 
   public async onClickCrumb(newPath: string) {
     this.clearBulkSelected();
+    this.logger.info('onClickCrumb', {newPath});
     await this.optimisticFs.HandleList(newPath);
   }
 

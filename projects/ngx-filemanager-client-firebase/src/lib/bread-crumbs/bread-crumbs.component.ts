@@ -24,7 +24,7 @@ interface BreadCrumb {
           mat-raised-button
           color="secondary"
           [disabled]="last"
-          (click)="this.clickedCrumb.emit(crumb.path); myButton.disabled = true"
+          (click)="onClickCrumb(crumb); myButton.disabled = true"
         >
           {{ crumb.label }}
         </button>
@@ -62,7 +62,7 @@ export class AppBreadCrumbsComponent {
         path: crumbPath
       });
       return segmentsSoFar;
-    }, []);
+    }, ['']);
     this.crumbs.unshift({
       label: 'Home',
       path: '/'
@@ -72,5 +72,10 @@ export class AppBreadCrumbsComponent {
       segments,
       newPath
     });
+  }
+
+  onClickCrumb(crumb: BreadCrumb) {
+    this.logger.info('onClickCrumb', {crumb});
+    this.clickedCrumb.emit(crumb.path);
   }
 }
