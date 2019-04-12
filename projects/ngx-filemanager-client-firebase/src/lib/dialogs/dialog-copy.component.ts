@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
 import { LoggerService } from '../logging/logger.service';
 import * as path from 'path-browserify';
+import { EnsureTrailingSlash } from '../utils/path-helpers';
 
 export interface CopyDialogInterface {
   files: ResFile[];
@@ -56,7 +57,7 @@ export interface CopyDialogInterface {
 })
 export class AppDialogCopyComponent {
   copyToPath: string;
-  currentPath: string;
+  currentDir: string;
   items: ResFile[];
   serverFilesystem: FileSystemProvider;
 
@@ -68,15 +69,15 @@ export class AppDialogCopyComponent {
     this.logger.info('initializing dialog:', {data: this.data});
     this.items = data.files;
     this.serverFilesystem = data.serverFilesystem;
-    const firstFile = this.items.pop();
-    this.currentPath = path.dirname(firstFile.fullPath);
+    const firstFile = [...this.items].pop();
+    this.currentDir = EnsureTrailingSlash(path.dirname(firstFile.fullPath));
   }
 
   get SelectedFolder() {
     return !!this.copyToPath;
   }
   get SameAsRoot() {
-    return this.copyToPath === this.currentPath;
+    return this.copyToPath === this.currentDir;
   }
   get DisableCopy() {
     return !this.SelectedFolder || this.SameAsRoot;

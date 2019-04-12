@@ -282,15 +282,16 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   public async onClickedBulkCopy() {
-    this.logger.info('clickedBulkCopy');
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
-    await this.onCopyMultiple(selected);
+    const selectedCopied = [...selected];
+    this.logger.info('clickedBulkCopy', {selectedCopied});
+    await this.onCopyMultiple(selectedCopied);
     this.clearBulkSelected();
   }
 
   public async onClickedBulkMove() {
-    this.logger.info('clickedBulkMove');
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
+    this.logger.info('clickedBulkMove', {selected});
     await this.onMoveMultiple(selected);
     this.clearBulkSelected();
   }

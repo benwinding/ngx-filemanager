@@ -50,6 +50,10 @@ export function EnsureGoogleStoragePathDir(folderPath: string) {
   return EnsureNoPrefixSlash(EnsureTrailingSlash(folderPath));
 }
 
+export function EnsureGoogleStoragePathFile(filePath: string) {
+  return EnsureNoPrefixSlash(EnsureNoTrailingSlash(filePath));
+}
+
 export function GetRelativePath(
   currentDirectoryPath: string,
   absObjectPath: string
