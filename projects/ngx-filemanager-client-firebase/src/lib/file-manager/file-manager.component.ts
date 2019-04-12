@@ -133,7 +133,7 @@ export class NgxFileManagerComponent implements OnInit {
       onSelectItemDoubleClick: async (item: ResFile) => {
         this.logger.info('onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
-          this.$triggerClearSelected.next();
+          this.clearBulkSelected();
           await this.optimisticFs.HandleList(item.fullPath);
         }
       },
@@ -151,9 +151,9 @@ export class NgxFileManagerComponent implements OnInit {
 
   private async onRename(file: ResFile) {
     const data: RenameDialogInterface = {
-      currentFilename: file.name,
       currentPath: file.fullPath
     };
+    this.logger.info('onRename', {data});
     const renamedPath = await this.openDialog(AppDialogRenameComponent, data);
     if (!renamedPath) {
       return;

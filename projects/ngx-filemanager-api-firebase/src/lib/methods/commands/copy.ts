@@ -1,25 +1,37 @@
 import { Bucket } from '../google-cloud-types';
 import { getResultFromArray } from '../translation-helpers';
 import {
-  EnsureGoogleStoragePathFile,
-  EnsureGoogleStoragePathDir
+  EnsureGoogleStoragePathDir,
+  EnsureNoPrefixSlash
 } from '../path-helpers';
 import * as path from 'path';
+import { GetAllChildrenWithPrefix, TryCopyFile } from '../storage-helper';
+
+export async function copyWithChildren(
+  bucket: Bucket,
+  itemPath: string,
+  newFolderPrefix: string
+) {
+  const oldFolderPrefix = EnsureNoPrefixSlash(path.dirname(itemPath));
+  const allChildren = await GetAllChildrenWithPrefix(bucket, itemPath);
+  const successArray = await Promise.all(
+    allChildren.map(f => TryCopyFile(f, oldFolderPrefix, newFolderPrefix))
+  );
+  return successArray;
+}
 
 export async function CopyFiles(
   bucket: Bucket,
   items: string[],
   newDirectoryPath: string
 ) {
-  const newDirGooglePath = EnsureGoogleStoragePathDir(newDirectoryPath);
-  const moveResults = await Promise.all(
-    items.map(filePath => {
-      const fileName = path.basename(filePath);
-      const newGoogleFilePath = path.join(newDirGooglePath, fileName);
-      return bucket.file(filePath).copy(newGoogleFilePath);
-    })
+  const newFolderPrefix = EnsureGoogleStoragePathDir(newDirectoryPath);
+  const copyResultsArrArr = await Promise.all(
+    items.map(filePath => copyWithChildren(bucket, filePath, newFolderPrefix))
   );
-  const resultObjArr = moveResults.map(r => r[1]);
-  const results = getResultFromArray(resultObjArr);
+  const copyResultsArr = copyResultsArrArr.reduce((acc, cur) => {
+    return acc.concat(cur);
+  }, []);
+  const results = getResultFromArray(copyResultsArr);
   return results;
 }

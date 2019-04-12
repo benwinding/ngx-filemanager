@@ -5,7 +5,6 @@ import * as path from 'path-browserify';
 
 export interface RenameDialogInterface {
   currentPath: string;
-  currentFilename: string;
 }
 
 @Component({
@@ -21,7 +20,7 @@ export interface RenameDialogInterface {
         <h2>Rename Item</h2>
       </ng-template>
       <ng-template #bodyTemplate>
-        <h5 class="p5 m0">Old Path: {{ data.currentFilename }}</h5>
+        <h5 class="p5 m0">Old Path: {{ data.currentPath }}</h5>
         <h5 class="p5 m0">New Path: {{ newPath }}</h5>
 
         <mat-form-field>
@@ -44,7 +43,6 @@ export interface RenameDialogInterface {
       </ng-template>
     </base-dialog>
   `,
-  styles: [``],
   styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogRenameComponent {
@@ -54,7 +52,8 @@ export class AppDialogRenameComponent {
     public dialogRef: MatDialogRef<AppDialogRenameComponent>,
     @Inject(MAT_DIALOG_DATA) public data: RenameDialogInterface
   ) {
-    this.renamedItem.setValue(data.currentFilename);
+    const name = path.basename(data.currentPath);
+    this.renamedItem.setValue(name);
   }
 
   onSubmit() {
@@ -68,7 +67,12 @@ export class AppDialogRenameComponent {
   get newPath() {
     const directoryPath = path.dirname(this.data.currentPath);
     const newItemName = this.renamedItem.value;
-    const renamedFullPath = path.join(directoryPath, newItemName);
-    return renamedFullPath;
+    if (this.IsDir) {
+      return path.join(directoryPath, newItemName, '/');
+    }
+    return path.join(directoryPath, newItemName);
+  }
+  get IsDir() {
+    return this.data.currentPath.endsWith('/');
   }
 }
