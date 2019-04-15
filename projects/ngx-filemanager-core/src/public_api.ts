@@ -121,10 +121,12 @@ export interface ResBodyCreateFolder extends ResBodySuccess {}
 
 // SET PERMISSIONS
 
+export type PermisionsRole = 'OWNER' | 'READER' | 'WRITER';
+
 export interface ReqBodySetPermissions extends ReqBodyAction {
   items: string[];
-  perms: string;
-  permsCode: string;
+  role: PermisionsRole;
+  entityId: string;
   recursive: boolean;
 }
 
