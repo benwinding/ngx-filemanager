@@ -5,7 +5,12 @@ import {
   EnsureNoPrefixSlash
 } from '../../utils/path-helpers';
 import * as path from 'path';
-import { GetAllChildrenWithPrefix, TryRenameFile } from '../../utils/storage-helper';
+import {
+  GetAllChildrenWithPrefix,
+  TryRenameFile
+} from '../../utils/storage-helper';
+import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
+import { api } from '../../types/core-types';
 
 export async function moveWithChildren(
   bucket: Bucket,
@@ -23,7 +28,8 @@ export async function moveWithChildren(
 export async function MoveFiles(
   bucket: Bucket,
   items: string[],
-  newDirectoryPath: string
+  newDirectoryPath: string,
+  claims: api.UserCustomClaims
 ) {
   const newFolderPrefix = EnsureGoogleStoragePathDir(newDirectoryPath);
   const moveResultsArrArr = await Promise.all(

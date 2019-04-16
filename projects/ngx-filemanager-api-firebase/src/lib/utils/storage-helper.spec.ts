@@ -14,7 +14,7 @@ admin.initializeApp({
 const testStorage = admin.storage();
 const testBucket = testStorage.bucket(testbucketname);
 
-test('update permissions obj to object storage', async () => {
+test('set and get update permissions obj to object storage', async () => {
   const obj = {
     rand: uuid()
   } as any;

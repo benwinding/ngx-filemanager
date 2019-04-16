@@ -6,6 +6,7 @@ import {
 } from '../../utils/path-helpers';
 import * as path from 'path';
 import { GetAllChildrenWithPrefix, TryCopyFile } from '../../utils/storage-helper';
+import { api } from '../../types/core-types';
 
 export async function copyWithChildren(
   bucket: Bucket,
@@ -23,7 +24,8 @@ export async function copyWithChildren(
 export async function CopyFiles(
   bucket: Bucket,
   items: string[],
-  newDirectoryPath: string
+  newDirectoryPath: string,
+  claims: api.UserCustomClaims
 ) {
   const newFolderPrefix = EnsureGoogleStoragePathDir(newDirectoryPath);
   const copyResultsArrArr = await Promise.all(

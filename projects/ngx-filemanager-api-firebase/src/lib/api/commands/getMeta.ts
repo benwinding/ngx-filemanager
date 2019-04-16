@@ -1,10 +1,17 @@
 import { Bucket } from '../../types/google-cloud-types';
 import { GetSignedUrlConfig } from '@google-cloud/storage';
+import { api } from '../../types/core-types';
 const moment = require('moment');
 
-export async function GetFileMeta(bucket: Bucket, item: string): Promise<string> {
+export async function GetFileMeta(
+  bucket: Bucket,
+  item: string,
+  claims: api.UserCustomClaims
+): Promise<string> {
   const file = bucket.file(item);
-  const in5mins = moment().add(5, 'minutes').toDate();
+  const in5mins = moment()
+    .add(5, 'minutes')
+    .toDate();
   const config: GetSignedUrlConfig = { expires: in5mins, action: 'read' };
   const signedResult = await file.getSignedUrl(config);
   const url = signedResult.shift();

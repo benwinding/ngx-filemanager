@@ -2,10 +2,13 @@ import { File } from '../../types/google-cloud-types';
 import { ResultObj, api } from '../../types/core-types';
 import { Bucket } from '@google-cloud/storage';
 import * as request from 'request';
-import { GetAllChildrenWithPrefix, GetMetaProperty, SetMetaProperty } from '../../utils/storage-helper';
-import { PermissionsObject } from 'ngx-filemanager-core/public_api';
+import { GetAllChildrenWithPrefix } from '../../utils/storage-helper';
+import {
+  RetrieveFilePermissions,
+  UpdateFilePermissions
+} from '../../utils/permissions-helper';
 
-export function blankPermisssionsObj(): PermissionsObject {
+export function blankPermisssionsObj(): api.PermissionsObject {
   return {
     owners: [],
     writers: [],
@@ -48,9 +51,9 @@ export async function TryChangeSingleFilePermissions(
   role: api.PermisionsRole,
   entity: api.PermissionEntity
 ) {
-  const currentPermissions = await GetMetaProperty(file, 'permissions');
+  const currentPermissions = await RetrieveFilePermissions(file);
   const newPermissions = SetPermissionToObj(currentPermissions, role, entity);
-  const res = await SetMetaProperty(file, 'permissions', newPermissions);
+  const res = await UpdateFilePermissions(file, newPermissions);
   return res;
 }
 
@@ -81,7 +84,8 @@ export async function ChangePermissions(
   items: string[],
   role: api.PermisionsRole,
   entity: api.PermissionEntity,
-  isRecursive: boolean
+  isRecursive: boolean,
+  claims: api.UserCustomClaims
 ): Promise<ResultObj> {
   const successArr = await Promise.all(
     items.map(filePath =>
@@ -95,6 +99,6 @@ export async function ChangePermissions(
   // const results = getResultFromArray(successArr);
   // return results;
   return {
-    success: true
+    success: successArr as any
   };
 }

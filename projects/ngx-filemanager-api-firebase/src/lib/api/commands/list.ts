@@ -6,8 +6,8 @@ import {
   makePhantomStorageFolder,
   translateStorageToResFile
 } from '../../utils/translation-helpers';
-import { ResFile } from '../../types/core-types';
 import * as request from 'request';
+import { api } from '../../types/core-types';
 
 interface FilesAndPrefixes {
   files: File[];
@@ -99,8 +99,9 @@ export async function GetListFromStorage(
 
 export async function GetList(
   bucket: Bucket,
-  inputDirectoryPath: string
-): Promise<ResFile[]> {
+  inputDirectoryPath: string,
+  claims: api.UserCustomClaims
+): Promise<api.ResFile[]> {
   const files = await GetListFromStorage(bucket, inputDirectoryPath);
   return Promise.all(
     files.map(f => translateStorageToResFile(f))

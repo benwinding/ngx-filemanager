@@ -1,4 +1,4 @@
-import { ResultObj, ResFile } from '../types/core-types';
+import { api } from '../types/core-types';
 import {
   EnsurePrefixSlash,
   HasTrailingSlash,
@@ -34,8 +34,8 @@ export function makePhantomStorageFolder(folderPath: string): FileFromStorage {
 
 export async function translateStorageToResFile(
   f: FileFromStorage
-): Promise<ResFile> {
-  const resFile: ResFile = {} as any;
+): Promise<api.ResFile> {
+  const resFile: api.ResFile = {} as any;
   resFile.name = f.name;
   if (f.isDir) {
     resFile.type = 'dir';
@@ -83,7 +83,7 @@ export async function StreamToPromise(stream: Readable): Promise<string> {
   });
 }
 
-export function getResult(res: request.Response): ResultObj {
+export function getResult(res: request.Response): api.ResultObj {
   const fail = res.statusCode !== 204;
   return {
     success: !fail,
@@ -91,7 +91,7 @@ export function getResult(res: request.Response): ResultObj {
   };
 }
 
-export function getResultFromArray(res: request.Response[]): ResultObj {
+export function getResultFromArray(res: request.Response[]): api.ResultObj {
   const fail = res.find(r => r.statusCode !== 204);
   return {
     success: !fail,

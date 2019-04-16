@@ -145,6 +145,10 @@ export enum UserAccessResult {
   'rwx'   // 7	 rwx  All permissions: 4 (read) + 2 (write) + 1 (execute) = 7
 }
 
+export interface UserCustomClaims {
+  groups: string[];
+}
+
 export type PermisionsRole = 'OWNER' | 'READER' | 'WRITER';
 
 export interface ReqBodySetPermissions extends ReqBodyAction {

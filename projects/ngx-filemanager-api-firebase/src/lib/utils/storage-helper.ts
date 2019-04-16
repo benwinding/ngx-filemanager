@@ -1,7 +1,6 @@
 import { Bucket, File } from '../types/google-cloud-types';
 import { GetFilesOptions } from '@google-cloud/storage';
 import { EnsureNoPrefixSlash } from './path-helpers';
-import { ResultObj } from '../types/core-types';
 import * as path from 'path';
 
 export async function GetAllChildrenWithPrefix(
@@ -55,7 +54,7 @@ export async function SetMetaProperty(file: File, key: string, newValue: {}): Pr
 export async function GetMetaProperty(file: File, key: string): Promise<any> {
   const [meta] = await file.getMetadata();
   const metaData = meta.metadata || {};
-  const newValueString = metaData[key] || {};
+  const newValueString = metaData[key] || '{}';
   try {
     const newValueObj = JSON.parse(newValueString);
     return newValueObj;

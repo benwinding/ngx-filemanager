@@ -23,6 +23,7 @@ endpoint.use('/hello', async (req, res) => {
 endpoint.use(PostRequestsOnly);
 
 import { ParseUploadFile, UploadedFile } from './middleware-upload';
+import { RetrieveCustomClaims } from '../utils/permissions-helper';
 endpoint.post(
   '/upload',
   HasQueryParam('bucketname'),
@@ -32,9 +33,12 @@ endpoint.post(
     const bucketname: string = req.query.bucketname;
     const directoryPath: string = req.query.directoryPath;
     const files = req.files as UploadedFile[];
+    const userClaims = await RetrieveCustomClaims(req);
     try {
       const results = await Promise.all(
-        files.map(file => trySaveFile(bucketname, directoryPath, file))
+        files.map(file =>
+          trySaveFile(bucketname, directoryPath, file, userClaims)
+        )
       );
       const success = {
         result: {
@@ -59,14 +63,16 @@ endpoint.post(
 async function trySaveFile(
   bucketname: string,
   directoryPath: string,
-  f: UploadedFile
+  f: UploadedFile,
+  userClaims: ApiTypes.UserCustomClaims
 ) {
   return api.HandleSaveFile(
     bucketname,
     directoryPath,
     f.originalname,
     f.mimetype,
-    f.buffer
+    f.buffer,
+    userClaims
   );
 }
 
@@ -76,38 +82,39 @@ endpoint.use(
   HasBodyProp('bucketname'),
   async (req, res) => {
     const action: FileManagerAction = req.body.action;
+    const userClaims = await RetrieveCustomClaims(req);
     try {
       let body;
       switch (action) {
         case 'list':
-          body = await api.HandleList(req.body, req);
+          body = await api.HandleList(req.body, userClaims);
           break;
         case 'rename':
-          body = await api.HandleRename(req.body);
+          body = await api.HandleRename(req.body, userClaims);
           break;
         case 'move':
-          body = await api.HandleMove(req.body);
+          body = await api.HandleMove(req.body, userClaims);
           break;
         case 'copy':
-          body = await api.HandleCopy(req.body);
+          body = await api.HandleCopy(req.body, userClaims);
           break;
         case 'remove':
-          body = await api.HandleRemove(req.body);
+          body = await api.HandleRemove(req.body, userClaims);
           break;
         case 'edit':
-          body = await api.HandleEdit(req.body);
+          body = await api.HandleEdit(req.body, userClaims);
           break;
         case 'getContent':
-          body = await api.HandleGetContent(req.body);
+          body = await api.HandleGetContent(req.body, userClaims);
           break;
         case 'createFolder':
-          body = await api.HandleCreateFolder(req.body);
+          body = await api.HandleCreateFolder(req.body, userClaims);
           break;
         case 'getMeta':
-          body = await api.HandleGetMeta(req.body);
+          body = await api.HandleGetMeta(req.body, userClaims);
           break;
         case 'changePermissions':
-          body = await api.HandleSetPermissions(req.body);
+          body = await api.HandleSetPermissions(req.body, userClaims);
           break;
         case 'compress':
         case 'extract':

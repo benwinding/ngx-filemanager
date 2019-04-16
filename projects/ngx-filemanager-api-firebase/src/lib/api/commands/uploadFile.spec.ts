@@ -3,7 +3,7 @@ import { logObj } from '../../utils/logger';
 import { UploadFile } from './uploadFile';
 
 // Setup local firebase admin, using service account credentials
-const serviceAccount = require('../../../../../../serviceAccountKey.json');
+const serviceAccount = require('../../../../../../serviceAccountKey.TESTS.json');
 const testbucketname = 'resvu-integration-tests.appspot.com';
 
 admin.initializeApp({
@@ -14,15 +14,20 @@ admin.initializeApp({
 const testStorage = admin.storage();
 const testBucket = testStorage.bucket(testbucketname);
 
-test('test upload file', async () => {
+test('creates file and deletes it', async () => {
+  const claims = {} as any;
   const result = await UploadFile(
     testBucket,
-    '/',
+    '/uploadFile.spec.ts/',
     'myfile.txt',
     'text/plain',
-    new Buffer('hi there')
+    new Buffer('hi there'),
+    claims
   );
-  // files.map(f => (f.ref = null));
-  logObj(result);
-  expect(result).toBe(false);
+  const file = testBucket.file('uploadFile.spec.ts/myfile.txt');
+  const [exists] = await file.exists();
+  expect(exists).toBe(true);
+  if (exists) {
+    file.delete();
+  }
 });
