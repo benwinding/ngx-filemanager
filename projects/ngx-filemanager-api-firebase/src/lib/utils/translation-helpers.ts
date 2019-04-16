@@ -9,6 +9,7 @@ import { FileFromStorage, File } from '../types/google-cloud-types';
 import { Readable } from 'stream';
 import * as request from 'request';
 import * as path from 'path';
+import { RetrieveFilePermissions } from './permissions-helper';
 
 export function translateRawStorage(storageObject: File): FileFromStorage {
   const filePath = storageObject.name;
@@ -53,12 +54,11 @@ export async function translateStorageToResFile(
   const metaResp = await f.ref.getMetadata();
   const metaData = metaResp[0];
   const customMeta = metaData.metadata || {};
-  const permissionsStr = customMeta.permissions || '{}';
-  const permissions = JSON.parse(permissionsStr);
+  const permissions = await RetrieveFilePermissions(f.ref);
   resFile.permissions = permissions;
   resFile.size = metaData.size;
   resFile.date = metaData.updated;
-  resFile.metaData = metaData.updated;
+  resFile.metaData = customMeta;
   return resFile;
 }
 

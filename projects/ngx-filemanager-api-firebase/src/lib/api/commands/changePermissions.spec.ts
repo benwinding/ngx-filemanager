@@ -1,8 +1,14 @@
 import * as admin from 'firebase-admin';
 import * as uuid from 'uuid/v1';
-import { TryChangeSingleFilePermissions, SetPermissionToObj, blankPermisssionsObj } from './changePermissions';
-import { PermissionEntity, PermissionsObject } from 'ngx-filemanager-core/public_api';
-import { GetMetaProperty } from '../../utils/storage-helper';
+import {
+  TryChangeSingleFilePermissions,
+  SetPermissionToObj,
+  blankPermisssionsObj
+} from './changePermissions';
+import {
+  PermissionEntity,
+  PermissionsObject
+} from 'ngx-filemanager-core/public_api';
 import { RetrieveFilePermissions } from '../../utils/permissions-helper';
 
 // Setup local firebase admin, using service account credentials

@@ -1,5 +1,4 @@
 import * as admin from 'firebase-admin';
-import { logObj } from '../../utils/logger';
 import { UploadFile } from './uploadFile';
 
 // Setup local firebase admin, using service account credentials

@@ -1,6 +1,5 @@
 import * as admin from 'firebase-admin';
-import { logObj } from '../../utils/logger';
-import { RemoveFileWithChildren, RemoveFiles } from './remove';
+import { RemoveFileWithChildren } from './remove';
 
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../../serviceAccountKey.TESTS.json');

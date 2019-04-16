@@ -47,6 +47,7 @@ export interface ResFile {
   fullPath: string;
   rightsFirebase: {}[]; // unix string
   permissions: PermissionsObject; // unix string
+  perms?: string;
   size: string; // bytes
   date: string; // iso format
   type: 'dir' | 'file';

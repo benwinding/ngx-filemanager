@@ -1,6 +1,5 @@
 import * as admin from 'firebase-admin';
 import { CreateFolder } from './createFolder';
-import { logObj } from '../../utils/logger';
 
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../../serviceAccountKey.TESTS.json');

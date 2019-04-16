@@ -1,6 +1,4 @@
 import * as admin from 'firebase-admin';
-import * as uuid from 'uuid/v1';
-import { SetMetaProperty, GetMetaProperty } from './storage-helper';
 import { RetrieveFilePermissions } from './permissions-helper';
 
 // Setup local firebase admin, using service account credentials

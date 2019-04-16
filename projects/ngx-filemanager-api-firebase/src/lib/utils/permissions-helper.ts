@@ -37,14 +37,10 @@ export async function RetrieveCustomClaims(req: Request) {
   7	 rwx  All permissions: 4 (read) + 2 (write) + 1 (execute) = 7
 */
 
-export async function GetPermissionForFile(
-  file: File,
+export function GetPermissionForFile(
+  filePermissions: api.PermissionsObject,
   userPermissions: api.UserCustomClaims
-): Promise<api.UserAccessResult> {
-  const filePermissions: api.PermissionsObject = await GetMetaProperty(
-    file,
-    'permissions'
-  );
+): api.UserAccessResult {
   const groups = new Set(userPermissions.groups);
 
   const isReader = IsPartOfArray(filePermissions.readers, groups);

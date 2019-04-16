@@ -8,6 +8,7 @@ import {
 } from '../../utils/translation-helpers';
 import * as request from 'request';
 import { api } from '../../types/core-types';
+import { GetPermissionForFile } from '../../utils/permissions-helper';
 
 interface FilesAndPrefixes {
   files: File[];
@@ -103,7 +104,11 @@ export async function GetList(
   claims: api.UserCustomClaims
 ): Promise<api.ResFile[]> {
   const files = await GetListFromStorage(bucket, inputDirectoryPath);
-  return Promise.all(
+  const resFiles = await Promise.all(
     files.map(f => translateStorageToResFile(f))
   );
+  const filesAllowed = resFiles.filter(f => {
+    return GetPermissionForFile(f.permissions, claims) > api.UserAccessResult['r--'];
+  });
+  return filesAllowed;
 }

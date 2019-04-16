@@ -1,10 +1,6 @@
 import * as admin from 'firebase-admin';
 import { NgxFileMangerApiFireBaseClass } from './firebase-storage-api';
-import {
-  ReqBodyAction,
-  FileManagerAction,
-  ReqBodyList
-} from 'ngx-filemanager-core/public_api';
+import { api } from '../types/core-types';
 
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../serviceAccountKey.TESTS.json');
@@ -18,14 +14,14 @@ admin.initializeApp({
 const testStorage = admin.storage();
 const testMethods = new NgxFileMangerApiFireBaseClass(testStorage);
 
-function makeBaseRequest(action: FileManagerAction): ReqBodyAction {
+function makeBaseRequest(action: api.FileManagerAction): api.ReqBodyAction {
   return {
     bucketname: testbucketname,
     action: action
   };
 }
 
-function makeList(path: string): ReqBodyList {
+function makeList(path: string): api.ReqBodyList {
   return { ...makeBaseRequest('list'), path: path };
 }
 
@@ -36,6 +32,7 @@ function mockRequest(headers) {
 }
 
 test('Test list some files', async () => {
+  expect(1).toBe(1);
   const testListBody = makeList('/test-list-files/');
 
   const testRequest = mockRequest({

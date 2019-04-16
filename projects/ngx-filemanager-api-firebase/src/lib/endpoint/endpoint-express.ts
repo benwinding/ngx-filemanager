@@ -6,11 +6,11 @@ import {
   HasBodyProp,
   HasQueryParam
 } from './middleware-helpers';
-import { FileManagerAction, api as ApiTypes } from '../types/core-types';
+import { api } from '../types/core-types';
 import { Storage } from '../types/google-cloud-types';
 import { NgxFileMangerApiFireBaseClass } from '../api/firebase-storage-api';
 
-let api: NgxFileMangerApiFireBaseClass;
+let fmApi: NgxFileMangerApiFireBaseClass;
 
 const endpoint = express();
 endpoint.use(OptionRequestsAreOk);
@@ -64,9 +64,9 @@ async function trySaveFile(
   bucketname: string,
   directoryPath: string,
   f: UploadedFile,
-  userClaims: ApiTypes.UserCustomClaims
+  userClaims: api.UserCustomClaims
 ) {
-  return api.HandleSaveFile(
+  return fmApi.HandleSaveFile(
     bucketname,
     directoryPath,
     f.originalname,
@@ -81,40 +81,40 @@ endpoint.use(
   HasBodyProp('action'),
   HasBodyProp('bucketname'),
   async (req, res) => {
-    const action: FileManagerAction = req.body.action;
+    const action: api.FileManagerAction = req.body.action;
     const userClaims = await RetrieveCustomClaims(req);
     try {
       let body;
       switch (action) {
         case 'list':
-          body = await api.HandleList(req.body, userClaims);
+          body = await fmApi.HandleList(req.body, userClaims);
           break;
         case 'rename':
-          body = await api.HandleRename(req.body, userClaims);
+          body = await fmApi.HandleRename(req.body, userClaims);
           break;
         case 'move':
-          body = await api.HandleMove(req.body, userClaims);
+          body = await fmApi.HandleMove(req.body, userClaims);
           break;
         case 'copy':
-          body = await api.HandleCopy(req.body, userClaims);
+          body = await fmApi.HandleCopy(req.body, userClaims);
           break;
         case 'remove':
-          body = await api.HandleRemove(req.body, userClaims);
+          body = await fmApi.HandleRemove(req.body, userClaims);
           break;
         case 'edit':
-          body = await api.HandleEdit(req.body, userClaims);
+          body = await fmApi.HandleEdit(req.body, userClaims);
           break;
         case 'getContent':
-          body = await api.HandleGetContent(req.body, userClaims);
+          body = await fmApi.HandleGetContent(req.body, userClaims);
           break;
         case 'createFolder':
-          body = await api.HandleCreateFolder(req.body, userClaims);
+          body = await fmApi.HandleCreateFolder(req.body, userClaims);
           break;
         case 'getMeta':
-          body = await api.HandleGetMeta(req.body, userClaims);
+          body = await fmApi.HandleGetMeta(req.body, userClaims);
           break;
         case 'changePermissions':
-          body = await api.HandleSetPermissions(req.body, userClaims);
+          body = await fmApi.HandleSetPermissions(req.body, userClaims);
           break;
         case 'compress':
         case 'extract':
@@ -149,6 +149,6 @@ Use by attaching to a firebase function
 exports.FileManagerApi = StorageEndpoint;
 */
 export const FileManagerEndpointExpress = (storage: Storage) => {
-  api = new NgxFileMangerApiFireBaseClass(storage);
+  fmApi = new NgxFileMangerApiFireBaseClass(storage);
   return endpoint;
 };
