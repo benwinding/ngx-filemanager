@@ -1,7 +1,7 @@
-import { Bucket, File } from './google-cloud-types';
+import { Bucket, File } from '../types/google-cloud-types';
 import { GetFilesOptions } from '@google-cloud/storage';
 import { EnsureNoPrefixSlash } from './path-helpers';
-import { ResultObj } from './core-types';
+import { ResultObj } from '../types/core-types';
 import * as path from 'path';
 
 export async function GetAllChildrenWithPrefix(

@@ -1,12 +1,12 @@
-import { Bucket, FileFromStorage, File } from '../google-cloud-types';
-import { EnsureGoogleStoragePathDir } from '../path-helpers';
+import { Bucket, FileFromStorage, File } from '../../types/google-cloud-types';
+import { EnsureGoogleStoragePathDir } from '../../utils/path-helpers';
 import { GetFilesOptions } from '@google-cloud/storage';
 import {
   translateRawStorage,
   makePhantomStorageFolder,
   translateStorageToResFile
-} from '../translation-helpers';
-import { ResFile } from '../core-types';
+} from '../../utils/translation-helpers';
+import { ResFile } from '../../types/core-types';
 import * as request from 'request';
 
 interface FilesAndPrefixes {

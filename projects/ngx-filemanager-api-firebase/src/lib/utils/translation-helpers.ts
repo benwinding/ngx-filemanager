@@ -1,11 +1,11 @@
-import { ResultObj, ResFile } from './core-types';
+import { ResultObj, ResFile } from '../types/core-types';
 import {
   EnsurePrefixSlash,
   HasTrailingSlash,
   EnsureAbsolutePathDir,
   EnsureAbsolutePathFile
 } from './path-helpers';
-import { FileFromStorage, File } from './google-cloud-types';
+import { FileFromStorage, File } from '../types/google-cloud-types';
 import { Readable } from 'stream';
 import * as request from 'request';
 import * as path from 'path';

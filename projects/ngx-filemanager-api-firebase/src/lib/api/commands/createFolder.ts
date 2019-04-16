@@ -1,5 +1,5 @@
-import { Bucket } from '../google-cloud-types';
-import { EnsureGoogleStoragePathDir } from '../path-helpers';
+import { Bucket } from '../../types/google-cloud-types';
+import { EnsureGoogleStoragePathDir } from '../../utils/path-helpers';
 
 export async function CreateFolder(bucket: Bucket, newDirectoryPath: string) {
   const directoryPath = EnsureGoogleStoragePathDir(newDirectoryPath);

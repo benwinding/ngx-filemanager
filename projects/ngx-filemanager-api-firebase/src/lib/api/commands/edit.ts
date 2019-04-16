@@ -1,4 +1,4 @@
-import { Bucket } from '../google-cloud-types';
+import { Bucket } from '../../types/google-cloud-types';
 
 export async function EditFile(bucket: Bucket, item: string, content: string) {
   const result = { success: true };

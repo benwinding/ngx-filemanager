@@ -1,11 +1,11 @@
-import { Bucket } from '../google-cloud-types';
-import { getResultFromArray } from '../translation-helpers';
+import { Bucket } from '../../types/google-cloud-types';
+import { getResultFromArray } from '../../utils/translation-helpers';
 import {
   EnsureGoogleStoragePathDir,
   EnsureNoPrefixSlash
-} from '../path-helpers';
+} from '../../utils/path-helpers';
 import * as path from 'path';
-import { GetAllChildrenWithPrefix, TryCopyFile } from '../storage-helper';
+import { GetAllChildrenWithPrefix, TryCopyFile } from '../../utils/storage-helper';
 
 export async function copyWithChildren(
   bucket: Bucket,

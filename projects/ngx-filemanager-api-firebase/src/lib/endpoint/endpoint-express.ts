@@ -6,9 +6,9 @@ import {
   HasBodyProp,
   HasQueryParam
 } from './middleware-helpers';
-import { FileManagerAction, api as ApiTypes } from '../methods/core-types';
-import { Storage } from '../methods/google-cloud-types';
-import { NgxFileMangerApiFireBaseClass } from '../methods/firebase-storage-api';
+import { FileManagerAction, api as ApiTypes } from '../types/core-types';
+import { Storage } from '../types/google-cloud-types';
+import { NgxFileMangerApiFireBaseClass } from '../api/firebase-storage-api';
 
 let api: NgxFileMangerApiFireBaseClass;
 
@@ -22,11 +22,7 @@ endpoint.use('/hello', async (req, res) => {
 
 endpoint.use(PostRequestsOnly);
 
-// import 'multer';
 import { ParseUploadFile, UploadedFile } from './middleware-upload';
-// const multer = require('multer');
-// const multerStorage = multer.memoryStorage();
-// const upload = multer({ storage: multerStorage });
 endpoint.post(
   '/upload',
   HasQueryParam('bucketname'),
@@ -37,7 +33,9 @@ endpoint.post(
     const directoryPath: string = req.query.directoryPath;
     const files = req.files as UploadedFile[];
     try {
-      const results = await Promise.all(files.map(file => trySaveFile(bucketname, directoryPath, file)));
+      const results = await Promise.all(
+        files.map(file => trySaveFile(bucketname, directoryPath, file))
+      );
       const success = {
         result: {
           success: true
@@ -82,7 +80,7 @@ endpoint.use(
       let body;
       switch (action) {
         case 'list':
-          body = await api.HandleList(req.body);
+          body = await api.HandleList(req.body, req);
           break;
         case 'rename':
           body = await api.HandleRename(req.body);

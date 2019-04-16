@@ -1,4 +1,10 @@
-import { EnsureTrailingSlash, GetRelativePath, IsCurrentPath, GetSubDirectory, IsCurrentPathFile } from './path-helpers';
+import {
+  EnsureTrailingSlash,
+  GetRelativePath,
+  IsCurrentPath,
+  GetSubDirectory,
+  IsCurrentPathFile
+} from './path-helpers';
 
 // EnsureTrailingSlash
 

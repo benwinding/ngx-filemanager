@@ -1,8 +1,8 @@
-import { File } from '../google-cloud-types';
-import { ResultObj, api } from '../core-types';
+import { File } from '../../types/google-cloud-types';
+import { ResultObj, api } from '../../types/core-types';
 import { Bucket } from '@google-cloud/storage';
 import * as request from 'request';
-import { GetAllChildrenWithPrefix, GetMetaProperty, SetMetaProperty } from '../storage-helper';
+import { GetAllChildrenWithPrefix, GetMetaProperty, SetMetaProperty } from '../../utils/storage-helper';
 import { PermissionsObject } from 'ngx-filemanager-core/public_api';
 
 export function blankPermisssionsObj(): PermissionsObject {

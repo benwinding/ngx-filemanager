@@ -1,4 +1,4 @@
-import { Bucket } from '../google-cloud-types';
+import { Bucket } from '../../types/google-cloud-types';
 import { GetSignedUrlConfig } from '@google-cloud/storage';
 const moment = require('moment');
 

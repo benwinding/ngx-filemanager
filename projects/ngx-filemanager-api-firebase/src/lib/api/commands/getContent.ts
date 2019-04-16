@@ -1,5 +1,5 @@
-import { Bucket } from '../google-cloud-types';
-import { StreamToPromise } from '../translation-helpers';
+import { Bucket } from '../../types/google-cloud-types';
+import { StreamToPromise } from '../../utils/translation-helpers';
 
 export async function GetFileContent(bucket: Bucket, item: string) {
   const result = await bucket.file(item).get();

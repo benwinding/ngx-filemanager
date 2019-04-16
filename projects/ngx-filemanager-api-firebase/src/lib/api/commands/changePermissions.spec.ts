@@ -2,7 +2,7 @@ import * as admin from 'firebase-admin';
 import * as uuid from 'uuid/v1';
 import { TryChangeSingleFilePermissions } from './changePermissions';
 import { PermissionEntity, PermissionsObject } from 'ngx-filemanager-core/public_api';
-import { GetMetaProperty } from '../storage-helper';
+import { GetMetaProperty } from '../../utils/storage-helper';
 
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../../serviceAccountKey.TESTS.json');

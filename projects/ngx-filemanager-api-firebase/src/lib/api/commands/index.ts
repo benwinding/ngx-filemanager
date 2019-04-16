@@ -9,6 +9,3 @@ export * from './createFolder';
 export * from './uploadFile';
 export * from './getMeta';
 export * from './changePermissions';
-// export * from './compress';
-// export * from './extract';
-// export * from './downloadMultiple';

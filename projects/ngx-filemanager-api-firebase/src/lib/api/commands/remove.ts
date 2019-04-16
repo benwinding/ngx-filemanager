@@ -1,7 +1,7 @@
-import { Bucket, File } from '../google-cloud-types';
-import { EnsureNoPrefixSlash } from '../path-helpers';
-import { ResultObj } from '../core-types';
-import { GetAllChildrenWithPrefix } from '../storage-helper';
+import { Bucket, File } from '../../types/google-cloud-types';
+import { EnsureNoPrefixSlash } from '../../utils/path-helpers';
+import { ResultObj } from '../../types/core-types';
+import { GetAllChildrenWithPrefix } from '../../utils/storage-helper';
 
 export async function tryDeleteFile(file: File): Promise<boolean> {
   const exists = (await file.exists()).shift();

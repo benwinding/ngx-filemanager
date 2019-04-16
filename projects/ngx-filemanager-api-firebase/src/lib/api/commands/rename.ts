@@ -1,7 +1,7 @@
-import { Bucket } from '../google-cloud-types';
-import { getResult, getResultFromArray } from '../translation-helpers';
-import { EnsureNoPrefixSlash } from '../path-helpers';
-import { GetAllChildrenWithPrefix, TryRenameFile } from '../storage-helper';
+import { Bucket } from '../../types/google-cloud-types';
+import { getResult, getResultFromArray } from '../../utils/translation-helpers';
+import { EnsureNoPrefixSlash } from '../../utils/path-helpers';
+import { GetAllChildrenWithPrefix, TryRenameFile } from '../../utils/storage-helper';
 
 export async function RenameFile(
   bucket: Bucket,

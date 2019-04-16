@@ -1,6 +1,6 @@
-import { Bucket } from '../google-cloud-types';
+import { Bucket } from '../../types/google-cloud-types';
 import * as path from 'path';
-import { EnsureNoPrefixSlash } from '../path-helpers';
+import { EnsureNoPrefixSlash } from '../../utils/path-helpers';
 
 export async function UploadFile(
   bucket: Bucket,

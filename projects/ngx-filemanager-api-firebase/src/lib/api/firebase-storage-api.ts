@@ -1,5 +1,5 @@
-import { api } from './core-types';
-import { Storage, Bucket } from './google-cloud-types';
+import { api } from '../types/core-types';
+import { Storage, Bucket } from '../types/google-cloud-types';
 import * as commands from './commands';
 
 export class NgxFileMangerApiFireBaseClass {
@@ -17,7 +17,7 @@ export class NgxFileMangerApiFireBaseClass {
     return bucket;
   }
 
-  async HandleList(body: api.ReqBodyList): Promise<api.ResBodyList> {
+  async HandleList(body: api.ReqBodyList, req: Request): Promise<api.ResBodyList> {
     const bucket = await this.getBucket(body.bucketname);
     const resFiles = await commands.GetList(bucket, body.path);
     const response: api.ResBodyList = {

@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import { GetList, GetFiles, GetFilesAndPrefixes, GetListFromStorage } from './list';
 import { GetFilesOptions } from '@google-cloud/storage';
-import {File} from '../google-cloud-types';
+import {File} from '../../types/google-cloud-types';
 import { logObj } from '../../utils/logger';
 
 // Setup local firebase admin, using service account credentials
