@@ -1,34 +1,23 @@
-import {
-  FileSystemProvider,
-  ResBodyList,
-  ResBodyRename,
-  ResBodyMove,
-  ResBodyCopy,
-  ResBodyRemove,
-  ResBodyEdit,
-  ResBodyGetContent,
-  ResBodyCreateFolder,
-  ResFile,
-  ResBodySetPermissions
-} from 'ngx-filemanager-core/public_api';
+import * as core from 'ngx-filemanager-core/public_api';
 import * as path from 'path-browserify';
 import { ConsoleLoggerService } from './logger';
 
-function MakeFakeFile(filePath: string, isDir?: boolean): ResFile {
+function MakeFakeFile(filePath: string, isDir?: boolean): core.ResFile {
   return {
     name: path.basename(filePath),
     fullPath: filePath,
-    rights: 'zzrwrws',
+    rightsFirebase: [],
+    permissions: {} as any,
     size: '111',
     date: new Date().toISOString(),
     type: isDir ? 'dir' : 'file'
   };
 }
 
-export class FileSystemStub implements FileSystemProvider {
+export class FileSystemStub implements core.FileSystemProvider {
   logger = new ConsoleLoggerService();
 
-  files: ResFile[] = [
+  files: core.ResFile[] = [
     MakeFakeFile('/image1.png'),
     MakeFakeFile('/image2.jpeg'),
     MakeFakeFile('/subfile.txt'),
@@ -71,7 +60,7 @@ export class FileSystemStub implements FileSystemProvider {
     }
   }
 
-  async List(inputPath: string): Promise<ResBodyList> {
+  async List(inputPath: string): Promise<core.ResBodyList> {
     await this.fakeDelay();
     const folderPath = this.ensurePrefixSlash(this.ensureTrailingSlash(inputPath));
     const matches = this.files.filter(k => this.isInDirectory(folderPath, k.fullPath));
@@ -80,7 +69,7 @@ export class FileSystemStub implements FileSystemProvider {
       result: matches
     };
   }
-  async Rename(item: string, newItemPath: string): Promise<ResBodyRename> {
+  async Rename(item: string, newItemPath: string): Promise<core.ResBodyRename> {
     await this.fakeDelay();
     const baseName = path.basename(newItemPath);
     this.selectMatches([item], true).map(match => {
@@ -89,14 +78,14 @@ export class FileSystemStub implements FileSystemProvider {
     });
     return null;
   }
-  async Move(item: string, newPath: string): Promise<ResBodyMove> {
+  async Move(item: string, newPath: string): Promise<core.ResBodyMove> {
     await this.fakeDelay();
     this.selectMatches([item], true).map(match => {
       match.fullPath = newPath;
     });
     return null;
   }
-  async Copy(singleFileName: string, newPath: string): Promise<ResBodyCopy> {
+  async Copy(singleFileName: string, newPath: string): Promise<core.ResBodyCopy> {
     await this.fakeDelay();
     this.selectMatches([singleFileName], true).map(match => {
       const copy = { ...match };
@@ -105,39 +94,39 @@ export class FileSystemStub implements FileSystemProvider {
     });
     return null;
   }
-  async Edit(item: string, content: string): Promise<ResBodyEdit> {
+  async Edit(item: string, content: string): Promise<core.ResBodyEdit> {
     await this.fakeDelay();
     this.selectMatches([item], true).map(match => {
       match['content'] = content;
     });
     return null;
   }
-  async Getcontent(item: string): Promise<ResBodyGetContent> {
+  async Getcontent(item: string): Promise<core.ResBodyGetContent> {
     await this.fakeDelay();
     const matches = this.selectMatches([item], true);
     return matches.pop()['content'];
   }
-  async CreateFolder(newPath: string): Promise<ResBodyCreateFolder> {
+  async CreateFolder(newPath: string): Promise<core.ResBodyCreateFolder> {
     await this.fakeDelay();
     this.files.push(MakeFakeFile(newPath, true));
     return null;
   }
   async SetPermissions(
     item: string,
-    perms: string,
-    permsCode: string,
+    role: core.PermisionsRole,
+    entity: core.PermissionEntity,
     recursive?: boolean
-  ): Promise<ResBodySetPermissions> {
+  ): Promise<core.ResBodySetPermissions> {
     await this.fakeDelay();
     this.selectMatches([item], true).map(f => {
-      f.rights = perms;
+      // f.rightsFirebase = [perms];
       if (recursive) {
-        this.SetPermissions(f.fullPath, perms, permsCode, recursive);
+        // this.SetPermissions(f.fullPath, perms, permsCode, recursive);
       }
     });
     return null;
   }
-  async CopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy> {
+  async CopyMultiple(items: string[], newPath: string): Promise<core.ResBodyCopy> {
     await this.fakeDelay();
     this.selectMatches(items, true).map(f => {
       const copy = { ...f };
@@ -146,7 +135,7 @@ export class FileSystemStub implements FileSystemProvider {
     });
     return null;
   }
-  async MoveMultiple(items: string[], newPath: string): Promise<ResBodyMove> {
+  async MoveMultiple(items: string[], newPath: string): Promise<core.ResBodyMove> {
     await this.fakeDelay();
     this.selectMatches(items, true).map(f => {
       f.fullPath = path.join(newPath, f.name);
@@ -155,22 +144,22 @@ export class FileSystemStub implements FileSystemProvider {
   }
   async SetPermissionsMultiple(
     items: string[],
-    perms: string,
-    permsCode: string,
+    role: core.PermisionsRole,
+    entity: core.PermissionEntity,
     recursive?: boolean
-  ): Promise<ResBodySetPermissions> {
+  ): Promise<core.ResBodySetPermissions> {
     await this.fakeDelay();
     this.logger.info('file-system-stub: SetPermissionsMultiple', { items, files: this.files });
     this.selectMatches(items, true).map(f => {
-      f.rights = perms;
-      if (recursive) {
-        this.SetPermissions(f.fullPath, perms, permsCode, recursive);
-      }
+      // f.rightsFirebase = [perms];
+      // if (recursive) {
+      //   this.SetPermissions(f.fullPath, perms, permsCode, recursive);
+      // }
     });
     return null;
   }
 
-  async Remove(items: string[]): Promise<ResBodyRemove> {
+  async Remove(items: string[]): Promise<core.ResBodyRemove> {
     await this.fakeDelay();
     const itemsSet = new Set(items);
     const itemsNotDeleted = this.files.filter(f => !itemsSet.has(f.fullPath));
@@ -197,7 +186,7 @@ export class FileSystemStub implements FileSystemProvider {
     return 'https://httpbin.org/post';
   }
 
-  async CreateDownloadLink(file: ResFile): Promise<string> {
+  async CreateDownloadLink(file: core.ResFile): Promise<string> {
     return 'https://upload.wikimedia.org/wikipedia/commons/8/85/Exponential_Function_%28Abs_Imag_Part_at_Infinity%29_Density.png';
   }
 }

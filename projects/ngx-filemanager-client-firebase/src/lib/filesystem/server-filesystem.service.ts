@@ -100,15 +100,15 @@ export class ServerFilesystemProviderService
 
   SetPermissions(
     item: string,
-    perms: string,
-    permsCode: string,
+    role: core.PermisionsRole,
+    entity: core.PermissionEntity,
     recursive?: boolean
   ): Promise<core.ResBodySetPermissions> {
     const req: core.ReqBodySetPermissions = {
       ...this.makeBaseRequest('changePermissions'),
       items: [item],
-      perms: perms,
-      permsCode: permsCode,
+      role: role,
+      entity: entity,
       recursive: recursive
     };
     return this.fetchPostAuth(this.apiEndpoint, req);
@@ -134,15 +134,15 @@ export class ServerFilesystemProviderService
 
   SetPermissionsMultiple(
     items: string[],
-    perms: string,
-    permsCode: string,
+    role: core.PermisionsRole,
+    entity: core.PermissionEntity,
     recursive?: boolean
   ): Promise<core.ResBodySetPermissions> {
     const req: core.ReqBodySetPermissions = {
       ...this.makeBaseRequest('changePermissions'),
       items: items,
-      perms: perms,
-      permsCode: permsCode,
+      role: role,
+      entity: entity,
       recursive: recursive
     };
     return this.fetchPostAuth(this.apiEndpoint, req);

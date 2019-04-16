@@ -5,9 +5,9 @@ import { MatDialog } from '@angular/material';
 import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
 import { RenameDialogInterface } from '../dialogs/dialog-rename.component';
 import { AppDialogRenameComponent } from '../dialogs/dialog-rename.component';
-import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
+import { ResFile, FileSystemProvider, PermissionsObject } from 'ngx-filemanager-core';
 import { FileManagerConfig } from '../configuration/client-configuration';
-import { AppDialogSetPermissionsComponent } from '../dialogs/dialog-setpermissions.component';
+import { AppDialogSetPermissionsComponent, PermissionsDialogResponseInterface } from '../dialogs/dialog-setpermissions.component';
 import { PermissionsDialogInterface } from '../dialogs/dialog-setpermissions.component';
 import {
   AppDialogCopyComponent,
@@ -198,20 +198,22 @@ export class NgxFileManagerComponent implements OnInit {
 
   private async onSetPermissionsMultiple(files: ResFile[]) {
     const data: PermissionsDialogInterface = {
-      files: files
+      files: files,
+      config: this.config
     };
-    const newPermissions = await this.openDialog(
+    const res: PermissionsDialogResponseInterface = await this.openDialog(
       AppDialogSetPermissionsComponent,
       data
     );
-    if (!newPermissions) {
+    if (!res) {
       return;
     }
     const filePaths = files.map(f => f.fullPath);
     await this.optimisticFs.HandleSetPermissionsMultiple(
       filePaths,
-      newPermissions,
-      null
+      res.role,
+      res.entity,
+      true
     );
     await this.refreshExplorer();
   }

@@ -45,11 +45,13 @@ export interface ReqBodyList extends ReqBodyAction {
 export interface ResFile {
   name: string; // filename with extension or directory name
   fullPath: string;
-  rights: string; // unix string
+  rightsFirebase: {}[]; // unix string
+  permissions: PermissionsObject; // unix string
   size: string; // bytes
   date: string; // iso format
   type: 'dir' | 'file';
   isPhantomFolder?: boolean;
+  metaData?: any;
 }
 
 export interface ResBodyList {
@@ -121,12 +123,23 @@ export interface ResBodyCreateFolder extends ResBodySuccess {}
 
 // SET PERMISSIONS
 
+export interface PermissionEntity {
+  name: string;
+  id: string;
+  type: 'group' | 'user';
+}
+export interface PermissionsObject {
+  readers: PermissionEntity[];
+  writers: PermissionEntity[];
+  owners: PermissionEntity[];
+}
+
 export type PermisionsRole = 'OWNER' | 'READER' | 'WRITER';
 
 export interface ReqBodySetPermissions extends ReqBodyAction {
   items: string[];
   role: PermisionsRole;
-  entityId: string;
+  entity: PermissionEntity;
   recursive: boolean;
 }
 
@@ -166,8 +179,8 @@ export interface FileSystemProvider {
   Getcontent(item: string): Promise<ResBodyGetContent>;
   SetPermissions(
     item: string,
-    perms: string,
-    permsCode: string,
+    role: PermisionsRole,
+    entity: PermissionEntity,
     recursive?: boolean
   ): Promise<ResBodySetPermissions>;
 
@@ -177,8 +190,8 @@ export interface FileSystemProvider {
   CopyMultiple(items: string[], newPath: string): Promise<ResBodyCopy>;
   SetPermissionsMultiple(
     items: string[],
-    perms: string,
-    permsCode: string,
+    role: PermisionsRole,
+    entity: PermissionEntity,
     recursive?: boolean
   ): Promise<ResBodySetPermissions>;
   Remove(items: string[]): Promise<ResBodyRemove>;

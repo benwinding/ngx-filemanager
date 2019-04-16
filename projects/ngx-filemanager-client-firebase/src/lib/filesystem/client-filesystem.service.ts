@@ -8,6 +8,7 @@ import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemDataStore } from './client-filesystem.datastore';
 import * as core from 'ngx-filemanager-core';
 import * as path from 'path-browserify';
+import { PermissionEntity } from 'ngx-filemanager-core';
 
 // tslint:disable:member-ordering
 @Injectable()
@@ -64,8 +65,8 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   async OnGetcontent(item: string): Promise<void> {}
   async OnSetPermissions(
     item: string,
-    perms: string,
-    permsCode: string,
+    role: core.PermisionsRole,
+    entity: PermissionEntity,
     recursive?: boolean
   ): Promise<void> {}
   async OnMoveMultiple(items: string[], newPath: string): Promise<void> {
@@ -74,8 +75,8 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   async OnCopyMultiple(items: string[], newPath: string): Promise<void> {}
   async OnSetPermissionsMultiple(
     items: string[],
-    perms: string,
-    permsCode: string,
+    role: core.PermisionsRole,
+    entity: PermissionEntity,
     recursive?: boolean
   ): Promise<void> {}
   async OnRemove(items: string[]): Promise<void> {

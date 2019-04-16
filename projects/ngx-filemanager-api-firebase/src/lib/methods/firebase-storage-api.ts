@@ -132,7 +132,8 @@ export class NgxFileMangerApiFireBaseClass {
     const result = await commands.ChangePermissions(
       bucket,
       body.items,
-      body.perms,
+      body.role,
+      body.entity,
       body.recursive
     );
     const response: api.ResBodySetPermissions = {

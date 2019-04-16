@@ -1,6 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { guesser } from '../utils/file-icon-guesser';
-import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
+import {
+  ResFile,
+  FileSystemProvider,
+  PermissionEntity
+} from 'ngx-filemanager-core/public_api';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -41,9 +45,8 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
         <h6>{{ file.size | fileSize }}</h6>
         <h5>Date</h5>
         <h6>{{ file.date | date: 'short' }}</h6>
-        <h5>Permissions</h5>
         <span class="flex-row align-center">
-          <h6 class="filename">{{ file.rights }}</h6>
+          <h5>Permissions</h5>
           <button
             mat-mini-fab
             color="primary"
@@ -53,6 +56,20 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
             <mat-icon>lock_outline</mat-icon>
           </button>
         </span>
+        <div>
+          <h6 *ngIf="owners && owners.length">Owners</h6>
+          <p *ngFor="let entity of owners">
+            {{ entity.name }}
+          </p>
+          <h6 *ngIf="writers && writers.length">Writers</h6>
+          <p *ngFor="let entity of writers">
+            {{ entity.name }}
+          </p>
+          <h6 *ngIf="readers && readers.length">readers</h6>
+          <p *ngFor="let entity of readers">
+            {{ entity.name }}
+          </p>
+        </div>
         <h5>Full Path</h5>
         <h6>{{ file.fullPath }}</h6>
         <h5>Type</h5>
@@ -65,7 +82,7 @@ import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
           class="has-pointer"
           (click)="this.clickedDownload.emit(file)"
         >
-          <mat-icon>file_download</mat-icon>
+          <mat-icon>open_in_new</mat-icon>
         </button>
         <div class="preview" [class.hidden]="!(isImage && imageUrl)">
           <h5>Preview</h5>
@@ -128,6 +145,7 @@ export class FileDetailsComponent {
   set file(newFile) {
     this._file = newFile;
     this.setImageUrl();
+    this.setPermissions();
   }
   get file() {
     return this._file;
@@ -142,6 +160,10 @@ export class FileDetailsComponent {
   clickedRename = new EventEmitter<ResFile>();
   @Output()
   clickedSetPermissions = new EventEmitter<ResFile>();
+
+  owners: PermissionEntity[];
+  readers: PermissionEntity[];
+  writers: PermissionEntity[];
 
   getFileType(fileName: string) {
     return guesser.getFileIconName(fileName);
@@ -165,5 +187,22 @@ export class FileDetailsComponent {
       }
       this.imageUrl = await this.fileSystem.CreateDownloadLink(this.file);
     }, 300);
+  }
+
+  setPermissions() {
+    if (!this._file || !this._file.metaData) {
+      return;
+    }
+    try {
+      const permissions = this._file.permissions;
+      this.readers = permissions.readers;
+      this.writers = permissions.writers;
+      this.owners = permissions.owners;
+    } catch (error) {
+      console.error('file-details: setPermissions', {
+        error,
+        file: this._file
+      });
+    }
   }
 }

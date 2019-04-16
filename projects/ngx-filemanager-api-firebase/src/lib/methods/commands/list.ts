@@ -1,16 +1,10 @@
 import { Bucket, FileFromStorage, File } from '../google-cloud-types';
-import {
-  EnsureNoPrefixSlash,
-  EnsureTrailingSlash,
-  EnsureGoogleStoragePathDir,
-  EnsureAbsolutePathDir
-} from '../path-helpers';
+import { EnsureGoogleStoragePathDir } from '../path-helpers';
 import { GetFilesOptions } from '@google-cloud/storage';
 import {
   translateRawStorage,
-  translateStorageDirToResFile,
-  translateStorageFileToResFile,
-  makePhantomStorageFolder
+  makePhantomStorageFolder,
+  translateStorageToResFile
 } from '../translation-helpers';
 import { ResFile } from '../core-types';
 import * as request from 'request';
@@ -109,12 +103,6 @@ export async function GetList(
 ): Promise<ResFile[]> {
   const files = await GetListFromStorage(bucket, inputDirectoryPath);
   return Promise.all(
-    files.map(f => {
-      if (f.isDir) {
-        return translateStorageDirToResFile(f);
-      } else {
-        return translateStorageFileToResFile(f);
-      }
-    })
+    files.map(f => translateStorageToResFile(f))
   );
 }

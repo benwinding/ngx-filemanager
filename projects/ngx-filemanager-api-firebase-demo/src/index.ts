@@ -10,7 +10,7 @@ app.use(LogRequest);
 
 import * as admin from 'firebase-admin';
 // Setup local firebase admin, using service account credentials
-const serviceAccount = require('../../../../serviceAccountKey.json');
+const serviceAccount = require('../../../../serviceAccountKey.TESTS.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });

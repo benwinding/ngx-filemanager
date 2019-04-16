@@ -32,45 +32,34 @@ export function makePhantomStorageFolder(folderPath: string): FileFromStorage {
   };
 }
 
-export async function translateStorageDirToResFile(
+export async function translateStorageToResFile(
   f: FileFromStorage
 ): Promise<ResFile> {
-  let metaUpdated = null;
-  if (!f.isPhantomFolder) {
-    const meta = await GetMeta(f);
-    metaUpdated = meta.updated;
+  const resFile: ResFile = {} as any;
+  resFile.name = f.name;
+  if (f.isDir) {
+    resFile.type = 'dir';
+    resFile.fullPath = EnsureAbsolutePathDir(f.fullPath);
+  } else {
+    resFile.type = 'file';
+    resFile.fullPath = EnsureAbsolutePathFile(f.fullPath);
   }
-  const pathParsed = EnsureAbsolutePathDir(f.fullPath);
-  return {
-    name: f.name,
-    rights: 'rxrxrx',
-    fullPath: pathParsed,
-    size: '0',
-    date: metaUpdated,
-    type: 'dir',
-    isPhantomFolder: f.isPhantomFolder
-  };
-}
-
-export async function translateStorageFileToResFile(
-  f: FileFromStorage
-): Promise<ResFile> {
-  const meta = await GetMeta(f);
-  const pathParsed = EnsureAbsolutePathFile(f.fullPath);
-  return {
-    name: f.name,
-    rights: 'rxrxrx',
-    fullPath: pathParsed,
-    size: meta.size,
-    date: meta.updated,
-    type: 'file'
-  };
-}
-
-export async function GetMeta(f: FileFromStorage) {
-  const metaResponse = await f.ref.getMetadata();
-  const meta: any = metaResponse[0];
-  return meta;
+  if (f.isPhantomFolder) {
+    resFile.isPhantomFolder = true;
+    return resFile;
+  }
+  const [aclObj] = await f.ref.acl.get();
+  resFile.rightsFirebase = aclObj as any;
+  const metaResp = await f.ref.getMetadata();
+  const metaData = metaResp[0];
+  const customMeta = metaData.metadata || {};
+  const permissionsStr = customMeta.permissions || '{}';
+  const permissions = JSON.parse(permissionsStr);
+  resFile.permissions = permissions;
+  resFile.size = metaData.size;
+  resFile.date = metaData.updated;
+  resFile.metaData = metaData.updated;
+  return resFile;
 }
 
 export async function StreamToPromise(stream: Readable): Promise<string> {

@@ -1,5 +1,6 @@
 import * as core from 'ngx-filemanager-core';
 import { Observable } from 'rxjs';
+import { PermissionEntity, PermisionsRole } from 'ngx-filemanager-core';
 
 export interface ClientFileSystem {
   $currentFiles: Observable<core.ResFile[]>;
@@ -17,8 +18,8 @@ export interface ClientFileSystem {
   OnGetcontent(item: string): Promise<void>;
   OnSetPermissions(
     item: string,
-    perms: string,
-    permsCode: string,
+    role: PermisionsRole,
+    entity: PermissionEntity,
     recursive?: boolean
   ): Promise<void>;
   // File/Directory Bulk Actions
@@ -26,8 +27,8 @@ export interface ClientFileSystem {
   OnCopyMultiple(items: string[], newPath: string): Promise<void>;
   OnSetPermissionsMultiple(
     items: string[],
-    perms: string,
-    permsCode: string,
+    role: PermisionsRole,
+    entity: PermissionEntity,
     recursive?: boolean
   ): Promise<void>;
   OnRemove(items: string[]): Promise<void>;

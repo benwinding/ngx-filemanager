@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { FileSystemProvider } from 'ngx-filemanager-core/public_api';
+import { FileSystemProvider, PermissionEntity } from 'ngx-filemanager-core/public_api';
 import { OptimisticFilesystem } from './optimistic-filesystem.interface';
 import * as core from 'ngx-filemanager-core';
 import { ClientFileSystemService } from './client-filesystem.service';
@@ -98,21 +98,21 @@ export class OptimisticFilesystemService
   }
   async HandleSetPermissions(
     item: string,
-    perms: string,
-    permsCode: string,
+    role: core.PermisionsRole,
+    entity: PermissionEntity,
     recursive?: boolean
   ): Promise<void> {
     this.logger.info('HandleSetPermissions', {
       item,
-      perms,
-      permsCode,
+      role,
+      entity,
       recursive
     });
-    this.clientFilesystem.OnSetPermissions(item, perms, permsCode, recursive);
+    this.clientFilesystem.OnSetPermissions(item, role, entity, recursive);
     await this.serverFilesystem.SetPermissions(
       item,
-      perms,
-      permsCode,
+      role,
+      entity,
       recursive
     );
   }
@@ -130,27 +130,27 @@ export class OptimisticFilesystemService
   }
   async HandleSetPermissionsMultiple(
     items: string[],
-    perms: string,
-    permsCode: string,
+    role: core.PermisionsRole,
+    entity: PermissionEntity,
     recursive?: boolean
   ): Promise<void> {
     this.logger.info('HandleSetPermissionsMultiple', {
       items,
-      perms,
-      permsCode,
+      role,
+      entity,
       recursive
     });
 
     this.clientFilesystem.OnSetPermissionsMultiple(
       items,
-      perms,
-      permsCode,
+      role,
+      entity,
       recursive
     );
     await this.serverFilesystem.SetPermissionsMultiple(
       items,
-      perms,
-      permsCode,
+      role,
+      entity,
       recursive
     );
   }

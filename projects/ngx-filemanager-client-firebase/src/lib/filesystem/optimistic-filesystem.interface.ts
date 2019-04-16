@@ -1,3 +1,5 @@
+import { PermissionEntity, PermisionsRole } from 'ngx-filemanager-core/public_api';
+
 export interface OptimisticFilesystem {
   // Actions
   HandleList(path: string): Promise<void>;
@@ -10,8 +12,8 @@ export interface OptimisticFilesystem {
   HandleGetcontent(item: string): Promise<string>;
   HandleSetPermissions(
     item: string,
-    perms: string,
-    permsCode: string,
+    role: PermisionsRole,
+    entity: PermissionEntity,
     recursive?: boolean
   ): Promise<void>;
   // File/Directory Bulk Actions
@@ -19,8 +21,8 @@ export interface OptimisticFilesystem {
   HandleCopyMultiple(items: string[], newPath: string): Promise<void>;
   HandleSetPermissionsMultiple(
     items: string[],
-    perms: string,
-    permsCode: string,
+    role: PermisionsRole,
+    entity: PermissionEntity,
     recursive?: boolean
   ): Promise<void>;
   HandleRemove(items: string[]): Promise<void>;
