@@ -42,7 +42,7 @@ export class AppTestFunctionsLocallyComponent {
     groups: $groups,
   };
   constructor(public firebaseClientProvider: ServerFilesystemProviderService) {
-    const bucketName = 'resvu-integration-tests.appspot.comsssss';
+    const bucketName = 'resvu-integration-tests.appspot.com';
     const apiEndpoint = 'http://localhost:4444/ApiPublic/files';
     // const bucketName = 'cl-building-storage';
     // const apiEndpoint =
