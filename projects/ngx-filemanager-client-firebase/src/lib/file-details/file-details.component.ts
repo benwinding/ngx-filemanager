@@ -5,6 +5,7 @@ import {
   FileSystemProvider,
   PermissionEntity
 } from 'ngx-filemanager-core/public_api';
+import { promiseDelay } from '../utils/delayer';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -86,9 +87,9 @@ import {
         </button>
         <div class="preview" [class.hidden]="!(isImage && imageUrl)">
           <h5>Preview</h5>
-          <a [href]="imageUrl" target="_blank">
+          <div class="has-pointer" (click)="this.clickedDownload.emit(file)">
             <img *ngIf="imageUrl" [src]="imageUrl" />
-          </a>
+          </div>
         </div>
       </div>
     </div>
@@ -179,14 +180,13 @@ export class FileDetailsComponent {
     return guesser.getFileIconName(this.file.name) === 'image';
   }
 
-  setImageUrl() {
+  async setImageUrl() {
     this.imageUrl = null;
-    setTimeout(async () => {
-      if (!this.hasInput || !this.isFile) {
-        return;
-      }
-      this.imageUrl = await this.fileSystem.CreateDownloadLink(this.file);
-    }, 300);
+    await promiseDelay(300);
+    if (!this.hasInput || !this.isFile) {
+      return;
+    }
+    this.imageUrl = await this.fileSystem.CreateDownloadLink(this.file);
   }
 
   setPermissions() {
