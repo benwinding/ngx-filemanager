@@ -77,10 +77,10 @@ const dialogComponents = [
     FileSizePipe
   ],
   imports: [
+    CommonModule,
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule,
     AutoTableModule,
     DropzoneModule,
 

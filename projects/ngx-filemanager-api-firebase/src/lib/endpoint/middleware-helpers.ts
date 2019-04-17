@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { Bucket, Storage } from '../types/google-cloud-types';
 
 export function OptionRequestsAreOk(
   req: Request,

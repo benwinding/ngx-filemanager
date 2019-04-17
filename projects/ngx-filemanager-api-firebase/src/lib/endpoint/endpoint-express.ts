@@ -127,13 +127,14 @@ endpoint.use(
       }
       res.status(200).send(body);
     } catch (error) {
-      const returnedErrorMsg = `Bad request!
-Error: ${error.msg},
-body.action: ${req.body.action},
-body: ${JSON.stringify(req.body)}
-`;
-      console.error({ returnedErrorMsg, error });
-      res.status(400).send(returnedErrorMsg);
+      const returnedError = {
+        error: `Bad request to ngx-file-manager!`,
+        errorDetail: error.message,
+        requestBody: req.body
+      };
+      console.error({ returnedError, error });
+      const errorAsText = JSON.stringify(returnedError, null, 4);
+      res.status(400).send(errorAsText);
     }
   }
 );
