@@ -8,7 +8,7 @@ import {
 import {
   PermissionEntity,
   PermissionsObject
-} from 'ngx-filemanager-core/public_api';
+} from 'ngx-filemanager-core';
 import { RetrieveFilePermissions } from '../../utils/permissions-helper';
 
 // Setup local firebase admin, using service account credentials

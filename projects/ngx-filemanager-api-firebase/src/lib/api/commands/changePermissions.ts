@@ -1,5 +1,4 @@
 import { File } from '../../types/google-cloud-types';
-import { ResultObj, api } from '../../types/core-types';
 import { Bucket } from '@google-cloud/storage';
 import * as request from 'request';
 import { GetAllChildrenWithPrefix } from '../../utils/storage-helper';
@@ -7,8 +6,15 @@ import {
   RetrieveFilePermissions,
   UpdateFilePermissions
 } from '../../utils/permissions-helper';
+import {
+  PermissionsObject,
+  PermisionsRole,
+  PermissionEntity,
+  UserCustomClaims,
+  ResultObj
+} from 'ngx-filemanager-core';
 
-export function blankPermisssionsObj(): api.PermissionsObject {
+export function blankPermisssionsObj(): PermissionsObject {
   return {
     owners: [],
     writers: [],
@@ -17,15 +23,15 @@ export function blankPermisssionsObj(): api.PermissionsObject {
 }
 
 export function SetPermissionToObj(
-  permissionsObj: api.PermissionsObject,
-  role: api.PermisionsRole,
-  entity: api.PermissionEntity
-): api.PermissionsObject {
+  permissionsObj: PermissionsObject,
+  role: PermisionsRole,
+  entity: PermissionEntity
+): PermissionsObject {
   const newPermissions = {
     ...blankPermisssionsObj(),
     ...permissionsObj
   };
-  let list: api.PermissionEntity[];
+  let list: PermissionEntity[];
   switch (role) {
     case 'OWNER':
       list = newPermissions.owners;
@@ -48,8 +54,8 @@ export function SetPermissionToObj(
 
 export async function TryChangeSingleFilePermissions(
   file: File,
-  role: api.PermisionsRole,
-  entity: api.PermissionEntity
+  role: PermisionsRole,
+  entity: PermissionEntity
 ) {
   const currentPermissions = await RetrieveFilePermissions(file);
   const newPermissions = SetPermissionToObj(currentPermissions, role, entity);
@@ -60,8 +66,8 @@ export async function TryChangeSingleFilePermissions(
 async function tryChangePermissions(
   bucket: Bucket,
   filePath: string,
-  role: api.PermisionsRole,
-  entity: api.PermissionEntity,
+  role: PermisionsRole,
+  entity: PermissionEntity,
   isRecursive: boolean
 ): Promise<request.Response[]> {
   if (isRecursive) {
@@ -82,10 +88,10 @@ async function tryChangePermissions(
 export async function ChangePermissions(
   bucket: Bucket,
   items: string[],
-  role: api.PermisionsRole,
-  entity: api.PermissionEntity,
+  role: PermisionsRole,
+  entity: PermissionEntity,
   isRecursive: boolean,
-  claims: api.UserCustomClaims
+  claims: UserCustomClaims
 ): Promise<ResultObj> {
   const successArr = await Promise.all(
     items.map(filePath =>

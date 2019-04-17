@@ -15,13 +15,12 @@ const testBucket = testStorage.bucket(testbucketname);
 
 test('remove item that dont exist', async () => {
   const result = await RemoveFileWithChildren(testBucket, '/cacsascas/');
-  // files.map(f => (f.ref = null));
-  // expect(result).toBe(false);
+  expect(result).toBe(true);
 });
 
-// test('get directory and all children /', async () => {
-//   const result = await RemoveFileWithChildren(testBucket, '/test-222/');
-//   // files.map(f => (f.ref = null));
-//   logObj(result);
-//   expect(result.length).toBe(1);
-// });
+test('get directory and all children /', async () => {
+  // const result = await RemoveFileWithChildren(testBucket, '/test-222/');
+  // files.map(f => (f.ref = null));
+  // logObj(result);
+  // expect(result.length).toBe(1);
+});

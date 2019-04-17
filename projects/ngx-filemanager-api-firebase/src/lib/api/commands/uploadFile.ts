@@ -1,7 +1,7 @@
 import { Bucket } from '../../types/google-cloud-types';
 import * as path from 'path';
 import { EnsureNoPrefixSlash } from '../../utils/path-helpers';
-import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
+import { UserCustomClaims } from 'ngx-filemanager-core';
 
 export async function UploadFile(
   bucket: Bucket,

@@ -1,4 +1,3 @@
-import { api } from '../types/core-types';
 import {
   EnsurePrefixSlash,
   HasTrailingSlash,
@@ -10,6 +9,7 @@ import { Readable } from 'stream';
 import * as request from 'request';
 import * as path from 'path';
 import { RetrieveFilePermissions } from './permissions-helper';
+import { ResFile, ResultObj } from 'ngx-filemanager-core';
 
 export function translateRawStorage(storageObject: File): FileFromStorage {
   const filePath = storageObject.name;
@@ -35,8 +35,8 @@ export function makePhantomStorageFolder(folderPath: string): FileFromStorage {
 
 export async function translateStorageToResFile(
   f: FileFromStorage
-): Promise<api.ResFile> {
-  const resFile: api.ResFile = {} as any;
+): Promise<ResFile> {
+  const resFile: ResFile = {} as any;
   resFile.name = f.name;
   if (f.isDir) {
     resFile.type = 'dir';
@@ -83,7 +83,7 @@ export async function StreamToPromise(stream: Readable): Promise<string> {
   });
 }
 
-export function getResult(res: request.Response): api.ResultObj {
+export function getResult(res: request.Response): ResultObj {
   const fail = res.statusCode !== 204;
   return {
     success: !fail,
@@ -91,7 +91,7 @@ export function getResult(res: request.Response): api.ResultObj {
   };
 }
 
-export function getResultFromArray(res: request.Response[]): api.ResultObj {
+export function getResultFromArray(res: request.Response[]): ResultObj {
   const fail = res.find(r => r.statusCode !== 204);
   return {
     success: !fail,

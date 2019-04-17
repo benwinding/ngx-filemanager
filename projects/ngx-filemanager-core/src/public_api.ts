@@ -135,17 +135,6 @@ export interface PermissionsObject {
   owners: PermissionEntity[];
 }
 
-export enum UserAccessResult {
-  '---',  // 0	 ---  No permission
-  '--x',  // 1	 --x  Execute permission
-  '-w-',  // 2	 -w-  Write permission
-  '-wx',  // 3	 -wx  Execute and write permission: 1 (execute) + 2 (write) = 3
-  'r--',  // 4	 r--  Read permission
-  'r-x',  // 5	 r-x  Read and execute permission: 4 (read) + 1 (execute) = 5
-  'rw-',  // 6	 rw-  Read and write permission: 4 (read) + 2 (write) = 6
-  'rwx'   // 7	 rwx  All permissions: 4 (read) + 2 (write) + 1 (execute) = 7
-}
-
 export interface UserCustomClaims {
   groups: string[];
 }

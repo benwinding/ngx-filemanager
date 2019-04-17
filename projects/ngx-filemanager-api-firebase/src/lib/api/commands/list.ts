@@ -7,8 +7,12 @@ import {
   translateStorageToResFile
 } from '../../utils/translation-helpers';
 import * as request from 'request';
-import { api } from '../../types/core-types';
 import { GetPermissionForFile } from '../../utils/permissions-helper';
+import {
+  UserCustomClaims,
+  ResFile
+} from 'ngx-filemanager-core';
+import { UserAccessResult } from '../../types/UserAccessResult';
 
 interface FilesAndPrefixes {
   files: File[];
@@ -101,14 +105,16 @@ export async function GetListFromStorage(
 export async function GetList(
   bucket: Bucket,
   inputDirectoryPath: string,
-  claims: api.UserCustomClaims
-): Promise<api.ResFile[]> {
+  claims: UserCustomClaims
+): Promise<ResFile[]> {
   const files = await GetListFromStorage(bucket, inputDirectoryPath);
   const resFiles = await Promise.all(
     files.map(f => translateStorageToResFile(f))
   );
   const filesAllowed = resFiles.filter(f => {
-    return GetPermissionForFile(f.permissions, claims) > api.UserAccessResult['r--'];
+    const perms = GetPermissionForFile(f.permissions, claims);
+    const minPerms = UserAccessResult.r__;
+    return perms > minPerms;
   });
   return filesAllowed;
 }

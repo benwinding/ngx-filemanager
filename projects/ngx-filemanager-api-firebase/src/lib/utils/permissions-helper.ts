@@ -1,16 +1,21 @@
 import { GetTokenFromRequest } from './token-helper';
-import { GetMetaProperty, SetMetaProperty } from './storage-helper';
 import { File } from '../types/google-cloud-types';
-import { api } from '../types/core-types';
+import {
+  PermissionsObject,
+  UserCustomClaims,
+  PermissionEntity
+} from 'ngx-filemanager-core';
+import { GetMetaProperty, SetMetaProperty } from './storage-helper';
+import { UserAccessResult } from '../types/UserAccessResult';
 
 export async function RetrieveFilePermissions(file: File) {
   const currentPermissions = await GetMetaProperty(file, 'permissions');
-  return currentPermissions as api.PermissionsObject;
+  return currentPermissions as PermissionsObject;
 }
 
 export async function UpdateFilePermissions(
   file: File,
-  newPermissions: api.PermissionsObject
+  newPermissions: any // PermissionsObject
 ) {
   const result = await SetMetaProperty(file, 'permissions', newPermissions);
   return result;
@@ -18,7 +23,7 @@ export async function UpdateFilePermissions(
 
 export async function RetrieveCustomClaims(req: Request) {
   const token = await GetTokenFromRequest(req);
-  const claims = token as api.UserCustomClaims;
+  const claims = token as UserCustomClaims;
   if (!claims.groups) {
     claims.groups = [];
   }
@@ -38,16 +43,16 @@ export async function RetrieveCustomClaims(req: Request) {
 */
 
 export function GetPermissionForFile(
-  filePermissions: api.PermissionsObject,
-  userPermissions: api.UserCustomClaims
-): api.UserAccessResult {
+  filePermissions: PermissionsObject,
+  userPermissions: UserCustomClaims
+): UserAccessResult {
   const groups = new Set(userPermissions.groups);
 
   const isReader = IsPartOfArray(filePermissions.readers, groups);
   const isWriter = IsPartOfArray(filePermissions.writers, groups);
   const isOwner = IsPartOfArray(filePermissions.owners, groups);
 
-  let currentPerms: api.UserAccessResult = 0;
+  let currentPerms: UserAccessResult = 0;
   if (isReader) {
     currentPerms += 4; // 4 (read)
   }
@@ -61,7 +66,7 @@ export function GetPermissionForFile(
 }
 
 export function IsPartOfArray(
-  arr: api.PermissionEntity[],
+  arr: PermissionEntity[],
   userGroupSet: Set<string>
 ) {
   const hasNoPermissionsAtAll = !arr || arr.length;

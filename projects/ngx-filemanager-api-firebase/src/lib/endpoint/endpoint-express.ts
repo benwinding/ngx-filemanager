@@ -6,7 +6,6 @@ import {
   HasBodyProp,
   HasQueryParam
 } from './middleware-helpers';
-import { api } from '../types/core-types';
 import { Storage } from '../types/google-cloud-types';
 import { NgxFileMangerApiFireBaseClass } from '../api/firebase-storage-api';
 
@@ -24,6 +23,10 @@ endpoint.use(PostRequestsOnly);
 
 import { ParseUploadFile, UploadedFile } from './middleware-upload';
 import { RetrieveCustomClaims } from '../utils/permissions-helper';
+import {
+  UserCustomClaims,
+  FileManagerAction
+} from 'ngx-filemanager-core';
 endpoint.post(
   '/upload',
   HasQueryParam('bucketname'),
@@ -64,7 +67,7 @@ async function trySaveFile(
   bucketname: string,
   directoryPath: string,
   f: UploadedFile,
-  userClaims: api.UserCustomClaims
+  userClaims: UserCustomClaims
 ) {
   return fmApi.HandleSaveFile(
     bucketname,
@@ -81,7 +84,7 @@ endpoint.use(
   HasBodyProp('action'),
   HasBodyProp('bucketname'),
   async (req, res) => {
-    const action: api.FileManagerAction = req.body.action;
+    const action: FileManagerAction = req.body.action;
     const userClaims = await RetrieveCustomClaims(req);
     try {
       let body;

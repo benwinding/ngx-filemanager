@@ -1,6 +1,29 @@
-import { api } from '../types/core-types';
 import { Storage, Bucket } from '../types/google-cloud-types';
 import * as commands from './commands';
+import {
+  ReqBodyList,
+  UserCustomClaims,
+  ResBodyList,
+  ReqBodyRename,
+  ResBodyRename,
+  ReqBodyMove,
+  ResBodyMove,
+  ReqBodyCopy,
+  ResBodyCopy,
+  ReqBodyRemove,
+  ResBodyRemove,
+  ReqBodyEdit,
+  ResBodyEdit,
+  ReqBodyGetContent,
+  ResBodyGetContent,
+  ReqBodyGetMeta,
+  ResBodyGetMeta,
+  ReqBodyCreateFolder,
+  ResBodyCreateFolder,
+  ReqBodySetPermissions,
+  ResBodySetPermissions,
+  ResBodyUploadFile
+} from 'ngx-filemanager-core';
 
 export class NgxFileMangerApiFireBaseClass {
   constructor(private storage: Storage) {}
@@ -18,193 +41,193 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleList(
-    body: api.ReqBodyList,
-    claims: api.UserCustomClaims
-  ): Promise<api.ResBodyList> {
+    body: ReqBodyList,
+    claims: UserCustomClaims
+  ): Promise<ResBodyList> {
     const bucket = await this.getBucket(body.bucketname);
     const resFiles = await commands.GetList(bucket, body.path, claims);
-    const response: api.ResBodyList = {
+    const response: ResBodyList = {
       result: resFiles
     };
     return response;
   }
 
-  // async HandleRename(
-  //   body: api.ReqBodyRename,
-  //   claims: api.UserCustomClaims
-  // ): Promise<api.ResBodyRename> {
-  //   const bucket = await this.getBucket(body.bucketname);
-  //   const result = await commands.RenameFile(
-  //     bucket,
-  //     body.item,
-  //     body.newItemPath,
-  //     claims
-  //   );
-  //   const response: api.ResBodyRename = {
-  //     result: result
-  //   };
-  //   return response;
-  // }
+  async HandleRename(
+    body: ReqBodyRename,
+    claims: UserCustomClaims
+  ): Promise<ResBodyRename> {
+    const bucket = await this.getBucket(body.bucketname);
+    const result = await commands.RenameFile(
+      bucket,
+      body.item,
+      body.newItemPath,
+      claims
+    );
+    const response: ResBodyRename = {
+      result: result
+    };
+    return response;
+  }
 
-  // async HandleMove(
-  //   body: api.ReqBodyMove,
-  //   claims: api.UserCustomClaims
-  // ): Promise<api.ResBodyMove> {
-  //   const bucket = await this.getBucket(body.bucketname);
-  //   const result = await commands.MoveFiles(
-  //     bucket,
-  //     body.items,
-  //     body.newPath,
-  //     claims
-  //   );
-  //   const response: api.ResBodyMove = {
-  //     result: result
-  //   };
-  //   return response;
-  // }
+  async HandleMove(
+    body: ReqBodyMove,
+    claims: UserCustomClaims
+  ): Promise<ResBodyMove> {
+    const bucket = await this.getBucket(body.bucketname);
+    const result = await commands.MoveFiles(
+      bucket,
+      body.items,
+      body.newPath,
+      claims
+    );
+    const response: ResBodyMove = {
+      result: result
+    };
+    return response;
+  }
 
-  // async HandleCopy(
-  //   body: api.ReqBodyCopy,
-  //   claims: api.UserCustomClaims
-  // ): Promise<api.ResBodyCopy> {
-  //   const bucket = await this.getBucket(body.bucketname);
-  //   let filesToCopy;
-  //   if (body.items) {
-  //     filesToCopy = body.items;
-  //   } else if (body.singleFileName) {
-  //     filesToCopy = [body.singleFileName];
-  //   } else {
-  //     throw new Error(
-  //       'Request does not contain either body.items or body.singleFileName'
-  //     );
-  //   }
-  //   const result = await commands.CopyFiles(
-  //     bucket,
-  //     filesToCopy,
-  //     body.newPath,
-  //     claims
-  //   );
-  //   const response: api.ResBodyCopy = {
-  //     result: result
-  //   };
-  //   return response;
-  // }
+  async HandleCopy(
+    body: ReqBodyCopy,
+    claims: UserCustomClaims
+  ): Promise<ResBodyCopy> {
+    const bucket = await this.getBucket(body.bucketname);
+    let filesToCopy;
+    if (body.items) {
+      filesToCopy = body.items;
+    } else if (body.singleFileName) {
+      filesToCopy = [body.singleFileName];
+    } else {
+      throw new Error(
+        'Request does not contain either body.items or body.singleFileName'
+      );
+    }
+    const result = await commands.CopyFiles(
+      bucket,
+      filesToCopy,
+      body.newPath,
+      claims
+    );
+    const response: ResBodyCopy = {
+      result: result
+    };
+    return response;
+  }
 
-  // async HandleRemove(
-  //   body: api.ReqBodyRemove,
-  //   claims: api.UserCustomClaims
-  // ): Promise<api.ResBodyRemove> {
-  //   const bucket = await this.getBucket(body.bucketname);
-  //   const result = await commands.RemoveFiles(bucket, body.items, claims);
-  //   const response: api.ResBodyRemove = {
-  //     result: result
-  //   };
-  //   return response;
-  // }
+  async HandleRemove(
+    body: ReqBodyRemove,
+    claims: UserCustomClaims
+  ): Promise<ResBodyRemove> {
+    const bucket = await this.getBucket(body.bucketname);
+    const result = await commands.RemoveFiles(bucket, body.items, claims);
+    const response: ResBodyRemove = {
+      result: result
+    };
+    return response;
+  }
 
-  // async HandleEdit(
-  //   body: api.ReqBodyEdit,
-  //   claims: api.UserCustomClaims
-  // ): Promise<api.ResBodyEdit> {
-  //   const bucket = await this.getBucket(body.bucketname);
-  //   const result = await commands.EditFile(
-  //     bucket,
-  //     body.item,
-  //     body.content,
-  //     claims
-  //   );
-  //   const response: api.ResBodyEdit = {
-  //     result: result
-  //   };
-  //   return response;
-  // }
+  async HandleEdit(
+    body: ReqBodyEdit,
+    claims: UserCustomClaims
+  ): Promise<ResBodyEdit> {
+    const bucket = await this.getBucket(body.bucketname);
+    const result = await commands.EditFile(
+      bucket,
+      body.item,
+      body.content,
+      claims
+    );
+    const response: ResBodyEdit = {
+      result: result
+    };
+    return response;
+  }
 
-  // async HandleGetContent(
-  //   body: api.ReqBodyGetContent,
-  //   claims: api.UserCustomClaims
-  // ): Promise<api.ResBodyGetContent> {
-  //   const bucket = await this.getBucket(body.bucketname);
-  //   const result = await commands.GetFileContent(bucket, body.item, claims);
-  //   const response: api.ResBodyGetContent = {
-  //     result: result
-  //   };
-  //   return response;
-  // }
+  async HandleGetContent(
+    body: ReqBodyGetContent,
+    claims: UserCustomClaims
+  ): Promise<ResBodyGetContent> {
+    const bucket = await this.getBucket(body.bucketname);
+    const result = await commands.GetFileContent(bucket, body.item, claims);
+    const response: ResBodyGetContent = {
+      result: result
+    };
+    return response;
+  }
 
-  // async HandleGetMeta(
-  //   body: api.ReqBodyGetMeta,
-  //   claims: api.UserCustomClaims
-  // ): Promise<api.ResBodyGetMeta> {
-  //   const bucket = await this.getBucket(body.bucketname);
-  //   const response: api.ResBodyGetMeta = {
-  //     result: {
-  //       success: null
-  //     }
-  //   };
-  //   try {
-  //     const downloadUrl = await commands.GetFileMeta(bucket, body.item, claims);
-  //     response.result.url = downloadUrl;
-  //     response.result.success = true;
-  //   } catch (error) {
-  //     response.result.success = false;
-  //     response.result.error = error.message;
-  //   }
-  //   return response;
-  // }
+  async HandleGetMeta(
+    body: ReqBodyGetMeta,
+    claims: UserCustomClaims
+  ): Promise<ResBodyGetMeta> {
+    const bucket = await this.getBucket(body.bucketname);
+    const response: ResBodyGetMeta = {
+      result: {
+        success: null
+      }
+    };
+    try {
+      const downloadUrl = await commands.GetFileMeta(bucket, body.item, claims);
+      response.result.url = downloadUrl;
+      response.result.success = true;
+    } catch (error) {
+      response.result.success = false;
+      response.result.error = error.message;
+    }
+    return response;
+  }
 
-  // async HandleCreateFolder(
-  //   body: api.ReqBodyCreateFolder,
-  //   claims: api.UserCustomClaims
-  // ): Promise<api.ResBodyCreateFolder> {
-  //   const bucket = await this.getBucket(body.bucketname);
-  //   const result = await commands.CreateFolder(bucket, body.newPath, claims);
-  //   const response: api.ResBodyCreateFolder = {
-  //     result: result
-  //   };
-  //   return response;
-  // }
+  async HandleCreateFolder(
+    body: ReqBodyCreateFolder,
+    claims: UserCustomClaims
+  ): Promise<ResBodyCreateFolder> {
+    const bucket = await this.getBucket(body.bucketname);
+    const result = await commands.CreateFolder(bucket, body.newPath, claims);
+    const response: ResBodyCreateFolder = {
+      result: result
+    };
+    return response;
+  }
 
-  // async HandleSetPermissions(
-  //   body: api.ReqBodySetPermissions,
-  //   claims: api.UserCustomClaims
-  // ): Promise<api.ResBodySetPermissions> {
-  //   const bucket = await this.getBucket(body.bucketname);
-  //   const result = await commands.ChangePermissions(
-  //     bucket,
-  //     body.items,
-  //     body.role,
-  //     body.entity,
-  //     body.recursive,
-  //     claims
-  //   );
-  //   const response: api.ResBodySetPermissions = {
-  //     result: result
-  //   };
-  //   return response;
-  // }
+  async HandleSetPermissions(
+    body: ReqBodySetPermissions,
+    claims: UserCustomClaims
+  ): Promise<ResBodySetPermissions> {
+    const bucket = await this.getBucket(body.bucketname);
+    const result = await commands.ChangePermissions(
+      bucket,
+      body.items,
+      body.role,
+      body.entity,
+      body.recursive,
+      claims
+    );
+    const response: ResBodySetPermissions = {
+      result: result
+    };
+    return response;
+  }
 
-  // async HandleSaveFile(
-  //   bucketname: string,
-  //   directoryPath: string,
-  //   originalname: string,
-  //   mimetype: string,
-  //   buffer: Buffer,
-  //   claims: api.UserCustomClaims
-  // ): Promise<api.ResBodyUploadFile> {
-  //   const bucket = await this.getBucket(bucketname);
-  //   await commands.UploadFile(
-  //     bucket,
-  //     directoryPath,
-  //     originalname,
-  //     mimetype,
-  //     buffer,
-  //     claims
-  //   );
-  //   const result = {
-  //     result: {
-  //       success: true
-  //     }
-  //   };
-  //   return result;
-  // }
+  async HandleSaveFile(
+    bucketname: string,
+    directoryPath: string,
+    originalname: string,
+    mimetype: string,
+    buffer: Buffer,
+    claims: UserCustomClaims
+  ): Promise<ResBodyUploadFile> {
+    const bucket = await this.getBucket(bucketname);
+    await commands.UploadFile(
+      bucket,
+      directoryPath,
+      originalname,
+      mimetype,
+      buffer,
+      claims
+    );
+    const result = {
+      result: {
+        success: true
+      }
+    };
+    return result;
+  }
 }

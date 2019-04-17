@@ -6,7 +6,7 @@ import {
 } from '../../utils/path-helpers';
 import * as path from 'path';
 import { GetAllChildrenWithPrefix, TryCopyFile } from '../../utils/storage-helper';
-import { api } from '../../types/core-types';
+import { UserCustomClaims } from 'ngx-filemanager-core';
 
 export async function copyWithChildren(
   bucket: Bucket,
@@ -25,7 +25,7 @@ export async function CopyFiles(
   bucket: Bucket,
   items: string[],
   newDirectoryPath: string,
-  claims: api.UserCustomClaims
+  claims: UserCustomClaims
 ) {
   const newFolderPrefix = EnsureGoogleStoragePathDir(newDirectoryPath);
   const copyResultsArrArr = await Promise.all(

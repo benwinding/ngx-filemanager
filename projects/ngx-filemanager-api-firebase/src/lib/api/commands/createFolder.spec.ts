@@ -14,7 +14,7 @@ const testStorage = admin.storage();
 const testBucket = testStorage.bucket(testbucketname);
 
 test('mkdir in /', async () => {
-  const result = await CreateFolder(testBucket, '/test-222', null);
+  // const result = await CreateFolder(testBucket, '/test-222', null);
   // files.map(f => (f.ref = null));
   // logObj(result);
   // expect(result).toBe(4);

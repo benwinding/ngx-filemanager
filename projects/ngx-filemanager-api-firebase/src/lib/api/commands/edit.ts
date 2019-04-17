@@ -1,11 +1,11 @@
 import { Bucket } from '../../types/google-cloud-types';
-import { api } from '../../types/core-types';
+import { UserCustomClaims } from 'ngx-filemanager-core';
 
 export async function EditFile(
   bucket: Bucket,
   item: string,
   content: string,
-  claims: api.UserCustomClaims
+  claims: UserCustomClaims
 ) {
   const result = { success: true };
   try {

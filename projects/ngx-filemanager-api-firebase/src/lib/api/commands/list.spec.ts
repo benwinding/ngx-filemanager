@@ -3,7 +3,7 @@ import { GetListFromStorage, GetList } from './list';
 import { UploadFile } from './uploadFile';
 import { UpdateFilePermissions } from '../../utils/permissions-helper';
 import { blankPermisssionsObj } from './changePermissions';
-import { api } from '../../types/core-types';
+import { PermissionEntity } from 'ngx-filemanager-core';
 
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../../serviceAccountKey.TESTS.json');
@@ -48,7 +48,7 @@ test('list get files with permissions', async () => {
   const filePaths = [file1, file2];
   await Promise.all(filePaths.map(f => uploadTestFile(f)));
   const newPermissions = blankPermisssionsObj();
-  const entity: api.PermissionEntity = {
+  const entity: PermissionEntity = {
     name: 'Dan',
     id: '0',
     type: 'user'
