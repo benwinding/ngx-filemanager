@@ -133,8 +133,7 @@ endpoint.use(
         requestBody: req.body
       };
       console.error({ returnedError, error });
-      const errorAsText = JSON.stringify(returnedError, null, 4);
-      res.status(400).send(errorAsText);
+      res.status(400).send(returnedError);
     }
   }
 );

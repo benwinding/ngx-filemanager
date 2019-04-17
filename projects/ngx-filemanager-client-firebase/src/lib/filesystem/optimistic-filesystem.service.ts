@@ -3,10 +3,9 @@ import { FileSystemProvider, PermissionEntity } from 'ngx-filemanager-core/publi
 import { OptimisticFilesystem } from './optimistic-filesystem.interface';
 import * as core from 'ngx-filemanager-core';
 import { ClientFileSystemService } from './client-filesystem.service';
-import { take, map } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { LoggerService } from '../logging/logger.service';
 import * as path from 'path-browserify';
-import { EnsurePrefixSlash } from '../utils/path-helpers';
 
 // tslint:disable:member-ordering
 
@@ -61,9 +60,13 @@ export class OptimisticFilesystemService
   async HandleList(directoryPath: string): Promise<void> {
     this.logger.info('HandleList', { directoryPath });
     this.clientFilesystem.OnList(directoryPath);
-    const apiResult = await this.serverFilesystem.List(directoryPath);
-    await this.clientFilesystem.UpdateCurrentList(apiResult);
-    await this.selectFirstInCurrentDirectory();
+    try {
+      const apiResult = await this.serverFilesystem.List(directoryPath);
+      await this.clientFilesystem.UpdateCurrentList(apiResult);
+      await this.selectFirstInCurrentDirectory();
+    } catch (error) {
+      console.error('error in HandleList: ' + error.message);
+    }
   }
   async HandleCreateFolder(newPath: string): Promise<void> {
     this.logger.info('HandleCreateFolder', { newPath });
