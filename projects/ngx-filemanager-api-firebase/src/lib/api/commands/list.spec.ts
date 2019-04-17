@@ -1,9 +1,8 @@
 import * as admin from 'firebase-admin';
 import { GetListFromStorage, GetList } from './list';
-import { UploadFile } from './uploadFile';
-import { UpdateFilePermissions } from '../../utils/permissions-helper';
-import { blankPermisssionsObj } from './changePermissions';
-import { PermissionEntity } from 'ngx-filemanager-core';
+import { testHelper } from '../../utils/test-helper';
+import { PermissionEntity } from 'ngx-filemanager-core/public_api';
+import { logObj } from '../../utils/logger';
 
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../../serviceAccountKey.TESTS.json');
@@ -30,35 +29,25 @@ test('list get files and directories', async () => {
   expect(result.length).toBe(3);
 });
 
-async function uploadTestFile(filePath: string) {
-  const claims = {} as any;
-  const result = await UploadFile(
-    testBucket,
-    '/',
-    filePath,
-    'text/plain',
-    new Buffer('hi there'),
-    claims
-  );
-}
-
 test('list get files with permissions', async () => {
-  const file1 = 'list.spec.ts/test2/file1.txt';
-  const file2 = 'list.spec.ts/test2/file2.txt';
-  const filePaths = [file1, file2];
-  await Promise.all(filePaths.map(f => uploadTestFile(f)));
-  const newPermissions = blankPermisssionsObj();
+  // Add files
+  const file1 = testBucket.file('list.spec.ts/test2/file1.txt');
+  const file2 = testBucket.file('list.spec.ts/test2/file2.txt');
+  const files = [file1, file2];
+  await Promise.all(files.map(file => testHelper.uploadTestFile(file)));
+  // Set permissions
+  const newPermissions = testHelper.blankPermissionsObj();
   const entity: PermissionEntity = {
     name: 'Dan',
     id: '0',
     type: 'user'
   };
   newPermissions.readers.push(entity);
-  const file1Object = testBucket.file(file1);
-  await UpdateFilePermissions(file1Object, newPermissions);
+  await testHelper.UpdateFilePermissions(file1, newPermissions);
   const result = await GetList(testBucket, 'list.spec.ts/test2', {
     groups: ['test2group']
   });
+  logObj({result});
   expect(result.length).toBe(1);
-  await Promise.all(filePaths.map(f => testBucket.file(f).delete()));
+  await Promise.all(files.map(f => f.delete()));
 });

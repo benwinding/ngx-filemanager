@@ -4,7 +4,7 @@ import { GetAllChildrenWithPrefix } from '../../utils/storage-helper';
 import { UserCustomClaims, ResultObj } from 'ngx-filemanager-core';
 
 export async function tryDeleteFile(file: File): Promise<boolean> {
-  const exists = (await file.exists()).shift();
+  const [exists] = (await file.exists());
   if (exists) {
     console.log('- deleting file: ', file.name);
     await file.delete();

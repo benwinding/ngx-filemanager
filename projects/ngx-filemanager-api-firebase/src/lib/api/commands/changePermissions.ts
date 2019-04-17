@@ -4,7 +4,8 @@ import * as request from 'request';
 import { GetAllChildrenWithPrefix } from '../../utils/storage-helper';
 import {
   RetrieveFilePermissions,
-  UpdateFilePermissions
+  UpdateFilePermissions,
+  blankPermissionsObj
 } from '../../utils/permissions-helper';
 import {
   PermissionsObject,
@@ -14,21 +15,13 @@ import {
   ResultObj
 } from 'ngx-filemanager-core';
 
-export function blankPermisssionsObj(): PermissionsObject {
-  return {
-    owners: [],
-    writers: [],
-    readers: []
-  };
-}
-
 export function SetPermissionToObj(
   permissionsObj: PermissionsObject,
   role: PermisionsRole,
   entity: PermissionEntity
 ): PermissionsObject {
   const newPermissions = {
-    ...blankPermisssionsObj(),
+    ...blankPermissionsObj(),
     ...permissionsObj
   };
   let list: PermissionEntity[];

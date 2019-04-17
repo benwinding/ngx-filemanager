@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import { CreateFolder } from './createFolder';
+import { testHelper } from '../../utils/test-helper';
 
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../../serviceAccountKey.TESTS.json');
@@ -13,9 +14,10 @@ admin.initializeApp({
 const testStorage = admin.storage();
 const testBucket = testStorage.bucket(testbucketname);
 
-test('mkdir in /', async () => {
-  // const result = await CreateFolder(testBucket, '/test-222', null);
-  // files.map(f => (f.ref = null));
-  // logObj(result);
-  // expect(result).toBe(4);
+test('test creating and removing directory', async () => {
+  const tempDir = '/createFolder/test1/temp';
+  await CreateFolder(testBucket, tempDir, null);
+  const exists = await testHelper.existsDir(testBucket, tempDir);
+  expect(exists).toBeTruthy();
+  await testHelper.removeDir(testBucket, tempDir);
 });

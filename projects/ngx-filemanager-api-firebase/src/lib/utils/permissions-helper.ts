@@ -8,6 +8,14 @@ import {
 import { GetMetaProperty, SetMetaProperty } from './storage-helper';
 import { UserAccessResult } from '../types/UserAccessResult';
 
+export function blankPermissionsObj(): PermissionsObject {
+  return {
+    owners: [],
+    writers: [],
+    readers: []
+  };
+}
+
 export async function RetrieveFilePermissions(file: File) {
   const currentPermissions = await GetMetaProperty(file, 'permissions');
   return currentPermissions as PermissionsObject;
@@ -15,7 +23,7 @@ export async function RetrieveFilePermissions(file: File) {
 
 export async function UpdateFilePermissions(
   file: File,
-  newPermissions: any // PermissionsObject
+  newPermissions: PermissionsObject
 ) {
   const result = await SetMetaProperty(file, 'permissions', newPermissions);
   return result;

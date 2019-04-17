@@ -3,7 +3,7 @@ import * as uuid from 'uuid/v1';
 import {
   TryChangeSingleFilePermissions,
   SetPermissionToObj,
-  blankPermisssionsObj
+  blankPermissionsObj
 } from './changePermissions';
 import {
   PermissionEntity,
@@ -25,7 +25,7 @@ const testBucket = testStorage.bucket(testbucketname);
 
 test('set permissions to object', async () => {
   // const file = testBucket.file('changePermissions/blankPermissions.txt');
-  const oldPermissions = blankPermisssionsObj();
+  const oldPermissions = blankPermissionsObj();
   const entity: PermissionEntity = {
     name: 'Dan',
     id: uuid(),
