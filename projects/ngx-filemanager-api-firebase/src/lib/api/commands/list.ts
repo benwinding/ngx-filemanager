@@ -11,7 +11,7 @@ import { GetPermissionForFile } from '../../utils/permissions-helper';
 import {
   UserCustomClaims,
   ResFile
-} from 'ngx-filemanager-core';
+} from 'ngx-filemanager-core/public_api';
 import { UserAccessResult } from '../../types/UserAccessResult';
 
 interface FilesAndPrefixes {

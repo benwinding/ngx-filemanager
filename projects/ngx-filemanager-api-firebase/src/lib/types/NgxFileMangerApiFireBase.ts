@@ -15,7 +15,7 @@ import {
   ResBodyGetContent,
   ReqBodyCreateFolder,
   ResBodyCreateFolder
-} from 'ngx-filemanager-core';
+} from 'ngx-filemanager-core/public_api';
 
 export interface NgxFileMangerApiFireBase {
   HandleList(body: ReqBodyList): Promise<ResBodyList>;

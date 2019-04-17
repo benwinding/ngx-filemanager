@@ -2,7 +2,7 @@ import { Bucket } from '../../types/google-cloud-types';
 import { getResult, getResultFromArray } from '../../utils/translation-helpers';
 import { EnsureNoPrefixSlash } from '../../utils/path-helpers';
 import { GetAllChildrenWithPrefix, TryRenameFile } from '../../utils/storage-helper';
-import { UserCustomClaims } from 'ngx-filemanager-core';
+import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
 
 export async function RenameFile(
   bucket: Bucket,

@@ -9,7 +9,7 @@ import { Readable } from 'stream';
 import * as request from 'request';
 import * as path from 'path';
 import { RetrieveFilePermissions } from './permissions-helper';
-import { ResFile, ResultObj } from 'ngx-filemanager-core';
+import { ResFile, ResultObj } from 'ngx-filemanager-core/public_api';
 
 export function translateRawStorage(storageObject: File): FileFromStorage {
   const filePath = storageObject.name;

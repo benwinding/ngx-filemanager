@@ -1,7 +1,7 @@
 import { Bucket, File } from '../../types/google-cloud-types';
 import { EnsureNoPrefixSlash } from '../../utils/path-helpers';
 import { GetAllChildrenWithPrefix } from '../../utils/storage-helper';
-import { UserCustomClaims, ResultObj } from 'ngx-filemanager-core';
+import { UserCustomClaims, ResultObj } from 'ngx-filemanager-core/public_api';
 
 export async function tryDeleteFile(file: File): Promise<boolean> {
   const [exists] = (await file.exists());

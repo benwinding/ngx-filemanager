@@ -4,7 +4,7 @@ import {
   PermissionsObject,
   UserCustomClaims,
   PermissionEntity
-} from 'ngx-filemanager-core';
+} from 'ngx-filemanager-core/public_api';
 import { GetMetaProperty, SetMetaProperty } from './storage-helper';
 import { UserAccessResult } from '../types/UserAccessResult';
 
@@ -29,8 +29,20 @@ export async function UpdateFilePermissions(
   return result;
 }
 
+function blankUserClaim(): UserCustomClaims {
+  return {
+    groups: []
+  };
+}
+
 export async function RetrieveCustomClaims(req: Request) {
-  const token = await GetTokenFromRequest(req);
+  let token;
+  try {
+    token = await GetTokenFromRequest(req);
+  } catch (error) {
+    console.warn('No token found on request, no permissions for user', {error});
+    return blankUserClaim();
+  }
   const claims = token as UserCustomClaims;
   if (!claims.groups) {
     claims.groups = [];

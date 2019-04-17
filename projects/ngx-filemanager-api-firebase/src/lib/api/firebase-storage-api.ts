@@ -23,7 +23,7 @@ import {
   ReqBodySetPermissions,
   ResBodySetPermissions,
   ResBodyUploadFile
-} from 'ngx-filemanager-core';
+} from 'ngx-filemanager-core/public_api';
 
 export class NgxFileMangerApiFireBaseClass {
   constructor(private storage: Storage) {}

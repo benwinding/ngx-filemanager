@@ -1,6 +1,6 @@
 import { Bucket } from '../../types/google-cloud-types';
 import { StreamToPromise } from '../../utils/translation-helpers';
-import { UserCustomClaims } from 'ngx-filemanager-core';
+import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
 
 export async function GetFileContent(
   bucket: Bucket,

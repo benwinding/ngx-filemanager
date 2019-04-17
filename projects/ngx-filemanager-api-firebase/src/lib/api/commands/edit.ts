@@ -1,5 +1,5 @@
 import { Bucket } from '../../types/google-cloud-types';
-import { UserCustomClaims } from 'ngx-filemanager-core';
+import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
 
 export async function EditFile(
   bucket: Bucket,

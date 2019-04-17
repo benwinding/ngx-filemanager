@@ -4,7 +4,7 @@ import {
   FileManagerAction,
   ReqBodyAction,
   ReqBodyList
-} from 'ngx-filemanager-core';
+} from 'ngx-filemanager-core/public_api';
 
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../serviceAccountKey.TESTS.json');

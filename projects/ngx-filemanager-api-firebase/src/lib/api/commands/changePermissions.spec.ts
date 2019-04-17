@@ -4,7 +4,7 @@ import {
   TryChangeSingleFilePermissions,
   SetPermissionToObj
 } from './changePermissions';
-import { PermissionEntity, PermissionsObject } from 'ngx-filemanager-core';
+import { PermissionEntity, PermissionsObject } from 'ngx-filemanager-core/public_api';
 import { testHelper } from '../../utils/test-helper';
 import { logObj } from '../../utils/logger';
 

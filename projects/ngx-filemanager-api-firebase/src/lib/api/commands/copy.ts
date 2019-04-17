@@ -6,7 +6,7 @@ import {
 } from '../../utils/path-helpers';
 import * as path from 'path';
 import { GetAllChildrenWithPrefix, TryCopyFile } from '../../utils/storage-helper';
-import { UserCustomClaims } from 'ngx-filemanager-core';
+import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
 
 export async function copyWithChildren(
   bucket: Bucket,

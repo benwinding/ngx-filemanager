@@ -13,7 +13,7 @@ import {
   PermissionEntity,
   UserCustomClaims,
   ResultObj
-} from 'ngx-filemanager-core';
+} from 'ngx-filemanager-core/public_api';
 
 export function SetPermissionToObj(
   permissionsObj: PermissionsObject,

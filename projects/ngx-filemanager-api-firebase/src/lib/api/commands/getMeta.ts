@@ -1,6 +1,6 @@
 import { Bucket } from '../../types/google-cloud-types';
 import { GetSignedUrlConfig } from '@google-cloud/storage';
-import { UserCustomClaims } from 'ngx-filemanager-core';
+import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
 const moment = require('moment');
 
 export async function GetFileMeta(

@@ -26,7 +26,7 @@ import { RetrieveCustomClaims } from '../utils/permissions-helper';
 import {
   UserCustomClaims,
   FileManagerAction
-} from 'ngx-filemanager-core';
+} from 'ngx-filemanager-core/public_api';
 endpoint.post(
   '/upload',
   HasQueryParam('bucketname'),
