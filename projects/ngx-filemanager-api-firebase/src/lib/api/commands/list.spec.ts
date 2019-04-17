@@ -47,7 +47,30 @@ test('list get files with permissions', async () => {
   const result = await GetList(testBucket, 'list.spec.ts/test2', {
     groups: ['test2group']
   });
-  logObj({result});
+  // logObj({result});
   expect(result.length).toBe(1);
+  await Promise.all(files.map(f => f.delete()));
+});
+
+test('list get files with permissions', async () => {
+  // Add files
+  const file1 = testBucket.file('list.spec.ts/test3/file1.txt');
+  const file2 = testBucket.file('list.spec.ts/test3/file2.txt');
+  const files = [file1, file2];
+  await Promise.all(files.map(file => testHelper.uploadTestFile(file)));
+  // Set permissions
+  const newPermissions = testHelper.blankPermissionsObj();
+  const entity: PermissionEntity = {
+    name: 'Dan',
+    id: '0ascacsasc',
+    type: 'user'
+  };
+  newPermissions.readers.push(entity);
+  await testHelper.UpdateFilePermissions(file1, newPermissions);
+  const result = await GetList(testBucket, 'list.spec.ts/test3', {
+    groups: ['0ascacsasc']
+  });
+  // logObj({result});
+  expect(result.length).toBe(2);
   await Promise.all(files.map(f => f.delete()));
 });

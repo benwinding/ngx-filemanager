@@ -77,7 +77,7 @@ export function IsPartOfArray(
   arr: PermissionEntity[],
   userGroupSet: Set<string>
 ) {
-  const hasNoPermissionsAtAll = !arr || arr.length;
+  const hasNoPermissionsAtAll = !arr || !arr.length;
   if (hasNoPermissionsAtAll) {
     return true;
   }

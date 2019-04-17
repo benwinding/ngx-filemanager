@@ -3,7 +3,11 @@ import {
   EnsureGoogleStoragePathDir,
   EnsureGoogleStoragePathFile
 } from './path-helpers';
-import { UpdateFilePermissions, blankPermissionsObj } from './permissions-helper';
+import {
+  UpdateFilePermissions,
+  blankPermissionsObj,
+  RetrieveFilePermissions
+} from './permissions-helper';
 
 async function uploadTestFile(file: File) {
   const buffer = new Buffer('hi there');
@@ -58,5 +62,6 @@ export const testHelper = {
   existsFile,
   existsDir,
   blankPermissionsObj,
-  UpdateFilePermissions
+  UpdateFilePermissions,
+  RetrieveFilePermissions
 };

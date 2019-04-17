@@ -2,14 +2,11 @@ import * as admin from 'firebase-admin';
 import * as uuid from 'uuid/v1';
 import {
   TryChangeSingleFilePermissions,
-  SetPermissionToObj,
-  blankPermissionsObj
+  SetPermissionToObj
 } from './changePermissions';
-import {
-  PermissionEntity,
-  PermissionsObject
-} from 'ngx-filemanager-core';
-import { RetrieveFilePermissions } from '../../utils/permissions-helper';
+import { PermissionEntity, PermissionsObject } from 'ngx-filemanager-core';
+import { testHelper } from '../../utils/test-helper';
+import { logObj } from '../../utils/logger';
 
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../../serviceAccountKey.TESTS.json');
@@ -24,8 +21,7 @@ const testStorage = admin.storage();
 const testBucket = testStorage.bucket(testbucketname);
 
 test('set permissions to object', async () => {
-  // const file = testBucket.file('changePermissions/blankPermissions.txt');
-  const oldPermissions = blankPermissionsObj();
+  const oldPermissions = testHelper.blankPermissionsObj();
   const entity: PermissionEntity = {
     name: 'Dan',
     id: uuid(),
@@ -36,14 +32,21 @@ test('set permissions to object', async () => {
 });
 
 test('TryChangeSingleFilePermissions', async () => {
-  const file = testBucket.file('changePermissions/blankPermissions.txt');
+  const file = testBucket.file(
+    'changePermissions/TryChangeSingleFilePermissions.txt'
+  );
+  await testHelper.uploadTestFile(file);
   const entity: PermissionEntity = {
     name: 'Dan',
-    id: uuid(),
+    id: '12124214',
     type: 'user'
   };
   await TryChangeSingleFilePermissions(file, 'READER', entity);
-  const permissions: PermissionsObject = await RetrieveFilePermissions(file);
+  const permissions: PermissionsObject = await testHelper.RetrieveFilePermissions(
+    file
+  );
   const hasEntityInStorage = permissions.readers.find(u => u.id === entity.id);
+  // logObj({permissions});
   expect(hasEntityInStorage).toBeTruthy();
+  await testHelper.removeFile(testBucket, file.name);
 });
