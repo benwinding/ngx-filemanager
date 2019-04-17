@@ -43,7 +43,8 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
 
   bucketName = new FormControl('cl-building-storage');
   apiEndpoint = new FormControl(
-    'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files'
+    'http://localhost:4444/ApiPublic/files'
+    // 'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files'
   );
   showExplorer = true;
 

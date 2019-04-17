@@ -74,3 +74,15 @@ test('list get files with permissions', async () => {
   expect(result.length).toBe(2);
   await Promise.all(files.map(f => f.delete()));
 });
+
+
+/* response for http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files: 400 Bad Request, {
+    "error": "Bad request to ngx-file-manager!",
+    "errorDetail": "Cannot read property 'readers' of undefined",
+    "requestBody": {
+        "action": "list",
+        "bucketname": "communitilink-r3.appspot.com",
+        "path": "/"
+    }
+}
+ */

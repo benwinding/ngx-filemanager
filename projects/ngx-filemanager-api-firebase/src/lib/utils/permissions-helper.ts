@@ -67,10 +67,10 @@ export function GetPermissionForFile(
   userPermissions: UserCustomClaims
 ): UserAccessResult {
   const groups = new Set(userPermissions.groups);
-
-  const isReader = IsPartOfArray(filePermissions.readers, groups);
-  const isWriter = IsPartOfArray(filePermissions.writers, groups);
-  const isOwner = IsPartOfArray(filePermissions.owners, groups);
+  const safePermissions = filePermissions || blankPermissionsObj();
+  const isReader = IsPartOfArray(safePermissions.readers, groups);
+  const isWriter = IsPartOfArray(safePermissions.writers, groups);
+  const isOwner = IsPartOfArray(safePermissions.owners, groups);
 
   let currentPerms: UserAccessResult = 0;
   if (isReader) {
