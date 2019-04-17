@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material';
 import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
 import { RenameDialogInterface } from '../dialogs/dialog-rename.component';
 import { AppDialogRenameComponent } from '../dialogs/dialog-rename.component';
-import { ResFile, FileSystemProvider, PermissionsObject } from 'ngx-filemanager-core';
+import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
 import { FileManagerConfig } from '../configuration/client-configuration';
 import { AppDialogSetPermissionsComponent, PermissionsDialogResponseInterface } from '../dialogs/dialog-setpermissions.component';
 import { PermissionsDialogInterface } from '../dialogs/dialog-setpermissions.component';

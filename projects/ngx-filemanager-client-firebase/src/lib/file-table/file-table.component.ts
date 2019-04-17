@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { ResFile } from 'ngx-filemanager-core/public_api';
 import { AutoTableConfig } from 'ngx-auto-table';
 
@@ -13,6 +13,7 @@ import { AutoTableConfig } from 'ngx-auto-table';
         name: { template: nameTemplate, forceWrap: true },
         date: { template: dateTemplate }
       }"
+      id="main-table"
     >
       <ng-template #iconTemplate let-row>
         <img class="icon" [src]="row.icon" matTooltip="Click For Details" />
@@ -55,10 +56,22 @@ import { AutoTableConfig } from 'ngx-auto-table';
     `
   ]
 })
-export class AppFileTableComponent {
+export class AppFileTableComponent implements OnInit {
   @Input()
   config: AutoTableConfig<ResFile>;
 
   @Output()
   clickedDownload = new EventEmitter<ResFile>();
+
+  ngOnInit() {
+    this.setExplorerHeight('650px');
+  }
+
+  setExplorerHeight(heightVal: string) {
+    const tableEl = document.getElementById('main-table');
+    if (tableEl) {
+      const containerDiv = tableEl.children.item(0) as HTMLDivElement;
+      containerDiv.style.height = heightVal;
+    }
+  }
 }
