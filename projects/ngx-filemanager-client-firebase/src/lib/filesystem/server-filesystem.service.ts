@@ -183,7 +183,7 @@ export class ServerFilesystemProviderService
         ...this.makeBaseRequest('getMeta'),
         item: file.fullPath
       };
-      const response: core.ResBodyGetMeta = await this.fetchPostAuth(
+      const response = await this.fetchPostAuth<core.ResBodyGetMeta>(
         this.apiEndpoint,
         req
       );

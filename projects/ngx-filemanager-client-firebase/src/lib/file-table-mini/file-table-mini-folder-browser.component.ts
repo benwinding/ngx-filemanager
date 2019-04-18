@@ -5,10 +5,8 @@ import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem
 import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
 
-import * as path from 'path-browserify';
-import { take, map } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
-import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
+import { ActionHandlersService } from '../file-manager/action-handlers.service';
+import { FileManagerConfig } from '../configuration/client-configuration';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -21,7 +19,7 @@ import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.compon
     >
     </actions-mini-browser>
     <ngx-auto-table
-      [config]="config"
+      [config]="tableConfig"
       [columnDefinitions]="{
         icon: { template: iconTemplate },
         name: { template: nameTemplate, forceWrap: true },
@@ -67,7 +65,11 @@ import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.compon
       }
     `
   ],
-  providers: [ClientFileSystemService, OptimisticFilesystemService]
+  providers: [
+    ActionHandlersService,
+    ClientFileSystemService,
+    OptimisticFilesystemService
+  ]
 })
 export class AppFileTableMiniFolderBrowserComponent implements OnInit {
   @Input()
@@ -75,28 +77,26 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
   @Input()
   currentDirectory: string;
   @Input()
-  rootPath = '/';
+  config: FileManagerConfig;
 
   @Output()
   selectedDirectory = new EventEmitter<string>();
 
-  config: AutoTableConfig<ResFile>;
+  tableConfig: AutoTableConfig<ResFile>;
 
   constructor(
-    private clientFilesystem: ClientFileSystemService,
-    private optimisticFs: OptimisticFilesystemService,
-    private dialog: MatDialog,
+    private actionHandlers: ActionHandlersService,
     private logger: LoggerService
   ) {}
 
   ngOnInit() {
-    this.optimisticFs.initialize(this.serverFilesystem, this.clientFilesystem);
-    this.config = {
-      data$: this.optimisticFs.$FilesWithIcons,
+    this.actionHandlers.init(this.serverFilesystem, null);
+    this.tableConfig = {
+      data$: this.actionHandlers.$FilesWithIcons,
       onSelectItemDoubleClick: async (item: ResFile) => {
         this.logger.info('onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
-          await this.optimisticFs.HandleList(item.fullPath);
+          await this.actionHandlers.OnNavigateTo(item.fullPath);
         }
       },
       onSelectItem: (item: ResFile) => {
@@ -105,50 +105,22 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
         }
       }
     };
-    this.config.hideFilter = true;
-    this.config.hideChooseColumns = true;
-    this.optimisticFs.HandleList(this.currentDirectory);
+    this.tableConfig.hideFilter = true;
+    this.tableConfig.hideChooseColumns = true;
+    this.actionHandlers.OnNavigateTo(this.currentDirectory);
   }
 
   get $CurrentPathIsRoot() {
-    return this.optimisticFs.$CurrentPath.pipe(map(p => p === this.rootPath));
+    return this.actionHandlers.$CurrentPathIsRoot;
   }
 
   async onUpFolder() {
-    await this.optimisticFs.HandleNavigateUp();
-    const selectedDirectory = await this.optimisticFs.$CurrentPath.pipe(take(1)).toPromise();
+    await this.actionHandlers.OnNavigateToParent();
+    const selectedDirectory = await this.actionHandlers.GetCurrentPath();
     this.selectedDirectory.emit(selectedDirectory);
   }
   async onNewFolder() {
     this.logger.info('onClickNewFolder');
-    const newDirName = await this.openDialog(AppDialogNewFolderComponent);
-    if (!newDirName) {
-      this.logger.info('onClickNewFolder   no folder created...');
-      return;
-    }
-    const currentDirectory = await this.getCurrentPath();
-    const newDirectoryPath = path.join(currentDirectory, newDirName);
-    await this.optimisticFs.HandleCreateFolder(newDirectoryPath);
-  }
-
-  private async getCurrentPath() {
-    const currentPath = await this.optimisticFs.$CurrentPath
-      .pipe(take(1))
-      .toPromise();
-    return currentPath;
-  }
-
-  private async openDialog(comp: any, data?: any) {
-    const ref = this.dialog.open(comp, {
-      width: '400px',
-      hasBackdrop: true,
-      disableClose: false,
-      data: data
-    });
-    const result = await ref
-      .afterClosed()
-      .pipe(take(1))
-      .toPromise();
-    return result;
+    return this.actionHandlers.OnNewFolderInCurrentDirectory();
   }
 }

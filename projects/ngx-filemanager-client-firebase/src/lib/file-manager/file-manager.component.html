@@ -56,11 +56,11 @@
       <ngx-filemanager-file-details
         [file]="$SelectedFile | async"
         [fileSystem]="fileSystem"
-        (clickedDelete)="onDetailsClickDelete($event)"
-        (clickedDownload)="onDetailsClickDownload($event)"
-        (clickedRename)="onDetailsClickRename($event)"
-        (clickedSetPermissions)="onDetailsClickSinglePermissions($event)"
-        >
+        (clickedDelete)="this.onDetailsClickDelete($event)"
+        (clickedDownload)="this.onDetailsClickDownload($event)"
+        (clickedRename)="this.onDetailsClickRename($event)"
+        (clickedSetPermissions)="this.onDetailsClickSinglePermissions($event)"
+      >
       </ngx-filemanager-file-details>
     </mat-drawer>
   </mat-drawer-container>
