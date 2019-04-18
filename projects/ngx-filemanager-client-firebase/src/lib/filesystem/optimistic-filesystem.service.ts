@@ -57,7 +57,7 @@ export class OptimisticFilesystemService
     this.clientFilesystem = clientFilesystem;
   }
 
-  async HandleList(directoryPath: string): Promise<void> {
+  async HandleList(directoryPath: string): Promise<any> {
     this.logger.info('HandleList', { directoryPath });
     this.clientFilesystem.OnList(directoryPath);
     try {
@@ -68,43 +68,47 @@ export class OptimisticFilesystemService
       console.error('error in HandleList: ' + error.message);
     }
   }
-  async HandleCreateFolder(newPath: string): Promise<void> {
+  async HandleCreateFolder(newPath: string): Promise<any> {
     this.logger.info('HandleCreateFolder', { newPath });
     this.clientFilesystem.OnCreateFolder(newPath);
-    await this.serverFilesystem.CreateFolder(newPath);
+    return this.serverFilesystem.CreateFolder(newPath);
   }
-  async HandleCopy(singleFileName: string, newPath: string): Promise<void> {
+  async HandleCopy(singleFileName: string, newPath: string): Promise<any> {
     this.logger.info('HandleCopy', { singleFileName, newPath });
     this.clientFilesystem.OnCopy(singleFileName, newPath);
-    await this.serverFilesystem.Copy(singleFileName, newPath);
+    return this.serverFilesystem.Copy(singleFileName, newPath);
   }
-  async HandleMove(item: string, newPath: string): Promise<void> {
+  async HandleMove(item: string, newPath: string): Promise<any> {
     this.logger.info('HandleMove', { item, newPath });
     this.clientFilesystem.OnMove(item, newPath);
-    await this.serverFilesystem.Move(item, newPath);
+    return this.serverFilesystem.Move(item, newPath);
   }
-  async HandleRename(item: string, newItemPath: string): Promise<void> {
+  async HandleRename(item: string, newItemPath: string): Promise<any> {
     this.logger.info('HandleRename', { item, newItemPath });
     this.clientFilesystem.OnRename(item, newItemPath);
-    await this.serverFilesystem.Rename(item, newItemPath);
+    return this.serverFilesystem.Rename(item, newItemPath);
   }
-  async HandleEdit(item: string, content: string): Promise<void> {
+  async HandleEdit(item: string, content: string): Promise<any> {
     this.logger.info('HandleEdit', { item, content });
     this.clientFilesystem.OnRename(item, content);
-    await this.serverFilesystem.Rename(item, content);
+    return this.serverFilesystem.Rename(item, content);
   }
   async HandleGetcontent(item: string): Promise<string> {
     this.logger.info('HandleGetcontent', { item });
     this.clientFilesystem.OnGetcontent(item);
-    const response = await this.serverFilesystem.Getcontent(item);
-    return response.result;
+    try {
+      const response = await this.serverFilesystem.Getcontent(item);
+      return response.result;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
   async HandleSetPermissions(
     item: string,
     role: core.PermisionsRole,
     entity: PermissionEntity,
     recursive?: boolean
-  ): Promise<void> {
+  ): Promise<any> {
     this.logger.info('HandleSetPermissions', {
       item,
       role,
@@ -112,31 +116,31 @@ export class OptimisticFilesystemService
       recursive
     });
     this.clientFilesystem.OnSetPermissions(item, role, entity, recursive);
-    await this.serverFilesystem.SetPermissions(
+    return this.serverFilesystem.SetPermissions(
       item,
       role,
       entity,
       recursive
     );
   }
-  async HandleMoveMultiple(items: string[], newPath: string): Promise<void> {
+  async HandleMoveMultiple(items: string[], newPath: string): Promise<any> {
     this.logger.info('HandleMoveMultiple', { items, newPath });
 
     this.clientFilesystem.OnMoveMultiple(items, newPath);
-    await this.serverFilesystem.MoveMultiple(items, newPath);
+    return this.serverFilesystem.MoveMultiple(items, newPath);
   }
-  async HandleCopyMultiple(items: string[], newPath: string): Promise<void> {
+  async HandleCopyMultiple(items: string[], newPath: string): Promise<any> {
     this.logger.info('HandleCopyMultiple', { items, newPath });
 
     this.clientFilesystem.OnCopyMultiple(items, newPath);
-    await this.serverFilesystem.CopyMultiple(items, newPath);
+    return this.serverFilesystem.CopyMultiple(items, newPath);
   }
   async HandleSetPermissionsMultiple(
     items: string[],
     role: core.PermisionsRole,
     entity: PermissionEntity,
     recursive?: boolean
-  ): Promise<void> {
+  ): Promise<any> {
     this.logger.info('HandleSetPermissionsMultiple', {
       items,
       role,
@@ -150,25 +154,29 @@ export class OptimisticFilesystemService
       entity,
       recursive
     );
-    await this.serverFilesystem.SetPermissionsMultiple(
+    return this.serverFilesystem.SetPermissionsMultiple(
       items,
       role,
       entity,
       recursive
     );
   }
-  async HandleRemove(items: string[]): Promise<void> {
+  async HandleRemove(items: string[]): Promise<any> {
     this.logger.info('HandleRemove', { items });
 
     this.clientFilesystem.OnRemove(items);
-    await this.serverFilesystem.Remove(items);
+    return this.serverFilesystem.Remove(items);
   }
 
-  async HandleNavigateUp(): Promise<void> {
+  async HandleNavigateUp(): Promise<any> {
     this.logger.info('HandleNavigateUp');
-    const currentPath = await this.$CurrentPath.pipe(take(1)).toPromise();
-    const parentPath = path.dirname(currentPath);
-    await this.HandleList(parentPath);
+    try {
+      const currentPath = await this.$CurrentPath.pipe(take(1)).toPromise();
+      const parentPath = path.dirname(currentPath);
+      return this.HandleList(parentPath);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   async onSelectItem(file: core.ResFile) {

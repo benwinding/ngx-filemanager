@@ -7,7 +7,10 @@ import { RenameDialogInterface } from '../dialogs/dialog-rename.component';
 import { AppDialogRenameComponent } from '../dialogs/dialog-rename.component';
 import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
 import { FileManagerConfig } from '../configuration/client-configuration';
-import { AppDialogSetPermissionsComponent, PermissionsDialogResponseInterface } from '../dialogs/dialog-setpermissions.component';
+import {
+  AppDialogSetPermissionsComponent,
+  PermissionsDialogResponseInterface
+} from '../dialogs/dialog-setpermissions.component';
 import { PermissionsDialogInterface } from '../dialogs/dialog-setpermissions.component';
 import {
   AppDialogCopyComponent,
@@ -28,10 +31,7 @@ import { ClientFileSystemService } from '../filesystem/client-filesystem.service
   selector: 'ngx-filemanager',
   templateUrl: 'file-manager.component.html',
   styleUrls: ['file-manager.component.scss', '../shared-utility-styles.scss'],
-  providers: [
-    ClientFileSystemService,
-    OptimisticFilesystemService
-  ]
+  providers: [ClientFileSystemService, OptimisticFilesystemService]
 })
 export class NgxFileManagerComponent implements OnInit {
   @Input()
@@ -59,8 +59,7 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   private async getCurrentPath() {
-    const currentPath = await this.$CurrentPath.pipe(take(1)).toPromise();
-    return currentPath;
+    return this.$CurrentPath.pipe(take(1)).toPromise();
   }
 
   get $CurrentPathIsRoot() {
@@ -80,7 +79,7 @@ export class NgxFileManagerComponent implements OnInit {
     this.optimisticFs.initialize(this.fileSystem, this.clientFilesystem);
     this.makeConfig();
     if (this.config && this.config.initialPath) {
-      await this.optimisticFs.HandleList(this.config.initialPath);
+      this.optimisticFs.HandleList(this.config.initialPath);
     }
   }
 
@@ -115,7 +114,8 @@ export class NgxFileManagerComponent implements OnInit {
         {
           label: 'Permissions',
           icon: 'lock_outline',
-          onClick: async (file: ResFile) => this.onSetPermissionsMultiple([file])
+          onClick: async (file: ResFile) =>
+            this.onSetPermissionsMultiple([file])
         },
         {
           label: 'Delete',
@@ -134,7 +134,7 @@ export class NgxFileManagerComponent implements OnInit {
         this.logger.info('onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
           this.clearBulkSelected();
-          await this.optimisticFs.HandleList(item.fullPath);
+          this.optimisticFs.HandleList(item.fullPath);
         }
       },
       onSelectItem: (item: ResFile) => {
@@ -153,16 +153,20 @@ export class NgxFileManagerComponent implements OnInit {
     const data: RenameDialogInterface = {
       currentPath: file.fullPath
     };
-    this.logger.info('onRename', {data});
+    this.logger.info('onRename', { data });
     const renamedPath = await this.openDialog(AppDialogRenameComponent, data);
     if (!renamedPath) {
       return;
     }
-    await this.optimisticFs.HandleRename(file.fullPath, renamedPath);
-    await this.refreshExplorer();
-    setTimeout(() => {
-      this.optimisticFs.onSelectItemByName(renamedPath);
-    }, 300);
+    try {
+      await this.optimisticFs.HandleRename(file.fullPath, renamedPath);
+      await this.refreshExplorer();
+      setTimeout(() => {
+        this.optimisticFs.onSelectItemByName(renamedPath);
+      }, 300);
+    } catch (error) {
+      this.logger.error('onRename', { error });
+    }
   }
 
   private async onMoveMultiple(files: ResFile[]) {
@@ -175,9 +179,13 @@ export class NgxFileManagerComponent implements OnInit {
     if (!newFolderPath) {
       return;
     }
-    const filePaths = files.map(f => f.fullPath);
-    await this.optimisticFs.HandleMoveMultiple(filePaths, newFolderPath);
-    await this.refreshExplorer();
+    try {
+      const filePaths = files.map(f => f.fullPath);
+      await this.optimisticFs.HandleMoveMultiple(filePaths, newFolderPath);
+      await this.refreshExplorer();
+    } catch (error) {
+      this.logger.error('onMoveMultiple', { error });
+    }
   }
 
   private async onCopyMultiple(files: ResFile[]) {
@@ -187,13 +195,17 @@ export class NgxFileManagerComponent implements OnInit {
       serverFilesystem: this.fileSystem
     };
     const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
-    this.logger.info('onCopyMultiple', {files, newFolderPath});
+    this.logger.info('onCopyMultiple', { files, newFolderPath });
     if (!newFolderPath) {
       return;
     }
-    const filePaths = files.map(f => f.fullPath);
-    await this.optimisticFs.HandleCopyMultiple(filePaths, newFolderPath);
-    await this.refreshExplorer();
+    try {
+      const filePaths = files.map(f => f.fullPath);
+      await this.optimisticFs.HandleCopyMultiple(filePaths, newFolderPath);
+      await this.refreshExplorer();
+    } catch (error) {
+      this.logger.error('onMoveMultiple', { error });
+    }
   }
 
   private async onSetPermissionsMultiple(files: ResFile[]) {
@@ -208,14 +220,18 @@ export class NgxFileManagerComponent implements OnInit {
     if (!res) {
       return;
     }
-    const filePaths = files.map(f => f.fullPath);
-    await this.optimisticFs.HandleSetPermissionsMultiple(
-      filePaths,
-      res.role,
-      res.entity,
-      true
-    );
-    await this.refreshExplorer();
+    try {
+      const filePaths = files.map(f => f.fullPath);
+      await this.optimisticFs.HandleSetPermissionsMultiple(
+        filePaths,
+        res.role,
+        res.entity,
+        true
+      );
+      await this.refreshExplorer();
+    } catch (error) {
+      this.logger.error('onSetPermissionsMultiple', { error });
+    }
   }
 
   public async onDetailsClickDelete(file: ResFile) {
@@ -286,14 +302,14 @@ export class NgxFileManagerComponent implements OnInit {
   public async onClickedBulkCopy() {
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
     const selectedCopied = [...selected];
-    this.logger.info('clickedBulkCopy', {selectedCopied});
+    this.logger.info('clickedBulkCopy', { selectedCopied });
     await this.onCopyMultiple(selectedCopied);
     this.clearBulkSelected();
   }
 
   public async onClickedBulkMove() {
     const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
-    this.logger.info('clickedBulkMove', {selected});
+    this.logger.info('clickedBulkMove', { selected });
     await this.onMoveMultiple(selected);
     this.clearBulkSelected();
   }
@@ -313,7 +329,7 @@ export class NgxFileManagerComponent implements OnInit {
 
   public async onClickCrumb(newPath: string) {
     this.clearBulkSelected();
-    this.logger.info('onClickCrumb', {newPath});
+    this.logger.info('onClickCrumb', { newPath });
     await this.optimisticFs.HandleList(newPath);
   }
 

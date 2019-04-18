@@ -178,15 +178,19 @@ export class ServerFilesystemProviderService
   }
 
   async CreateDownloadLink(file: core.ResFile): Promise<string> {
-    const req: core.ReqBodyGetMeta = {
-      ...this.makeBaseRequest('getMeta'),
-      item: file.fullPath
-    };
-    const response = (await this.fetchPostAuth(
-      this.apiEndpoint,
-      req
-    )) as core.ResBodyGetMeta;
-    const url = response.result.url;
-    return url;
+    try {
+      const req: core.ReqBodyGetMeta = {
+        ...this.makeBaseRequest('getMeta'),
+        item: file.fullPath
+      };
+      const response: core.ResBodyGetMeta = await this.fetchPostAuth(
+        this.apiEndpoint,
+        req
+      );
+      const url = response.result.url;
+      return url;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }

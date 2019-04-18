@@ -48,6 +48,7 @@
     "request": "^2.88.0",
     "rxjs": "~6.3.3",
     "uuid": "^3.3.2",
+    "verror": "^1.10.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
@@ -64,6 +65,7 @@
     "@types/jest": "^24.0.11",
     "@types/karma": "^3.0.2",
     "@types/node": "^11.13.0",
+    "@types/verror": "^1.10.3",
     "codelyzer": "~4.5.0",
     "jest": "^24.7.1",
     "jest-skipped-reporter": "^0.0.4",

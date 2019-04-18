@@ -7,12 +7,16 @@ export async function AddCors(req: Request, res: Response, next: NextFunction) {
     'Authorization, X-Requested-With, Accept, Content-Type, Origin, Cache-Control, X-File-Name'
   );
   res.setHeader('Access-Control-Allow-Origin', '*');
-  await new Promise((resolve, reject) => {
-    cors({ origin: true })(req, res, () => {
-      resolve();
+  try {
+    await new Promise((resolve, reject) => {
+      cors({ origin: true })(req, res, () => {
+        resolve();
+      });
     });
-  });
-  next();
+    next();
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }
 
 export async function LogRequest(req: Request, res: Response, next: NextFunction) {

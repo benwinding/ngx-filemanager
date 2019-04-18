@@ -7,18 +7,23 @@ import {
 import * as path from 'path';
 import { GetAllChildrenWithPrefix, TryCopyFile } from '../../utils/storage-helper';
 import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
+import { VError } from 'verror';
 
 export async function copyWithChildren(
   bucket: Bucket,
   itemPath: string,
   newFolderPrefix: string
 ) {
-  const oldFolderPrefix = EnsureNoPrefixSlash(path.dirname(itemPath));
-  const allChildren = await GetAllChildrenWithPrefix(bucket, itemPath);
-  const successArray = await Promise.all(
-    allChildren.map(f => TryCopyFile(f, oldFolderPrefix, newFolderPrefix))
-  );
-  return successArray;
+  try {
+    const oldFolderPrefix = EnsureNoPrefixSlash(path.dirname(itemPath));
+    const allChildren = await GetAllChildrenWithPrefix(bucket, itemPath);
+    const successArray = await Promise.all(
+      allChildren.map(f => TryCopyFile(f, oldFolderPrefix, newFolderPrefix))
+    );
+    return successArray;
+  } catch (error) {
+    throw new VError(error);
+  }
 }
 
 export async function CopyFiles(
@@ -27,13 +32,17 @@ export async function CopyFiles(
   newDirectoryPath: string,
   claims: UserCustomClaims
 ) {
-  const newFolderPrefix = EnsureGoogleStoragePathDir(newDirectoryPath);
-  const copyResultsArrArr = await Promise.all(
-    items.map(filePath => copyWithChildren(bucket, filePath, newFolderPrefix))
-  );
-  const copyResultsArr = copyResultsArrArr.reduce((acc, cur) => {
-    return acc.concat(cur);
-  }, []);
-  const results = getResultFromArray(copyResultsArr);
-  return results;
+  try {
+    const newFolderPrefix = EnsureGoogleStoragePathDir(newDirectoryPath);
+    const copyResultsArrArr = await Promise.all(
+      items.map(filePath => copyWithChildren(bucket, filePath, newFolderPrefix))
+    );
+    const copyResultsArr = copyResultsArrArr.reduce((acc, cur) => {
+      return acc.concat(cur);
+    }, []);
+    const results = getResultFromArray(copyResultsArr);
+    return results;
+  } catch (error) {
+    throw new VError(error);
+  }
 }

@@ -14,6 +14,7 @@ import {
   UserCustomClaims,
   ResultObj
 } from 'ngx-filemanager-core/public_api';
+import { VError } from 'verror';
 
 export function SetPermissionToObj(
   permissionsObj: PermissionsObject,
@@ -50,10 +51,14 @@ export async function TryChangeSingleFilePermissions(
   role: PermisionsRole,
   entity: PermissionEntity
 ) {
-  const currentPermissions = await RetrieveFilePermissions(file);
-  const newPermissions = SetPermissionToObj(currentPermissions, role, entity);
-  const res = await UpdateFilePermissions(file, newPermissions);
-  return res;
+  try {
+    const currentPermissions = await RetrieveFilePermissions(file);
+    const newPermissions = SetPermissionToObj(currentPermissions, role, entity);
+    const res = await UpdateFilePermissions(file, newPermissions);
+    return res;
+  } catch (error) {
+    throw new VError(error);
+  }
 }
 
 async function tryChangePermissions(
@@ -64,17 +69,25 @@ async function tryChangePermissions(
   isRecursive: boolean
 ): Promise<request.Response[]> {
   if (isRecursive) {
-    const allChildren = await GetAllChildrenWithPrefix(bucket, filePath);
-    const successArray = await Promise.all(
-      allChildren.map(file =>
-        TryChangeSingleFilePermissions(file, role, entity)
-      )
-    );
-    return successArray;
+    try {
+      const allChildren = await GetAllChildrenWithPrefix(bucket, filePath);
+      const successArray = await Promise.all(
+        allChildren.map(file =>
+          TryChangeSingleFilePermissions(file, role, entity)
+        )
+      );
+      return successArray;
+    } catch (error) {
+      throw new VError(error);
+    }
   } else {
-    const file = bucket.file(filePath);
-    const result = await TryChangeSingleFilePermissions(file, role, entity);
-    return [result];
+    try {
+      const file = bucket.file(filePath);
+      const result = await TryChangeSingleFilePermissions(file, role, entity);
+      return [result];
+    } catch (error) {
+      throw new VError(error);
+    }
   }
 }
 
@@ -86,18 +99,21 @@ export async function ChangePermissions(
   isRecursive: boolean,
   claims: UserCustomClaims
 ): Promise<ResultObj> {
-  const successArr = await Promise.all(
-    items.map(filePath =>
-      tryChangePermissions(bucket, filePath, role, entity, isRecursive)
-    )
-  );
-
-  // const successArr = successArrArr.reduce((acc, cur) => {
-  //   return acc.concat(cur);
-  // }, []);
-  // const results = getResultFromArray(successArr);
-  // return results;
-  return {
-    success: successArr as any
-  };
+  try {
+    const successArr = await Promise.all(
+      items.map(filePath =>
+        tryChangePermissions(bucket, filePath, role, entity, isRecursive)
+      )
+    );
+    // const successArr = successArrArr.reduce((acc, cur) => {
+    //   return acc.concat(cur);
+    // }, []);
+    // const results = getResultFromArray(successArr);
+    // return results;
+    return {
+      success: successArr as any
+    };
+  } catch (error) {
+    throw new VError(error);
+  }
 }

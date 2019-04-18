@@ -15,6 +15,9 @@ export function HasTrailingSlash(inputPath: string): boolean {
 }
 
 export function EnsureTrailingSlash(inputPath: string): string {
+  if (!inputPath) {
+    return '/';
+  }
   const hasTrailing = HasTrailingSlash(inputPath);
   const pathParsed = hasTrailing ? inputPath : inputPath + '/';
   return pathParsed;
@@ -27,6 +30,9 @@ export function EnsureNoPrefixSlash(inputPath: string): string {
 }
 
 export function EnsurePrefixSlash(inputPath: string): string {
+  if (!inputPath) {
+    return '/';
+  }
   const hasPrefix = HasPrefixSlash(inputPath);
   const pathParsed = hasPrefix ? inputPath : '/' + inputPath;
   return pathParsed;

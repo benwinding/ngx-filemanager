@@ -8,51 +8,58 @@ import {
   blankPermissionsObj,
   RetrieveFilePermissions
 } from './permissions-helper';
+import { VError } from 'verror';
 
-async function uploadTestFile(file: File) {
+function uploadTestFile(file: File) {
   const buffer = new Buffer('hi there');
   const fileOptions = {
     contentType: 'text/plain'
   };
-  await file.save(buffer, fileOptions);
+  return file.save(buffer, fileOptions);
+}
+
+async function tryCheckExists(bucket: Bucket, objectPath: string) {
+  try {
+    const file = bucket.file(objectPath);
+    const [exists] = await file.exists();
+    return exists;
+  } catch (error) {
+    throw new VError(error);
+  }
+}
+
+async function tryRemove(bucket: Bucket, objectPath: string) {
+  const file = bucket.file(objectPath);
+  try {
+    const [exists] = await file.exists();
+    if (exists) {
+      console.log('- deleting file: ', file.name);
+      await file.delete();
+    }
+    return false;
+  } catch (error) {
+    throw new VError(error);
+  }
 }
 
 async function removeFile(bucket: Bucket, filePath: string) {
   const pathParsed = EnsureGoogleStoragePathFile(filePath);
-  const file = bucket.file(pathParsed);
-  const [exists] = await file.exists();
-  if (exists) {
-    console.log('- deleting file: ', file.name);
-    await file.delete();
-    return true;
-  }
-  return false;
+  return tryRemove(bucket, pathParsed);
 }
 
 async function removeDir(bucket: Bucket, dirPath: string) {
   const pathParsed = EnsureGoogleStoragePathDir(dirPath);
-  const dir = bucket.file(pathParsed);
-  const [exists] = await dir.exists();
-  if (exists) {
-    console.log('- deleting directory: ', dir.name);
-    await dir.delete();
-    return true;
-  }
-  return false;
+  return tryRemove(bucket, pathParsed);
 }
 
 async function existsFile(bucket: Bucket, filePath: string) {
   const pathParsed = EnsureGoogleStoragePathFile(filePath);
-  const file = bucket.file(pathParsed);
-  const [exists] = await file.exists();
-  return exists;
+  return tryCheckExists(bucket, pathParsed);
 }
 
 async function existsDir(bucket: Bucket, filePath: string) {
   const pathParsed = EnsureGoogleStoragePathDir(filePath);
-  const dir = bucket.file(pathParsed);
-  const [exists] = await dir.exists();
-  return exists;
+  return tryCheckExists(bucket, pathParsed);
 }
 
 export const testHelper = {

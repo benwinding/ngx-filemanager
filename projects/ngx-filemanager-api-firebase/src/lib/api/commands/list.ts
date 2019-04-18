@@ -8,11 +8,9 @@ import {
 } from '../../utils/translation-helpers';
 import * as request from 'request';
 import { GetPermissionForFile } from '../../utils/permissions-helper';
-import {
-  UserCustomClaims,
-  ResFile
-} from 'ngx-filemanager-core/public_api';
+import { UserCustomClaims, ResFile } from 'ngx-filemanager-core/public_api';
 import { UserAccessResult } from '../../types/UserAccessResult';
+import { VError } from 'verror';
 
 interface FilesAndPrefixes {
   files: File[];
@@ -66,10 +64,14 @@ export async function GetFiles(
   bucket: Bucket,
   options: GetFilesOptions
 ): Promise<FileFromStorage[]> {
-  const result = await bucket.getFiles(options);
-  const storageObjects = result[0];
-  const files = storageObjects.map(o => translateRawStorage(o));
-  return files;
+  try {
+    const result = await bucket.getFiles(options);
+    const storageObjects = result[0];
+    const files = storageObjects.map(o => translateRawStorage(o));
+    return files;
+  } catch (error) {
+    throw new VError(error);
+  }
 }
 
 export async function GetListFromStorage(
@@ -84,22 +86,26 @@ export async function GetListFromStorage(
   } else {
     options = MakeOptionsList(googleStorageDirPath);
   }
-  const result = await GetFilesAndPrefixes(bucket, options);
-  const allObjects = result.files.map(o => translateRawStorage(o));
+  try {
+    const result = await GetFilesAndPrefixes(bucket, options);
+    const allObjects = result.files.map(o => translateRawStorage(o));
 
-  const allObjectsPathsSet = new Set(allObjects.map(f => f.ref.name));
-  const phantomPrefixes = result.prefixes.filter(
-    prefix => !allObjectsPathsSet.has(prefix)
-  );
+    const allObjectsPathsSet = new Set(allObjects.map(f => f.ref.name));
+    const phantomPrefixes = result.prefixes.filter(
+      prefix => !allObjectsPathsSet.has(prefix)
+    );
 
-  const newPhantomFolders = phantomPrefixes.map(phantomPath =>
-    makePhantomStorageFolder(phantomPath)
-  );
-  const combinedList = [...allObjects, ...newPhantomFolders];
-  const filesWithoutCurrentDirectory = combinedList.filter(
-    f => EnsureGoogleStoragePathDir(f.fullPath) !== googleStorageDirPath
-  );
-  return filesWithoutCurrentDirectory;
+    const newPhantomFolders = phantomPrefixes.map(phantomPath =>
+      makePhantomStorageFolder(phantomPath)
+    );
+    const combinedList = [...allObjects, ...newPhantomFolders];
+    const filesWithoutCurrentDirectory = combinedList.filter(
+      f => EnsureGoogleStoragePathDir(f.fullPath) !== googleStorageDirPath
+    );
+    return filesWithoutCurrentDirectory;
+  } catch (error) {
+    throw new VError(error);
+  }
 }
 
 export async function GetList(
@@ -107,14 +113,18 @@ export async function GetList(
   inputDirectoryPath: string,
   claims: UserCustomClaims
 ): Promise<ResFile[]> {
-  const files = await GetListFromStorage(bucket, inputDirectoryPath);
-  const resFiles = await Promise.all(
-    files.map(f => translateStorageToResFile(f))
-  );
-  const filesAllowed = resFiles.filter(f => {
-    const perms = GetPermissionForFile(f.permissions, claims);
-    const minPerms = UserAccessResult.r__;
-    return perms > minPerms;
-  });
-  return filesAllowed;
+  try {
+    const files = await GetListFromStorage(bucket, inputDirectoryPath);
+    const resFiles = await Promise.all(
+      files.map(f => translateStorageToResFile(f))
+    );
+    const filesAllowed = resFiles.filter(f => {
+      const perms = GetPermissionForFile(f.permissions, claims);
+      const minPerms = UserAccessResult.r__;
+      return perms > minPerms;
+    });
+    return filesAllowed;
+  } catch (error) {
+    throw new VError(error);
+  }
 }

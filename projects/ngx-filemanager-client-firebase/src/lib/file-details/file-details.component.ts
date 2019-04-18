@@ -182,11 +182,15 @@ export class FileDetailsComponent {
 
   async setImageUrl() {
     this.imageUrl = null;
-    await promiseDelay(300);
-    if (!this.hasInput || !this.isFile) {
-      return;
+    try {
+      await promiseDelay(300);
+      if (!this.hasInput || !this.isFile) {
+        return;
+      }
+      this.imageUrl = await this.fileSystem.CreateDownloadLink(this.file);
+    } catch (error) {
+      console.error('Error setting ImageUrl', {error});
     }
-    this.imageUrl = await this.fileSystem.CreateDownloadLink(this.file);
   }
 
   setPermissions() {

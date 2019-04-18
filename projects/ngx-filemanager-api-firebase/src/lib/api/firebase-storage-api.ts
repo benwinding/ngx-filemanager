@@ -24,13 +24,21 @@ import {
   ResBodySetPermissions,
   ResBodyUploadFile
 } from 'ngx-filemanager-core/public_api';
+import { VError } from 'verror';
+
+async function CheckHasBodyProp(body: {}, bodyFieldName: string) {
+  const exists = body[bodyFieldName];
+  if (!exists) {
+    throw new Error(`Request is missing property in req.body: '${bodyFieldName}'`);
+  }
+}
 
 export class NgxFileMangerApiFireBaseClass {
   constructor(public storage: Storage) {}
 
   private async getBucket(bucketname: string): Promise<Bucket> {
     if (!bucketname) {
-      throw new Error('No bucketname provided');
+      throw new Error(`Request is missing property in req.body: 'bucketname'`);
     }
     try {
       const bucket = this.storage.bucket(bucketname);
@@ -51,6 +59,7 @@ export class NgxFileMangerApiFireBaseClass {
     claims: UserCustomClaims
   ): Promise<ResBodyList> {
     try {
+      await CheckHasBodyProp(body, 'path');
       const bucket = await this.getBucket(body.bucketname);
       const resFiles = await commands.GetList(bucket, body.path, claims);
       const response: ResBodyList = {
@@ -58,7 +67,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error);
     }
   }
 
@@ -67,6 +76,8 @@ export class NgxFileMangerApiFireBaseClass {
     claims: UserCustomClaims
   ): Promise<ResBodyRename> {
     try {
+      await CheckHasBodyProp(body, 'item');
+      await CheckHasBodyProp(body, 'newItemPath');
       const bucket = await this.getBucket(body.bucketname);
       const result = await commands.RenameFile(
         bucket,
@@ -79,7 +90,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error);
     }
   }
 
@@ -89,6 +100,8 @@ export class NgxFileMangerApiFireBaseClass {
   ): Promise<ResBodyMove> {
     try {
       const bucket = await this.getBucket(body.bucketname);
+      await CheckHasBodyProp(body, 'items');
+      await CheckHasBodyProp(body, 'newPath');
       const result = await commands.MoveFiles(
         bucket,
         body.items,
@@ -100,7 +113,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error);
     }
   }
 
@@ -109,6 +122,7 @@ export class NgxFileMangerApiFireBaseClass {
     claims: UserCustomClaims
   ): Promise<ResBodyCopy> {
     try {
+      await CheckHasBodyProp(body, 'newPath');
       const bucket = await this.getBucket(body.bucketname);
       let filesToCopy;
       if (body.items) {
@@ -131,7 +145,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error);
     }
   }
 
@@ -140,6 +154,7 @@ export class NgxFileMangerApiFireBaseClass {
     claims: UserCustomClaims
   ): Promise<ResBodyRemove> {
     try {
+      await CheckHasBodyProp(body, 'items');
       const bucket = await this.getBucket(body.bucketname);
       const result = await commands.RemoveFiles(bucket, body.items, claims);
       const response: ResBodyRemove = {
@@ -147,7 +162,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error);
     }
   }
 
@@ -156,6 +171,8 @@ export class NgxFileMangerApiFireBaseClass {
     claims: UserCustomClaims
   ): Promise<ResBodyEdit> {
     try {
+      await CheckHasBodyProp(body, 'item');
+      await CheckHasBodyProp(body, 'content');
       const bucket = await this.getBucket(body.bucketname);
       const result = await commands.EditFile(
         bucket,
@@ -168,7 +185,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error);
     }
   }
 
@@ -177,6 +194,7 @@ export class NgxFileMangerApiFireBaseClass {
     claims: UserCustomClaims
   ): Promise<ResBodyGetContent> {
     try {
+      await CheckHasBodyProp(body, 'item');
       const bucket = await this.getBucket(body.bucketname);
       const result = await commands.GetFileContent(bucket, body.item, claims);
       const response: ResBodyGetContent = {
@@ -184,7 +202,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error);
     }
   }
 
@@ -193,6 +211,7 @@ export class NgxFileMangerApiFireBaseClass {
     claims: UserCustomClaims
   ): Promise<ResBodyGetMeta> {
     try {
+      await CheckHasBodyProp(body, 'item');
       const bucket = await this.getBucket(body.bucketname);
       const downloadUrl = await commands.GetFileMeta(bucket, body.item, claims);
       const response: ResBodyGetMeta = {
@@ -204,7 +223,7 @@ export class NgxFileMangerApiFireBaseClass {
       response.result.success = true;
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error);
     }
   }
 
@@ -213,6 +232,7 @@ export class NgxFileMangerApiFireBaseClass {
     claims: UserCustomClaims
   ): Promise<ResBodyCreateFolder> {
     try {
+      await CheckHasBodyProp(body, 'newPath');
       const bucket = await this.getBucket(body.bucketname);
       const result = await commands.CreateFolder(bucket, body.newPath, claims);
       const response: ResBodyCreateFolder = {
@@ -220,7 +240,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error);
     }
   }
 
@@ -229,6 +249,9 @@ export class NgxFileMangerApiFireBaseClass {
     claims: UserCustomClaims
   ): Promise<ResBodySetPermissions> {
     try {
+      await CheckHasBodyProp(body, 'items');
+      await CheckHasBodyProp(body, 'role');
+      await CheckHasBodyProp(body, 'entity');
       const bucket = await this.getBucket(body.bucketname);
       const result = await commands.ChangePermissions(
         bucket,
@@ -243,7 +266,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error);
     }
   }
 
@@ -272,7 +295,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return result;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error);
     }
   }
 }

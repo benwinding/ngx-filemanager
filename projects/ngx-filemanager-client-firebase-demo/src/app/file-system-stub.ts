@@ -52,18 +52,23 @@ export class FileSystemStub implements core.FileSystemProvider {
   private isInDirectory(dirPath, filePath): boolean {
     try {
       const relative = path.relative(dirPath, filePath);
-      const isSubdir = relative && !relative.startsWith('..') && !relative.includes('/');
+      const isSubdir =
+        relative && !relative.startsWith('..') && !relative.includes('/');
       return isSubdir;
     } catch (error) {
-      this.logger.warn('isInDirectory error', {dirPath, filePath, error});
+      this.logger.warn('isInDirectory error', { dirPath, filePath, error });
       return false;
     }
   }
 
   async List(inputPath: string): Promise<core.ResBodyList> {
     await this.fakeDelay();
-    const folderPath = this.ensurePrefixSlash(this.ensureTrailingSlash(inputPath));
-    const matches = this.files.filter(k => this.isInDirectory(folderPath, k.fullPath));
+    const folderPath = this.ensurePrefixSlash(
+      this.ensureTrailingSlash(inputPath)
+    );
+    const matches = this.files.filter(k =>
+      this.isInDirectory(folderPath, k.fullPath)
+    );
     this.logger.info('List', { folderPath, files: this.files, matches });
     return {
       result: matches
@@ -85,7 +90,10 @@ export class FileSystemStub implements core.FileSystemProvider {
     });
     return null;
   }
-  async Copy(singleFileName: string, newPath: string): Promise<core.ResBodyCopy> {
+  async Copy(
+    singleFileName: string,
+    newPath: string
+  ): Promise<core.ResBodyCopy> {
     await this.fakeDelay();
     this.selectMatches([singleFileName], true).map(match => {
       const copy = { ...match };
@@ -126,7 +134,10 @@ export class FileSystemStub implements core.FileSystemProvider {
     });
     return null;
   }
-  async CopyMultiple(items: string[], newPath: string): Promise<core.ResBodyCopy> {
+  async CopyMultiple(
+    items: string[],
+    newPath: string
+  ): Promise<core.ResBodyCopy> {
     await this.fakeDelay();
     this.selectMatches(items, true).map(f => {
       const copy = { ...f };
@@ -135,7 +146,10 @@ export class FileSystemStub implements core.FileSystemProvider {
     });
     return null;
   }
-  async MoveMultiple(items: string[], newPath: string): Promise<core.ResBodyMove> {
+  async MoveMultiple(
+    items: string[],
+    newPath: string
+  ): Promise<core.ResBodyMove> {
     await this.fakeDelay();
     this.selectMatches(items, true).map(f => {
       f.fullPath = path.join(newPath, f.name);
@@ -149,7 +163,10 @@ export class FileSystemStub implements core.FileSystemProvider {
     recursive?: boolean
   ): Promise<core.ResBodySetPermissions> {
     await this.fakeDelay();
-    this.logger.info('file-system-stub: SetPermissionsMultiple', { items, files: this.files });
+    this.logger.info('file-system-stub: SetPermissionsMultiple', {
+      items,
+      files: this.files
+    });
     this.selectMatches(items, true).map(f => {
       // f.rightsFirebase = [perms];
       // if (recursive) {

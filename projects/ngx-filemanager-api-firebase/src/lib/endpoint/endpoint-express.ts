@@ -8,6 +8,7 @@ import {
 } from './middleware-helpers';
 import { Storage } from '../types/google-cloud-types';
 import { NgxFileMangerApiFireBaseClass } from '../api/firebase-storage-api';
+import { VError } from 'verror';
 
 let fmApi: NgxFileMangerApiFireBaseClass;
 
@@ -16,7 +17,7 @@ endpoint.use(OptionRequestsAreOk);
 
 endpoint.use('/hello', async (req, res) => {
   console.log('HELLO');
-  res.status(200).send('HELLO');
+  res.status(200).send('HELLO\n');
 });
 
 endpoint.use(PostRequestsOnly);
@@ -56,8 +57,8 @@ endpoint.post(
       }, success);
       res.status(200).send(finalResult);
     } catch (error) {
-      console.log('Error occurred while uploading: ', { error });
-      res.status(400).send('Error while uploading: ' + error.message);
+      console.error('Error occurred while uploading: \n', VError.fullStack(error));
+      res.status(400).send('Error occurred while uploading: \n' + error.message);
       return;
     }
   }
@@ -85,8 +86,8 @@ endpoint.use(
   HasBodyProp('bucketname'),
   async (req, res) => {
     const action: FileManagerAction = req.body.action;
-    const userClaims = await RetrieveCustomClaims(req);
     try {
+      const userClaims = await RetrieveCustomClaims(req);
       let body;
       switch (action) {
         case 'list':
@@ -127,12 +128,12 @@ endpoint.use(
       }
       res.status(200).send(body);
     } catch (error) {
+      console.error('Error while processing request: \n', VError.fullStack(error));
       const returnedError = {
         error: `Bad request to ngx-file-manager!`,
         errorDetail: error.message,
         requestBody: req.body
       };
-      console.error({ returnedError, error });
       res.status(400).send(returnedError);
     }
   }

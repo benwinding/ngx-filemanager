@@ -58,7 +58,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   }
   async OnCopy(singleFileName: string, newPath: string): Promise<void> {}
   async OnMove(item: string, newPath: string): Promise<void> {
-    await this.removeSingleFromList(item);
+    return this.removeSingleFromList(item);
   }
   async OnRename(item: string, newItemPath: string): Promise<void> {}
   async OnEdit(item: string, content: string): Promise<void> {}
@@ -70,7 +70,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     recursive?: boolean
   ): Promise<void> {}
   async OnMoveMultiple(items: string[], newPath: string): Promise<void> {
-    await this.removeArrayFromList(items);
+    return this.removeArrayFromList(items);
   }
   async OnCopyMultiple(items: string[], newPath: string): Promise<void> {}
   async OnSetPermissionsMultiple(
@@ -80,7 +80,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     recursive?: boolean
   ): Promise<void> {}
   async OnRemove(items: string[]): Promise<void> {
-    await this.removeArrayFromList(items);
+    return this.removeArrayFromList(items);
   }
   async UpdateCurrentList(res: core.ResBodyList): Promise<void> {
     this.store.SetCurrentFiles(res.result);

@@ -16,17 +16,15 @@ export function blankPermissionsObj(): PermissionsObject {
   };
 }
 
-export async function RetrieveFilePermissions(file: File) {
-  const currentPermissions = await GetMetaProperty(file, 'permissions');
-  return currentPermissions as PermissionsObject;
+export async function RetrieveFilePermissions(file: File): Promise<PermissionsObject> {
+  return GetMetaProperty(file, 'permissions');
 }
 
 export async function UpdateFilePermissions(
   file: File,
   newPermissions: PermissionsObject
 ) {
-  const result = await SetMetaProperty(file, 'permissions', newPermissions);
-  return result;
+  return SetMetaProperty(file, 'permissions', newPermissions);
 }
 
 function blankUserClaim(): UserCustomClaims {

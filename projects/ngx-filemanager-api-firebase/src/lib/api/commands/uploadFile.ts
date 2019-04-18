@@ -17,5 +17,5 @@ export async function UploadFile(
   const fileOptions = {
     contentType: mimetype
   };
-  await file.save(buffer, fileOptions);
+  return file.save(buffer, fileOptions);
 }

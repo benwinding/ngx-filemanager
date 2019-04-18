@@ -19,19 +19,15 @@ export async function GetTokenFromRequest(req: Request) {
     );
   }
 
-  try {
-    const decodedToken = await DecodeJWT(idToken);
-    return decodedToken;
-  } catch (error) {
-    throw new Error('Error decoding JWT' + error);
-  }
+  const decodedToken = DecodeJWT(idToken);
+  return decodedToken;
 }
 
 export async function DecodeJWT(bearer: string): Promise<{}> {
   try {
     const decoded = jwt.decode(bearer, { json: true });
     return decoded;
-  } catch (err) {
-    throw new Error(err);
+  } catch (error) {
+    throw new Error('Error decoding JWT' + error.message);
   }
 }

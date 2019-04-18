@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { Bucket, Storage } from '../types/google-cloud-types';
 
 export function OptionRequestsAreOk(
   req: Request,
@@ -31,7 +30,7 @@ export function PostRequestsOnly(
 export function HasBodyProp(bodyFieldName: string): RequestHandler {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.body[bodyFieldName]) {
-      const msg = 'Request is missing property in req.body: ' + bodyFieldName + '\n';
+      const msg = `Request is missing property in req.body: "${bodyFieldName}" \n`;
       console.warn(msg);
       res.status(400).send(msg);
       return;
@@ -43,7 +42,7 @@ export function HasBodyProp(bodyFieldName: string): RequestHandler {
 export function HasQueryParam(paramName: string): RequestHandler {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.query[paramName]) {
-      const msg = 'Request is missing property in req.params: ' + paramName + '\n';
+      const msg = `Request is missing property in req.params: "${paramName}" \n`;
       console.warn(msg);
       res.status(400).send(msg);
       return;

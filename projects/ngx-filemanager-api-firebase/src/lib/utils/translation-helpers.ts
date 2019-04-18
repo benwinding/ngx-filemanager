@@ -10,6 +10,7 @@ import * as request from 'request';
 import * as path from 'path';
 import { RetrieveFilePermissions } from './permissions-helper';
 import { ResFile, ResultObj } from 'ngx-filemanager-core/public_api';
+import { VError } from 'verror';
 
 export function translateRawStorage(storageObject: File): FileFromStorage {
   const filePath = storageObject.name;
@@ -49,17 +50,21 @@ export async function translateStorageToResFile(
     resFile.isPhantomFolder = true;
     return resFile;
   }
-  const [aclObj] = await f.ref.acl.get();
-  resFile.rightsFirebase = aclObj as any;
-  const metaResp = await f.ref.getMetadata();
-  const metaData = metaResp[0];
-  const customMeta = metaData.metadata || {};
-  const permissions = await RetrieveFilePermissions(f.ref);
-  resFile.permissions = permissions;
-  resFile.size = metaData.size;
-  resFile.date = metaData.updated;
-  resFile.metaData = customMeta;
-  return resFile;
+  try {
+    const [aclObj] = await f.ref.acl.get();
+    resFile.rightsFirebase = aclObj as any;
+    const metaResp = await f.ref.getMetadata();
+    const metaData = metaResp[0];
+    const customMeta = metaData.metadata || {};
+    const permissions = await RetrieveFilePermissions(f.ref);
+    resFile.permissions = permissions;
+    resFile.size = metaData.size;
+    resFile.date = metaData.updated;
+    resFile.metaData = customMeta;
+    return resFile;
+  } catch (error) {
+    throw new VError(error);
+  }
 }
 
 export async function StreamToPromise(stream: Readable): Promise<string> {
