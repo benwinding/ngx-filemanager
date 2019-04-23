@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { LoggerService } from '../logging/logger.service';
+import { NotificationService } from '../notifications/notification.service';
 
 export interface UploadDialogInterface {
   currentPath: string;
@@ -27,6 +28,7 @@ export interface UploadDialogInterface {
           [config]="dropzoneConfig"
           (success)="onUploadSuccess($event)"
           (processing)="onProcessingBegin($event)"
+          (error)="onError($event)"
         ></dropzone>
       </ng-template>
       <ng-template #actionsTemplate>
@@ -61,6 +63,7 @@ export class AppDialogUploadFilesComponent {
 
   constructor(
     private logger: LoggerService,
+    private notifications: NotificationService,
     public dialogRef: MatDialogRef<AppDialogUploadFilesComponent>,
     @Inject(MAT_DIALOG_DATA) public data: UploadDialogInterface
   ) {
@@ -83,8 +86,21 @@ export class AppDialogUploadFilesComponent {
   }
 
   onUploadSuccess($event) {
-    const uuid = $event.shift().upload.uuid;
+    const file = $event.shift();
+    const uuid = file.upload.uuid;
     this.logger.info('onUploadSuccess', { $event, uuid });
+    this.removeFromQueue(uuid);
+  }
+
+  onError($event) {
+    const file = $event.shift();
+    const uuid = file.upload.uuid;
+    const message = $event.shift();
+    console.error('Error uploading file to server', { $event });
+    this.notifications.notify(
+      'Error uploading file: ' + message,
+      'Upload Error'
+    );
     this.removeFromQueue(uuid);
   }
 
