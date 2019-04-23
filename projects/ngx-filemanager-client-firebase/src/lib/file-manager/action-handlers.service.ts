@@ -175,8 +175,8 @@ export class ActionHandlersService {
 
   public async OnDeleteMultiple(files: ResFile[]) {
     try {
-      this.logger.info('deleting files', { files });
       const deletedPaths = files.map(f => f.fullPath);
+      this.logger.info('deleting files', { files, deletedPaths });
       await this.optimisticFs.HandleRemove(deletedPaths);
       await this.RefreshExplorer();
     } catch (error) {

@@ -111,13 +111,14 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   }
 
   private async removeMultiple(filePaths: string[]) {
-    const directoryPath = path.dirname(filePaths.pop());
+    const directoryPath = path.dirname(filePaths[0]);
     const removeSet = new Set(
       filePaths.map(filePath => path.basename(filePath))
     );
     const currentFiles = this.store.GetCached(directoryPath);
     const cachedFilesWithout = currentFiles.filter(f => !removeSet.has(f.name));
     this.store.SetDirectoryFiles(cachedFilesWithout, directoryPath);
+    this.store.SetPath(directoryPath);
   }
 
   public get $FilesWithIcons(): Observable<core.ResFile[]> {
