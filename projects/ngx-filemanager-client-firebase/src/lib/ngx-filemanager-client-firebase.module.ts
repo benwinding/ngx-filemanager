@@ -22,7 +22,8 @@ import {
   MatSidenavModule,
   MatDialogModule,
   MatTabsModule,
-  MatCardModule
+  MatCardModule,
+  MatSnackBarModule
 } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
@@ -48,6 +49,7 @@ import { LoggerService } from './logging/logger.service';
 import { ConsoleLoggerService } from './logging/console-logger.service';
 import { AppFileTableMiniFolderBrowserComponent } from './file-table-mini/file-table-mini-folder-browser.component';
 import { AppActionsMiniBrowserComponent } from './file-table-mini/actions-mini-browser.component';
+import { NotificationService } from './notifications/notification.service';
 
 const dialogComponents = [
   BaseDialogComponent,
@@ -96,6 +98,7 @@ const dialogComponents = [
     MatProgressSpinnerModule,
     MatSelectModule,
     MatSidenavModule,
+    MatSnackBarModule,
     MatSortModule,
     MatTableModule,
     MatTabsModule,
@@ -105,6 +108,7 @@ const dialogComponents = [
   exports: [NgxFileManagerComponent],
   providers: [
     ServerFilesystemProviderService,
+    NotificationService,
     // OptimisticFilesystemService,
     { provide: LoggerService, useClass: ConsoleLoggerService }
   ]

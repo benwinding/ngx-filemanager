@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as core from 'ngx-filemanager-core';
 import { HttpClient } from '@angular/common/http';
 import { LoggerService } from '../logging/logger.service';
+import { NotificationService } from '../notifications/notification.service';
 
 @Injectable()
 export class ServerFilesystemProviderService
@@ -9,7 +10,11 @@ export class ServerFilesystemProviderService
   private bucketname: string;
   private apiEndpoint: string;
 
-  constructor(private http: HttpClient, private logger: LoggerService) {}
+  constructor(
+    private http: HttpClient,
+    private logger: LoggerService,
+    private notifications: NotificationService
+  ) {}
 
   private async fetchPostAuth<T>(url, body): Promise<T> {
     const options = {
@@ -32,7 +37,10 @@ export class ServerFilesystemProviderService
       } catch (jsonError) {
         errorStr = 'Could not parse error response: ' + error.error;
       }
-      throw new Error('Error in ngx-filemanager-api: ' + error.message + ', ' + errorStr);
+      this.notifications.notify('Cannot connect to file server...', 'API Error');
+      throw new Error(
+        'API Error: ' + error.message + ', ' + errorStr
+      );
     }
   }
 
