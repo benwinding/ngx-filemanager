@@ -133,12 +133,6 @@ export class AppDialogSetPermissionsComponent implements OnDestroy {
   ) {
     this.items = data.files;
     const config = data.config;
-    if (!config.users) {
-      throw new Error('config.users needs to be defined');
-    }
-    if (!config.groups) {
-      throw new Error('config.groups needs to be defined');
-    }
     this.$users = config.users.pipe(this.pipeConvertToEntity('user'));
     this.$groups = config.groups.pipe(this.pipeConvertToEntity('group'));
   }

@@ -20,8 +20,12 @@ import {
 import { FileManagerConfig } from '../configuration/client-configuration';
 import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
 import * as path from 'path-browserify';
-import { UploadDialogInterface, AppDialogUploadFilesComponent } from '../dialogs/dialog-upload.component';
+import {
+  UploadDialogInterface,
+  AppDialogUploadFilesComponent
+} from '../dialogs/dialog-upload.component';
 import { LoggerService } from '../logging/logger.service';
+import { NotificationService } from '../notifications/notification.service';
 
 @Injectable()
 export class ActionHandlersService {
@@ -54,7 +58,8 @@ export class ActionHandlersService {
     private clientFilesystem: ClientFileSystemService,
     private optimisticFs: OptimisticFilesystemService,
     private dialog: MatDialog,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private notifications: NotificationService
   ) {}
 
   public init(fileSystem: FileSystemProvider, config: FileManagerConfig) {
@@ -70,6 +75,7 @@ export class ActionHandlersService {
     this.logger.info('OnRename', { data });
     const renamedPath = await this.openDialog(AppDialogRenameComponent, data);
     if (!renamedPath) {
+      this.notifications.notifyCancelled();
       return;
     }
     try {
@@ -80,6 +86,7 @@ export class ActionHandlersService {
       }, 300);
     } catch (error) {
       this.logger.error('OnRename', { error });
+      this.notifications.notify(error.message, 'Rename Error');
     }
   }
 
@@ -91,6 +98,7 @@ export class ActionHandlersService {
     };
     const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
     if (!newFolderPath) {
+      this.notifications.notifyCancelled();
       return;
     }
     try {
@@ -99,6 +107,7 @@ export class ActionHandlersService {
       await this.RefreshExplorer();
     } catch (error) {
       this.logger.error('OnMoveMultiple', { error });
+      this.notifications.notify(error.message, 'Move Error');
     }
   }
 
@@ -111,6 +120,7 @@ export class ActionHandlersService {
     const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
     this.logger.info('OnCopyMultiple', { files, newFolderPath });
     if (!newFolderPath) {
+      this.notifications.notifyCancelled();
       return;
     }
     try {
@@ -119,6 +129,7 @@ export class ActionHandlersService {
       await this.RefreshExplorer();
     } catch (error) {
       this.logger.error('OnCopyMultiple', { error });
+      this.notifications.notify(error.message, 'Copy Error');
     }
   }
 
@@ -127,11 +138,24 @@ export class ActionHandlersService {
       files: files,
       config: this.config
     };
+    try {
+      if (!this.config.users) {
+        throw new Error('The "config.users" property was not defined');
+      }
+      if (!this.config.groups) {
+        throw new Error('The "config.groups" property was not defined');
+      }
+    } catch (error) {
+      this.notifications.notify(error.message, 'Permissions Error');
+      return;
+    }
+
     const res: PermissionsDialogResponseInterface = await this.openDialog(
       AppDialogSetPermissionsComponent,
       data
     );
     if (!res) {
+      this.notifications.notifyCancelled();
       return;
     }
     try {
@@ -145,6 +169,7 @@ export class ActionHandlersService {
       await this.RefreshExplorer();
     } catch (error) {
       this.logger.error('OnSetPermissionsMultiple', { error });
+      this.notifications.notify(error.message, 'Permissions Error');
     }
   }
 
@@ -156,6 +181,7 @@ export class ActionHandlersService {
       await this.RefreshExplorer();
     } catch (error) {
       this.logger.error('OnDeleteMultiple', { error });
+      this.notifications.notify(error.message, 'Deletion Error');
     }
   }
 
