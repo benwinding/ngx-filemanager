@@ -1001,7 +1001,7 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
   integrity sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
 
-"@types/node@*", "@types/node@^11.13.0":
+"@types/node@*":
   version "11.13.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.13.0.tgz#b0df8d6ef9b5001b2be3a94d909ce3c29a80f9e1"
   integrity sha512-rx29MMkRdVmzunmiA4lzBYJNnXsW/PhG4kMBy2ATsYaDjGGR75dCFEVVROKpNwlVdcUX3xxlghKQOeDPBJobng==
@@ -1010,6 +1010,11 @@
   version "10.14.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.14.4.tgz#1c586b991457cbb58fef51bc4e0cfcfa347714b5"
   integrity sha512-DT25xX/YgyPKiHFOpNuANIQIVvYEwCWXgK2jYYwqgaMrYE6+tq+DtmMwlD3drl6DJbUwtlIDnn0d7tIn/EbXBg==
+
+"@types/node@^11.13.5":
+  version "11.13.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.13.7.tgz#85dbb71c510442d00c0631f99dae957ce44fd104"
+  integrity sha512-suFHr6hcA9mp8vFrZTgrmqW2ZU3mbWsryQtQlY/QvwTISCw7nw/j+bCQPPohqmskhmqa5wLNuMHTTsc+xf1MQg==
 
 "@types/node@^8.0.53":
   version "8.10.45"
@@ -6698,10 +6703,10 @@ ng-packagr@^4.2.0:
     uglify-js "^3.0.7"
     update-notifier "^2.3.0"
 
-ngx-auto-table@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/ngx-auto-table/-/ngx-auto-table-0.3.4.tgz#ce802fc8d300d6c083b849b390a8e2df4d86f545"
-  integrity sha512-D41uziPfM6lD6cbQHM9HX7wcX0OV5k4aBXosye+A9Z0jOFhKMZVEK4Dq9yjV1phM2o67a5k6LjFN5Ssa0j1ibQ==
+ngx-auto-table@^0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/ngx-auto-table/-/ngx-auto-table-0.3.5.tgz#62515ef2a4b1a38380218defbf772d2047a42e46"
+  integrity sha512-bpmVw+Q6KA8s7buxnFytHLw1Wlcv/MqG5aAXV/hjBPE9ODeVX0kBOYQnZK1KExXKUozOlZzcNkTD3fIRtKcFVg==
   dependencies:
     tslib "^1.9.0"
 

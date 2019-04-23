@@ -10,7 +10,7 @@ import * as uuid from 'uuid/v1';
 function MakeUser(name) {
   return {
     name: name,
-    uid: uuid(),
+    uid: uuid()
   };
 }
 
@@ -18,11 +18,11 @@ const $users = new BehaviorSubject<NameUid[]>([
   MakeUser('Jim'),
   MakeUser('Bob'),
   MakeUser('Frank'),
-  MakeUser('John'),
+  MakeUser('John')
 ]);
 const $groups = new BehaviorSubject<NameUid[]>([
   MakeUser('Residents'),
-  MakeUser('Managers'),
+  MakeUser('Managers')
 ]);
 
 @Component({
@@ -39,7 +39,7 @@ export class AppTestFunctionsLocallyComponent {
   public config: FileManagerConfig = {
     initialPath: '/clientTesting/',
     users: $users,
-    groups: $groups,
+    groups: $groups
   };
   constructor(public firebaseClientProvider: ServerFilesystemProviderService) {
     const bucketName = 'resvu-integration-tests.appspot.com';

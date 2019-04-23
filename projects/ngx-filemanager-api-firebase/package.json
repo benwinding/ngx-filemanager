@@ -12,6 +12,7 @@
     "ngx-filemanager-core": "^0.0.4",
     "express-multipart-file-parser": "^0.1.2",
     "jsonwebtoken": "8.5.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "verror": "1.10.0"
   }
 }
