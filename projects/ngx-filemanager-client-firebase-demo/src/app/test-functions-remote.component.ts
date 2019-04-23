@@ -38,7 +38,7 @@ import { Subject } from 'rxjs';
 })
 export class AppTestFunctionsRemoteComponent implements OnDestroy {
   public config: FileManagerConfig = {
-    initialPath: '/'
+    virtualRoot: '/'
   };
 
   bucketName = new FormControl('cl-building-storage');

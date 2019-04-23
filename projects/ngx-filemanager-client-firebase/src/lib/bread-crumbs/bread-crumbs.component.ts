@@ -1,10 +1,7 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { LoggerService } from '../logging/logger.service';
-
-interface BreadCrumb {
-  label: string;
-  path?: string;
-}
+import { FileManagerConfig } from '../configuration/client-configuration';
+import { crumbFactory, BreadCrumb } from './crumb-factory';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -31,51 +28,45 @@ interface BreadCrumb {
       </div>
     </div>
   `,
-  styleUrls: [
-    '../shared-utility-styles.scss'
-  ]
+  styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppBreadCrumbsComponent {
-  private _currentPath: string;
   crumbs: BreadCrumb[];
 
   @Output()
   clickedCrumb = new EventEmitter<string>();
 
+  _currentPath: string;
   @Input()
   set currentPath(newPath) {
-    const parsed = newPath ? newPath : '';
-    this._currentPath = parsed;
-    this.makeCrumbs(parsed);
+    this._currentPath = newPath;
+    this.makeCrumbs(newPath);
+  }
+  _config: FileManagerConfig;
+  @Input()
+  set config(newConfig) {
+    this._config = newConfig;
+    this.makeCrumbs(this._currentPath);
   }
 
   constructor(private logger: LoggerService) {}
 
   private makeCrumbs(newPath: string) {
-    const segments = newPath.split('/').filter(s => s !== '');
-    this.crumbs = [];
-    segments.reduce((segmentsSoFar, cur) => {
-      segmentsSoFar.push(cur);
-      const crumbPath = segmentsSoFar.join('/') + '/';
-      this.crumbs.push({
-        label: cur,
-        path: crumbPath
-      });
-      return segmentsSoFar;
-    }, ['']);
-    this.crumbs.unshift({
-      label: 'Home',
-      path: '/'
-    });
+    if (!this._config) {
+      return;
+    }
+    const virtualRoot = this._config.virtualRoot;
+    this.crumbs = crumbFactory.MakeCrumbs(virtualRoot, newPath);
+
     this.logger.info('makeCrumbs', {
       crumbs: this.crumbs,
-      segments,
+      virtualRoot,
       newPath
     });
   }
 
   onClickCrumb(crumb: BreadCrumb) {
-    this.logger.info('onClickCrumb', {crumb});
+    this.logger.info('onClickCrumb', { crumb });
     this.clickedCrumb.emit(crumb.path);
   }
 }

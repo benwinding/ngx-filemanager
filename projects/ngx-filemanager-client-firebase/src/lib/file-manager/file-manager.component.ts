@@ -44,7 +44,7 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   get $CurrentPathIsRoot() {
-    return this.$CurrentPath.pipe(map(p => p === this.config.initialPath));
+    return this.actionHandlers.$CurrentPathIsRoot;
   }
 
   get $SelectedFile() {
@@ -57,10 +57,15 @@ export class NgxFileManagerComponent implements OnInit {
         '<ngx-filemanager> must have input selector [fileSystem] set'
       );
     }
+    if (!this.config) {
+      throw new Error(
+        '<ngx-filemanager> must have input selector [config] set'
+      );
+    }
     this.actionHandlers.init(this.fileSystem, this.config);
     this.makeConfig();
-    if (this.config && this.config.initialPath) {
-      this.actionHandlers.OnNavigateTo(this.config.initialPath);
+    if (this.config && this.config.virtualRoot) {
+      this.actionHandlers.OnNavigateTo(this.config.virtualRoot);
     }
   }
 

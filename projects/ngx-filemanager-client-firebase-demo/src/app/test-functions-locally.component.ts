@@ -37,7 +37,7 @@ const $groups = new BehaviorSubject<NameUid[]>([
 })
 export class AppTestFunctionsLocallyComponent {
   public config: FileManagerConfig = {
-    initialPath: '/clientTesting/',
+    virtualRoot: '/clientTesting/',
     users: $users,
     groups: $groups
   };

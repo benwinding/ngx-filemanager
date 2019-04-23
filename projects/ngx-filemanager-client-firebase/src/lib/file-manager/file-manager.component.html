@@ -28,6 +28,7 @@
         <bread-crumbs
           [currentPath]="$CurrentPath | async"
           (clickedCrumb)="this.onClickCrumb($event)"
+          [config]="config"
         >
         </bread-crumbs>
         <div

@@ -25,3 +25,8 @@ export function EnsureTrailingSlash(inputPath: string): string {
   const pathParsed = hasTrailing ? inputPath : inputPath + '/';
   return pathParsed;
 }
+
+export function EnsureAbsoluteDirectory(inputPath: string): string {
+  const pathParsed = EnsureTrailingSlash(EnsurePrefixSlash(inputPath));
+  return pathParsed;
+}

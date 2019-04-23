@@ -16,6 +16,6 @@ import { FileManagerConfig } from 'ngx-filemanager-client-firebase';
 export class AppTestStubFilesystemComponent {
   public blankFileSystem: FileSystemProvider = new FileSystemStub();
   public config: FileManagerConfig = {
-    initialPath: '/'
+    virtualRoot: '/subfolder'
   };
 }

@@ -40,7 +40,7 @@ const MakeCrumbs = (virtualRoot: string, absolutePath: string) => {
         path: EnsureAbsoluteDirectory(virtualRootParsed + currentPath),
         virtualPath: EnsureAbsoluteDirectory(currentPath)
       };
-      crumbs.push(crumb);
+      crumbs.unshift(crumb);
       const parentPath = path.dirname(currentPath);
       return parentPath;
     }, relativeVirtualRoot);

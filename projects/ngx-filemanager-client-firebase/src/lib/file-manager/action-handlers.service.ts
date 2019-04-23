@@ -39,7 +39,7 @@ export class ActionHandlersService {
   }
 
   get $CurrentPathIsRoot() {
-    return this.$CurrentPath.pipe(map(p => p === this.config.initialPath));
+    return this.$CurrentPath.pipe(map(p => p === this.config.virtualRoot));
   }
 
   get $SelectedFile() {

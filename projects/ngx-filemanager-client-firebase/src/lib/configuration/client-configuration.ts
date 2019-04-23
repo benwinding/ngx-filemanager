@@ -6,7 +6,8 @@ export interface NameUid {
 }
 
 export interface FileManagerConfig {
-  initialPath: string; // Firebase functions endpoint
+  virtualRoot: string; // Users can't navigate above this root
+  initialPath?: string; // Firebase functions endpoint
   users?: Observable<NameUid[]>;
   groups?: Observable<NameUid[]>;
   me?: Observable<NameUid>;
