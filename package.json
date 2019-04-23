@@ -7,6 +7,7 @@
     "core-watch": "ng build --project=ngx-filemanager-core --watch",
     "client-build": "ng build --project=ngx-filemanager-client-firebase",
     "client-watch": "ng build --project=ngx-filemanager-client-firebase --watch",
+    "client-test": "jest --config projects/ngx-filemanager-client-firebase/jest.config.js --watchAll",
     "client-demo-build": "ng build --project=ngx-filemanager-client-firebase-demo",
     "client-demo-start": "BROWSER=none ng serve --project=ngx-filemanager-client-firebase-demo --watch --vendor-source-map --sourceMap=true",
     "api-firebase-build": "ng build --project=ngx-filemanager-api-firebase",
