@@ -33,5 +33,5 @@ export interface ClientFileSystem {
   ): Promise<void>;
   OnRemove(items: string[]): Promise<void>;
   // Actions
-  UpdateCurrentList(res: core.ResBodyList): Promise<void>;
+  UpdateList(res: core.ResBodyList, directoryPath: string): Promise<void>;
 }

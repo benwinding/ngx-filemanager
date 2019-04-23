@@ -28,12 +28,14 @@ export class ClientFileSystemDataStore {
   public CurrentFiles() {
     return this._$currentFiles.value;
   }
-  public SetCurrentFiles(files: core.ResFile[]) {
-    const currentPath = this.CurrentPath();
-    this.cache.SetCached(currentPath, files);
-    this._$currentFiles.next(files);
+  public GetCached(directoryPath: string) {
+    return this.cache.GetCached(directoryPath);
+  }
+  public SetDirectoryFiles(files: core.ResFile[], directoryPath: string) {
+    this.cache.SetCached(directoryPath, files);
   }
   public SetPath(path: string) {
+    this.logger.info('datastore.SetPath', {path});
     if (!path.startsWith('/')) {
       throw new Error('No / at beginning of path!');
     }

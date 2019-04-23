@@ -47,14 +47,17 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   }
 
   async OnList(folderPath: string): Promise<void> {
+    this.logger.info('client.OnList', {folderPath});
     this.store.SetPath(folderPath);
   }
   async OnCreateFolder(newPath: string): Promise<void> {
-    const cachedFiles = this.store.CurrentFiles();
+    const directoryPath = path.dirname(newPath);
+    const cachedFiles = this.store.GetCached(directoryPath);
     const folderName = path.basename(newPath);
     const newFolder = MakeClientDirectory(folderName, newPath);
     cachedFiles.unshift(newFolder);
-    this.store.SetCurrentFiles(cachedFiles);
+    this.store.SetDirectoryFiles(cachedFiles, directoryPath);
+    this.store.SetPath(directoryPath);
   }
   async OnCopy(singleFileName: string, newPath: string): Promise<void> {}
   async OnMove(item: string, newPath: string): Promise<void> {
@@ -70,7 +73,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     recursive?: boolean
   ): Promise<void> {}
   async OnMoveMultiple(items: string[], newPath: string): Promise<void> {
-    return this.removeArrayFromList(items);
+    return this.removeMultiple(items);
   }
   async OnCopyMultiple(items: string[], newPath: string): Promise<void> {}
   async OnSetPermissionsMultiple(
@@ -80,17 +83,18 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     recursive?: boolean
   ): Promise<void> {}
   async OnRemove(items: string[]): Promise<void> {
-    return this.removeArrayFromList(items);
+    return this.removeMultiple(items);
   }
-  async UpdateCurrentList(res: core.ResBodyList): Promise<void> {
-    this.store.SetCurrentFiles(res.result);
+  async UpdateList(res: core.ResBodyList, directoryPath: string): Promise<void> {
+    this.store.SetDirectoryFiles(res.result, directoryPath);
   }
 
   private async removeSingleFromList(filePath: string) {
-    const currentFiles = this.store.CurrentFiles();
+    const directoryPath = path.dirname(filePath);
+    const currentFiles = this.store.GetCached(filePath);
     const itemName = this.GetFileNameFromPath(filePath);
     const cachedFilesWithout = currentFiles.filter(f => f.name !== itemName);
-    this.store.SetCurrentFiles(cachedFilesWithout);
+    this.store.SetDirectoryFiles(cachedFilesWithout, directoryPath);
   }
 
   private EnsureNoTrailingSlash(inputPath: string): string {
@@ -106,13 +110,14 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     return basename;
   }
 
-  private async removeArrayFromList(filePaths: string[]) {
+  private async removeMultiple(filePaths: string[]) {
+    const directoryPath = path.dirname(filePaths.pop());
     const removeSet = new Set(
-      filePaths.map(filePath => this.GetFileNameFromPath(filePath))
+      filePaths.map(filePath => path.basename(filePath))
     );
-    const currentFiles = this.store.CurrentFiles();
+    const currentFiles = this.store.GetCached(directoryPath);
     const cachedFilesWithout = currentFiles.filter(f => !removeSet.has(f.name));
-    this.store.SetCurrentFiles(cachedFilesWithout);
+    this.store.SetDirectoryFiles(cachedFilesWithout, directoryPath);
   }
 
   public get $FilesWithIcons(): Observable<core.ResFile[]> {

@@ -6,10 +6,11 @@ import {
 import { OptimisticFilesystem } from './optimistic-filesystem.interface';
 import * as core from 'ngx-filemanager-core';
 import { ClientFileSystemService } from './client-filesystem.service';
-import { take } from 'rxjs/operators';
+import { take, takeUntil, debounceTime, tap } from 'rxjs/operators';
 import { LoggerService } from '../logging/logger.service';
 import * as path from 'path-browserify';
 import { NotificationService } from '../notifications/notification.service';
+import { Subject } from 'rxjs';
 
 // tslint:disable:member-ordering
 
@@ -55,6 +56,9 @@ export class OptimisticFilesystemService
     return this.clientFilesystem.$FilesWithIcons;
   }
 
+  private refreshEmitter = new Subject<string>();
+  private destroyed = new Subject();
+
   initialize(
     serverFilesystem: FileSystemProvider,
     clientFilesystem: ClientFileSystemService
@@ -62,6 +66,19 @@ export class OptimisticFilesystemService
     this.logger.info('initializing...', { serverFilesystem, clientFilesystem });
     this.serverFilesystem = serverFilesystem;
     this.clientFilesystem = clientFilesystem;
+
+    this.destroyed.next();
+    this.refreshEmitter
+      .pipe(
+        takeUntil(this.destroyed),
+        tap((currentPath) => {
+          this.clientFilesystem.OnList(currentPath);
+        }),
+        debounceTime(800)
+      )
+      .subscribe(async (currentPath) => {
+        this.updateListFromServer(currentPath);
+      });
   }
 
   private reportError(error: Error, title: string, msg: string) {
@@ -73,16 +90,23 @@ export class OptimisticFilesystemService
     this.notifications.notify(msg, title);
   }
 
-  async HandleList(directoryPath: string): Promise<any> {
+  private async updateListFromServer(directoryPath: string) {
     try {
-      this.logger.info('HandleList', { directoryPath });
-      this.clientFilesystem.OnList(directoryPath);
+      this.logger.info('onHandleList', { directoryPath });
       const apiResult = await this.serverFilesystem.List(directoryPath);
-      await this.clientFilesystem.UpdateCurrentList(apiResult);
-      await this.selectFirstInCurrentDirectory();
+      await this.clientFilesystem.UpdateList(apiResult, directoryPath);
+      const currentDirectory = await this.$CurrentPath.pipe(take(1)).toPromise();
+      if (currentDirectory === directoryPath) {
+        this.clientFilesystem.OnList(directoryPath);
+        await this.selectFirstInCurrentDirectory();
+      }
     } catch (error) {
       this.reportError(error, 'Cannot get directory list', 'List Error');
     }
+  }
+
+  async HandleList(directoryPath: string): Promise<any> {
+    this.refreshEmitter.next(directoryPath);
   }
   async HandleCreateFolder(newPath: string): Promise<any> {
     try {
@@ -193,7 +217,6 @@ export class OptimisticFilesystemService
         entity,
         recursive
       });
-  
       this.clientFilesystem.OnSetPermissionsMultiple(
         items,
         role,
@@ -207,7 +230,7 @@ export class OptimisticFilesystemService
         recursive
       );
     } catch (error) {
-      this.reportError(error, 'Cannot set permissions to items', 'Permissions Error')
+      this.reportError(error, 'Cannot set permissions to items', 'Permissions Error');
     }
   }
   async HandleRemove(items: string[]): Promise<any> {

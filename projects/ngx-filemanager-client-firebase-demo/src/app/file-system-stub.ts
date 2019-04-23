@@ -2,9 +2,10 @@ import * as core from 'ngx-filemanager-core/public_api';
 import * as path from 'path-browserify';
 import { ConsoleLoggerService } from './logger';
 
-function MakeFakeFile(filePath: string, isDir?: boolean): core.ResFile {
+function MakeItem(filePath: string): core.ResFile {
+  const isDir = filePath.endsWith('/');
   return {
-    name: path.basename(filePath),
+    name: isDir ? path.basename(filePath) : filePath,
     fullPath: filePath,
     rightsFirebase: [],
     permissions: {} as any,
@@ -18,27 +19,45 @@ export class FileSystemStub implements core.FileSystemProvider {
   logger = new ConsoleLoggerService();
 
   files: core.ResFile[] = [
-    MakeFakeFile('/image1.png'),
-    MakeFakeFile('/image2.jpeg'),
-    MakeFakeFile('/subfile.txt'),
-    MakeFakeFile('/subfile.mp3'),
-    MakeFakeFile('/subfile.mp4'),
-    MakeFakeFile('/tables.csv'),
-    MakeFakeFile('/time.docx'),
-    MakeFakeFile('/emptyFolder', true),
-    MakeFakeFile('/subfolder', true),
-    MakeFakeFile('/subfolder/fake.file'),
-    MakeFakeFile('/subfolder/fake2.file'),
-    MakeFakeFile('/subfolder/sub2/', true),
-    MakeFakeFile('/subfolder/sub2/fa_ke.file'),
-    MakeFakeFile('/subfolder/sub2/fa_ke2.file')
+    MakeItem('/image1.png'),
+    MakeItem('/image2.jpeg'),
+    MakeItem('/subfile.txt'),
+    MakeItem('/subfile.mp3'),
+    MakeItem('/subfile.mp4'),
+    MakeItem('/tables.csv'),
+    MakeItem('/time.docx'),
+    MakeItem('/emptyFolder/'),
+    MakeItem('/subfolder/'),
+    MakeItem('/subfolder/file.txt'),
+
+    MakeItem('/subfolder/sub1/'),
+    MakeItem('/subfolder/sub1/file.txt'),
+    MakeItem('/subfolder/sub1/sub1/'),
+    MakeItem('/subfolder/sub1/sub1/file.txt'),
+    MakeItem('/subfolder/sub1/sub1/sub1/'),
+    MakeItem('/subfolder/sub1/sub1/sub1/file.txt'),
+    MakeItem('/subfolder/sub1/sub2/'),
+    MakeItem('/subfolder/sub1/sub2/file.txt'),
+    MakeItem('/subfolder/sub1/sub2/sub1/'),
+    MakeItem('/subfolder/sub1/sub2/sub1/file.txt'),
+
+    MakeItem('/subfolder/sub2/'),
+    MakeItem('/subfolder/sub2/file.txt'),
+    MakeItem('/subfolder/sub2/sub1/'),
+    MakeItem('/subfolder/sub2/sub1/file.txt'),
+    MakeItem('/subfolder/sub2/sub1/sub1/'),
+    MakeItem('/subfolder/sub2/sub1/sub1/file.txt'),
+    MakeItem('/subfolder/sub2/sub2/'),
+    MakeItem('/subfolder/sub2/sub2/file.txt'),
+    MakeItem('/subfolder/sub2/sub2/sub1/'),
+    MakeItem('/subfolder/sub2/sub2/sub1/file.txt'),
   ];
 
   private async fakeDelay() {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve();
-      }, 800);
+      }, 2000);
     });
   }
   private selectMatches(items: string[], isMatch: boolean) {
@@ -116,7 +135,8 @@ export class FileSystemStub implements core.FileSystemProvider {
   }
   async CreateFolder(newPath: string): Promise<core.ResBodyCreateFolder> {
     await this.fakeDelay();
-    this.files.push(MakeFakeFile(newPath, true));
+    const parsed = newPath.endsWith('/') ? newPath : newPath + '/';
+    this.files.push(MakeItem(parsed));
     return null;
   }
   async SetPermissions(

@@ -7,7 +7,7 @@ import {
   RenameDialogInterface,
   AppDialogRenameComponent
 } from '../dialogs/dialog-rename.component';
-import { take, map } from 'rxjs/operators';
+import { take, map, debounceTime, takeUntil } from 'rxjs/operators';
 import {
   AppDialogCopyComponent,
   CopyDialogInterface
@@ -188,11 +188,12 @@ export class ActionHandlersService {
   // Misc
 
   public async OnNavigateTo(folderPath: string) {
+    this.logger.info('action-handlers.OnNavigateTo', { folderPath });
     this.optimisticFs.HandleList(folderPath);
   }
 
   public async OnNavigateToParent() {
-    this.logger.info('onClickUpFolder');
+    this.logger.info('OnNavigateToParent');
     await this.optimisticFs.HandleNavigateUp();
   }
 
@@ -208,7 +209,7 @@ export class ActionHandlersService {
       uploadApiUrl: this.fileSystem.GetUploadApiUrl(currentPath)
     };
     const res = await this.openDialog(AppDialogUploadFilesComponent, data);
-    await this.RefreshExplorer();
+    await this.optimisticFs.HandleList(currentPath);
   }
 
   public async OnNewFolderInCurrentDirectory() {
@@ -221,7 +222,7 @@ export class ActionHandlersService {
     const currentDirectory = await this.GetCurrentPath();
     const newDirectoryPath = path.join(currentDirectory, newDirName);
     await this.optimisticFs.HandleCreateFolder(newDirectoryPath);
-    await this.RefreshExplorer();
+    await this.optimisticFs.HandleList(currentDirectory);
   }
 
   public async OnDownloadFile(file: ResFile) {
@@ -236,7 +237,7 @@ export class ActionHandlersService {
 
   public async RefreshExplorer() {
     const currentPath = await this.GetCurrentPath();
-    await this.optimisticFs.HandleList(currentPath);
+    this.optimisticFs.HandleList(currentPath);
   }
 
   private async openDialog(comp: any, data?: any) {
