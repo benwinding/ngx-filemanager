@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, PlatformLocation } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AutoTableModule } from 'ngx-auto-table';
 import {
@@ -50,6 +50,12 @@ import { ConsoleLoggerService } from './logging/console-logger.service';
 import { AppFileTableMiniFolderBrowserComponent } from './file-table-mini/file-table-mini-folder-browser.component';
 import { AppActionsMiniBrowserComponent } from './file-table-mini/actions-mini-browser.component';
 import { NotificationService } from './notifications/notification.service';
+
+import { APP_BASE_HREF } from '@angular/common';
+import { IconUrlResolverService } from './utils/icon-url-resolver.service';
+export function getBaseHref(platformLocation: PlatformLocation): string {
+  return platformLocation.getBaseHrefFromDOM();
+}
 
 const dialogComponents = [
   BaseDialogComponent,
@@ -109,8 +115,13 @@ const dialogComponents = [
   providers: [
     ServerFilesystemProviderService,
     NotificationService,
-    // OptimisticFilesystemService,
-    { provide: LoggerService, useClass: ConsoleLoggerService }
+    {
+      provide: APP_BASE_HREF,
+      useFactory: getBaseHref,
+      deps: [PlatformLocation]
+    },
+    { provide: LoggerService, useClass: ConsoleLoggerService },
+    IconUrlResolverService
   ]
 })
 export class NgxFilemanagerClientFirebaseModule {}

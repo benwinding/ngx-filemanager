@@ -57,7 +57,7 @@ export class FileSystemStub implements core.FileSystemProvider {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve();
-      }, 2000);
+      }, 1000);
     });
   }
   private selectMatches(items: string[], isMatch: boolean) {

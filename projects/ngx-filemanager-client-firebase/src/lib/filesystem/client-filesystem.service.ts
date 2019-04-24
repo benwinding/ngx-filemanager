@@ -2,13 +2,13 @@ import { map, filter } from 'rxjs/operators';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MakeClientDirectory } from '../utils/file.factory';
-import { getFileIcon, getFolderIcon } from '../utils/icon-url-resolver';
 import { ClientFileSystem } from './client-filesystem.interface';
 import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemDataStore } from './client-filesystem.datastore';
 import * as core from 'ngx-filemanager-core';
 import * as path from 'path-browserify';
 import { PermissionEntity } from 'ngx-filemanager-core';
+import { IconUrlResolverService } from '../utils/icon-url-resolver.service';
 
 // tslint:disable:member-ordering
 @Injectable()
@@ -38,7 +38,10 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     return ClientFileSystemService.instanceCount;
   }
 
-  constructor(private logger: LoggerService) {
+  constructor(
+    private logger: LoggerService,
+    private iconResolver: IconUrlResolverService
+  ) {
     this.instanceCountIncr();
   }
 
@@ -47,7 +50,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   }
 
   async OnList(folderPath: string): Promise<void> {
-    this.logger.info('client.OnList', {folderPath});
+    this.logger.info('client.OnList', { folderPath });
     this.store.SetPath(folderPath);
   }
   async OnCreateFolder(newPath: string): Promise<void> {
@@ -85,7 +88,10 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   async OnRemove(items: string[]): Promise<void> {
     return this.removeMultiple(items);
   }
-  async UpdateList(res: core.ResBodyList, directoryPath: string): Promise<void> {
+  async UpdateList(
+    res: core.ResBodyList,
+    directoryPath: string
+  ): Promise<void> {
     this.store.SetDirectoryFiles(res.result, directoryPath);
   }
 
@@ -150,9 +156,9 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
 
   private addIconPath(file: core.ResFile) {
     if (file.type === 'file') {
-      file['icon'] = getFileIcon(file.name);
+      file['icon'] = this.iconResolver.getFileIconUrl(file.name);
     } else {
-      file['icon'] = getFolderIcon(file.name);
+      file['icon'] = this.iconResolver.getFolderIconUrl(file.name);
     }
     return file;
   }

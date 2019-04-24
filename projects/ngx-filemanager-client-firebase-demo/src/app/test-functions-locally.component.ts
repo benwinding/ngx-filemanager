@@ -2,28 +2,9 @@ import { Component } from '@angular/core';
 import {
   FileManagerConfig,
   ServerFilesystemProviderService,
-  NameUid
 } from 'ngx-filemanager-client-firebase';
-import { BehaviorSubject } from 'rxjs';
-import * as uuid from 'uuid/v1';
+import { $users, $groups } from './users-factory';
 
-function MakeUser(name) {
-  return {
-    name: name,
-    uid: uuid()
-  };
-}
-
-const $users = new BehaviorSubject<NameUid[]>([
-  MakeUser('Jim'),
-  MakeUser('Bob'),
-  MakeUser('Frank'),
-  MakeUser('John')
-]);
-const $groups = new BehaviorSubject<NameUid[]>([
-  MakeUser('Residents'),
-  MakeUser('Managers')
-]);
 
 @Component({
   selector: 'app-test-page',

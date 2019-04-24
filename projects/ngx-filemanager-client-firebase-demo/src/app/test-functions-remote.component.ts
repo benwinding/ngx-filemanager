@@ -6,6 +6,7 @@ import {
 import { FormControl } from '@angular/forms';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { $users, $groups } from './users-factory';
 
 @Component({
   selector: 'app-test-page',
@@ -38,19 +39,20 @@ import { Subject } from 'rxjs';
 })
 export class AppTestFunctionsRemoteComponent implements OnDestroy {
   public config: FileManagerConfig = {
-    virtualRoot: '/'
+    virtualRoot: '/',
+    users: $users,
+    groups: $groups
   };
 
-  bucketName = new FormControl('cl-building-storage');
-  apiEndpoint = new FormControl(
-    'http://localhost:4444/ApiPublic/files'
-    // 'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files'
-  );
+  bucketName = new FormControl('my-test-bucketname');
+  apiEndpoint = new FormControl('http://localhost:4444/ApiPublic/files');
   showExplorer = true;
 
   destroyed = new Subject();
 
   constructor(public firebaseClientProvider: ServerFilesystemProviderService) {
+    this.bucketName.setValue(localStorage.getItem('bucketname'));
+    this.bucketName.setValue(localStorage.getItem('apiendpoint'));
     this.reInitializeExplorer();
     this.bucketName.valueChanges
       .pipe(
@@ -76,6 +78,8 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
       this.bucketName.value,
       this.apiEndpoint.value
     );
+    localStorage.setItem('bucketname', this.bucketName.value);
+    localStorage.setItem('apiendpoint', this.apiEndpoint.value);
     setTimeout(() => {
       this.showExplorer = true;
     }, 100);
