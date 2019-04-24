@@ -5,7 +5,8 @@ import { GetAllChildrenWithPrefix } from '../../utils/storage-helper';
 import {
   RetrieveFilePermissions,
   UpdateFilePermissions,
-  blankPermissionsObj
+  blankPermissionsObj,
+  CheckPermissionsHasAny
 } from '../../utils/permissions-helper';
 import {
   PermissionsObject,
@@ -100,6 +101,7 @@ export async function ChangePermissions(
   claims: UserCustomClaims
 ): Promise<ResultObj> {
   try {
+    CheckPermissionsHasAny(claims);
     const successArr = await Promise.all(
       items.map(filePath =>
         tryChangePermissions(bucket, filePath, role, entity, isRecursive)
@@ -114,6 +116,6 @@ export async function ChangePermissions(
       success: successArr as any
     };
   } catch (error) {
-    throw new VError(error);
+    throw new Error(error.message);
   }
 }

@@ -53,6 +53,7 @@ import { NotificationService } from './notifications/notification.service';
 
 import { APP_BASE_HREF } from '@angular/common';
 import { IconUrlResolverService } from './utils/icon-url-resolver.service';
+import { AppDialogMyDetailsComponent } from './dialogs/dialog-my-details.components';
 export function getBaseHref(platformLocation: PlatformLocation): string {
   return platformLocation.getBaseHrefFromDOM();
 }
@@ -63,7 +64,8 @@ const dialogComponents = [
   AppDialogNewFolderComponent,
   AppDialogSetPermissionsComponent,
   AppDialogCopyComponent,
-  AppDialogUploadFilesComponent
+  AppDialogUploadFilesComponent,
+  AppDialogMyDetailsComponent
 ];
 
 @NgModule({

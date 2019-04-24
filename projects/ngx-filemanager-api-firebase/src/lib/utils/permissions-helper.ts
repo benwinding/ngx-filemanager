@@ -33,6 +33,12 @@ function blankUserClaim(): UserCustomClaims {
   };
 }
 
+export function CheckPermissionsHasAny(claims: UserCustomClaims) {
+  if (!claims.groups.length) {
+    throw new Error('No user permissions found, cannot change permissions');
+  }
+}
+
 export async function RetrieveCustomClaims(req: Request) {
   let token;
   try {

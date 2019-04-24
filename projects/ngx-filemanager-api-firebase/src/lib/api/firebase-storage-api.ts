@@ -266,7 +266,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return response;
     } catch (error) {
-      throw new VError(error);
+      throw new Error(error.message);
     }
   }
 

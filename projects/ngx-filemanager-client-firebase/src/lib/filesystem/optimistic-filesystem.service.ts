@@ -81,13 +81,9 @@ export class OptimisticFilesystemService
       });
   }
 
-  private reportError(error: Error, title: string, msg: string) {
-    const isApiError = error.message.startsWith('API Error');
-    console.error(`Error in "${title}" ->msg: "${msg}" -> Error.message:"${error.message}"`, {isApiError});
-    if (isApiError) {
-      return;
-    }
-    this.notifications.notify(msg, title);
+  private reportError(error: Error, msg: string, title: string) {
+    this.logger.error('optimistic-filesystem:', {error, title, msg});
+    this.notifications.notify(error.message, title);
   }
 
   private async updateListFromServer(directoryPath: string) {
@@ -132,7 +128,7 @@ export class OptimisticFilesystemService
     try {
       this.logger.info('HandleMove', { item, newPath });
       this.clientFilesystem.OnMove(item, newPath);
-      return this.serverFilesystem.Move(item, newPath);
+      await this.serverFilesystem.Move(item, newPath);
     } catch (error) {
       this.reportError(error, 'Cannot move item', 'Move Error');
       this.clientFilesystem.OnRemove([newPath]);
@@ -142,7 +138,7 @@ export class OptimisticFilesystemService
     try {
       this.logger.info('HandleRename', { item, newItemPath });
       this.clientFilesystem.OnRename(item, newItemPath);
-      return this.serverFilesystem.Rename(item, newItemPath);
+      await this.serverFilesystem.Rename(item, newItemPath);
     } catch (error) {
       this.reportError(error, 'Cannot rename item', 'Rename Error');
       this.clientFilesystem.OnRename(newItemPath, item);
@@ -152,7 +148,7 @@ export class OptimisticFilesystemService
     try {
       this.logger.info('HandleEdit', { item, content });
       this.clientFilesystem.OnEdit(item, content);
-      return this.serverFilesystem.Edit(item, content);
+      await this.serverFilesystem.Edit(item, content);
     } catch (error) {
       this.reportError(error, 'Cannot edit item', 'Edit Error');
     }
@@ -181,7 +177,7 @@ export class OptimisticFilesystemService
         recursive
       });
       this.clientFilesystem.OnSetPermissions(item, role, entity, recursive);
-      return this.serverFilesystem.SetPermissions(item, role, entity, recursive);
+      await this.serverFilesystem.SetPermissions(item, role, entity, recursive);
     } catch (error) {
       this.reportError(error, 'Cannot set permissions to item', 'Permissions Error');
     }
@@ -190,7 +186,7 @@ export class OptimisticFilesystemService
     try {
       this.logger.info('HandleMoveMultiple', { items, newPath });
       this.clientFilesystem.OnMoveMultiple(items, newPath);
-      return this.serverFilesystem.MoveMultiple(items, newPath);
+      await this.serverFilesystem.MoveMultiple(items, newPath);
     } catch (error) {
       this.reportError(error, 'Cannot move items', 'Move Error');
     }
@@ -199,7 +195,7 @@ export class OptimisticFilesystemService
     try {
       this.logger.info('HandleCopyMultiple', { items, newPath });
       this.clientFilesystem.OnCopyMultiple(items, newPath);
-      return this.serverFilesystem.CopyMultiple(items, newPath);
+      await this.serverFilesystem.CopyMultiple(items, newPath);
     } catch (error) {
       this.reportError(error, 'Cannot copy items', 'Copy Error');
     }
@@ -223,7 +219,7 @@ export class OptimisticFilesystemService
         entity,
         recursive
       );
-      return this.serverFilesystem.SetPermissionsMultiple(
+      await this.serverFilesystem.SetPermissionsMultiple(
         items,
         role,
         entity,
@@ -237,7 +233,7 @@ export class OptimisticFilesystemService
     try {
       this.logger.info('HandleRemove', { items });
       this.clientFilesystem.OnRemove(items);
-      return this.serverFilesystem.Remove(items);
+      await this.serverFilesystem.Remove(items);
     } catch (error) {
       this.reportError(error, 'Cannot remove items', 'Remove Error');
     }
@@ -248,7 +244,7 @@ export class OptimisticFilesystemService
       this.logger.info('HandleNavigateUp');
       const currentPath = await this.$CurrentPath.pipe(take(1)).toPromise();
       const parentPath = path.dirname(currentPath);
-      return this.HandleList(parentPath);
+      await this.HandleList(parentPath);
     } catch (error) {
       this.reportError(error, 'Cannot navigate to parent directory', 'Navigate Error');
       throw new Error(error.message);

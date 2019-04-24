@@ -30,18 +30,18 @@ export class ServerFilesystemProviderService
         resBody: response
       });
       return response as T;
-    } catch (error) {
-      let errorStr;
-      try {
-        errorStr = JSON.stringify(error.error, null, 4);
-      } catch (jsonError) {
-        errorStr = 'Could not parse error response: ' + error.error;
+    } catch (apiErrorResponse) {
+      console.error('API Post Error', {apiErrorResponse});
+      if (apiErrorResponse.error && apiErrorResponse.error.errorDetail) {
+        const detail = apiErrorResponse.error.errorDetail;
+        throw new Error(
+          'API Response: ' + detail
+        );
       }
-      this.notifications.notify('Cannot connect to file server...', 'API Error');
       throw new Error(
-        'API Error: ' + error.message + ', ' + errorStr
+        'API request failed, status:' + apiErrorResponse.statusText
       );
-    }
+  }
   }
 
   private makeBaseRequest(action: core.FileManagerAction): core.ReqBodyAction {

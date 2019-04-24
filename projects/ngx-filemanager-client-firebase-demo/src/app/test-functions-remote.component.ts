@@ -12,7 +12,7 @@ import { $users, $groups } from './users-factory';
   selector: 'app-test-page',
   template: `
     <mat-card>
-      <mat-form-field>
+      <mat-form-field style="margin-right: 15px;">
         <input
           matInput
           placeholder="bucketName"
@@ -52,7 +52,7 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
 
   constructor(public firebaseClientProvider: ServerFilesystemProviderService) {
     this.bucketName.setValue(localStorage.getItem('bucketname'));
-    this.bucketName.setValue(localStorage.getItem('apiendpoint'));
+    this.apiEndpoint.setValue(localStorage.getItem('apiendpoint'));
     this.reInitializeExplorer();
     this.bucketName.valueChanges
       .pipe(
