@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
+import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
 import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
 import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
 import { MatDialog } from '@angular/material';

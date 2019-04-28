@@ -1,17 +1,7 @@
-import * as admin from 'firebase-admin';
 import { RemoveFileWithChildren } from './remove';
+import { testHelper } from '../../utils/test-helper';
 
-// Setup local firebase admin, using service account credentials
-const serviceAccount = require('../../../../../../serviceAccountKey.TESTS.json');
-const testbucketname = 'resvu-integration-tests.appspot.com';
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: testbucketname
-});
-
-const testStorage = admin.storage();
-const testBucket = testStorage.bucket(testbucketname);
+const testBucket = testHelper.testBucket;
 
 test('remove item that dont exist', async () => {
   const result = await RemoveFileWithChildren(testBucket, '/cacsascas/');
@@ -21,6 +11,6 @@ test('remove item that dont exist', async () => {
 test('get directory and all children /', async () => {
   // const result = await RemoveFileWithChildren(testBucket, '/test-222/');
   // files.map(f => (f.ref = null));
-  // logObj(result);
+  // testHelper.logObj(result);
   // expect(result.length).toBe(1);
 });

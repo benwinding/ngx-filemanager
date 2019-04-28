@@ -118,7 +118,7 @@ export class ServerFilesystemProviderService
 
   SetPermissions(
     item: string,
-    role: core.PermisionsRole,
+    role: core.PermissionsRole,
     entity: core.PermissionEntity,
     recursive?: boolean
   ): Promise<core.ResBodySetPermissions> {
@@ -152,7 +152,7 @@ export class ServerFilesystemProviderService
 
   SetPermissionsMultiple(
     items: string[],
-    role: core.PermisionsRole,
+    role: core.PermissionsRole,
     entity: core.PermissionEntity,
     recursive?: boolean
   ): Promise<core.ResBodySetPermissions> {

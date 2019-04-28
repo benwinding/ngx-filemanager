@@ -1,4 +1,4 @@
-import { ResFile } from 'ngx-filemanager-core/public_api';
+import { ResFile } from 'ngx-filemanager-core';
 
 // temporary directory for the client while it refreshes
 export function MakeClientDirectory(name: string, fullPath: string): ResFile {

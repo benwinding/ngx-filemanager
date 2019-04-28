@@ -1,45 +1,21 @@
 import { File } from '../../types/google-cloud-types';
 import { Bucket } from '@google-cloud/storage';
 import * as request from 'request';
-import { GetAllChildrenWithPrefix } from '../../utils/storage-helper';
-import {
-  RetrieveFilePermissions,
-  UpdateFilePermissions,
-  blankPermissionsObj,
-  CheckPermissionsHasAny
-} from '../../utils/permissions-helper';
-import {
-  PermissionsObject,
-  PermisionsRole,
-  PermissionEntity,
-  UserCustomClaims,
-  ResultObj
-} from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from 'ngx-filemanager-core';
 import { VError } from 'verror';
+import { perms } from '../../permissions';
+import { storage } from '../../utils/storage-helper';
 
 export function SetPermissionToObj(
-  permissionsObj: PermissionsObject,
-  role: PermisionsRole,
-  entity: PermissionEntity
-): PermissionsObject {
+  permissionsObj: CoreTypes.PermissionsObject,
+  role: CoreTypes.PermissionsRole,
+  entity: CoreTypes.PermissionEntity
+): CoreTypes.PermissionsObject {
   const newPermissions = {
-    ...blankPermissionsObj(),
+    ...perms.factory.blankPermissionsObj(),
     ...permissionsObj
   };
-  let list: PermissionEntity[];
-  switch (role) {
-    case 'OWNER':
-      list = newPermissions.owners;
-      break;
-    case 'WRITER':
-      list = newPermissions.writers;
-      break;
-    case 'READER':
-      list = newPermissions.readers;
-      break;
-    default:
-      break;
-  }
+  const list: CoreTypes.PermissionEntity[] = [];
   const match = list.find(u => u.id === entity.id);
   if (!match) {
     list.push(entity);
@@ -49,13 +25,23 @@ export function SetPermissionToObj(
 
 export async function TryChangeSingleFilePermissions(
   file: File,
-  role: PermisionsRole,
-  entity: PermissionEntity
+  role: CoreTypes.PermissionsRole,
+  entity: CoreTypes.PermissionEntity,
+  claims: CoreTypes.UserCustomClaims
 ) {
   try {
-    const currentPermissions = await RetrieveFilePermissions(file);
-    const newPermissions = SetPermissionToObj(currentPermissions, role, entity);
-    const res = await UpdateFilePermissions(file, newPermissions);
+    const currentFilePermissions = await perms.queries.RetrieveFilePermissions(file);
+    // CheckCanEdit(currentFilePermissions, claims);
+
+    // const canChangePerms = ;
+    // perms === UserAccessResult._w_;
+    // if (perms === UserAccessResult._w_)
+    const newPermissions = SetPermissionToObj(
+      currentFilePermissions,
+      role,
+      entity
+    );
+    const res = await perms.commands.UpdateFilePermissions(file, newPermissions);
     return res;
   } catch (error) {
     throw new VError(error);
@@ -65,16 +51,17 @@ export async function TryChangeSingleFilePermissions(
 async function tryChangePermissions(
   bucket: Bucket,
   filePath: string,
-  role: PermisionsRole,
-  entity: PermissionEntity,
-  isRecursive: boolean
+  role: CoreTypes.PermissionsRole,
+  entity: CoreTypes.PermissionEntity,
+  isRecursive: boolean,
+  claims: CoreTypes.UserCustomClaims
 ): Promise<request.Response[]> {
   if (isRecursive) {
     try {
-      const allChildren = await GetAllChildrenWithPrefix(bucket, filePath);
+      const allChildren = await storage.GetAllChildrenWithPrefix(bucket, filePath);
       const successArray = await Promise.all(
         allChildren.map(file =>
-          TryChangeSingleFilePermissions(file, role, entity)
+          TryChangeSingleFilePermissions(file, role, entity, claims)
         )
       );
       return successArray;
@@ -84,7 +71,12 @@ async function tryChangePermissions(
   } else {
     try {
       const file = bucket.file(filePath);
-      const result = await TryChangeSingleFilePermissions(file, role, entity);
+      const result = await TryChangeSingleFilePermissions(
+        file,
+        role,
+        entity,
+        claims
+      );
       return [result];
     } catch (error) {
       throw new VError(error);
@@ -95,16 +87,23 @@ async function tryChangePermissions(
 export async function ChangePermissions(
   bucket: Bucket,
   items: string[],
-  role: PermisionsRole,
-  entity: PermissionEntity,
+  role: CoreTypes.PermissionsRole,
+  entity: CoreTypes.PermissionEntity,
   isRecursive: boolean,
-  claims: UserCustomClaims
-): Promise<ResultObj> {
+  claims: CoreTypes.UserCustomClaims
+): Promise<CoreTypes.ResultObj> {
   try {
-    CheckPermissionsHasAny(claims);
+    perms.queries.TryCheckHasAnyPermissions(claims);
     const successArr = await Promise.all(
       items.map(filePath =>
-        tryChangePermissions(bucket, filePath, role, entity, isRecursive)
+        tryChangePermissions(
+          bucket,
+          filePath,
+          role,
+          entity,
+          isRecursive,
+          claims
+        )
       )
     );
     // const successArr = successArrArr.reduce((acc, cur) => {

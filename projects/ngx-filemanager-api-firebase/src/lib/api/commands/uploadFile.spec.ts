@@ -1,17 +1,7 @@
-import * as admin from 'firebase-admin';
 import { UploadFile } from './uploadFile';
+import { testHelper } from '../../utils/test-helper';
 
-// Setup local firebase admin, using service account credentials
-const serviceAccount = require('../../../../../../serviceAccountKey.TESTS.json');
-const testbucketname = 'resvu-integration-tests.appspot.com';
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: testbucketname
-});
-
-const testStorage = admin.storage();
-const testBucket = testStorage.bucket(testbucketname);
+const testBucket = testHelper.testBucket;
 
 test('creates file and deletes it', async () => {
   const claims = {} as any;

@@ -1,8 +1,8 @@
 import { Bucket, File } from '../../types/google-cloud-types';
-import { EnsureNoPrefixSlash } from '../../utils/path-helpers';
-import { GetAllChildrenWithPrefix } from '../../utils/storage-helper';
-import { UserCustomClaims, ResultObj } from 'ngx-filemanager-core/public_api';
 import { VError } from 'verror';
+import { paths } from '../../utils/paths';
+import { CoreTypes } from 'ngx-filemanager-core';
+import { storage } from '../../utils/storage-helper';
 
 export async function tryDeleteFile(file: File): Promise<boolean> {
   try {
@@ -23,7 +23,7 @@ export async function RemoveFileWithChildren(
   itemPath: string
 ): Promise<boolean> {
   try {
-    const allChildren = await GetAllChildrenWithPrefix(bucket, itemPath);
+    const allChildren = await storage.GetAllChildrenWithPrefix(bucket, itemPath);
     const successArray = await Promise.all(
       allChildren.map(f => tryDeleteFile(f))
     );
@@ -40,10 +40,10 @@ export async function RemoveFileWithChildren(
 export async function RemoveFiles(
   bucket: Bucket,
   items: string[],
-  claims: UserCustomClaims
+  claims: CoreTypes.UserCustomClaims
 ) {
   try {
-    const googleStorageItemPaths = items.map(p => EnsureNoPrefixSlash(p));
+    const googleStorageItemPaths = items.map(p => paths.EnsureNoPrefixSlash(p));
     const successArray = await Promise.all(
       googleStorageItemPaths.map(itemPath =>
         RemoveFileWithChildren(bucket, itemPath)
@@ -53,7 +53,7 @@ export async function RemoveFiles(
       (acc, cur) => (acc = acc && cur),
       true
     );
-    const results: ResultObj = {
+    const results: CoreTypes.ResultObj = {
       success: allSuccesses
     };
     return results;

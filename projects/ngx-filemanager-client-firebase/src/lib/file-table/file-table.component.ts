@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { ResFile } from 'ngx-filemanager-core/public_api';
+import { ResFile } from 'ngx-filemanager-core';
 import { AutoTableConfig } from 'ngx-auto-table';
 
 @Component({

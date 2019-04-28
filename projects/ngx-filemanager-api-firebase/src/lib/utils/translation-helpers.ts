@@ -1,30 +1,25 @@
-import {
-  EnsurePrefixSlash,
-  HasTrailingSlash,
-  EnsureAbsolutePathDir,
-  EnsureAbsolutePathFile
-} from './path-helpers';
 import { FileFromStorage, File } from '../types/google-cloud-types';
 import { Readable } from 'stream';
 import * as request from 'request';
 import * as path from 'path';
-import { RetrieveFilePermissions } from './permissions-helper';
-import { ResFile, ResultObj } from 'ngx-filemanager-core/public_api';
 import { VError } from 'verror';
+import { perms } from '../permissions';
+import { paths } from './paths';
+import { CoreTypes } from 'ngx-filemanager-core';
 
 export function translateRawStorage(storageObject: File): FileFromStorage {
   const filePath = storageObject.name;
-  const filePathParsed = EnsurePrefixSlash(filePath);
+  const filePathParsed = paths.EnsurePrefixSlash(filePath);
   return {
     ref: storageObject,
     name: path.basename(filePathParsed),
     fullPath: filePathParsed,
-    isDir: HasTrailingSlash(filePathParsed)
+    isDir: paths.HasTrailingSlash(filePathParsed)
   };
 }
 
 export function makePhantomStorageFolder(folderPath: string): FileFromStorage {
-  const pathParsed = EnsureAbsolutePathDir(folderPath);
+  const pathParsed = paths.EnsureAbsolutePathDir(folderPath);
   return {
     ref: null,
     name: path.basename(pathParsed),
@@ -36,15 +31,15 @@ export function makePhantomStorageFolder(folderPath: string): FileFromStorage {
 
 export async function translateStorageToResFile(
   f: FileFromStorage
-): Promise<ResFile> {
-  const resFile: ResFile = {} as any;
+): Promise<CoreTypes.ResFile> {
+  const resFile: CoreTypes.ResFile = {} as any;
   resFile.name = f.name;
   if (f.isDir) {
     resFile.type = 'dir';
-    resFile.fullPath = EnsureAbsolutePathDir(f.fullPath);
+    resFile.fullPath = paths.EnsureAbsolutePathDir(f.fullPath);
   } else {
     resFile.type = 'file';
-    resFile.fullPath = EnsureAbsolutePathFile(f.fullPath);
+    resFile.fullPath = paths.EnsureAbsolutePathFile(f.fullPath);
   }
   if (f.isPhantomFolder) {
     resFile.isPhantomFolder = true;
@@ -56,7 +51,7 @@ export async function translateStorageToResFile(
     const metaResp = await f.ref.getMetadata();
     const metaData = metaResp[0];
     const customMeta = metaData.metadata || {};
-    const permissions = await RetrieveFilePermissions(f.ref);
+    const permissions = await perms.queries.RetrieveFilePermissions(f.ref);
     resFile.permissions = permissions;
     resFile.size = metaData.size;
     resFile.date = metaData.updated;
@@ -88,7 +83,7 @@ export async function StreamToPromise(stream: Readable): Promise<string> {
   });
 }
 
-export function getResult(res: request.Response): ResultObj {
+export function getResult(res: request.Response): CoreTypes.ResultObj {
   const fail = res.statusCode !== 204;
   return {
     success: !fail,
@@ -96,7 +91,7 @@ export function getResult(res: request.Response): ResultObj {
   };
 }
 
-export function getResultFromArray(res: request.Response[]): ResultObj {
+export function getResultFromArray(res: request.Response[]): CoreTypes.ResultObj {
   const fail = res.find(r => r.statusCode !== 204);
   return {
     success: !fail,

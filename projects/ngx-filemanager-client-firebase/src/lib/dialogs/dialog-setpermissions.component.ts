@@ -2,9 +2,9 @@ import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import {
   ResFile,
-  PermisionsRole,
+  PermissionsRole,
   PermissionEntity
-} from 'ngx-filemanager-core/public_api';
+} from 'ngx-filemanager-core';
 import { FormControl } from '@angular/forms';
 import { Observable, Subject, pipe } from 'rxjs';
 import {
@@ -18,7 +18,7 @@ export interface PermissionsDialogInterface {
   config: FileManagerConfig;
 }
 export interface PermissionsDialogResponseInterface {
-  role: PermisionsRole;
+  role: PermissionsRole;
   entity: PermissionEntity;
   files: ResFile[];
 }
@@ -116,7 +116,7 @@ export interface PermissionsDialogResponseInterface {
 export class AppDialogSetPermissionsComponent implements OnDestroy {
   items: ResFile[];
   roleControl = new FormControl('READER');
-  roleOptions: PermisionsRole[] = ['OWNER', 'WRITER', 'READER'];
+  roleOptions: PermissionsRole[] = ['OWNER', 'WRITER', 'READER'];
 
   entityTypeControl = new FormControl('group');
   entityTypeOptions: ('user' | 'group')[] = ['user', 'group'];

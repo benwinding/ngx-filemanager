@@ -1,4 +1,4 @@
-import * as core from 'ngx-filemanager-core/public_api';
+import * as core from 'ngx-filemanager-core';
 import * as path from 'path-browserify';
 import { ConsoleLoggerService } from './logger';
 
@@ -141,7 +141,7 @@ export class FileSystemStub implements core.FileSystemProvider {
   }
   async SetPermissions(
     item: string,
-    role: core.PermisionsRole,
+    role: core.PermissionsRole,
     entity: core.PermissionEntity,
     recursive?: boolean
   ): Promise<core.ResBodySetPermissions> {
@@ -178,7 +178,7 @@ export class FileSystemStub implements core.FileSystemProvider {
   }
   async SetPermissionsMultiple(
     items: string[],
-    role: core.PermisionsRole,
+    role: core.PermissionsRole,
     entity: core.PermissionEntity,
     recursive?: boolean
   ): Promise<core.ResBodySetPermissions> {

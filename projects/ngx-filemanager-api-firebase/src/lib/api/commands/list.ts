@@ -1,5 +1,4 @@
 import { Bucket, FileFromStorage, File } from '../../types/google-cloud-types';
-import { EnsureGoogleStoragePathDir } from '../../utils/path-helpers';
 import { GetFilesOptions } from '@google-cloud/storage';
 import {
   translateRawStorage,
@@ -7,10 +6,10 @@ import {
   translateStorageToResFile
 } from '../../utils/translation-helpers';
 import * as request from 'request';
-import { GetPermissionForFile } from '../../utils/permissions-helper';
-import { UserCustomClaims, ResFile } from 'ngx-filemanager-core/public_api';
-import { UserAccessResult } from '../../types/UserAccessResult';
 import { VError } from 'verror';
+import { paths } from '../../utils/paths';
+import { perms } from '../../permissions';
+import { CoreTypes } from 'ngx-filemanager-core';
 
 interface FilesAndPrefixes {
   files: File[];
@@ -78,7 +77,7 @@ export async function GetListFromStorage(
   bucket: Bucket,
   inputDirectoryPath: string
 ): Promise<FileFromStorage[]> {
-  const googleStorageDirPath = EnsureGoogleStoragePathDir(inputDirectoryPath);
+  const googleStorageDirPath = paths.EnsureGoogleStoragePathDir(inputDirectoryPath);
   const isRootPath = googleStorageDirPath === '/' || '';
   let options;
   if (isRootPath) {
@@ -100,7 +99,7 @@ export async function GetListFromStorage(
     );
     const combinedList = [...allObjects, ...newPhantomFolders];
     const filesWithoutCurrentDirectory = combinedList.filter(
-      f => EnsureGoogleStoragePathDir(f.fullPath) !== googleStorageDirPath
+      f => paths.EnsureGoogleStoragePathDir(f.fullPath) !== googleStorageDirPath
     );
     return filesWithoutCurrentDirectory;
   } catch (error) {
@@ -111,17 +110,15 @@ export async function GetListFromStorage(
 export async function GetList(
   bucket: Bucket,
   inputDirectoryPath: string,
-  claims: UserCustomClaims
-): Promise<ResFile[]> {
+  claims: CoreTypes.UserCustomClaims
+): Promise<CoreTypes.ResFile[]> {
   try {
     const files = await GetListFromStorage(bucket, inputDirectoryPath);
     const resFiles = await Promise.all(
       files.map(f => translateStorageToResFile(f))
     );
     const filesAllowed = resFiles.filter(f => {
-      const perms = GetPermissionForFile(f.permissions, claims);
-      const minPerms = UserAccessResult.r__;
-      return perms > minPerms;
+      return perms.queries.TryCheckFileAccess(f.permissions, claims, 'read');
     });
     return filesAllowed;
   } catch (error) {

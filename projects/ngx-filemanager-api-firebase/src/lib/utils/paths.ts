@@ -1,4 +1,4 @@
-export function HasPrefixSlash(inputPath: string): boolean {
+function HasPrefixSlash(inputPath: string): boolean {
   if (!inputPath || !inputPath.length) {
     return false;
   }
@@ -6,7 +6,7 @@ export function HasPrefixSlash(inputPath: string): boolean {
   return hasPrefix;
 }
 
-export function HasTrailingSlash(inputPath: string): boolean {
+function HasTrailingSlash(inputPath: string): boolean {
   if (!inputPath || !inputPath.length) {
     return false;
   }
@@ -14,7 +14,7 @@ export function HasTrailingSlash(inputPath: string): boolean {
   return hasTrailing;
 }
 
-export function EnsureTrailingSlash(inputPath: string): string {
+function EnsureTrailingSlash(inputPath: string): string {
   if (!inputPath) {
     return '/';
   }
@@ -23,13 +23,13 @@ export function EnsureTrailingSlash(inputPath: string): string {
   return pathParsed;
 }
 
-export function EnsureNoPrefixSlash(inputPath: string): string {
+function EnsureNoPrefixSlash(inputPath: string): string {
   const hasPrefix = HasPrefixSlash(inputPath);
   const pathParsed = hasPrefix ? inputPath.slice(1) : inputPath;
   return pathParsed;
 }
 
-export function EnsurePrefixSlash(inputPath: string): string {
+function EnsurePrefixSlash(inputPath: string): string {
   if (!inputPath) {
     return '/';
   }
@@ -38,29 +38,29 @@ export function EnsurePrefixSlash(inputPath: string): string {
   return pathParsed;
 }
 
-export function EnsureNoTrailingSlash(inputPath: string): string {
+function EnsureNoTrailingSlash(inputPath: string): string {
   const hasTrailing = HasTrailingSlash(inputPath);
   const pathParsed = hasTrailing ? inputPath.slice(0, -1) : inputPath;
   return pathParsed;
 }
 
-export function EnsureAbsolutePathFile(filePath: string) {
+function EnsureAbsolutePathFile(filePath: string) {
   return EnsurePrefixSlash(EnsureNoTrailingSlash(filePath));
 }
 
-export function EnsureAbsolutePathDir(folderPath: string) {
+function EnsureAbsolutePathDir(folderPath: string) {
   return EnsurePrefixSlash(EnsureTrailingSlash(folderPath));
 }
 
-export function EnsureGoogleStoragePathDir(folderPath: string) {
+function EnsureGoogleStoragePathDir(folderPath: string) {
   return EnsureNoPrefixSlash(EnsureTrailingSlash(folderPath));
 }
 
-export function EnsureGoogleStoragePathFile(filePath: string) {
+function EnsureGoogleStoragePathFile(filePath: string) {
   return EnsureNoPrefixSlash(EnsureNoTrailingSlash(filePath));
 }
 
-export function GetRelativePath(
+function GetRelativePath(
   currentDirectoryPath: string,
   absObjectPath: string
 ): string {
@@ -68,7 +68,7 @@ export function GetRelativePath(
   return relativePath;
 }
 
-export function IsCurrentPath(
+function IsCurrentPath(
   currentDirectoryPath: string,
   absObjectPath: string
 ): boolean {
@@ -77,7 +77,7 @@ export function IsCurrentPath(
   return isCurrentDir;
 }
 
-export function IsCurrentPathFile(
+function IsCurrentPathFile(
   currentDirectoryPath: string,
   absObjectPath: string
 ): boolean {
@@ -87,7 +87,7 @@ export function IsCurrentPathFile(
   return isCurrentPathFile;
 }
 
-export function GetSubDirectory(
+function GetSubDirectory(
   currentDirectoryPath: string,
   absObjectPath: string
 ): string {
@@ -96,3 +96,20 @@ export function GetSubDirectory(
   const subDirectory = slashSegments.shift();
   return subDirectory;
 }
+
+export const paths = {
+  HasPrefixSlash,
+  HasTrailingSlash,
+  EnsureTrailingSlash,
+  EnsureNoPrefixSlash,
+  EnsurePrefixSlash,
+  EnsureNoTrailingSlash,
+  EnsureAbsolutePathFile,
+  EnsureAbsolutePathDir,
+  EnsureGoogleStoragePathDir,
+  EnsureGoogleStoragePathFile,
+  GetRelativePath,
+  IsCurrentPath,
+  IsCurrentPathFile,
+  GetSubDirectory
+};

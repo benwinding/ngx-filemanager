@@ -1,12 +1,12 @@
 import { Bucket } from '../../types/google-cloud-types';
 import { GetSignedUrlConfig } from '@google-cloud/storage';
-import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from 'ngx-filemanager-core';
 const moment = require('moment');
 
 export async function GetFileMeta(
   bucket: Bucket,
   item: string,
-  claims: UserCustomClaims
+  claims: CoreTypes.UserCustomClaims
 ): Promise<string> {
   const file = bucket.file(item);
   const in5mins = moment()

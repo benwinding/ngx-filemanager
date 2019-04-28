@@ -1,31 +1,7 @@
 import { Storage, Bucket } from '../types/google-cloud-types';
-import * as commands from './commands';
-import {
-  ReqBodyList,
-  UserCustomClaims,
-  ResBodyList,
-  ReqBodyRename,
-  ResBodyRename,
-  ReqBodyMove,
-  ResBodyMove,
-  ReqBodyCopy,
-  ResBodyCopy,
-  ReqBodyRemove,
-  ResBodyRemove,
-  ReqBodyEdit,
-  ResBodyEdit,
-  ReqBodyGetContent,
-  ResBodyGetContent,
-  ReqBodyGetMeta,
-  ResBodyGetMeta,
-  ReqBodyCreateFolder,
-  ResBodyCreateFolder,
-  ReqBodySetPermissions,
-  ResBodySetPermissions,
-  ResBodyUploadFile
-} from 'ngx-filemanager-core/public_api';
+import { commands } from './commands';
 import { VError } from 'verror';
-
+import { CoreTypes } from 'ngx-filemanager-core';
 async function CheckHasBodyProp(body: {}, bodyFieldName: string) {
   const exists = body[bodyFieldName];
   if (!exists) {
@@ -55,14 +31,14 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleList(
-    body: ReqBodyList,
-    claims: UserCustomClaims
-  ): Promise<ResBodyList> {
+    body: CoreTypes.ReqBodyList,
+    claims: CoreTypes.UserCustomClaims
+  ): Promise<CoreTypes.ResBodyList> {
     try {
       await CheckHasBodyProp(body, 'path');
       const bucket = await this.getBucket(body.bucketname);
       const resFiles = await commands.GetList(bucket, body.path, claims);
-      const response: ResBodyList = {
+      const response: CoreTypes.ResBodyList = {
         result: resFiles
       };
       return response;
@@ -72,9 +48,9 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleRename(
-    body: ReqBodyRename,
-    claims: UserCustomClaims
-  ): Promise<ResBodyRename> {
+    body: CoreTypes.ReqBodyRename,
+    claims: CoreTypes.UserCustomClaims
+  ): Promise<CoreTypes.ResBodyRename> {
     try {
       await CheckHasBodyProp(body, 'item');
       await CheckHasBodyProp(body, 'newItemPath');
@@ -85,7 +61,7 @@ export class NgxFileMangerApiFireBaseClass {
         body.newItemPath,
         claims
       );
-      const response: ResBodyRename = {
+      const response: CoreTypes.ResBodyRename = {
         result: result
       };
       return response;
@@ -95,9 +71,9 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleMove(
-    body: ReqBodyMove,
-    claims: UserCustomClaims
-  ): Promise<ResBodyMove> {
+    body: CoreTypes.ReqBodyMove,
+    claims: CoreTypes.UserCustomClaims
+  ): Promise<CoreTypes.ResBodyMove> {
     try {
       const bucket = await this.getBucket(body.bucketname);
       await CheckHasBodyProp(body, 'items');
@@ -108,7 +84,7 @@ export class NgxFileMangerApiFireBaseClass {
         body.newPath,
         claims
       );
-      const response: ResBodyMove = {
+      const response: CoreTypes.ResBodyMove = {
         result: result
       };
       return response;
@@ -118,9 +94,9 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleCopy(
-    body: ReqBodyCopy,
-    claims: UserCustomClaims
-  ): Promise<ResBodyCopy> {
+    body: CoreTypes.ReqBodyCopy,
+    claims: CoreTypes.UserCustomClaims
+  ): Promise<CoreTypes.ResBodyCopy> {
     try {
       await CheckHasBodyProp(body, 'newPath');
       const bucket = await this.getBucket(body.bucketname);
@@ -140,7 +116,7 @@ export class NgxFileMangerApiFireBaseClass {
         body.newPath,
         claims
       );
-      const response: ResBodyCopy = {
+      const response: CoreTypes.ResBodyCopy = {
         result: result
       };
       return response;
@@ -150,14 +126,14 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleRemove(
-    body: ReqBodyRemove,
-    claims: UserCustomClaims
-  ): Promise<ResBodyRemove> {
+    body: CoreTypes.ReqBodyRemove,
+    claims: CoreTypes.UserCustomClaims
+  ): Promise<CoreTypes.ResBodyRemove> {
     try {
       await CheckHasBodyProp(body, 'items');
       const bucket = await this.getBucket(body.bucketname);
       const result = await commands.RemoveFiles(bucket, body.items, claims);
-      const response: ResBodyRemove = {
+      const response: CoreTypes.ResBodyRemove = {
         result: result
       };
       return response;
@@ -167,9 +143,9 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleEdit(
-    body: ReqBodyEdit,
-    claims: UserCustomClaims
-  ): Promise<ResBodyEdit> {
+    body: CoreTypes.ReqBodyEdit,
+    claims: CoreTypes.UserCustomClaims
+  ): Promise<CoreTypes.ResBodyEdit> {
     try {
       await CheckHasBodyProp(body, 'item');
       await CheckHasBodyProp(body, 'content');
@@ -180,7 +156,7 @@ export class NgxFileMangerApiFireBaseClass {
         body.content,
         claims
       );
-      const response: ResBodyEdit = {
+      const response: CoreTypes.ResBodyEdit = {
         result: result
       };
       return response;
@@ -190,14 +166,14 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleGetContent(
-    body: ReqBodyGetContent,
-    claims: UserCustomClaims
-  ): Promise<ResBodyGetContent> {
+    body: CoreTypes.ReqBodyGetContent,
+    claims: CoreTypes.UserCustomClaims
+  ): Promise<CoreTypes.ResBodyGetContent> {
     try {
       await CheckHasBodyProp(body, 'item');
       const bucket = await this.getBucket(body.bucketname);
       const result = await commands.GetFileContent(bucket, body.item, claims);
-      const response: ResBodyGetContent = {
+      const response: CoreTypes.ResBodyGetContent = {
         result: result
       };
       return response;
@@ -207,14 +183,14 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleGetMeta(
-    body: ReqBodyGetMeta,
-    claims: UserCustomClaims
-  ): Promise<ResBodyGetMeta> {
+    body: CoreTypes.ReqBodyGetMeta,
+    claims: CoreTypes.UserCustomClaims
+  ): Promise<CoreTypes.ResBodyGetMeta> {
     try {
       await CheckHasBodyProp(body, 'item');
       const bucket = await this.getBucket(body.bucketname);
       const downloadUrl = await commands.GetFileMeta(bucket, body.item, claims);
-      const response: ResBodyGetMeta = {
+      const response: CoreTypes.ResBodyGetMeta = {
         result: {
           success: true
         }
@@ -228,14 +204,14 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleCreateFolder(
-    body: ReqBodyCreateFolder,
-    claims: UserCustomClaims
-  ): Promise<ResBodyCreateFolder> {
+    body: CoreTypes.ReqBodyCreateFolder,
+    claims: CoreTypes.UserCustomClaims
+  ): Promise<CoreTypes.ResBodyCreateFolder> {
     try {
       await CheckHasBodyProp(body, 'newPath');
       const bucket = await this.getBucket(body.bucketname);
       const result = await commands.CreateFolder(bucket, body.newPath, claims);
-      const response: ResBodyCreateFolder = {
+      const response: CoreTypes.ResBodyCreateFolder = {
         result: result
       };
       return response;
@@ -245,9 +221,9 @@ export class NgxFileMangerApiFireBaseClass {
   }
 
   async HandleSetPermissions(
-    body: ReqBodySetPermissions,
-    claims: UserCustomClaims
-  ): Promise<ResBodySetPermissions> {
+    body: CoreTypes.ReqBodySetPermissions,
+    claims: CoreTypes.UserCustomClaims
+  ): Promise<CoreTypes.ResBodySetPermissions> {
     try {
       await CheckHasBodyProp(body, 'items');
       await CheckHasBodyProp(body, 'role');
@@ -261,7 +237,7 @@ export class NgxFileMangerApiFireBaseClass {
         body.recursive,
         claims
       );
-      const response: ResBodySetPermissions = {
+      const response: CoreTypes.ResBodySetPermissions = {
         result: result
       };
       return response;
@@ -276,8 +252,8 @@ export class NgxFileMangerApiFireBaseClass {
     originalname: string,
     mimetype: string,
     buffer: Buffer,
-    claims: UserCustomClaims
-  ): Promise<ResBodyUploadFile> {
+    claims: CoreTypes.UserCustomClaims
+  ): Promise<CoreTypes.ResBodyUploadFile> {
     try {
       const bucket = await this.getBucket(bucketname);
       await commands.UploadFile(

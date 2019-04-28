@@ -23,11 +23,8 @@ endpoint.use('/hello', async (req, res) => {
 endpoint.use(PostRequestsOnly);
 
 import { ParseUploadFile, UploadedFile } from './middleware-upload';
-import { RetrieveCustomClaims } from '../utils/permissions-helper';
-import {
-  UserCustomClaims,
-  FileManagerAction
-} from 'ngx-filemanager-core/public_api';
+import { permsQueries } from '../permissions/permissions-queries';
+import { CoreTypes } from 'ngx-filemanager-core';
 endpoint.post(
   '/upload',
   HasQueryParam('bucketname'),
@@ -37,7 +34,7 @@ endpoint.post(
     const bucketname: string = req.query.bucketname;
     const directoryPath: string = req.query.directoryPath;
     const files = req.files as UploadedFile[];
-    const userClaims = await RetrieveCustomClaims(req);
+    const userClaims = await permsQueries.RetrieveCustomClaims(req);
     try {
       const results = await Promise.all(
         files.map(file =>
@@ -57,8 +54,13 @@ endpoint.post(
       }, success);
       res.status(200).send(finalResult);
     } catch (error) {
-      console.error('Error occurred while uploading: \n', VError.fullStack(error));
-      res.status(400).send('Error occurred while uploading: \n' + error.message);
+      console.error(
+        'Error occurred while uploading: \n',
+        VError.fullStack(error)
+      );
+      res
+        .status(400)
+        .send('Error occurred while uploading: \n' + error.message);
       return;
     }
   }
@@ -68,7 +70,7 @@ async function trySaveFile(
   bucketname: string,
   directoryPath: string,
   f: UploadedFile,
-  userClaims: UserCustomClaims
+  userClaims: CoreTypes.UserCustomClaims
 ) {
   return fmApi.HandleSaveFile(
     bucketname,
@@ -85,9 +87,9 @@ endpoint.use(
   HasBodyProp('action'),
   HasBodyProp('bucketname'),
   async (req, res) => {
-    const action: FileManagerAction = req.body.action;
+    const action: CoreTypes.FileManagerAction = req.body.action;
     try {
-      const userClaims = await RetrieveCustomClaims(req);
+      const userClaims = await permsQueries.RetrieveCustomClaims(req);
       let body;
       switch (action) {
         case 'list':
@@ -128,7 +130,10 @@ endpoint.use(
       }
       res.status(200).send(body);
     } catch (error) {
-      console.error('Error while processing request: \n', VError.fullStack(error));
+      console.error(
+        'Error while processing request: \n',
+        VError.fullStack(error)
+      );
       const returnedError = {
         error: `Bad request to ngx-file-manager!`,
         errorDetail: error.message,
@@ -145,9 +150,6 @@ async function notImplemented(req, res) {
   res.status(501).send('That request has not been implemented: ' + bodyString);
 }
 
-function CheckStorageInitialized(storage: Storage) {
-  // storage.app();
-}
 /*
 Use by attaching to a firebase function
 exports.FileManagerApi = StorageEndpoint;

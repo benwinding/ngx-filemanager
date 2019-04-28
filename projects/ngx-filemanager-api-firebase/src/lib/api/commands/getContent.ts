@@ -1,12 +1,12 @@
 import { Bucket } from '../../types/google-cloud-types';
 import { StreamToPromise } from '../../utils/translation-helpers';
-import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from 'ngx-filemanager-core';
 import { VError } from 'verror';
 
 export async function GetFileContent(
   bucket: Bucket,
   item: string,
-  claims: UserCustomClaims
+  claims: CoreTypes.UserCustomClaims
 ) {
   try {
     const result = await bucket.file(item).get();

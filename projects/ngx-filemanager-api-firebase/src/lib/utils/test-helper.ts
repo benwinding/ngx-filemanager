@@ -1,14 +1,26 @@
 import { Bucket, File } from '../types/google-cloud-types';
-import {
-  EnsureGoogleStoragePathDir,
-  EnsureGoogleStoragePathFile
-} from './path-helpers';
-import {
-  UpdateFilePermissions,
-  blankPermissionsObj,
-  RetrieveFilePermissions
-} from './permissions-helper';
 import { VError } from 'verror';
+import { paths } from './paths';
+import { perms } from '../permissions';
+import { CoreTypes } from 'ngx-filemanager-core';
+
+import * as CICULAR from 'circular-json';
+import * as admin from 'firebase-admin';
+// Setup local firebase admin, using service account credentials
+const serviceAccount = require('../../../../../serviceAccountKey.TESTS.json');
+const testbucketname = 'resvu-integration-tests.appspot.com';
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket: testbucketname
+});
+
+const testStorage = admin.storage();
+const testBucket = testStorage.bucket(testbucketname);
+
+function logObj(obj) {
+  console.log(CICULAR.stringify(obj, null, 2));
+}
 
 function uploadTestFile(file: File) {
   const buffer = new Buffer('hi there');
@@ -16,6 +28,10 @@ function uploadTestFile(file: File) {
     contentType: 'text/plain'
   };
   return file.save(buffer, fileOptions);
+}
+
+function uploadTestFiles(files: File[]) {
+  return Promise.all(files.map(file => uploadTestFile(file)));
 }
 
 async function tryCheckExists(bucket: Bucket, objectPath: string) {
@@ -43,32 +59,55 @@ async function tryRemove(bucket: Bucket, objectPath: string) {
 }
 
 async function removeFile(bucket: Bucket, filePath: string) {
-  const pathParsed = EnsureGoogleStoragePathFile(filePath);
+  const pathParsed = paths.EnsureGoogleStoragePathFile(filePath);
   return tryRemove(bucket, pathParsed);
 }
 
+async function removeFiles(files: File[]) {
+  await Promise.all(files.map(f => f.delete()));
+}
+
 async function removeDir(bucket: Bucket, dirPath: string) {
-  const pathParsed = EnsureGoogleStoragePathDir(dirPath);
+  const pathParsed = paths.EnsureGoogleStoragePathDir(dirPath);
   return tryRemove(bucket, pathParsed);
 }
 
 async function existsFile(bucket: Bucket, filePath: string) {
-  const pathParsed = EnsureGoogleStoragePathFile(filePath);
+  const pathParsed = paths.EnsureGoogleStoragePathFile(filePath);
   return tryCheckExists(bucket, pathParsed);
 }
 
 async function existsDir(bucket: Bucket, filePath: string) {
-  const pathParsed = EnsureGoogleStoragePathDir(filePath);
+  const pathParsed = paths.EnsureGoogleStoragePathDir(filePath);
   return tryCheckExists(bucket, pathParsed);
 }
 
+function blankPermissionWithUsers(
+  users: CoreTypes.PermissionEntity[]
+): CoreTypes.PermissionsObject {
+  const newPermissions = perms.factory.blankPermissionsObj();
+  newPermissions.users = users;
+  return newPermissions;
+}
+
+function blankPermissionWithGroups(
+  groups: CoreTypes.PermissionEntity[]
+): CoreTypes.PermissionsObject {
+  const newPermissions = perms.factory.blankPermissionsObj();
+  newPermissions.groups = groups;
+  return newPermissions;
+}
+
 export const testHelper = {
+  blankPermissionWithUsers,
+  blankPermissionWithGroups,
   uploadTestFile,
+  uploadTestFiles,
   removeFile,
+  removeFiles,
   removeDir,
   existsFile,
   existsDir,
-  blankPermissionsObj,
-  UpdateFilePermissions,
-  RetrieveFilePermissions
+  logObj,
+  testBucket
 };

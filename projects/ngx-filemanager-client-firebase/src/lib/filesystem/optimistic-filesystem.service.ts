@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import {
   FileSystemProvider,
   PermissionEntity
-} from 'ngx-filemanager-core/public_api';
+} from 'ngx-filemanager-core';
 import { OptimisticFilesystem } from './optimistic-filesystem.interface';
 import * as core from 'ngx-filemanager-core';
 import { ClientFileSystemService } from './client-filesystem.service';
@@ -165,7 +165,7 @@ export class OptimisticFilesystemService
   }
   async HandleSetPermissions(
     item: string,
-    role: core.PermisionsRole,
+    role: core.PermissionsRole,
     entity: PermissionEntity,
     recursive?: boolean
   ): Promise<any> {
@@ -202,7 +202,7 @@ export class OptimisticFilesystemService
   }
   async HandleSetPermissionsMultiple(
     items: string[],
-    role: core.PermisionsRole,
+    role: core.PermissionsRole,
     entity: PermissionEntity,
     recursive?: boolean
   ): Promise<any> {

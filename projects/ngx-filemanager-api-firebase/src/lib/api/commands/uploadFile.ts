@@ -1,7 +1,7 @@
 import { Bucket } from '../../types/google-cloud-types';
 import * as path from 'path';
-import { EnsureNoPrefixSlash } from '../../utils/path-helpers';
-import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from 'ngx-filemanager-core';
+import { paths } from '../../utils/paths';
 
 export async function UploadFile(
   bucket: Bucket,
@@ -9,10 +9,10 @@ export async function UploadFile(
   originalname: string,
   mimetype: string,
   buffer: Buffer,
-  claims: UserCustomClaims
+  claims: CoreTypes.UserCustomClaims
 ) {
   const newPath = path.join(directoryPath, originalname);
-  const pathNoPrefix = EnsureNoPrefixSlash(newPath);
+  const pathNoPrefix = paths.EnsureNoPrefixSlash(newPath);
   const file = bucket.file(pathNoPrefix);
   const fileOptions = {
     contentType: mimetype

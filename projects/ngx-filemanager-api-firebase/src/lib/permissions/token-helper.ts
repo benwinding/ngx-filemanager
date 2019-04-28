@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import { CoreTypes } from 'ngx-filemanager-core';
 
 export async function GetTokenFromRequest(req: Request) {
   let idToken;
@@ -19,8 +20,8 @@ export async function GetTokenFromRequest(req: Request) {
     );
   }
 
-  const decodedToken = DecodeJWT(idToken);
-  return decodedToken;
+  const decodedToken = await DecodeJWT(idToken);
+  return decodedToken as CoreTypes.UserCustomClaims;
 }
 
 export async function DecodeJWT(bearer: string): Promise<{}> {

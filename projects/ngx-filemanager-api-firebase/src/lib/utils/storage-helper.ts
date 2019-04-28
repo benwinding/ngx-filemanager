@@ -1,14 +1,14 @@
 import { Bucket, File } from '../types/google-cloud-types';
 import { GetFilesOptions } from '@google-cloud/storage';
-import { EnsureNoPrefixSlash } from './path-helpers';
 import * as path from 'path';
 import { VError } from 'verror';
+import { paths } from './paths';
 
-export async function GetAllChildrenWithPrefix(
+async function GetAllChildrenWithPrefix(
   bucket: Bucket,
   fileOrDirectoryPath: string
 ): Promise<File[]> {
-  const pathNoPrefix = EnsureNoPrefixSlash(fileOrDirectoryPath);
+  const pathNoPrefix = paths.EnsureNoPrefixSlash(fileOrDirectoryPath);
   const options: GetFilesOptions = {};
   options.prefix = pathNoPrefix;
   try {
@@ -20,7 +20,7 @@ export async function GetAllChildrenWithPrefix(
   }
 }
 
-export async function TryRenameFile(
+async function TryRenameFile(
   file: File,
   oldPrefix: string,
   newPrefix: string
@@ -29,7 +29,7 @@ export async function TryRenameFile(
     const originalFilePath = file.name;
     const relativePath = originalFilePath.slice(oldPrefix.length);
     const newPath = path.join(newPrefix, relativePath);
-    const newFilePath = EnsureNoPrefixSlash(newPath);
+    const newFilePath = paths.EnsureNoPrefixSlash(newPath);
     console.log(`- renaming "${originalFilePath}" -> "${newFilePath}"`);
     const result = await file.move(newFilePath);
     return result[0];
@@ -38,7 +38,7 @@ export async function TryRenameFile(
   }
 }
 
-export async function TryCopyFile(
+async function TryCopyFile(
   file: File,
   oldPrefix: string,
   newPrefix: string
@@ -47,7 +47,7 @@ export async function TryCopyFile(
     const originalFilePath = file.name;
     const relativePath = originalFilePath.slice(oldPrefix.length);
     const newPath = path.join(newPrefix, relativePath);
-    const newFilePath = EnsureNoPrefixSlash(newPath);
+    const newFilePath = paths.EnsureNoPrefixSlash(newPath);
     console.log(`- copying "${originalFilePath}" -> "${newFilePath}"`);
     const result = await file.copy(newFilePath);
     return result[1];
@@ -56,7 +56,7 @@ export async function TryCopyFile(
   }
 }
 
-export async function SetMetaProperty(
+async function SetMetaProperty(
   file: File,
   key: string,
   newValue: {}
@@ -72,12 +72,12 @@ export async function SetMetaProperty(
   }
 }
 
-export async function GetMetaProperty(file: File, key: string): Promise<any> {
+async function GetMetaProperty(file: File, key: string): Promise<any> {
   let newValueString;
   try {
     const [meta] = await file.getMetadata();
     const metaData = meta.metadata || {};
-    newValueString = metaData[key] || '{}';
+    newValueString = metaData[key] || null;
   } catch (error) {
     throw new VError(error);
   }
@@ -92,3 +92,11 @@ export async function GetMetaProperty(file: File, key: string): Promise<any> {
     return newValueString;
   }
 }
+
+export const storage = {
+  GetAllChildrenWithPrefix,
+  TryRenameFile,
+  TryCopyFile,
+  SetMetaProperty,
+  GetMetaProperty,
+};

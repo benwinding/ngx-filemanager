@@ -1,13 +1,13 @@
 import { Bucket } from '../../types/google-cloud-types';
-import { EnsureGoogleStoragePathDir } from '../../utils/path-helpers';
-import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from 'ngx-filemanager-core';
+import { paths } from '../../utils/paths';
 
 export async function CreateFolder(
   bucket: Bucket,
   newDirectoryPath: string,
-  claims: UserCustomClaims
+  claims: CoreTypes.UserCustomClaims
 ) {
-  const directoryPath = EnsureGoogleStoragePathDir(newDirectoryPath);
+  const directoryPath = paths.EnsureGoogleStoragePathDir(newDirectoryPath);
   const file = bucket.file(directoryPath);
   const result = { success: true };
   try {

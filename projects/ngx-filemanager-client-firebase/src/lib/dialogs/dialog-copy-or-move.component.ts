@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
+import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
 import { LoggerService } from '../logging/logger.service';
 import * as path from 'path-browserify';
 import { EnsureTrailingSlash } from '../utils/path-helpers';

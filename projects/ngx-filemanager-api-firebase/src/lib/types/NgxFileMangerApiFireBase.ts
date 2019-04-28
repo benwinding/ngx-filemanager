@@ -1,29 +1,12 @@
-import {
-  ReqBodyList,
-  ResBodyList,
-  ReqBodyRename,
-  ResBodyRename,
-  ReqBodyMove,
-  ResBodyMove,
-  ReqBodyCopy,
-  ResBodyCopy,
-  ReqBodyRemove,
-  ResBodyRemove,
-  ReqBodyEdit,
-  ResBodyEdit,
-  ReqBodyGetContent,
-  ResBodyGetContent,
-  ReqBodyCreateFolder,
-  ResBodyCreateFolder
-} from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from 'ngx-filemanager-core';
 
 export interface NgxFileMangerApiFireBase {
-  HandleList(body: ReqBodyList): Promise<ResBodyList>;
-  HandleRename(body: ReqBodyRename): Promise<ResBodyRename>;
-  HandleMove(body: ReqBodyMove): Promise<ResBodyMove>;
-  HandleCopy(body: ReqBodyCopy): Promise<ResBodyCopy>;
-  HandleRemove(body: ReqBodyRemove): Promise<ResBodyRemove>;
-  HandleEdit(body: ReqBodyEdit): Promise<ResBodyEdit>;
-  HandleGetContent(body: ReqBodyGetContent): Promise<ResBodyGetContent>;
-  HandleCreateFolder(body: ReqBodyCreateFolder): Promise<ResBodyCreateFolder>;
+  HandleList(body: CoreTypes.ReqBodyList): Promise<CoreTypes.ResBodyList>;
+  HandleRename(body: CoreTypes.ReqBodyRename): Promise<CoreTypes.ResBodyRename>;
+  HandleMove(body: CoreTypes.ReqBodyMove): Promise<CoreTypes.ResBodyMove>;
+  HandleCopy(body: CoreTypes.ReqBodyCopy): Promise<CoreTypes.ResBodyCopy>;
+  HandleRemove(body: CoreTypes.ReqBodyRemove): Promise<CoreTypes.ResBodyRemove>;
+  HandleEdit(body: CoreTypes.ReqBodyEdit): Promise<CoreTypes.ResBodyEdit>;
+  HandleGetContent(body: CoreTypes.ReqBodyGetContent): Promise<CoreTypes.ResBodyGetContent>;
+  HandleCreateFolder(body: CoreTypes.ReqBodyCreateFolder): Promise<CoreTypes.ResBodyCreateFolder>;
 }

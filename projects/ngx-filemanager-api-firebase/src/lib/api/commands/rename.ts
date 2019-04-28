@@ -1,29 +1,29 @@
 import { Bucket } from '../../types/google-cloud-types';
 import { getResult, getResultFromArray } from '../../utils/translation-helpers';
-import { EnsureNoPrefixSlash } from '../../utils/path-helpers';
-import { GetAllChildrenWithPrefix, TryRenameFile } from '../../utils/storage-helper';
-import { UserCustomClaims } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from 'ngx-filemanager-core';
 import { VError } from 'verror';
+import { paths } from '../../utils/paths';
+import { storage } from '../../utils/storage-helper';
 
 export async function RenameFile(
   bucket: Bucket,
   item: string,
   newItemPath: string,
-  claims: UserCustomClaims
+  claims: CoreTypes.UserCustomClaims
 ) {
   try {
-    const itemsPrefixOld = EnsureNoPrefixSlash(item);
-    const itemsPrefixNew = EnsureNoPrefixSlash(newItemPath);
+    const itemsPrefixOld = paths.EnsureNoPrefixSlash(item);
+    const itemsPrefixNew = paths.EnsureNoPrefixSlash(newItemPath);
     const isFile = !item.endsWith('/');
     if (isFile) {
       const file = bucket.file(item);
-      const resultObj = await TryRenameFile(file, itemsPrefixOld, itemsPrefixNew);
+      const resultObj = await storage.TryRenameFile(file, itemsPrefixOld, itemsPrefixNew);
       const result = getResult(resultObj);
       return result;
     }
-    const allChildren = await GetAllChildrenWithPrefix(bucket, itemsPrefixOld);
+    const allChildren = await storage.GetAllChildrenWithPrefix(bucket, itemsPrefixOld);
     const moveResults = await Promise.all(
-      allChildren.map(f => TryRenameFile(f, itemsPrefixOld, itemsPrefixNew))
+      allChildren.map(f => storage.TryRenameFile(f, itemsPrefixOld, itemsPrefixNew))
     );
     const results = getResultFromArray(moveResults);
     return results;

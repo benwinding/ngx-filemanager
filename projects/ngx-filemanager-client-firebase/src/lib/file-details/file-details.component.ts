@@ -4,7 +4,7 @@ import {
   ResFile,
   FileSystemProvider,
   PermissionEntity
-} from 'ngx-filemanager-core/public_api';
+} from 'ngx-filemanager-core';
 import { promiseDelay } from '../utils/delayer';
 
 @Component({

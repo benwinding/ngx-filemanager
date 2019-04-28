@@ -1,6 +1,6 @@
 import { Component, Inject, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ResFile } from 'ngx-filemanager-core/public_api';
+import { ResFile } from 'ngx-filemanager-core';
 
 export interface CopyDialogInterface {
   files: ResFile[];

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { ResFile, FileSystemProvider } from 'ngx-filemanager-core/public_api';
+import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
 import { AutoTableConfig } from 'ngx-auto-table';
 import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
 import { LoggerService } from '../logging/logger.service';
