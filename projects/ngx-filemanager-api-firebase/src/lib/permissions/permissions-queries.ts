@@ -8,11 +8,13 @@ import { storage } from '../utils/storage-helper';
 async function RetrieveFilePermissions(
   file: File
 ): Promise<CoreTypes.PermissionsObject> {
-  const fromStorage = await storage.GetMetaProperty(file, 'permissions');
-  if (!fromStorage) {
-    return permsFactory.blankPermissionsObj();
-  }
-  return fromStorage;
+  const fromStorage: CoreTypes.PermissionsObject = await storage.GetMetaProperty(file, 'permissions');
+  const blank = permsFactory.blankPermissionsObj();
+  const safePerms = {
+    ...blank,
+    ...(fromStorage || {})
+  };
+  return safePerms;
 }
 
 async function RetrieveCustomClaims(req: Request) {

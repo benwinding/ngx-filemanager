@@ -20,7 +20,7 @@ import {
 import { FileManagerConfig } from '../configuration/client-configuration';
 import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
 import * as path from 'path-browserify';
-import { UploadDialogInterface } from '../dialogs/dialog-upload.component';
+import { UploadDialogInterface, AppDialogUploadFilesComponent } from '../dialogs/dialog-upload.component';
 import { LoggerService } from '../logging/logger.service';
 import { NotificationService } from '../notifications/notification.service';
 
@@ -205,6 +205,7 @@ export class ActionHandlersService {
       currentPath: currentPath,
       uploadApiUrl: this.fileSystem.GetUploadApiUrl(currentPath)
     };
+    await this.openDialog(AppDialogUploadFilesComponent, data);
     await this.optimisticFs.HandleList(currentPath);
   }
 
