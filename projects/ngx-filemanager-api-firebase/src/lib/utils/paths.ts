@@ -104,6 +104,13 @@ function GetSubDirectory(
   return subDirectory;
 }
 
+function Add2ToPath(inputPath: string): string {
+  const dotSegments = inputPath.split('.');
+  const extension = dotSegments.pop();
+  const fileName = dotSegments.join('.') + ' (2)' + '.' + extension;
+  return fileName;
+}
+
 export const paths = {
   HasPrefixSlash,
   HasTrailingSlash,
@@ -119,5 +126,6 @@ export const paths = {
   IsCurrentPath,
   IsCurrentPathFile,
   GetSubDirectory,
-  GetParentDir
+  GetParentDir,
+  Add2ToPath,
 };
