@@ -1,10 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { guesser } from '../utils/file-icon-guesser';
-import {
-  ResFile,
-  FileSystemProvider,
-  PermissionEntity
-} from 'ngx-filemanager-core';
+import { FileSystemProvider, CoreTypes } from 'ngx-filemanager-core';
 import { promiseDelay } from '../utils/delayer';
 
 @Component({
@@ -58,16 +54,16 @@ import { promiseDelay } from '../utils/delayer';
           </button>
         </span>
         <div>
-          <h6 *ngIf="owners && owners.length">Owners</h6>
-          <p *ngFor="let entity of owners">
+          <h6 *ngIf="unix">Unix Permissions</h6>
+          <p>
+            {{ unix }}
+          </p>
+          <h6 *ngIf="groups && groups.length">Groups</h6>
+          <p *ngFor="let entity of groups">
             {{ entity.name }}
           </p>
-          <h6 *ngIf="writers && writers.length">Writers</h6>
-          <p *ngFor="let entity of writers">
-            {{ entity.name }}
-          </p>
-          <h6 *ngIf="readers && readers.length">readers</h6>
-          <p *ngFor="let entity of readers">
+          <h6 *ngIf="users && users.length">Users</h6>
+          <p *ngFor="let entity of users">
             {{ entity.name }}
           </p>
         </div>
@@ -141,7 +137,7 @@ import { promiseDelay } from '../utils/delayer';
 export class FileDetailsComponent {
   imageUrl: string;
 
-  _file: ResFile;
+  _file: CoreTypes.ResFile;
   @Input()
   set file(newFile) {
     this._file = newFile;
@@ -154,17 +150,17 @@ export class FileDetailsComponent {
   @Input()
   fileSystem: FileSystemProvider;
   @Output()
-  clickedDownload = new EventEmitter<ResFile>();
+  clickedDownload = new EventEmitter<CoreTypes.ResFile>();
   @Output()
-  clickedDelete = new EventEmitter<ResFile>();
+  clickedDelete = new EventEmitter<CoreTypes.ResFile>();
   @Output()
-  clickedRename = new EventEmitter<ResFile>();
+  clickedRename = new EventEmitter<CoreTypes.ResFile>();
   @Output()
-  clickedSetPermissions = new EventEmitter<ResFile>();
+  clickedSetPermissions = new EventEmitter<CoreTypes.ResFile>();
 
-  owners: PermissionEntity[];
-  readers: PermissionEntity[];
-  writers: PermissionEntity[];
+  unix: string;
+  groups: CoreTypes.PermissionEntity[];
+  users: CoreTypes.PermissionEntity[];
 
   getFileType(fileName: string) {
     return guesser.getFileIconName(fileName);
@@ -189,7 +185,7 @@ export class FileDetailsComponent {
       }
       this.imageUrl = await this.fileSystem.CreateDownloadLink(this.file);
     } catch (error) {
-      console.error('Error setting ImageUrl', {error});
+      console.error('Error setting ImageUrl', { error });
     }
   }
 
@@ -199,9 +195,9 @@ export class FileDetailsComponent {
     }
     try {
       const permissions = this._file.permissions;
-      this.readers = permissions.readers;
-      this.writers = permissions.writers;
-      this.owners = permissions.owners;
+      this.groups = permissions.groups;
+      this.users = permissions.users;
+      this.unix = permissions.unix;
     } catch (error) {
       console.error('file-details: setPermissions', {
         error,

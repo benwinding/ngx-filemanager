@@ -9,7 +9,7 @@ import * as request from 'request';
 import { VError } from 'verror';
 import { paths } from '../../utils/paths';
 import { perms } from '../../permissions';
-import { CoreTypes } from 'ngx-filemanager-core';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 
 interface FilesAndPrefixes {
   files: File[];

@@ -1,7 +1,10 @@
-import { ResFile } from 'ngx-filemanager-core';
+import { CoreTypes } from 'ngx-filemanager-core';
 
 // temporary directory for the client while it refreshes
-export function MakeClientDirectory(name: string, fullPath: string): ResFile {
+export function MakeClientDirectory(
+  name: string,
+  fullPath: string
+): CoreTypes.ResFile {
   return {
     name: name,
     fullPath: fullPath,

@@ -1,10 +1,4 @@
-import { Component, Inject, Input, Output, EventEmitter } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ResFile } from 'ngx-filemanager-core';
-
-export interface CopyDialogInterface {
-  files: ResFile[];
-}
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   // tslint:disable-next-line:component-selector

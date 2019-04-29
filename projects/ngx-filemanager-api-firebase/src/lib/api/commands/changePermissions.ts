@@ -1,7 +1,7 @@
 import { File } from '../../types/google-cloud-types';
 import { Bucket } from '@google-cloud/storage';
 import * as request from 'request';
-import { CoreTypes } from 'ngx-filemanager-core';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { VError } from 'verror';
 import { perms } from '../../permissions';
 import { storage } from '../../utils/storage-helper';

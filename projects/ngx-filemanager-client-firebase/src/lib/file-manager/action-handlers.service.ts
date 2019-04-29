@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
+import { FileSystemProvider, CoreTypes } from 'ngx-filemanager-core';
 import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
 import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
 import { MatDialog } from '@angular/material';
@@ -7,7 +7,7 @@ import {
   RenameDialogInterface,
   AppDialogRenameComponent
 } from '../dialogs/dialog-rename.component';
-import { take, map, debounceTime, takeUntil } from 'rxjs/operators';
+import { take, map } from 'rxjs/operators';
 import {
   AppDialogCopyComponent,
   CopyDialogInterface
@@ -20,10 +20,7 @@ import {
 import { FileManagerConfig } from '../configuration/client-configuration';
 import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
 import * as path from 'path-browserify';
-import {
-  UploadDialogInterface,
-  AppDialogUploadFilesComponent
-} from '../dialogs/dialog-upload.component';
+import { UploadDialogInterface } from '../dialogs/dialog-upload.component';
 import { LoggerService } from '../logging/logger.service';
 import { NotificationService } from '../notifications/notification.service';
 
@@ -68,7 +65,7 @@ export class ActionHandlersService {
     this.optimisticFs.initialize(this.fileSystem, this.clientFilesystem);
   }
 
-  public async OnRename(file: ResFile) {
+  public async OnRename(file: CoreTypes.ResFile) {
     const data: RenameDialogInterface = {
       currentPath: file.fullPath
     };
@@ -90,7 +87,7 @@ export class ActionHandlersService {
     }
   }
 
-  public async OnMoveMultiple(files: ResFile[]) {
+  public async OnMoveMultiple(files: CoreTypes.ResFile[]) {
     const data: CopyDialogInterface = {
       files: files,
       isCopy: false,
@@ -111,7 +108,7 @@ export class ActionHandlersService {
     }
   }
 
-  public async OnCopyMultiple(files: ResFile[]) {
+  public async OnCopyMultiple(files: CoreTypes.ResFile[]) {
     const data: CopyDialogInterface = {
       files: files,
       isCopy: true,
@@ -133,7 +130,7 @@ export class ActionHandlersService {
     }
   }
 
-  public async OnSetPermissionsMultiple(files: ResFile[]) {
+  public async OnSetPermissionsMultiple(files: CoreTypes.ResFile[]) {
     const data: PermissionsDialogInterface = {
       files: files,
       config: this.config
@@ -173,7 +170,7 @@ export class ActionHandlersService {
     }
   }
 
-  public async OnDeleteMultiple(files: ResFile[]) {
+  public async OnDeleteMultiple(files: CoreTypes.ResFile[]) {
     try {
       const deletedPaths = files.map(f => f.fullPath);
       this.logger.info('deleting files', { files, deletedPaths });
@@ -208,7 +205,6 @@ export class ActionHandlersService {
       currentPath: currentPath,
       uploadApiUrl: this.fileSystem.GetUploadApiUrl(currentPath)
     };
-    const res = await this.openDialog(AppDialogUploadFilesComponent, data);
     await this.optimisticFs.HandleList(currentPath);
   }
 
@@ -225,7 +221,7 @@ export class ActionHandlersService {
     await this.optimisticFs.HandleList(currentDirectory);
   }
 
-  public async OnDownloadFile(file: ResFile) {
+  public async OnDownloadFile(file: CoreTypes.ResFile) {
     const url = await this.fileSystem.CreateDownloadLink(file);
     this.logger.info('downloading file', { file, url });
     const link = document.createElement('a');

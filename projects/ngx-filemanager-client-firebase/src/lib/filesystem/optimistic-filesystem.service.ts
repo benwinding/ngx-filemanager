@@ -1,16 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import {
-  FileSystemProvider,
-  PermissionEntity
-} from 'ngx-filemanager-core';
 import { OptimisticFilesystem } from './optimistic-filesystem.interface';
-import * as core from 'ngx-filemanager-core';
 import { ClientFileSystemService } from './client-filesystem.service';
 import { take, takeUntil, debounceTime, tap } from 'rxjs/operators';
 import { LoggerService } from '../logging/logger.service';
 import * as path from 'path-browserify';
 import { NotificationService } from '../notifications/notification.service';
 import { Subject } from 'rxjs';
+import { FileSystemProvider, CoreTypes } from 'ngx-filemanager-core/public_api';
 
 // tslint:disable:member-ordering
 
@@ -165,8 +161,8 @@ export class OptimisticFilesystemService
   }
   async HandleSetPermissions(
     item: string,
-    role: core.PermissionsRole,
-    entity: PermissionEntity,
+    role: CoreTypes.PermissionsRole,
+    entity: CoreTypes.PermissionEntity,
     recursive?: boolean
   ): Promise<any> {
     try {
@@ -202,8 +198,8 @@ export class OptimisticFilesystemService
   }
   async HandleSetPermissionsMultiple(
     items: string[],
-    role: core.PermissionsRole,
-    entity: PermissionEntity,
+    role: CoreTypes.PermissionsRole,
+    entity: CoreTypes.PermissionEntity,
     recursive?: boolean
   ): Promise<any> {
     try {
@@ -251,7 +247,7 @@ export class OptimisticFilesystemService
     }
   }
 
-  async onSelectItem(file: core.ResFile) {
+  async onSelectItem(file: CoreTypes.ResFile) {
     this.clientFilesystem.onSelectItem(file);
   }
 

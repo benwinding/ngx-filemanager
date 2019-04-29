@@ -5,10 +5,9 @@ import { MakeClientDirectory } from '../utils/file.factory';
 import { ClientFileSystem } from './client-filesystem.interface';
 import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemDataStore } from './client-filesystem.datastore';
-import * as core from 'ngx-filemanager-core';
 import * as path from 'path-browserify';
-import { PermissionEntity } from 'ngx-filemanager-core';
 import { IconUrlResolverService } from '../utils/icon-url-resolver.service';
+import { CoreTypes } from 'ngx-filemanager-core';
 
 // tslint:disable:member-ordering
 @Injectable()
@@ -71,8 +70,8 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   async OnGetcontent(item: string): Promise<void> {}
   async OnSetPermissions(
     item: string,
-    role: core.PermissionsRole,
-    entity: PermissionEntity,
+    role: CoreTypes.PermissionsRole,
+    entity: CoreTypes.PermissionEntity,
     recursive?: boolean
   ): Promise<void> {}
   async OnMoveMultiple(items: string[], newPath: string): Promise<void> {
@@ -81,15 +80,15 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   async OnCopyMultiple(items: string[], newPath: string): Promise<void> {}
   async OnSetPermissionsMultiple(
     items: string[],
-    role: core.PermissionsRole,
-    entity: PermissionEntity,
+    role: CoreTypes.PermissionsRole,
+    entity: CoreTypes.PermissionEntity,
     recursive?: boolean
   ): Promise<void> {}
   async OnRemove(items: string[]): Promise<void> {
     return this.removeMultiple(items);
   }
   async UpdateList(
-    res: core.ResBodyList,
+    res: CoreTypes.ResBodyList,
     directoryPath: string
   ): Promise<void> {
     this.store.SetDirectoryFiles(res.result, directoryPath);
@@ -127,7 +126,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     this.store.SetPath(directoryPath);
   }
 
-  public get $FilesWithIcons(): Observable<core.ResFile[]> {
+  public get $FilesWithIcons(): Observable<CoreTypes.ResFile[]> {
     return this.$currentFiles.pipe(
       map(files => (files ? files : [])),
       map(files => files.map(file => this.addIconPath(file))),
@@ -146,7 +145,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     );
   }
 
-  public onSelectItem(item: core.ResFile): any {
+  public onSelectItem(item: CoreTypes.ResFile): any {
     this.store.SelectFile(item);
   }
 
@@ -154,7 +153,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     return this.store.CurrentFiles();
   }
 
-  private addIconPath(file: core.ResFile) {
+  private addIconPath(file: CoreTypes.ResFile) {
     if (file.type === 'file') {
       file['icon'] = this.iconResolver.getFileIconUrl(file.name);
     } else {

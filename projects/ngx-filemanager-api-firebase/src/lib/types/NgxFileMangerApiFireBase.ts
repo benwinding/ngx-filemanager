@@ -1,4 +1,4 @@
-import { CoreTypes } from 'ngx-filemanager-core';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 
 export interface NgxFileMangerApiFireBase {
   HandleList(body: CoreTypes.ReqBodyList): Promise<CoreTypes.ResBodyList>;

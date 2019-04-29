@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
+import { CoreTypes, FileSystemProvider } from 'ngx-filemanager-core';
 import { AutoTableConfig } from 'ngx-auto-table';
 import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
 import { LoggerService } from '../logging/logger.service';
@@ -82,7 +82,7 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
   @Output()
   selectedDirectory = new EventEmitter<string>();
 
-  tableConfig: AutoTableConfig<ResFile>;
+  tableConfig: AutoTableConfig<CoreTypes.ResFile>;
 
   constructor(
     private actionHandlers: ActionHandlersService,
@@ -93,13 +93,13 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
     this.actionHandlers.init(this.serverFilesystem, null);
     this.tableConfig = {
       data$: this.actionHandlers.$FilesWithIcons,
-      onSelectItemDoubleClick: async (item: ResFile) => {
+      onSelectItemDoubleClick: async (item: CoreTypes.ResFile) => {
         this.logger.info('onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
           await this.actionHandlers.OnNavigateTo(item.fullPath);
         }
       },
-      onSelectItem: (item: ResFile) => {
+      onSelectItem: (item: CoreTypes.ResFile) => {
         if (item.type === 'dir') {
           this.selectedDirectory.emit(item.fullPath);
         }

@@ -1,10 +1,5 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import {
-  ResFile,
-  PermissionsRole,
-  PermissionEntity
-} from 'ngx-filemanager-core';
 import { FormControl } from '@angular/forms';
 import { Observable, Subject, pipe } from 'rxjs';
 import {
@@ -12,15 +7,16 @@ import {
   NameUid
 } from '../configuration/client-configuration';
 import { takeUntil, map, tap } from 'rxjs/operators';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 
 export interface PermissionsDialogInterface {
-  files: ResFile[];
+  files: CoreTypes.ResFile[];
   config: FileManagerConfig;
 }
 export interface PermissionsDialogResponseInterface {
-  role: PermissionsRole;
-  entity: PermissionEntity;
-  files: ResFile[];
+  role: CoreTypes.PermissionsRole;
+  entity: CoreTypes.PermissionEntity;
+  files: CoreTypes.ResFile[];
 }
 
 @Component({
@@ -114,16 +110,16 @@ export interface PermissionsDialogResponseInterface {
   styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogSetPermissionsComponent implements OnDestroy {
-  items: ResFile[];
+  items: CoreTypes.ResFile[];
   roleControl = new FormControl('READER');
-  roleOptions: PermissionsRole[] = ['OWNER', 'WRITER', 'READER'];
+  roleOptions: CoreTypes.PermissionsRole[] = ['OWNER', 'WRITER', 'READER'];
 
   entityTypeControl = new FormControl('group');
   entityTypeOptions: ('user' | 'group')[] = ['user', 'group'];
   entityControl = new FormControl();
 
-  $users: Observable<PermissionEntity[]>;
-  $groups: Observable<PermissionEntity[]>;
+  $users: Observable<CoreTypes.PermissionEntity[]>;
+  $groups: Observable<CoreTypes.PermissionEntity[]>;
 
   destroyed = new Subject();
 
@@ -141,10 +137,9 @@ export class AppDialogSetPermissionsComponent implements OnDestroy {
     return pipe(
       map((arr: NameUid[]) => {
         return arr.map(value => {
-          const entity: PermissionEntity = {
+          const entity: CoreTypes.PermissionEntity = {
             name: value.name,
-            id: value.uid,
-            type: type
+            id: value.uid
           };
           return entity;
         });

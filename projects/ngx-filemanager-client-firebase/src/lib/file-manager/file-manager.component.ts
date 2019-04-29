@@ -1,13 +1,13 @@
 import { OnInit, Component, Input } from '@angular/core';
 import { AutoTableConfig } from 'ngx-auto-table/public_api';
 import { take, map } from 'rxjs/operators';
-import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
 import { FileManagerConfig } from '../configuration/client-configuration';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
 import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
 import { ActionHandlersService } from './action-handlers.service';
+import { FileSystemProvider, CoreTypes } from 'ngx-filemanager-core/public_api';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -26,10 +26,10 @@ export class NgxFileManagerComponent implements OnInit {
   @Input()
   config: FileManagerConfig;
 
-  public autoTableConfig: AutoTableConfig<ResFile>;
+  public autoTableConfig: AutoTableConfig<CoreTypes.ResFile>;
   public isFileDetailsOpen = true;
 
-  public $BulkSelected = new BehaviorSubject<ResFile[]>([]);
+  public $BulkSelected = new BehaviorSubject<CoreTypes.ResFile[]>([]);
   private $triggerClearSelected = new Subject<void>();
 
   constructor(
@@ -77,7 +77,7 @@ export class NgxFileManagerComponent implements OnInit {
         {
           label: 'Copy',
           icon: 'content_copy',
-          onClick: async (files: ResFile[]) =>
+          onClick: async (files: CoreTypes.ResFile[]) =>
             this.actionHandlers.OnCopyMultiple(files)
         }
       ],
@@ -85,48 +85,48 @@ export class NgxFileManagerComponent implements OnInit {
         {
           label: 'Copy',
           icon: 'content_copy',
-          onClick: async (file: ResFile) =>
+          onClick: async (file: CoreTypes.ResFile) =>
             this.actionHandlers.OnCopyMultiple([file])
         },
         {
           label: 'Move',
           icon: 'forward',
-          onClick: async (file: ResFile) =>
+          onClick: async (file: CoreTypes.ResFile) =>
             this.actionHandlers.OnMoveMultiple([file])
         },
         {
           label: 'Rename',
           icon: 'border_color',
-          onClick: async (file: ResFile) => this.actionHandlers.OnRename(file)
+          onClick: async (file: CoreTypes.ResFile) => this.actionHandlers.OnRename(file)
         },
         {
           label: 'Permissions',
           icon: 'lock_outline',
-          onClick: async (file: ResFile) =>
+          onClick: async (file: CoreTypes.ResFile) =>
             this.actionHandlers.OnSetPermissionsMultiple([file])
         },
         {
           label: 'Delete',
           icon: 'delete',
-          onClick: async (file: ResFile) =>
+          onClick: async (file: CoreTypes.ResFile) =>
             this.actionHandlers.OnDeleteMultiple([file])
         }
       ],
-      onSelectedBulk: (files: ResFile[]) => {
+      onSelectedBulk: (files: CoreTypes.ResFile[]) => {
         this.logger.info('onSelectedBulk', {
           files,
           length: files.length
         });
         this.$BulkSelected.next(files);
       },
-      onSelectItemDoubleClick: async (item: ResFile) => {
+      onSelectItemDoubleClick: async (item: CoreTypes.ResFile) => {
         this.logger.info('onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
           this.clearBulkSelected();
           this.actionHandlers.OnNavigateTo(item.fullPath);
         }
       },
-      onSelectItem: (item: ResFile) => {
+      onSelectItem: (item: CoreTypes.ResFile) => {
         this.logger.info('onSelectItem!', { item });
         this.actionHandlers.OnSelectItemByPath(item.fullPath);
       },
@@ -138,16 +138,16 @@ export class NgxFileManagerComponent implements OnInit {
     };
   }
 
-  public async onDetailsClickDelete(file: ResFile) {
+  public async onDetailsClickDelete(file: CoreTypes.ResFile) {
     await this.actionHandlers.OnDeleteMultiple([file]);
   }
-  public async onDetailsClickDownload(file: ResFile) {
+  public async onDetailsClickDownload(file: CoreTypes.ResFile) {
     await this.actionHandlers.OnDownloadFile(file);
   }
-  public async onDetailsClickRename(file: ResFile) {
+  public async onDetailsClickRename(file: CoreTypes.ResFile) {
     await this.actionHandlers.OnRename(file);
   }
-  public async onDetailsClickSinglePermissions(file: ResFile) {
+  public async onDetailsClickSinglePermissions(file: CoreTypes.ResFile) {
     await this.actionHandlers.OnSetPermissionsMultiple([file]);
     await this.actionHandlers.OnSelectItemByPath(file.fullPath);
   }

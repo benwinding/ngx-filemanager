@@ -1,12 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ResFile, FileSystemProvider } from 'ngx-filemanager-core';
+import { CoreTypes, FileSystemProvider } from 'ngx-filemanager-core';
 import { LoggerService } from '../logging/logger.service';
 import * as path from 'path-browserify';
 import { EnsureTrailingSlash } from '../utils/path-helpers';
 
 export interface CopyDialogInterface {
-  files: ResFile[];
+  files: CoreTypes.ResFile[];
   isCopy: boolean;
   serverFilesystem: FileSystemProvider;
 }
@@ -59,7 +59,7 @@ export interface CopyDialogInterface {
 export class AppDialogCopyComponent {
   copyToPath: string;
   currentDir: string;
-  items: ResFile[];
+  items: CoreTypes.ResFile[];
   serverFilesystem: FileSystemProvider;
 
   OkLabel: string;

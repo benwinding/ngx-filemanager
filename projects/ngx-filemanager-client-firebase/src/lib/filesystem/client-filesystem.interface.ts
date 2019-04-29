@@ -1,11 +1,10 @@
-import * as core from 'ngx-filemanager-core';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { Observable } from 'rxjs';
-import { PermissionEntity, PermissionsRole } from 'ngx-filemanager-core';
 
 export interface ClientFileSystem {
-  $currentFiles: Observable<core.ResFile[]>;
+  $currentFiles: Observable<CoreTypes.ResFile[]>;
   $currentPath: Observable<string>;
-  $selectedFile: Observable<core.ResFile>;
+  $selectedFile: Observable<CoreTypes.ResFile>;
 
   // Actions
   OnList(path: string): Promise<void>;
@@ -18,8 +17,8 @@ export interface ClientFileSystem {
   OnGetcontent(item: string): Promise<void>;
   OnSetPermissions(
     item: string,
-    role: PermissionsRole,
-    entity: PermissionEntity,
+    role: CoreTypes.PermissionsRole,
+    entity: CoreTypes.PermissionEntity,
     recursive?: boolean
   ): Promise<void>;
   // File/Directory Bulk Actions
@@ -27,11 +26,11 @@ export interface ClientFileSystem {
   OnCopyMultiple(items: string[], newPath: string): Promise<void>;
   OnSetPermissionsMultiple(
     items: string[],
-    role: PermissionsRole,
-    entity: PermissionEntity,
+    role: CoreTypes.PermissionsRole,
+    entity: CoreTypes.PermissionEntity,
     recursive?: boolean
   ): Promise<void>;
   OnRemove(items: string[]): Promise<void>;
   // Actions
-  UpdateList(res: core.ResBodyList, directoryPath: string): Promise<void>;
+  UpdateList(res: CoreTypes.ResBodyList, directoryPath: string): Promise<void>;
 }

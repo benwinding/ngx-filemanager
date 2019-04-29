@@ -1,4 +1,4 @@
-import { CoreTypes } from 'ngx-filemanager-core';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { permsFactory } from './permissions.factory';
 import { permsQueries } from './permissions-queries';
 import { testHelper } from '../utils/test-helper';

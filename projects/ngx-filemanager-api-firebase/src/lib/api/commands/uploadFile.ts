@@ -1,6 +1,6 @@
 import { Bucket } from '../../types/google-cloud-types';
 import * as path from 'path';
-import { CoreTypes } from 'ngx-filemanager-core';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { paths } from '../../utils/paths';
 
 export async function UploadFile(

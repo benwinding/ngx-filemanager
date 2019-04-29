@@ -1,4 +1,4 @@
-import * as core from 'ngx-filemanager-core';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { ClientCache } from './client-filesystem.cache';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ConsoleLoggerService } from '../logging/console-logger.service';
@@ -6,19 +6,19 @@ import { ConsoleLoggerService } from '../logging/console-logger.service';
 export class ClientFileSystemDataStore {
   private cache = new ClientCache();
 
-  private _$currentFiles = new BehaviorSubject<core.ResFile[]>([]);
+  private _$currentFiles = new BehaviorSubject<CoreTypes.ResFile[]>([]);
   private _$currentPath = new BehaviorSubject<string>(null);
-  private _$selectedFile = new BehaviorSubject<core.ResFile>(null);
+  private _$selectedFile = new BehaviorSubject<CoreTypes.ResFile>(null);
 
   private logger = new ConsoleLoggerService();
 
-  public get $currentFiles(): Observable<core.ResFile[]> {
+  public get $currentFiles(): Observable<CoreTypes.ResFile[]> {
     return this._$currentFiles;
   }
   public get $currentPath(): Observable<string> {
     return this._$currentPath;
   }
-  public get $selectedFile(): Observable<core.ResFile> {
+  public get $selectedFile(): Observable<CoreTypes.ResFile> {
     return this._$selectedFile;
   }
 
@@ -31,7 +31,7 @@ export class ClientFileSystemDataStore {
   public GetCached(directoryPath: string) {
     return this.cache.GetCached(directoryPath);
   }
-  public SetDirectoryFiles(files: core.ResFile[], directoryPath: string) {
+  public SetDirectoryFiles(files: CoreTypes.ResFile[], directoryPath: string) {
     this.cache.SetCached(directoryPath, files);
   }
   public SetPath(path: string) {
@@ -43,7 +43,7 @@ export class ClientFileSystemDataStore {
     this._$currentPath.next(path);
     this._$currentFiles.next(cachedFiles);
   }
-  SelectFile(item: core.ResFile) {
+  SelectFile(item: CoreTypes.ResFile) {
     this._$selectedFile.next(item);
   }
 }

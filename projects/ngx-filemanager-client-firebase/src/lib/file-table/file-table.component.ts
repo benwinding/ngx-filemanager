@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { ResFile } from 'ngx-filemanager-core';
 import { AutoTableConfig } from 'ngx-auto-table';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -58,10 +58,10 @@ import { AutoTableConfig } from 'ngx-auto-table';
 })
 export class AppFileTableComponent implements OnInit {
   @Input()
-  config: AutoTableConfig<ResFile>;
+  config: AutoTableConfig<CoreTypes.ResFile>;
 
   @Output()
-  clickedDownload = new EventEmitter<ResFile>();
+  clickedDownload = new EventEmitter<CoreTypes.ResFile>();
 
   ngOnInit() {
     this.setExplorerHeight('650px');

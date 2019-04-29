@@ -40,7 +40,7 @@ export interface FileSystemProvider {
     items: string[],
     newPath: string
   ): Promise<CoreTypes.ResBodyCopy>;
-  SetPermiPermissionsRole(
+  SetPermissionsMultiple(
     items: string[],
     role: CoreTypes.PermissionsRole,
     entity: CoreTypes.PermissionEntity,

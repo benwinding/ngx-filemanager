@@ -1,7 +1,7 @@
 import { FilePermission, CheckUnixOctal } from './unix-conversion';
 import { File } from '../types/google-cloud-types';
 import { GetTokenFromRequest } from './token-helper';
-import { CoreTypes } from 'ngx-filemanager-core';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { permsFactory } from './permissions.factory';
 import { storage } from '../utils/storage-helper';
 

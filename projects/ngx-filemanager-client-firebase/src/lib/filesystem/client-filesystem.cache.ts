@@ -1,18 +1,18 @@
-import * as core from 'ngx-filemanager-core';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { ConsoleLoggerService } from '../logging/console-logger.service';
 
 export class ClientCache {
   private logger = new ConsoleLoggerService();
 
   private cachedFolders: {
-    [folderPath: string]: core.ResFile[];
+    [folderPath: string]: CoreTypes.ResFile[];
   } = {};
   private cacheLimit = 20;
 
   public GetCached(folderPath: string) {
     return this.cachedFolders[folderPath] || [];
   }
-  public SetCached(folderPath: string, newFolderFiles: core.ResFile[]) {
+  public SetCached(folderPath: string, newFolderFiles: CoreTypes.ResFile[]) {
     const oldFolders = this.GetCached(folderPath);
     this.logger.info('SetCached()', {
       from: oldFolders.length,
