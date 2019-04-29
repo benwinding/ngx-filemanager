@@ -107,16 +107,28 @@ export async function GetListFromStorage(
   }
 }
 
-export async function GetList(
+export async function GetListWithoutPermissions(
   bucket: Bucket,
-  inputDirectoryPath: string,
-  claims: CoreTypes.UserCustomClaims
+  inputDirectoryPath: string
 ): Promise<CoreTypes.ResFile[]> {
   try {
     const files = await GetListFromStorage(bucket, inputDirectoryPath);
     const resFiles = await Promise.all(
       files.map(f => translateStorageToResFile(f))
     );
+    return resFiles;
+  } catch (error) {
+    throw new VError(error);
+  }
+}
+
+export async function GetList(
+  bucket: Bucket,
+  inputDirectoryPath: string,
+  claims: CoreTypes.UserCustomClaims
+): Promise<CoreTypes.ResFile[]> {
+  try {
+    const resFiles = await GetListWithoutPermissions(bucket, inputDirectoryPath);
     const filesAllowed = resFiles.filter(f => {
       return perms.queries.TryCheckFileAccess(f.permissions, claims, 'read');
     });

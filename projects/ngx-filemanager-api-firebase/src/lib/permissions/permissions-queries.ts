@@ -33,7 +33,7 @@ async function RetrieveCustomClaims(req: Request) {
 }
 
 function TryCheckHasAnyPermissions(claims: CoreTypes.UserCustomClaims) {
-  if (!claims.groups.length || !claims.userIsSudo) {
+  if (!claims.groups.length && !claims.userIsSudo) {
     throw new Error('No user permissions found, cannot change permissions');
   }
 }
@@ -43,20 +43,29 @@ function TryCheckFileAccess(
   claims: CoreTypes.UserCustomClaims,
   toCheck: FilePermission
 ): boolean {
-  const sudoCanDo = claims.userIsSudo;
-  if (sudoCanDo) {
-    return true;
-  }
+  // Anyone can do something
   const unixOctalGroup = filePermissions.unix;
   const [octalUser, octalGroup, octalOther] = Array.from(unixOctalGroup);
   const anyoneCanDo = CheckUnixOctal(octalOther, toCheck);
   if (anyoneCanDo) {
     return true;
   }
+  // Has no userclaims
+  const hasClaims = !!claims;
+  if (!hasClaims) {
+    return false;
+  }
+  // Sudo can do anything
+  const sudoCanDo = claims.userIsSudo;
+  if (sudoCanDo) {
+    return true;
+  }
+  // Group can do something
   const groupCanDo = CheckUnixOctal(octalGroup, toCheck);
   if (groupCanDo && IsPartOfArray(filePermissions.groups, claims.groups)) {
     return true;
   }
+  // User can do something
   const userCanDo = CheckUnixOctal(octalUser, toCheck);
   if (userCanDo && IsPartOfArray(filePermissions.users, [claims.user_id])) {
     return true;

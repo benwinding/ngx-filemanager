@@ -1,4 +1,4 @@
-import { GetListFromStorage, GetList } from './list';
+import { GetListFromStorage, GetList, GetListWithoutPermissions } from './list';
 import { testHelper } from '../../utils/test-helper';
 import { perms } from '../../permissions';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
@@ -14,7 +14,18 @@ test('list get files in sub directory', async () => {
 });
 
 test('list get files and directories', async () => {
-  const result = await GetListFromStorage(testBucket, 'list.spec.ts/test1');
+  const result = await GetListFromStorage(
+    testBucket,
+    'list.spec.ts/test1'
+  );
+  expect(result.length).toBe(3);
+});
+
+test('list get files and directories and translate', async () => {
+  const result = await GetListWithoutPermissions(
+    testBucket,
+    'list.spec.ts/test1'
+  );
   expect(result.length).toBe(3);
 });
 

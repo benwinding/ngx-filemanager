@@ -3,6 +3,8 @@ import { GetFilesOptions } from '@google-cloud/storage';
 import * as path from 'path';
 import { VError } from 'verror';
 import { paths } from './paths';
+import { perms } from '../permissions';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 
 async function GetAllChildrenWithPrefix(
   bucket: Bucket,
@@ -20,11 +22,7 @@ async function GetAllChildrenWithPrefix(
   }
 }
 
-async function TryRenameFile(
-  file: File,
-  oldPrefix: string,
-  newPrefix: string
-) {
+async function TryRenameFile(file: File, oldPrefix: string, newPrefix: string) {
   try {
     const originalFilePath = file.name;
     const relativePath = originalFilePath.slice(oldPrefix.length);
@@ -38,11 +36,7 @@ async function TryRenameFile(
   }
 }
 
-async function TryCopyFile(
-  file: File,
-  oldPrefix: string,
-  newPrefix: string
-) {
+async function TryCopyFile(file: File, oldPrefix: string, newPrefix: string) {
   try {
     const originalFilePath = file.name;
     const relativePath = originalFilePath.slice(oldPrefix.length);
@@ -93,10 +87,35 @@ async function GetMetaProperty(file: File, key: string): Promise<any> {
   }
 }
 
+async function TryCheckWritePermission(
+  bucket: Bucket,
+  newDirPath: string,
+  claims: CoreTypes.UserCustomClaims
+): Promise<any> {
+  try {
+    const parentPath = paths.GetParentDir(newDirPath);
+    const parentDir = bucket.file(parentPath);
+    const parentPermissions = await perms.queries.RetrieveFilePermissions(
+      parentDir
+    );
+    const result = perms.queries.TryCheckFileAccess(
+      parentPermissions,
+      claims,
+      'read'
+    );
+    if (!result) {
+      throw new Error('Permission denied creating item in directory:' + parentPath);
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 export const storage = {
   GetAllChildrenWithPrefix,
   TryRenameFile,
   TryCopyFile,
+  TryCheckWritePermission,
   SetMetaProperty,
-  GetMetaProperty,
+  GetMetaProperty
 };

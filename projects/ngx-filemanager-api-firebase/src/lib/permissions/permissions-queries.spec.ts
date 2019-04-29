@@ -34,17 +34,8 @@ test('get permissions obj to object storage', async () => {
     'permissions-helper.spec.ts/blankPermissions.txt'
   );
   const permissions = await permsQueries.RetrieveFilePermissions(file);
-  const isEmpty = Object.entries(permissions).length < 1;
-  expect(isEmpty).toBe(true);
-});
-
-test('update custom meta property', async () => {
-  const file = testBucket.file(
-    'permissions-helper.spec.ts/blankPermissions.txt'
-  );
-  const permissions = await permsQueries.RetrieveFilePermissions(file);
-  const isEmpty = Object.entries(permissions).length < 1;
-  expect(isEmpty).toBe(true);
+  console.log('perms', {permissions});
+  expect(permissions.unix).toBe('777');
 });
 
 test('TryCheckHasAnyPermissions', () => {
@@ -57,7 +48,7 @@ test('TryCheckHasAnyPermissions', () => {
   const shouldNotError = () => {
     const claims = permsFactory.blankUserClaim();
     claims.groups.push('ascascasc');
-    permsQueries.TryCheckHasAnyPermissions(claims);
+    return permsQueries.TryCheckHasAnyPermissions(claims);
   };
-  expect(shouldNotError).toReturn();
+  expect(shouldNotError).not.toThrowError();
 });

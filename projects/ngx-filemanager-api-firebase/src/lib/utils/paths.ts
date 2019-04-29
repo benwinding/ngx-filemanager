@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 function HasPrefixSlash(inputPath: string): boolean {
   if (!inputPath || !inputPath.length) {
     return false;
@@ -68,6 +70,11 @@ function GetRelativePath(
   return relativePath;
 }
 
+function GetParentDir(currentDirectoryPath: string): string {
+  const parentPath = path.dirname(currentDirectoryPath);
+  return EnsureGoogleStoragePathDir(parentPath);
+}
+
 function IsCurrentPath(
   currentDirectoryPath: string,
   absObjectPath: string
@@ -111,5 +118,6 @@ export const paths = {
   GetRelativePath,
   IsCurrentPath,
   IsCurrentPathFile,
-  GetSubDirectory
+  GetSubDirectory,
+  GetParentDir
 };
