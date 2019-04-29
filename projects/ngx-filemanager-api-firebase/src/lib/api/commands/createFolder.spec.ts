@@ -11,7 +11,7 @@ test('test creating and removing directory no-permissions', async () => {
   const exists = await testHelper.existsDir(testBucket, tempDir);
   expect(exists).toBeTruthy();
   await testHelper.removeDir(testBucket, tempDir);
-});
+}, 30000);
 
 test('test creating and removing directory with-permissions', async () => {
   const permissionsDir = '/createFolder/test1/parentPerms';
@@ -32,7 +32,7 @@ test('test creating and removing directory with-permissions', async () => {
   };
   expect(shouldThrow()).rejects.toThrowError();
   await testHelper.removeDir(testBucket, permissionsDir);
-});
+}, 30000);
 
 test('test creating and removing directory with-permissions', async () => {
   const permissionsDir = '/createFolder/test1/parentPerms';
@@ -51,6 +51,6 @@ test('test creating and removing directory with-permissions', async () => {
       throw new Error('Failed');
     }
   };
-  expect(shouldThrow()).rejects.toThrowError();
+  await expect(shouldThrow()).rejects.toThrowError();
   await testHelper.removeDir(testBucket, permissionsDir);
-});
+}, 30000);

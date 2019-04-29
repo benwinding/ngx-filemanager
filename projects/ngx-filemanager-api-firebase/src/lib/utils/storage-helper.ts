@@ -32,6 +32,10 @@ async function TryRenameFile(file: File, oldPrefix: string, newPrefix: string) {
     const result = await file.move(newFilePath);
     return result[0];
   } catch (error) {
+    const [fileExists] = await file.exists();
+    console.error('storage-helper: TryCopyFile() error renaming file', {
+      fileExists
+    });
     throw new VError(error);
   }
 }
@@ -46,6 +50,10 @@ async function TryCopyFile(file: File, oldPrefix: string, newPrefix: string) {
     const result = await file.copy(newFilePath);
     return result[1];
   } catch (error) {
+    const [fileExists] = await file.exists();
+    console.error('storage-helper: TryCopyFile() error copying file', {
+      fileExists
+    });
     throw new VError(error);
   }
 }
@@ -62,7 +70,11 @@ async function SetMetaProperty(
     const res = await file.setMetadata(metaObj);
     return res[0];
   } catch (error) {
-    throw new VError(error);
+    const [fileExists] = await file.exists();
+    console.error('storage-helper: SetMetaProperty() error setting meta', {
+      fileExists
+    });
+    throw new Error(error);
   }
 }
 
@@ -73,6 +85,10 @@ async function GetMetaProperty(file: File, key: string): Promise<any> {
     const metaData = meta.metadata || {};
     newValueString = metaData[key] || null;
   } catch (error) {
+    const [fileExists] = await file.exists();
+    console.error('storage-helper: GetMetaProperty() error getting meta', {
+      fileExists
+    });
     throw new VError(error);
   }
   try {
@@ -104,7 +120,9 @@ async function TryCheckWritePermission(
       'read'
     );
     if (!result) {
-      throw new Error('Permission denied creating item in directory:' + parentPath);
+      throw new Error(
+        'Permission denied creating item in directory:' + parentPath
+      );
     }
   } catch (error) {
     throw new Error(error);

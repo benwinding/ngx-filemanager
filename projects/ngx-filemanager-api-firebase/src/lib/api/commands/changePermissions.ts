@@ -15,12 +15,32 @@ export function SetPermissionToObj(
     ...perms.factory.blankPermissionsObj(),
     ...permissionsObj
   };
+  newPermissions.unix = '777';
   const list: CoreTypes.PermissionEntity[] = [];
   const match = list.find(u => u.id === entity.id);
   if (!match) {
     list.push(entity);
   }
   return newPermissions;
+}
+
+export async function ChangeSingleFilePermissionsAsSudo(
+  file: File,
+  role: CoreTypes.PermissionsRole,
+  entity: CoreTypes.PermissionEntity
+) {
+  try {
+    const currentFilePermissions = await perms.queries.RetrieveFilePermissions(file);
+    const newPermissions = SetPermissionToObj(
+      currentFilePermissions,
+      role,
+      entity
+    );
+    const res = await perms.commands.UpdateFilePermissions(file, newPermissions);
+    return res;
+  } catch (error) {
+    throw new VError(error);
+  }
 }
 
 export async function TryChangeSingleFilePermissions(
@@ -31,11 +51,10 @@ export async function TryChangeSingleFilePermissions(
 ) {
   try {
     const currentFilePermissions = await perms.queries.RetrieveFilePermissions(file);
-    // CheckCanEdit(currentFilePermissions, claims);
-
-    // const canChangePerms = ;
-    // perms === UserAccessResult._w_;
-    // if (perms === UserAccessResult._w_)
+    const canEditPermissions = perms.queries.TryCheckFileAccess(currentFilePermissions, claims, 'write');
+    if (!canEditPermissions) {
+      throw new Error('Cannot edit permissions here');
+    }
     const newPermissions = SetPermissionToObj(
       currentFilePermissions,
       role,
@@ -44,7 +63,7 @@ export async function TryChangeSingleFilePermissions(
     const res = await perms.commands.UpdateFilePermissions(file, newPermissions);
     return res;
   } catch (error) {
-    throw new VError(error);
+    throw new Error(error);
   }
 }
 
@@ -106,10 +125,6 @@ export async function ChangePermissions(
         )
       )
     );
-    // const successArr = successArrArr.reduce((acc, cur) => {
-    //   return acc.concat(cur);
-    // }, []);
-    // const results = getResultFromArray(successArr);
     // return results;
     return {
       success: successArr as any

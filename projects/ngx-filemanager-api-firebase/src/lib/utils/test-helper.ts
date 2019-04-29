@@ -30,6 +30,18 @@ function uploadTestFile(file: File) {
   return file.save(buffer, fileOptions);
 }
 
+async function uploadTestFileWithPerms(
+  file: File,
+  permissionsObj: CoreTypes.PermissionsObject
+) {
+  const buffer = new Buffer('hi there');
+  const fileOptions = {
+    contentType: 'text/plain'
+  };
+  await file.save(buffer, fileOptions);
+  await perms.commands.UpdateFilePermissions(file, permissionsObj);
+}
+
 function uploadTestFiles(files: File[]) {
   return Promise.all(files.map(file => uploadTestFile(file)));
 }
@@ -103,6 +115,7 @@ export const testHelper = {
   blankPermissionWithGroups,
   uploadTestFile,
   uploadTestFiles,
+  uploadTestFileWithPerms,
   removeFile,
   removeFiles,
   removeDir,
