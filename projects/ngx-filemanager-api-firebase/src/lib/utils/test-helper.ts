@@ -83,7 +83,7 @@ async function removeFiles(files: File[]) {
 async function removeDir(bucket: Bucket, dirPath: string) {
   const pathParsed = paths.EnsureGoogleStoragePathDir(dirPath);
   await tryRemove(bucket, pathParsed);
-  console.warn('test-helper: removeDir() removed directory', {dirPath});
+  console.log('test-helper: removeDir() removed directory', {dirPath});
   try {
     const childrenToRemove = await storage.GetAllChildrenWithPrefix(bucket, pathParsed);
     await Promise.all(childrenToRemove.map(c => c.delete()));
