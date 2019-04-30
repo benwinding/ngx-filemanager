@@ -111,6 +111,38 @@ function Add2ToPath(inputPath: string): string {
   return fileName;
 }
 
+function GetFileNameWithExtension(inputPath: string): string {
+  const fileNameWithExt = inputPath.split('/').pop();
+  return fileNameWithExt;
+}
+
+function GetFileNameWithoutExtension(inputPath: string): string {
+  const fileNameWithExt = GetFileNameWithExtension(inputPath);
+  const segments = fileNameWithExt.split('.');
+  segments.pop(); // remove extension
+  return segments.join('.');
+}
+
+function GetPathUpToLastBracket(inputPath: string): string {
+  const slashes = inputPath.split('/');
+  slashes.pop();
+  const dirPath = slashes.join('/');
+  const fileName = inputPath.slice(dirPath.length);
+  const bracketSegments = fileName.split('(');
+  bracketSegments.pop();
+  const fileNameWith = bracketSegments.join('(');
+  if (fileName.includes('(')) {
+    const filepathWithBracket = path.join(dirPath, fileNameWith + '(');
+    return filepathWithBracket;
+  }
+  const dotSegments = inputPath.split('.');
+  if (dotSegments.length < 2) {
+    return inputPath;
+  }
+  dotSegments.pop();
+  return dotSegments.join('.');
+}
+
 export const paths = {
   HasPrefixSlash,
   HasTrailingSlash,
@@ -127,5 +159,8 @@ export const paths = {
   IsCurrentPathFile,
   GetSubDirectory,
   GetParentDir,
+  GetFileNameWithExtension,
+  GetFileNameWithoutExtension,
+  GetPathUpToLastBracket,
   Add2ToPath,
 };

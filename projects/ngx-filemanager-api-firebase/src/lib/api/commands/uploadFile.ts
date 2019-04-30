@@ -1,19 +1,32 @@
-import { Bucket } from '../../types/google-cloud-types';
+import { Bucket, File } from '../../types/google-cloud-types';
 import * as path from 'path';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { paths } from '../../utils/paths';
 
 export async function SaveBufferToPath(
-  bucket: Bucket,
-  filePath: string,
+  file: File,
   mimetype: string,
-  buffer: Buffer,
+  buffer: Buffer
 ) {
-  const finalFile = bucket.file(filePath);
   const fileOptions = {
     contentType: mimetype
   };
-  return finalFile.save(buffer, fileOptions);
+  console.log('uploadFile: SaveBufferToPath', { mimetype, path: file.name });
+  return file.save(buffer, fileOptions);
+}
+
+export async function GetNextFreeFilenameRecursively(
+  bucket: Bucket,
+  inputFile: File
+): Promise<File> {
+  const [exists] = await inputFile.exists();
+  if (!exists) {
+    return inputFile;
+  }
+  const filePath = inputFile.name;
+  const nextPath = paths.Add2ToPath(filePath);
+  const nextFreeFile = bucket.file(nextPath);
+  return GetNextFreeFilenameRecursively(bucket, nextFreeFile);
 }
 
 export async function UploadFile(
@@ -29,8 +42,8 @@ export async function UploadFile(
   const file = bucket.file(bucketFilePath);
   const [exists] = await file.exists();
   if (exists) {
-    const copiedPath = paths.Add2ToPath(bucketFilePath);
-    return SaveBufferToPath(bucket, copiedPath, mimetype, buffer);
+    const uniqueFile = await GetNextFreeFilenameRecursively(bucket, file);
+    return SaveBufferToPath(uniqueFile, mimetype, buffer);
   }
-  return SaveBufferToPath(bucket, bucketFilePath, mimetype, buffer);
+  return SaveBufferToPath(file, mimetype, buffer);
 }

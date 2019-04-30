@@ -1,32 +1,8 @@
-import { GetListFromStorage, GetList, GetListWithoutPermissions } from './list';
+import { GetList } from './list';
 import { testHelper } from '../../utils/test-helper';
 import { perms } from '../../permissions';
 
 const testBucket = testHelper.testBucket;
-
-test('list get files in sub directory', async () => {
-  const result = await GetListFromStorage(
-    testBucket,
-    'list.spec.ts/test1/sub1'
-  );
-  expect(result.length).toBe(3);
-});
-
-test('list get files and directories', async () => {
-  const result = await GetListFromStorage(
-    testBucket,
-    'list.spec.ts/test1'
-  );
-  expect(result.length).toBe(3);
-});
-
-test('list get files and directories and translate', async () => {
-  const result = await GetListWithoutPermissions(
-    testBucket,
-    'list.spec.ts/test1'
-  );
-  expect(result.length).toBe(3);
-});
 
 test('should list files with permissions', async () => {
   // Add files
@@ -42,9 +18,9 @@ test('should list files with permissions', async () => {
     groups: ['0002']
   });
   // testHelper.logObj({result});
+  await testHelper.removeDir(testBucket, 'list.spec.ts/test2');
   expect(result.length).toBe(2);
-  await testHelper.removeFiles(files);
-});
+}, 60000);
 
 test('should not list files with permissions', async () => {
   // Add files
@@ -60,9 +36,9 @@ test('should not list files with permissions', async () => {
     groups: ['0ascacsasc']
   });
   // testHelper.logObj({result});
+  await testHelper.removeDir(testBucket, 'list.spec.ts/test3');
   expect(result.length).toBe(1);
-  await testHelper.removeFiles(files);
-});
+}, 60000);
 
 /* response for http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files: 400 Bad Request, {
     "error": "Bad request to ngx-file-manager!",

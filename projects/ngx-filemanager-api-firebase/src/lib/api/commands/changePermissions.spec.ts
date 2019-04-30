@@ -14,7 +14,7 @@ test('set permissions to object', async () => {
   const entity = uuid();
   const newPermissions = SetPermissionToObj(oldPermissions, 'READER', entity);
   expect(newPermissions.readers).toBeTruthy();
-});
+}, 60000);
 
 test('set permissions without any claims', async () => {
   const file1 = testBucket.file('changePermissions.spec.ts/test1/file5.txt');
@@ -35,7 +35,7 @@ test('set permissions without any claims', async () => {
   };
   await expect(shouldThrow()).rejects.toThrowError();
   await testHelper.removeFile(testBucket, file1.name);
-}, 30000);
+}, 60000);
 
 test('set permissions with claims', async () => {
   const file1 = testBucket.file('changePermissions.spec.ts/test2/file3.txt');
@@ -59,7 +59,7 @@ test('set permissions with claims', async () => {
   };
   await expect(shouldNotThrow()).resolves.not.toThrowError();
   await testHelper.removeFile(testBucket, file1.name);
-}, 30000);
+}, 60000);
 
 test('set permissions with claims in group', async () => {
   const file1 = testBucket.file('changePermissions.spec.ts/test3/file1.txt');
@@ -83,4 +83,4 @@ test('set permissions with claims in group', async () => {
   };
   await expect(shouldNotThrow()).resolves.not.toThrowError();
   await testHelper.removeFile(testBucket, file1.name);
-}, 30000);
+}, 60000);

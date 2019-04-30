@@ -79,3 +79,28 @@ test('', () => {
   const result = paths.GetSubDirectory('/cwd/', '/cwd/sub/file');
   return expect(result).toBe('sub');
 });
+
+test('should find upto bracket 1', () => {
+  const result = paths.GetPathUpToLastBracket('/cwd/file (');
+  return expect(result).toBe('/cwd/file (');
+});
+
+test('should find upto bracket 2', () => {
+  const result = paths.GetPathUpToLastBracket('/cwd/file (1) (114214) (');
+  return expect(result).toBe('/cwd/file (1) (114214) (');
+});
+
+test('should find upto bracket 3', () => {
+  const result = paths.GetPathUpToLastBracket('/cwd (1)/file (');
+  return expect(result).toBe('/cwd (1)/file (');
+});
+
+test('should find upto bracket 4', () => {
+  const result = paths.GetPathUpToLastBracket('/cwd (1)/file as a');
+  return expect(result).toBe('/cwd (1)/file as a');
+});
+
+test('should find upto bracket 5', () => {
+  const result = paths.GetPathUpToLastBracket('/cwd (1)/file.txt');
+  return expect(result).toBe('/cwd (1)/file');
+});

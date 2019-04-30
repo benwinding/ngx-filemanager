@@ -6,6 +6,7 @@ import { CoreTypes } from 'ngx-filemanager-core/public_api';
 
 import * as CICULAR from 'circular-json';
 import * as admin from 'firebase-admin';
+import { storage } from './storage-helper';
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../serviceAccountKey.TESTS.json');
 const testbucketname = 'resvu-integration-tests.appspot.com';
@@ -57,8 +58,8 @@ async function tryCheckExists(bucket: Bucket, objectPath: string) {
 }
 
 async function tryRemove(bucket: Bucket, objectPath: string) {
-  const file = bucket.file(objectPath);
   try {
+    const file = bucket.file(objectPath);
     const [exists] = await file.exists();
     if (exists) {
       console.log('- deleting file: ', file.name);
@@ -66,7 +67,7 @@ async function tryRemove(bucket: Bucket, objectPath: string) {
     }
     return false;
   } catch (error) {
-    throw new VError(error);
+    console.log('test-helper: tryRemove() unable to delete file that doesn\'t exist...', {objectPath});
   }
 }
 
@@ -81,7 +82,14 @@ async function removeFiles(files: File[]) {
 
 async function removeDir(bucket: Bucket, dirPath: string) {
   const pathParsed = paths.EnsureGoogleStoragePathDir(dirPath);
-  return tryRemove(bucket, pathParsed);
+  await tryRemove(bucket, pathParsed);
+  console.warn('test-helper: removeDir() removed directory', {dirPath});
+  try {
+    const childrenToRemove = await storage.GetAllChildrenWithPrefix(bucket, pathParsed);
+    await Promise.all(childrenToRemove.map(c => c.delete()));
+  } catch (error) {
+    console.log('test-helper: removeDir() problem removing children of path', {dirPath});
+  }
 }
 
 async function existsFile(bucket: Bucket, filePath: string) {

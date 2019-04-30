@@ -17,4 +17,4 @@ test('TryChangeSingleFilePermissions', async () => {
   const group = permissions.writers.pop();
   expect(group).toBe('1234');
   await testHelper.removeFile(testBucket, file.name);
-});
+}, 60000);
