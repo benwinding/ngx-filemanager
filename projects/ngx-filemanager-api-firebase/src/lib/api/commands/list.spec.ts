@@ -1,7 +1,6 @@
 import { GetListFromStorage, GetList, GetListWithoutPermissions } from './list';
 import { testHelper } from '../../utils/test-helper';
 import { perms } from '../../permissions';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
 
 const testBucket = testHelper.testBucket;
 
@@ -36,19 +35,14 @@ test('should list files with permissions', async () => {
   const files = [file1, file2];
   await testHelper.uploadTestFiles(files);
   // Set permissions
-  const permissions = testHelper.blankPermissionWithGroups([
-    {
-      name: 'Group 1',
-      id: '0001'
-    }
-  ]) as CoreTypes.PermissionsObject;
-  permissions.unix = '770';
+  const permissions = testHelper.blankPermissionWithWriters(['0002']);
+  permissions.others = 'read';
   await perms.commands.UpdateFilePermissions(file1, permissions);
   const result = await GetList(testBucket, 'list.spec.ts/test2', {
     groups: ['0002']
   });
   // testHelper.logObj({result});
-  expect(result.length).toBe(1);
+  expect(result.length).toBe(2);
   await testHelper.removeFiles(files);
 });
 
@@ -59,18 +53,14 @@ test('should not list files with permissions', async () => {
   const files = [file1, file2];
   await testHelper.uploadTestFiles(files);
   // Set permissions
-  const permissions = testHelper.blankPermissionWithGroups([
-    {
-      name: 'Group 1',
-      id: '0ascacsasc'
-    }
-  ]);
+  const permissions = testHelper.blankPermissionWithWriters(['0ascacsasc']);
+  permissions.others = 'hidden';
   await perms.commands.UpdateFilePermissions(file1, permissions);
   const result = await GetList(testBucket, 'list.spec.ts/test3', {
     groups: ['0ascacsasc']
   });
   // testHelper.logObj({result});
-  expect(result.length).toBe(2);
+  expect(result.length).toBe(1);
   await testHelper.removeFiles(files);
 });
 

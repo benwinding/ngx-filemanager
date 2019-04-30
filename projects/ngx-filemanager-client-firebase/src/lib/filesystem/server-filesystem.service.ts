@@ -121,7 +121,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
   SetPermissions(
     item: string,
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<CoreTypes.ResBodySetPermissions> {
     const req: CoreTypes.ReqBodySetPermissions = {
@@ -161,7 +161,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
   SetPermissionsMultiple(
     items: string[],
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<CoreTypes.ResBodySetPermissions> {
     const req: CoreTypes.ReqBodySetPermissions = {

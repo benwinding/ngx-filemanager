@@ -71,7 +71,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   async OnSetPermissions(
     item: string,
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<void> {}
   async OnMoveMultiple(items: string[], newPath: string): Promise<void> {
@@ -81,7 +81,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   async OnSetPermissionsMultiple(
     items: string[],
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<void> {}
   async OnRemove(items: string[]): Promise<void> {

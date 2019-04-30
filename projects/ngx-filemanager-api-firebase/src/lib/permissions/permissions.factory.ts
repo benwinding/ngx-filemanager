@@ -6,11 +6,11 @@ function blankUserClaim(): CoreTypes.UserCustomClaims {
   };
 }
 
-function blankPermissionsObj(): CoreTypes.PermissionsObject {
+function blankPermissionsObj(): CoreTypes.FilePermissionsObject {
   return {
-    unix: '777',
-    groups: [],
-    users: []
+    others: 'read/write',
+    readers: [],
+    writers: []
   };
 }
 

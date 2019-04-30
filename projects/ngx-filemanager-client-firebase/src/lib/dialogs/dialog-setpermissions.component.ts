@@ -1,13 +1,13 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { Observable, Subject, pipe } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import {
   FileManagerConfig,
   NameUid
 } from '../configuration/client-configuration';
-import { takeUntil, map, tap } from 'rxjs/operators';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { LoggerService } from '../logging/logger.service';
 
 export interface PermissionsDialogInterface {
   files: CoreTypes.ResFile[];
@@ -15,7 +15,7 @@ export interface PermissionsDialogInterface {
 }
 export interface PermissionsDialogResponseInterface {
   role: CoreTypes.PermissionsRole;
-  entity: CoreTypes.PermissionEntity;
+  entity: CoreTypes.FilePermissionEntity;
   files: CoreTypes.ResFile[];
 }
 
@@ -60,10 +60,7 @@ export interface PermissionsDialogResponseInterface {
             [formControl]="entityControl"
             [placeholder]="EntityControlLabel"
           >
-            <mat-option
-              *ngFor="let entity of ($users | async)"
-              [value]="entity"
-            >
+            <mat-option *ngFor="let entity of $users | async" [value]="entity">
               {{ entity.name }}
             </mat-option>
           </mat-select>
@@ -75,10 +72,7 @@ export interface PermissionsDialogResponseInterface {
             [formControl]="entityControl"
             [placeholder]="EntityControlLabel"
           >
-            <mat-option
-              *ngFor="let entity of ($groups | async)"
-              [value]="entity"
-            >
+            <mat-option *ngFor="let entity of $groups | async" [value]="entity">
               {{ entity.name }}
             </mat-option>
           </mat-select>
@@ -118,34 +112,20 @@ export class AppDialogSetPermissionsComponent implements OnDestroy {
   entityTypeOptions: ('user' | 'group')[] = ['user', 'group'];
   entityControl = new FormControl();
 
-  $users: Observable<CoreTypes.PermissionEntity[]>;
-  $groups: Observable<CoreTypes.PermissionEntity[]>;
+  $users: Observable<NameUid[]>;
+  $groups: Observable<NameUid[]>;
 
   destroyed = new Subject();
 
   constructor(
+    private logger: LoggerService,
     public dialogRef: MatDialogRef<AppDialogSetPermissionsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: PermissionsDialogInterface
   ) {
     this.items = data.files;
     const config = data.config;
-    this.$users = config.users.pipe(this.pipeConvertToEntity('user'));
-    this.$groups = config.groups.pipe(this.pipeConvertToEntity('group'));
-  }
-
-  pipeConvertToEntity(type: 'user' | 'group') {
-    return pipe(
-      map((arr: NameUid[]) => {
-        return arr.map(value => {
-          const entity: CoreTypes.PermissionEntity = {
-            name: value.name,
-            id: value.uid
-          };
-          return entity;
-        });
-      }),
-      tap(vals => console.log('dialog setpermissions', { type, vals }))
-    );
+    this.$users = config.users;
+    this.$groups = config.groups;
   }
 
   ngOnDestroy() {
@@ -161,11 +141,14 @@ export class AppDialogSetPermissionsComponent implements OnDestroy {
   }
 
   onSubmit() {
+    const choosenValue = this.entityControl.value as NameUid;
+    const entity = choosenValue.uid;
     const response: PermissionsDialogResponseInterface = {
       role: this.roleControl.value,
-      entity: this.entityControl.value,
+      entity: entity,
       files: this.data.files
     };
+    this.logger.info('onSubmit', { entity, choosenValue, response });
     this.dialogRef.close(response);
   }
   onCancel() {

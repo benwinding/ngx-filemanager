@@ -7,19 +7,23 @@ import { perms } from '../../permissions';
 import { storage } from '../../utils/storage-helper';
 
 export function SetPermissionToObj(
-  permissionsObj: CoreTypes.PermissionsObject,
+  permissionsObj: CoreTypes.FilePermissionsObject,
   role: CoreTypes.PermissionsRole,
-  entity: CoreTypes.PermissionEntity
-): CoreTypes.PermissionsObject {
+  entity: CoreTypes.FilePermissionEntity
+): CoreTypes.FilePermissionsObject {
   const newPermissions = {
     ...perms.factory.blankPermissionsObj(),
     ...permissionsObj
   };
-  newPermissions.unix = '777';
-  const list: CoreTypes.PermissionEntity[] = [];
-  const match = list.find(u => u.id === entity.id);
-  if (!match) {
-    list.push(entity);
+  if (role === 'READER') {
+    if (!newPermissions.readers.includes(entity)) {
+      newPermissions.readers.push(entity);
+    }
+  }
+  if (role === 'WRITER') {
+    if (!newPermissions.writers.includes(entity)) {
+      newPermissions.writers.push(entity);
+    }
   }
   return newPermissions;
 }
@@ -27,7 +31,7 @@ export function SetPermissionToObj(
 export async function ChangeSingleFilePermissionsAsSudo(
   file: File,
   role: CoreTypes.PermissionsRole,
-  entity: CoreTypes.PermissionEntity
+  entity: CoreTypes.FilePermissionEntity
 ) {
   try {
     const currentFilePermissions = await perms.queries.RetrieveFilePermissions(file);
@@ -46,7 +50,7 @@ export async function ChangeSingleFilePermissionsAsSudo(
 export async function TryChangeSingleFilePermissions(
   file: File,
   role: CoreTypes.PermissionsRole,
-  entity: CoreTypes.PermissionEntity,
+  entity: CoreTypes.FilePermissionEntity,
   claims: CoreTypes.UserCustomClaims
 ) {
   try {
@@ -71,7 +75,7 @@ async function tryChangePermissions(
   bucket: Bucket,
   filePath: string,
   role: CoreTypes.PermissionsRole,
-  entity: CoreTypes.PermissionEntity,
+  entity: CoreTypes.FilePermissionEntity,
   isRecursive: boolean,
   claims: CoreTypes.UserCustomClaims
 ): Promise<request.Response[]> {
@@ -107,12 +111,12 @@ export async function ChangePermissions(
   bucket: Bucket,
   items: string[],
   role: CoreTypes.PermissionsRole,
-  entity: CoreTypes.PermissionEntity,
+  entity: CoreTypes.FilePermissionEntity,
   isRecursive: boolean,
   claims: CoreTypes.UserCustomClaims
 ): Promise<CoreTypes.ResultObj> {
   try {
-    perms.queries.TryCheckHasAnyPermissions(claims);
+    // perms.queries.TryCheckHasAnyPermissions(claims);
     const successArr = await Promise.all(
       items.map(filePath =>
         tryChangePermissions(

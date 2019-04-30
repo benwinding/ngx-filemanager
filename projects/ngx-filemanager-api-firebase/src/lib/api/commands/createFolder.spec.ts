@@ -14,43 +14,20 @@ test('test creating and removing directory no-permissions', async () => {
 }, 30000);
 
 test('test creating and removing directory with-permissions', async () => {
-  const permissionsDir = '/createFolder/test1/parentPerms';
-  await CreateFolderWithoutPermissions(testBucket, permissionsDir);
-  const directoryPath = paths.EnsureGoogleStoragePathDir(permissionsDir);
-  const file = testBucket.file(directoryPath);
-  const newPermissions = testHelper.blankPermissionWithUsers([]);
-  newPermissions.unix = '770';
+  // Make parent directory
+  const parentDir = '/createFolder/test1/parentPerms';
+  await CreateFolderWithoutPermissions(testBucket, parentDir);
+  const parentDirPath = paths.EnsureGoogleStoragePathDir(parentDir);
+  const file = testBucket.file(parentDirPath);
+  // Set parent permissions
+  const newPermissions = testHelper.blankPermissionWithReaders([]);
+  newPermissions.others = 'read';
   await perms.commands.UpdateFilePermissions(file, newPermissions);
-
   const shouldThrow = async () => {
-    try {
-      const permissionsDirSub = '/createFolder/test1/parentPerms/mysub';
-      await CreateFolder(testBucket, permissionsDirSub, null);
-    } catch (error) {
-      throw new Error('Failed');
-    }
-  };
-  expect(shouldThrow()).rejects.toThrowError();
-  await testHelper.removeDir(testBucket, permissionsDir);
-}, 30000);
-
-test('test creating and removing directory with-permissions', async () => {
-  const permissionsDir = '/createFolder/test1/parentPerms';
-  await CreateFolderWithoutPermissions(testBucket, permissionsDir);
-  const directoryPath = paths.EnsureGoogleStoragePathDir(permissionsDir);
-  const file = testBucket.file(directoryPath);
-  const newPermissions = testHelper.blankPermissionWithUsers([]);
-  newPermissions.unix = '770';
-  await perms.commands.UpdateFilePermissions(file, newPermissions);
-
-  const shouldThrow = async () => {
-    try {
-      const permissionsDirSub = '/createFolder/test1/parentPerms/mysub';
-      await CreateFolder(testBucket, permissionsDirSub, null);
-    } catch (error) {
-      throw new Error('Failed');
-    }
+    const permissionsDirSub = '/createFolder/test1/parentPerms/mysub';
+    return CreateFolder(testBucket, permissionsDirSub, null);
   };
   await expect(shouldThrow()).rejects.toThrowError();
-  await testHelper.removeDir(testBucket, permissionsDir);
+  await testHelper.removeDir(testBucket, parentDir);
 }, 30000);
+

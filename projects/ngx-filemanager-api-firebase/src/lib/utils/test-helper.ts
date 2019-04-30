@@ -32,7 +32,7 @@ function uploadTestFile(file: File) {
 
 async function uploadTestFileWithPerms(
   file: File,
-  permissionsObj: CoreTypes.PermissionsObject
+  permissionsObj: CoreTypes.FilePermissionsObject
 ) {
   const buffer = new Buffer('hi there');
   const fileOptions = {
@@ -94,25 +94,25 @@ async function existsDir(bucket: Bucket, filePath: string) {
   return tryCheckExists(bucket, pathParsed);
 }
 
-function blankPermissionWithUsers(
-  users: CoreTypes.PermissionEntity[]
-): CoreTypes.PermissionsObject {
+function blankPermissionWithReaders(
+  readers: CoreTypes.FilePermissionEntity[]
+): CoreTypes.FilePermissionsObject {
   const newPermissions = perms.factory.blankPermissionsObj();
-  newPermissions.users = users;
+  newPermissions.readers = readers;
   return newPermissions;
 }
 
-function blankPermissionWithGroups(
-  groups: CoreTypes.PermissionEntity[]
-): CoreTypes.PermissionsObject {
+function blankPermissionWithWriters(
+  writers: CoreTypes.FilePermissionEntity[]
+): CoreTypes.FilePermissionsObject {
   const newPermissions = perms.factory.blankPermissionsObj();
-  newPermissions.groups = groups;
+  newPermissions.writers = writers;
   return newPermissions;
 }
 
 export const testHelper = {
-  blankPermissionWithUsers,
-  blankPermissionWithGroups,
+  blankPermissionWithReaders,
+  blankPermissionWithWriters,
   uploadTestFile,
   uploadTestFiles,
   uploadTestFileWithPerms,

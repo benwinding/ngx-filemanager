@@ -162,7 +162,7 @@ export class OptimisticFilesystemService
   async HandleSetPermissions(
     item: string,
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<any> {
     try {
@@ -199,7 +199,7 @@ export class OptimisticFilesystemService
   async HandleSetPermissionsMultiple(
     items: string[],
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<any> {
     try {

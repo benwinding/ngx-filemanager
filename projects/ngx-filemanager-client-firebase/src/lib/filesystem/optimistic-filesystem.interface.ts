@@ -13,7 +13,7 @@ export interface OptimisticFilesystem {
   HandleSetPermissions(
     item: string,
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<any>;
   // File/Directory Bulk Actions
@@ -22,7 +22,7 @@ export interface OptimisticFilesystem {
   HandleSetPermissionsMultiple(
     items: string[],
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<any>;
   HandleRemove(items: string[]): Promise<any>;

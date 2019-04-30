@@ -23,7 +23,7 @@ export namespace CoreTypes {
     name: string; // filename with extension or directory name
     fullPath: string;
     rightsFirebase: {}[]; // unix string
-    permissions: PermissionsObject; // unix string
+    permissions: FilePermissionsObject; // unix string
     perms?: string;
     size: string; // bytes
     date: string; // iso format
@@ -105,7 +105,7 @@ export namespace CoreTypes {
   export interface ReqBodySetPermissions extends ReqBodyAction {
     items: string[];
     role: PermissionsRole;
-    entity: PermissionEntity;
+    entity: FilePermissionEntity;
     recursive: boolean;
   }
 
@@ -146,14 +146,15 @@ export namespace CoreTypes {
     | 'extract'
     | 'downloadMultiple';
 
-  export interface PermissionEntity {
-    name: string;
-    id: string;
-  }
-  export interface PermissionsObject {
-    unix: string;
-    groups: PermissionEntity[];
-    users: PermissionEntity[];
+  export type UserId = string;
+  export type GroupId = string;
+  export type FilePermissionEntity = UserId | GroupId;
+  export type FilePermissionOthers = 'read' | 'read/write' | 'hidden';
+
+  export interface FilePermissionsObject {
+    readers: FilePermissionEntity[];
+    writers: FilePermissionEntity[];
+    others: FilePermissionOthers;
   }
 
   export interface FirebaseToken {

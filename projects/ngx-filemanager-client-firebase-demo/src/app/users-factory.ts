@@ -1,6 +1,6 @@
 import { NameUid } from 'ngx-filemanager-client-firebase';
 import { BehaviorSubject } from 'rxjs';
-import * as uuid from 'uuid/v1';
+import * as uuid from 'uuid/v4';
 
 export function MakeUser(name) {
   return {

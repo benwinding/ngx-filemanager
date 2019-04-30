@@ -117,7 +117,7 @@ async function TryCheckWritePermission(
     const result = perms.queries.TryCheckFileAccess(
       parentPermissions,
       claims,
-      'read'
+      'write'
     );
     if (!result) {
       throw new Error(

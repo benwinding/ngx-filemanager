@@ -4,7 +4,7 @@ import { storage } from '../utils/storage-helper';
 
 async function UpdateFilePermissions(
   file: File,
-  newPermissions: CoreTypes.PermissionsObject
+  newPermissions: CoreTypes.FilePermissionsObject
 ) {
   return storage.SetMetaProperty(file, 'permissions', newPermissions);
 }

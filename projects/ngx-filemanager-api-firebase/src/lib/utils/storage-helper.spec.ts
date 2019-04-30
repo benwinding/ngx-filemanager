@@ -1,4 +1,4 @@
-import * as uuid from 'uuid/v1';
+import * as uuid from 'uuid/v4';
 import { storage } from './storage-helper';
 import { testHelper } from './test-helper';
 

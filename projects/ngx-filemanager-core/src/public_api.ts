@@ -26,7 +26,7 @@ export interface FileSystemProvider {
   SetPermissions(
     item: string,
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<CoreTypes.ResBodySetPermissions>;
 
@@ -43,7 +43,7 @@ export interface FileSystemProvider {
   SetPermissionsMultiple(
     items: string[],
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<CoreTypes.ResBodySetPermissions>;
   Remove(items: string[]): Promise<CoreTypes.ResBodyRemove>;

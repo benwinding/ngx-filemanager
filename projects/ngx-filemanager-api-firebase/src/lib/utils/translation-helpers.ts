@@ -42,6 +42,7 @@ export async function translateStorageToResFile(
     resFile.fullPath = paths.EnsureAbsolutePathFile(f.fullPath);
   }
   if (f.isPhantomFolder) {
+    resFile.permissions = perms.factory.blankPermissionsObj();
     resFile.isPhantomFolder = true;
     return resFile;
   }

@@ -9,15 +9,12 @@ test('TryChangeSingleFilePermissions', async () => {
     'changePermissions/TryChangeSingleFilePermissions.txt'
   );
   await testHelper.uploadTestFile(file);
-  const permissionsToSet = testHelper.blankPermissionWithGroups([
-    { id: '0', name: 'name' }
-  ]);
+  const permissionsToSet = testHelper.blankPermissionWithWriters(['1234']);
   await permsCommands.UpdateFilePermissions(file, permissionsToSet);
-  const permissions: CoreTypes.PermissionsObject = await permsQueries.RetrieveFilePermissions(
+  const permissions: CoreTypes.FilePermissionsObject = await permsQueries.RetrieveFilePermissions(
     file
   );
-  const group = permissions.groups.pop();
-  expect(group.id).toBe('0');
-  expect(group.name).toBe('name');
+  const group = permissions.writers.pop();
+  expect(group).toBe('1234');
   await testHelper.removeFile(testBucket, file.name);
 });

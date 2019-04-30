@@ -142,7 +142,7 @@ export class FileSystemStub implements FileSystemProvider {
   async SetPermissions(
     item: string,
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<CoreTypes.ResBodySetPermissions> {
     await this.fakeDelay();
@@ -179,7 +179,7 @@ export class FileSystemStub implements FileSystemProvider {
   async SetPermissionsMultiple(
     items: string[],
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<CoreTypes.ResBodySetPermissions> {
     await this.fakeDelay();

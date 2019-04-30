@@ -54,17 +54,17 @@ import { promiseDelay } from '../utils/delayer';
           </button>
         </span>
         <div>
-          <h6 *ngIf="unix">Unix Permissions</h6>
+          <h6 *ngIf="others">Unix Permissions</h6>
           <p>
-            {{ unix }}
+            {{ others }}
           </p>
-          <h6 *ngIf="groups && groups.length">Groups</h6>
-          <p *ngFor="let entity of groups">
-            {{ entity.name }}
+          <h6 *ngIf="readers && readers.length">Readers</h6>
+          <p *ngFor="let entity of readers">
+            {{ entity | json }}
           </p>
-          <h6 *ngIf="users && users.length">Users</h6>
-          <p *ngFor="let entity of users">
-            {{ entity.name }}
+          <h6 *ngIf="writers && writers.length">Writers</h6>
+          <p *ngFor="let entity of writers">
+            {{ entity | json}}
           </p>
         </div>
         <h5>Full Path</h5>
@@ -158,9 +158,9 @@ export class FileDetailsComponent {
   @Output()
   clickedSetPermissions = new EventEmitter<CoreTypes.ResFile>();
 
-  unix: string;
-  groups: CoreTypes.PermissionEntity[];
-  users: CoreTypes.PermissionEntity[];
+  others: string;
+  writers: CoreTypes.FilePermissionEntity[];
+  readers: CoreTypes.FilePermissionEntity[];
 
   getFileType(fileName: string) {
     return guesser.getFileIconName(fileName);
@@ -195,9 +195,9 @@ export class FileDetailsComponent {
     }
     try {
       const permissions = this._file.permissions;
-      this.groups = permissions.groups;
-      this.users = permissions.users;
-      this.unix = permissions.unix;
+      this.readers = permissions.readers;
+      this.writers = permissions.writers;
+      this.others = permissions.others;
     } catch (error) {
       console.error('file-details: setPermissions', {
         error,

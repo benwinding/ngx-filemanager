@@ -18,7 +18,7 @@ export interface ClientFileSystem {
   OnSetPermissions(
     item: string,
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<void>;
   // File/Directory Bulk Actions
@@ -27,7 +27,7 @@ export interface ClientFileSystem {
   OnSetPermissionsMultiple(
     items: string[],
     role: CoreTypes.PermissionsRole,
-    entity: CoreTypes.PermissionEntity,
+    entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<void>;
   OnRemove(items: string[]): Promise<void>;

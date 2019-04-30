@@ -7,8 +7,11 @@ import { storage } from '../utils/storage-helper';
 
 async function RetrieveFilePermissions(
   file: File
-): Promise<CoreTypes.PermissionsObject> {
-  const fromStorage: CoreTypes.PermissionsObject = await storage.GetMetaProperty(file, 'permissions');
+): Promise<CoreTypes.FilePermissionsObject> {
+  const fromStorage: CoreTypes.FilePermissionsObject = await storage.GetMetaProperty(
+    file,
+    'permissions'
+  );
   const blank = permsFactory.blankPermissionsObj();
   const safePerms = {
     ...blank,
@@ -40,15 +43,37 @@ function TryCheckHasAnyPermissions(claims: CoreTypes.UserCustomClaims) {
   }
 }
 
+function CanRead(othersPermissions: CoreTypes.FilePermissionOthers) {
+  return othersPermissions === 'read' || othersPermissions === 'read/write';
+}
+
+function CanWrite(othersPermissions: CoreTypes.FilePermissionOthers) {
+  return othersPermissions === 'read/write';
+}
+
+function CanOthersDo(
+  othersPermissions: CoreTypes.FilePermissionOthers,
+  toCheck: 'read' | 'write'
+) {
+  switch (toCheck) {
+    case 'read':
+      return CanRead(othersPermissions);
+    case 'write':
+      return CanWrite(othersPermissions);
+    default:
+      break;
+  }
+}
+
+export type FilePermission = 'write' | 'read';
+
 function TryCheckFileAccess(
-  filePermissions: CoreTypes.PermissionsObject,
+  filePermissions: CoreTypes.FilePermissionsObject,
   claims: CoreTypes.UserCustomClaims,
-  toCheck: FilePermission
+  toCheck: 'read' | 'write'
 ): boolean {
   // Anyone can do something
-  const unixOctalGroup = filePermissions.unix;
-  const [octalUser, octalGroup, octalOther] = Array.from(unixOctalGroup);
-  const anyoneCanDo = CheckUnixOctal(octalOther, toCheck);
+  const anyoneCanDo = CanOthersDo(filePermissions.others, toCheck);
   if (anyoneCanDo) {
     return true;
   }
@@ -62,26 +87,29 @@ function TryCheckFileAccess(
   if (sudoCanDo) {
     return true;
   }
-  // Group can do something
-  const groupCanDo = CheckUnixOctal(octalGroup, toCheck);
-  if (groupCanDo && IsPartOfArray(filePermissions.groups, claims.groups)) {
-    return true;
+  const userAndGroups = [...claims.groups, claims.user_id];
+  let arrayToCheck;
+  if (toCheck === 'read') {
+    arrayToCheck = filePermissions.readers;
+  } else {
+    arrayToCheck = filePermissions.writers;
   }
-  // User can do something
-  const userCanDo = CheckUnixOctal(octalUser, toCheck);
-  if (userCanDo && IsPartOfArray(filePermissions.users, [claims.user_id])) {
+  if (IsPartOfArray(arrayToCheck, userAndGroups)) {
     return true;
   }
   return false;
 }
 
-function IsPartOfArray(arr: CoreTypes.PermissionEntity[], userGroups: string[]) {
-  const hasNoGroupsToCheck = !userGroups || !userGroups.length;
+function IsPartOfArray(
+  arr: CoreTypes.FilePermissionEntity[],
+  usersGroups: string[]
+) {
+  const hasNoGroupsToCheck = !usersGroups || !usersGroups.length;
   if (hasNoGroupsToCheck) {
     return false;
   }
-  const userGroupSet = new Set(userGroups);
-  const isInArray = arr.find(entity => userGroupSet.has(entity.id));
+  const userGroupSet = new Set(usersGroups);
+  const isInArray = arr.find(entity => userGroupSet.has(entity));
   return !!isInArray;
 }
 
@@ -90,5 +118,5 @@ export const permsQueries = {
   RetrieveCustomClaims,
   TryCheckHasAnyPermissions,
   TryCheckFileAccess,
-  IsPartOfArray,
+  IsPartOfArray
 };

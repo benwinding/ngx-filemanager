@@ -1,41 +1,26 @@
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { permsFactory } from './permissions.factory';
 import { permsQueries } from './permissions-queries';
 import { testHelper } from '../utils/test-helper';
 
 const testBucket = testHelper.testBucket;
 
-test('test permsQueries.IsPartOfArray users', () => {
-  const permissions = permsFactory.blankPermissionsObj();
-  const entity: CoreTypes.PermissionEntity = {
-    name: 'Dan',
-    id: 'aocji898ac9asc',
-  };
-  permissions.users.push(entity);
-  const users = ['ascascasc'];
-  const isInArray = permsQueries.IsPartOfArray(permissions.users, users);
+test('check not part of array permsQueries.IsPartOfArray', () => {
+  const isInArray = permsQueries.IsPartOfArray(['ascascasc'], ['sssss']);
   expect(isInArray).toBe(false);
 });
 
 test('test permsQueries.IsPartOfArray', () => {
-  const permissions = permsFactory.blankPermissionsObj();
-  const entity: CoreTypes.PermissionEntity = {
-    name: 'Dan',
-    id: 'aocji898ac9asc',
-  };
-  permissions.users.push(entity);
-  const users = ['aocji898ac9asc'];
-  const isInArray = permsQueries.IsPartOfArray(permissions.users, users);
+  const isInArray = permsQueries.IsPartOfArray(['sssss'], ['sssss']);
   expect(isInArray).toBe(true);
 });
 
-test('get permissions obj to object storage', async () => {
+test('test default file permissions when uploaded', async () => {
   const file = testBucket.file(
     'permissions-helper.spec.ts/blankPermissions.txt'
   );
   const permissions = await permsQueries.RetrieveFilePermissions(file);
   console.log('perms', {permissions});
-  expect(permissions.unix).toBe('777');
+  expect(permissions.others).toBe('read/write');
 });
 
 test('TryCheckHasAnyPermissions', () => {

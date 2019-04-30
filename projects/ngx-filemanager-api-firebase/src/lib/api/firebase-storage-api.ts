@@ -242,7 +242,7 @@ export class NgxFileMangerApiFireBaseClass {
       };
       return response;
     } catch (error) {
-      throw new Error(error.message);
+      throw new VError(error.message);
     }
   }
 
