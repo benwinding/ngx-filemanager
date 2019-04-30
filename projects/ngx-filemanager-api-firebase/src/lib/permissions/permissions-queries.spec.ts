@@ -29,7 +29,9 @@ test('TryCheckHasAnyPermissions', () => {
     permsQueries.TryCheckHasAnyPermissions(blankClaims);
   };
   expect(shouldError).toThrowError();
+});
 
+test('TryCheckHasAnyPermissions', () => {
   const shouldNotError = () => {
     const claims = permsFactory.blankUserClaim();
     claims.groups.push('ascascasc');
