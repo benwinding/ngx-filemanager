@@ -71,7 +71,8 @@ function GetRelativePath(
 }
 
 function GetParentDir(currentDirectoryPath: string): string {
-  const parentPath = path.dirname(currentDirectoryPath);
+  const parsed = EnsurePrefixSlash(currentDirectoryPath);
+  const parentPath = path.dirname(parsed);
   return EnsureGoogleStoragePathDir(parentPath);
 }
 

@@ -19,7 +19,7 @@ test('test default file permissions when uploaded', async () => {
     'permissions-helper.spec.ts/blankPermissions.txt'
   );
   const permissions = await permsQueries.RetrieveFilePermissions(file);
-  console.log('perms', {permissions});
+  console.log('perms', { permissions });
   expect(permissions.others).toBe('read/write');
 });
 

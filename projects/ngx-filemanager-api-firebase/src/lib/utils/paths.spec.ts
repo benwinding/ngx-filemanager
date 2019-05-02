@@ -136,3 +136,8 @@ test('must handle sub dir', () => {
   const result = paths.GetParentDir('/sub/casasc');
   return expect(result).toBe('sub/');
 });
+
+test('must handle sub dir', () => {
+  const result = paths.GetParentDir('sub/');
+  return expect(result).toBe('');
+});

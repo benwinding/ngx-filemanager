@@ -44,6 +44,40 @@ test('should not list files with permissions', async () => {
   expect(result.length).toBe(1);
 }, 60000);
 
+test('should list empty directories', async () => {
+  // Add files
+  const file1 = testBucket.file('list.spec.ts/test4/dir1/');
+  const file2 = testBucket.file('list.spec.ts/test4/dir2/');
+  const files = [file1, file2];
+  await testHelper.uploadTestFiles(files);
+  // Set permissions
+  await testHelper.delayMs(200);
+  const result = await GetList(testBucket, 'list.spec.ts/test4', {
+    groups: ['0ascacsasc']
+  });
+  // testHelper.logObj({result});
+  await testHelper.delayMs(200);
+  await testHelper.removeDir(testBucket, 'list.spec.ts/test4');
+  expect(result.length).toBe(2);
+}, 60000);
+
+test('should list empty sub directories', async () => {
+  // Add files
+  const file1 = testBucket.file('list.spec.ts/test5/dir1/');
+  const file2 = testBucket.file('list.spec.ts/test5/dir2/sub1/upload.txt');
+  const files = [file1, file2];
+  await testHelper.uploadTestFiles(files);
+  // Set permissions
+  await testHelper.delayMs(200);
+  const result = await GetList(testBucket, 'list.spec.ts/test5', {
+    groups: ['0ascacsasc']
+  });
+  // testHelper.logObj({result});
+  await testHelper.delayMs(200);
+  await testHelper.removeDir(testBucket, 'list.spec.ts/test5');
+  expect(result.length).toBe(2);
+}, 60000);
+
 /* response for http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files: 400 Bad Request, {
     "error": "Bad request to ngx-file-manager!",
     "errorDetail": "Cannot read property 'readers' of undefined",

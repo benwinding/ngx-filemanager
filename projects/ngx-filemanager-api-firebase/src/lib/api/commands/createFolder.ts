@@ -2,6 +2,7 @@ import { Bucket } from '../../types/google-cloud-types';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { paths } from '../../utils/paths';
 import { storage } from '../../utils/storage-helper';
+import { perms } from '../../permissions';
 
 export async function CreateFolderWithoutPermissions(
   bucket: Bucket,
@@ -12,6 +13,8 @@ export async function CreateFolderWithoutPermissions(
   const result = { success: true };
   try {
     await file.save('');
+    const blankPerms = perms.factory.blankPermissionsObj();
+    await perms.commands.UpdateFilePermissions(file, blankPerms);
   } catch (error) {
     result.success = false;
   }

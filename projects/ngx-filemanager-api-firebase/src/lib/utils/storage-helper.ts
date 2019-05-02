@@ -119,6 +119,10 @@ async function TryCheckWritePermission(
 ): Promise<any> {
   try {
     const parentPath = paths.GetParentDir(newDirPath);
+    const isRoot = parentPath === '';
+    if (isRoot) {
+      return;
+    }
     const parentDir = bucket.file(parentPath);
     const [fileExists] = await parentDir.exists();
     if (!fileExists) {
