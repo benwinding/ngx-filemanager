@@ -24,17 +24,17 @@
       "ngx-filemanager-core/*": [
         "dist/ngx-filemanager-core/*"
       ],
-      "ngx-filemanager-api-firebase": [
-        "dist/ngx-filemanager-api-firebase"
+      "ngx-filemanager-api": [
+        "dist/ngx-filemanager-api"
       ],
-      "ngx-filemanager-api-firebase/*": [
-        "dist/ngx-filemanager-api-firebase/*"
+      "ngx-filemanager-api/*": [
+        "dist/ngx-filemanager-api/*"
       ],
-      "ngx-filemanager-client-firebase": [
-        "dist/ngx-filemanager-client-firebase"
+      "ngx-filemanager-client": [
+        "dist/ngx-filemanager-client"
       ],
-      "ngx-filemanager-client-firebase/*": [
-        "dist/ngx-filemanager-client-firebase/*"
+      "ngx-filemanager-client/*": [
+        "dist/ngx-filemanager-client/*"
       ]
     }
   }

@@ -41,23 +41,23 @@ This package has been designed to be easy to install on an Angular app.
 
 1. In your `functions` file for Firebase, navigate to the folder and install the 'filemanager' backend npm package.
 
-`yarn add ngx-filemanager-api-firebase`
+`yarn add ngx-filemanager-api`
 
 2. Then add the dependency to the cloud functions as an endpoint like so:
 
 ``` typescript
-import { FileManagerEndpointExpress } from '../../ngx-filemanager-api-firebase/src/public_api';
+import { FileManagerEndpointExpress } from '../../ngx-filemanager-api/src/public_api';
 exports.files_endpoint = functions.https.onRequest(FileManagerEndpointExpress(admin.storage()))
 ```
 
 Now add the client-side npm package to the Angular App.
 
-`yarn add ngx-filemanager-client-firebase`
+`yarn add ngx-filemanager-client`
 
 Then import the module into your `app.module.ts`.
 
 ``` typescript
-import { NgxFilemanagerClientFirebaseModule } from 'ngx-filemanager-client-firebase';
+import { NgxFilemanagerClientFirebaseModule } from 'ngx-filemanager-client';
 
 imports: [
   ...,
@@ -68,7 +68,7 @@ imports: [
 Then add the icon assets to the `angular.json` file:
 
 ``` json
-"ngx-filemanager-client-firebase-demo": {
+"ngx-filemanager-client-demo": {
   ...,
   "architect": {
     "build": {
@@ -79,7 +79,7 @@ Then add the icon assets to the `angular.json` file:
           ...,
           {
             "glob": "**/*",
-            "input": "node_modules/ngx-filemanager-client-firebase/assets",
+            "input": "node_modules/ngx-filemanager-client/assets",
             "output": "./assets/fileicons"
           }
 ```
@@ -91,7 +91,7 @@ import { Component } from '@angular/core';
 import {
   FilesSystemProviderService,
   FileManagerConfig
-} from 'ngx-filemanager-client-firebase';
+} from 'ngx-filemanager-client';
 
 @Component({
   selector: 'app-test-page',

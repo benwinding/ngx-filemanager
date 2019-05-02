@@ -36,43 +36,43 @@
         }
       }
     },
-    "ngx-filemanager-api-firebase": {
-      "root": "projects/ngx-filemanager-api-firebase",
-      "sourceRoot": "projects/ngx-filemanager-api-firebase/src",
+    "ngx-filemanager-api": {
+      "root": "projects/ngx-filemanager-api",
+      "sourceRoot": "projects/ngx-filemanager-api/src",
       "projectType": "library",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@linnenschmidt/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/ngx-filemanager-api-firebase/tsconfig.lib.json",
-            "project": "projects/ngx-filemanager-api-firebase/ng-package.json",
+            "tsConfig": "projects/ngx-filemanager-api/tsconfig.lib.json",
+            "project": "projects/ngx-filemanager-api/ng-package.json",
             "assets": ["src/assets"]
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngx-filemanager-api-firebase/src/test.ts",
-            "tsConfig": "projects/ngx-filemanager-api-firebase/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-filemanager-api-firebase/karma.conf.js"
+            "main": "projects/ngx-filemanager-api/src/test.ts",
+            "tsConfig": "projects/ngx-filemanager-api/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-filemanager-api/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ngx-filemanager-api-firebase/tsconfig.lib.json",
-              "projects/ngx-filemanager-api-firebase/tsconfig.spec.json"
+              "projects/ngx-filemanager-api/tsconfig.lib.json",
+              "projects/ngx-filemanager-api/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
         }
       }
     },
-    "ngx-filemanager-api-firebase-demo": {
-      "root": "projects/ngx-filemanager-api-firebase-demo",
-      "sourceRoot": "projects/ngx-filemanager-api-firebase-demo/src",
+    "ngx-filemanager-api-demo": {
+      "root": "projects/ngx-filemanager-api-demo",
+      "sourceRoot": "projects/ngx-filemanager-api-demo/src",
       "projectType": "application",
       "prefix": "lib",
       "architect": {
@@ -80,71 +80,71 @@
           "builder": "@angular-builders/custom-webpack:server",
           "options": {
             "customWebpackConfig": {
-              "path": "projects/ngx-filemanager-api-firebase-demo/webpack.config.js",
+              "path": "projects/ngx-filemanager-api-demo/webpack.config.js",
               "mergeStrategies": { "externals": "replace" }
             },
-            "outputPath": "dist/ngx-filemanager-api-firebase-demo",
-            "main": "projects/ngx-filemanager-api-firebase-demo/src/index.ts",
-            "tsConfig": "projects/ngx-filemanager-api-firebase-demo/tsconfig.lib.json"
+            "outputPath": "dist/ngx-filemanager-api-demo",
+            "main": "projects/ngx-filemanager-api-demo/src/index.ts",
+            "tsConfig": "projects/ngx-filemanager-api-demo/tsconfig.lib.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngx-filemanager-api-firebase-demo/src/test.ts",
-            "tsConfig": "projects/ngx-filemanager-api-firebase-demo/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-filemanager-api-firebase-demo/karma.conf.js"
+            "main": "projects/ngx-filemanager-api-demo/src/test.ts",
+            "tsConfig": "projects/ngx-filemanager-api-demo/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-filemanager-api-demo/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ngx-filemanager-api-firebase-demo/tsconfig.lib.json",
-              "projects/ngx-filemanager-api-firebase-demo/tsconfig.spec.json"
+              "projects/ngx-filemanager-api-demo/tsconfig.lib.json",
+              "projects/ngx-filemanager-api-demo/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
         }
       }
     },
-    "ngx-filemanager-client-firebase": {
-      "root": "projects/ngx-filemanager-client-firebase",
-      "sourceRoot": "projects/ngx-filemanager-client-firebase/src",
+    "ngx-filemanager-client": {
+      "root": "projects/ngx-filemanager-client",
+      "sourceRoot": "projects/ngx-filemanager-client/src",
       "projectType": "library",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@linnenschmidt/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/ngx-filemanager-client-firebase/tsconfig.lib.json",
-            "project": "projects/ngx-filemanager-client-firebase/ng-package.json",
+            "tsConfig": "projects/ngx-filemanager-client/tsconfig.lib.json",
+            "project": "projects/ngx-filemanager-client/ng-package.json",
             "assets": ["src/assets"]
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngx-filemanager-client-firebase/src/test.ts",
-            "tsConfig": "projects/ngx-filemanager-client-firebase/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-filemanager-client-firebase/karma.conf.js"
+            "main": "projects/ngx-filemanager-client/src/test.ts",
+            "tsConfig": "projects/ngx-filemanager-client/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-filemanager-client/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ngx-filemanager-client-firebase/tsconfig.lib.json",
-              "projects/ngx-filemanager-client-firebase/tsconfig.spec.json"
+              "projects/ngx-filemanager-client/tsconfig.lib.json",
+              "projects/ngx-filemanager-client/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
         }
       }
     },
-    "ngx-filemanager-client-firebase-demo": {
-      "root": "projects/ngx-filemanager-client-firebase-demo/",
-      "sourceRoot": "projects/ngx-filemanager-client-firebase-demo/src",
+    "ngx-filemanager-client-demo": {
+      "root": "projects/ngx-filemanager-client-demo/",
+      "sourceRoot": "projects/ngx-filemanager-client-demo/src",
       "projectType": "application",
       "prefix": "app",
       "schematics": {
@@ -156,22 +156,22 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ngx-filemanager-client-firebase-demo",
-            "index": "projects/ngx-filemanager-client-firebase-demo/src/index.html",
-            "main": "projects/ngx-filemanager-client-firebase-demo/src/main.ts",
-            "polyfills": "projects/ngx-filemanager-client-firebase-demo/src/polyfills.ts",
-            "tsConfig": "projects/ngx-filemanager-client-firebase-demo/tsconfig.app.json",
+            "outputPath": "dist/ngx-filemanager-client-demo",
+            "index": "projects/ngx-filemanager-client-demo/src/index.html",
+            "main": "projects/ngx-filemanager-client-demo/src/main.ts",
+            "polyfills": "projects/ngx-filemanager-client-demo/src/polyfills.ts",
+            "tsConfig": "projects/ngx-filemanager-client-demo/tsconfig.app.json",
             "assets": [
-              "projects/ngx-filemanager-client-firebase-demo/src/favicon.ico",
-              "projects/ngx-filemanager-client-firebase-demo/src/assets",
+              "projects/ngx-filemanager-client-demo/src/favicon.ico",
+              "projects/ngx-filemanager-client-demo/src/assets",
               {
                 "glob": "**/*",
-                "input": "./dist/ngx-filemanager-client-firebase/assets",
+                "input": "./dist/ngx-filemanager-client/assets",
                 "output": "./assets/fileicons"
               }
             ],
             "styles": [
-              "projects/ngx-filemanager-client-firebase-demo/src/styles.scss"
+              "projects/ngx-filemanager-client-demo/src/styles.scss"
             ],
             "scripts": []
           },
@@ -179,8 +179,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/ngx-filemanager-client-firebase-demo/src/environments/environment.ts",
-                  "with": "projects/ngx-filemanager-client-firebase-demo/src/environments/environment.prod.ts"
+                  "replace": "projects/ngx-filemanager-client-demo/src/environments/environment.ts",
+                  "with": "projects/ngx-filemanager-client-demo/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -206,34 +206,34 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ngx-filemanager-client-firebase-demo:build"
+            "browserTarget": "ngx-filemanager-client-demo:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ngx-filemanager-client-firebase-demo:build:production"
+              "browserTarget": "ngx-filemanager-client-demo:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ngx-filemanager-client-firebase-demo:build"
+            "browserTarget": "ngx-filemanager-client-demo:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ngx-filemanager-client-firebase-demo/src/test.ts",
-            "polyfills": "projects/ngx-filemanager-client-firebase-demo/src/polyfills.ts",
-            "tsConfig": "projects/ngx-filemanager-client-firebase-demo/tsconfig.spec.json",
-            "karmaConfig": "projects/ngx-filemanager-client-firebase-demo/karma.conf.js",
+            "main": "projects/ngx-filemanager-client-demo/src/test.ts",
+            "polyfills": "projects/ngx-filemanager-client-demo/src/polyfills.ts",
+            "tsConfig": "projects/ngx-filemanager-client-demo/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-filemanager-client-demo/karma.conf.js",
             "styles": [
-              "projects/ngx-filemanager-client-firebase-demo/src/styles.css"
+              "projects/ngx-filemanager-client-demo/src/styles.css"
             ],
             "scripts": [],
             "assets": [
-              "projects/ngx-filemanager-client-firebase-demo/src/favicon.ico",
-              "projects/ngx-filemanager-client-firebase-demo/src/assets"
+              "projects/ngx-filemanager-client-demo/src/favicon.ico",
+              "projects/ngx-filemanager-client-demo/src/assets"
             ]
           }
         },
@@ -241,8 +241,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/ngx-filemanager-client-firebase-demo/tsconfig.app.json",
-              "projects/ngx-filemanager-client-firebase-demo/tsconfig.spec.json"
+              "projects/ngx-filemanager-client-demo/tsconfig.app.json",
+              "projects/ngx-filemanager-client-demo/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
@@ -250,5 +250,5 @@
       }
     }
   },
-  "defaultProject": "ngx-filemanager-client-firebase-demo"
+  "defaultProject": "ngx-filemanager-client-demo"
 }

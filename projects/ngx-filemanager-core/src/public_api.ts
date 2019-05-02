@@ -46,7 +46,13 @@ export interface FileSystemProvider {
     entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<CoreTypes.ResBodySetPermissions>;
+  SetPermissionsObjectMultiple(
+    items: string[],
+    permissionsObj: CoreTypes.FilePermissionsObject,
+    recursive?: boolean
+  ): Promise<CoreTypes.ResBodySetPermissions>;
   Remove(items: string[]): Promise<CoreTypes.ResBodyRemove>;
   GetUploadApiUrl(currentPath: string): string;
   CreateDownloadLink(file: CoreTypes.ResFile): Promise<string>;
+  GetSingle(item: string): Promise<CoreTypes.ResBodyGetSingle>;
 }

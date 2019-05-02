@@ -30,6 +30,7 @@ export namespace CoreTypes {
     type: 'dir' | 'file';
     isPhantomFolder?: boolean;
     metaData?: any;
+    downloadUrl?: string;
   }
 
   export interface ResBodyList {
@@ -109,6 +110,12 @@ export namespace CoreTypes {
     recursive: boolean;
   }
 
+  export interface ReqBodySetPermissionsObject extends ReqBodyAction {
+    items: string[];
+    permissionsObj: FilePermissionsObject;
+    recursive: boolean;
+  }
+
   export interface ResBodySetPermissions extends ResBodySuccess {}
 
   // UPLOAD FILE
@@ -117,13 +124,14 @@ export namespace CoreTypes {
 
   // UPLOAD FILE
 
-  export interface ReqBodyGetMeta extends ReqBodyAction {
+  export interface ReqBodyGetSingle extends ReqBodyAction {
     item: string;
   }
 
-  export interface ResBodyGetMeta extends ResBodySuccess {
+  export interface ResBodyGetSingle extends ResBodySuccess {
     result: {
-      url?: string;
+      url: string;
+      file: ResFile;
       success: boolean;
       error?: string;
     };
@@ -139,9 +147,10 @@ export namespace CoreTypes {
     | 'remove'
     | 'edit'
     | 'getContent'
-    | 'getMeta'
+    | 'getSingle'
     | 'createFolder'
     | 'changePermissions'
+    | 'changePermissionsObject'
     | 'compress'
     | 'extract'
     | 'downloadMultiple';

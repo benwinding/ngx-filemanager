@@ -5,15 +5,15 @@
       "name": "Launch TypeScript",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/projects/ngx-filemanager-api-firebase-demo/src/index.ts",
+      "program": "${workspaceFolder}/projects/ngx-filemanager-api-demo/src/index.ts",
       "outFiles": [ "${workspaceFolder}/dist/**/*.js" ]
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Debug Node Api Demo",
-      // "webRoot": "${workspaceFolder}/projects/ngx-filemanager-api-firebase-demo/src",
-      "program": "${workspaceFolder}/dist/ngx-filemanager-api-firebase-demo/main.js",
+      // "webRoot": "${workspaceFolder}/projects/ngx-filemanager-api-demo/src",
+      "program": "${workspaceFolder}/dist/ngx-filemanager-api-demo/main.js",
       "stopOnEntry": false,
       "sourceMaps": true
     },
@@ -38,7 +38,7 @@
       "args": [
         "${fileBasenameNoExtension}",
         "--config",
-        "${workspaceFolder}/projects/ngx-filemanager-api-firebase/jest.config.js"
+        "${workspaceFolder}/projects/ngx-filemanager-api/jest.config.js"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",

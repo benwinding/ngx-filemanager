@@ -1,7 +1,0 @@
-{
-  "name": "ngx-filemanager-api-firebase-demo",
-  "peerDependencies": {
-    "firebase-admin": "~7.0.0",
-    "firebase-functions": "^2.2.0"
-  }
-}
