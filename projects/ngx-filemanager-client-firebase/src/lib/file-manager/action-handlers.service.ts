@@ -215,7 +215,8 @@ export class ActionHandlersService {
       currentPath: currentPath,
       uploadApiUrl: this.fileSystem.GetUploadApiUrl(currentPath)
     };
-    await this.openDialog(AppDialogUploadFilesComponent, data);
+    const uploadedPaths: string[] = await this.openDialog(AppDialogUploadFilesComponent, data);
+    this.optimisticFs.HandleUploadClientOnly(uploadedPaths);
     await this.optimisticFs.HandleList(currentPath);
   }
 

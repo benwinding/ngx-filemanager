@@ -65,7 +65,21 @@ export class NgxFileManagerComponent implements OnInit {
     this.actionHandlers.init(this.fileSystem, this.config);
     this.makeConfig();
     if (this.config && this.config.virtualRoot) {
+      this.tryCreateVirtualRoot(this.config.virtualRoot);
       this.actionHandlers.OnNavigateTo(this.config.virtualRoot);
+    }
+  }
+
+  async tryCreateVirtualRoot(virtualRoot: string) {
+    if (virtualRoot === '/') {
+      return;
+    }
+    try {
+      this.logger.info('trying to create virtualRoot folder', {virtualRoot});
+      await this.fileSystem.CreateFolder(virtualRoot);
+      this.logger.info('sucessfully created folder', {virtualRoot});
+    } catch (error) {
+      this.logger.info('failed to create virtual root folder', {error});
     }
   }
 
@@ -134,7 +148,8 @@ export class NgxFileManagerComponent implements OnInit {
       $triggerClearSelected: this.$triggerClearSelected,
       filterText: 'Search here...',
       hideChooseColumns: true,
-      hideFilter: true
+      hideFilter: true,
+      initialSort: 'name'
     };
   }
 

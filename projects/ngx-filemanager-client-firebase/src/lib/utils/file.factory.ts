@@ -1,4 +1,5 @@
 import { CoreTypes } from 'ngx-filemanager-core';
+import * as path from 'path-browserify';
 
 // temporary directory for the client while it refreshes
 export function MakeClientDirectory(
@@ -13,5 +14,20 @@ export function MakeClientDirectory(
     size: null,
     date: new Date().toISOString(),
     type: 'dir'
+  };
+}
+
+export function MakeClientFile(
+  fullPath: string
+): CoreTypes.ResFile {
+  const fileName = path.basename(fullPath);
+  return {
+    name: fileName,
+    fullPath: fullPath,
+    rightsFirebase: [],
+    permissions: {} as any,
+    size: null,
+    date: new Date().toISOString(),
+    type: 'file'
   };
 }

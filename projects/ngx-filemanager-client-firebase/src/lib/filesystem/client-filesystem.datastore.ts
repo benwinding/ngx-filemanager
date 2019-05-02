@@ -2,6 +2,7 @@ import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { ClientCache } from './client-filesystem.cache';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ConsoleLoggerService } from '../logging/console-logger.service';
+import { EnsureTrailingSlash } from '../utils/path-helpers';
 
 export class ClientFileSystemDataStore {
   private cache = new ClientCache();
@@ -28,7 +29,8 @@ export class ClientFileSystemDataStore {
   public CurrentFiles() {
     return this._$currentFiles.value;
   }
-  public GetCached(directoryPath: string) {
+  public GetCached(input: string) {
+    const directoryPath = EnsureTrailingSlash(input);
     return this.cache.GetCached(directoryPath);
   }
   public SetDirectoryFiles(files: CoreTypes.ResFile[], directoryPath: string) {

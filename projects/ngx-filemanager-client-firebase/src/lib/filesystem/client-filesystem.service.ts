@@ -1,7 +1,7 @@
 import { map, filter } from 'rxjs/operators';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MakeClientDirectory } from '../utils/file.factory';
+import { MakeClientDirectory, MakeClientFile } from '../utils/file.factory';
 import { ClientFileSystem } from './client-filesystem.interface';
 import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemDataStore } from './client-filesystem.datastore';
@@ -60,6 +60,16 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     cachedFiles.unshift(newFolder);
     this.store.SetDirectoryFiles(cachedFiles, directoryPath);
     this.store.SetPath(directoryPath);
+  }
+  async OnUploadedFiles(uploadedFiles: string[]) {
+    if (!Array.isArray(uploadedFiles) || !uploadedFiles.length) {
+      return;
+    }
+    const directoryPath = this.store.CurrentPath();
+    const cachedFiles = this.store.GetCached(directoryPath);
+    const newFiles = uploadedFiles.map(f => MakeClientFile(f));
+    const allFiles = cachedFiles.concat(newFiles);
+    this.store.SetDirectoryFiles(allFiles, directoryPath);
   }
   async OnCopy(singleFileName: string, newPath: string): Promise<void> {}
   async OnMove(item: string, newPath: string): Promise<void> {

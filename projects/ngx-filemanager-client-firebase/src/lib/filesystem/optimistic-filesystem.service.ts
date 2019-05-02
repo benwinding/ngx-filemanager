@@ -110,6 +110,9 @@ export class OptimisticFilesystemService
       this.clientFilesystem.OnRemove([newPath]);
     }
   }
+  async HandleUploadClientOnly(uploadedFiles: string[]): Promise<any> {
+    this.clientFilesystem.OnUploadedFiles(uploadedFiles);
+  }
   async HandleCopy(singleFileName: string, newPath: string): Promise<any> {
     try {
       this.logger.info('HandleCopy', { singleFileName, newPath });

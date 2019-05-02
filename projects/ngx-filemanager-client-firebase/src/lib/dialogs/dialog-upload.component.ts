@@ -57,6 +57,7 @@ export class AppDialogUploadFilesComponent {
   };
 
   uploadQueue: {} = {};
+  uploadedFiles: string[] = [];
   get isDoneUploading() {
     return Object.keys(this.uploadQueue).length < 1;
   }
@@ -72,7 +73,7 @@ export class AppDialogUploadFilesComponent {
   }
 
   onSubmit() {
-    this.dialogRef.close();
+    this.dialogRef.close(this.uploadedFiles);
   }
 
   onCancel() {
@@ -89,6 +90,7 @@ export class AppDialogUploadFilesComponent {
     const file = $event.shift();
     const uuid = file.upload.uuid;
     this.logger.info('onUploadSuccess', { $event, uuid });
+    this.uploadedFiles.push(file.name);
     this.removeFromQueue(uuid);
   }
 

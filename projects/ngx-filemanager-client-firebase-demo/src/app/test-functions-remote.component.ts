@@ -5,7 +5,7 @@ import {
 } from 'ngx-filemanager-client-firebase';
 import { FormControl } from '@angular/forms';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Subject, combineLatest } from 'rxjs';
 import { $users, $groups } from './users-factory';
 
 @Component({
@@ -20,12 +20,20 @@ import { $users, $groups } from './users-factory';
           [formControl]="bucketName"
         />
       </mat-form-field>
-      <mat-form-field>
+      <mat-form-field style="margin-right: 15px;">
         <input
           matInput
           placeholder="apiEndpoint"
           type="text"
           [formControl]="apiEndpoint"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="virtualRoot"
+          type="text"
+          [formControl]="virtualRoot"
         />
       </mat-form-field>
     </mat-card>
@@ -46,6 +54,7 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
 
   bucketName = new FormControl('my-test-bucketname');
   apiEndpoint = new FormControl('http://localhost:4444/ApiPublic/files');
+  virtualRoot = new FormControl('/');
   showExplorer = true;
 
   destroyed = new Subject();
@@ -53,14 +62,13 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
   constructor(public firebaseClientProvider: ServerFilesystemProviderService) {
     this.bucketName.setValue(localStorage.getItem('bucketname'));
     this.apiEndpoint.setValue(localStorage.getItem('apiendpoint'));
+    this.virtualRoot.setValue(localStorage.getItem('virtualRoot') || '/');
     this.reInitializeExplorer();
-    this.bucketName.valueChanges
-      .pipe(
-        debounceTime(500),
-        takeUntil(this.destroyed)
-      )
-      .subscribe(() => this.reInitializeExplorer());
-    this.apiEndpoint.valueChanges
+    combineLatest(
+      this.bucketName.valueChanges,
+      this.apiEndpoint.valueChanges,
+      this.virtualRoot.valueChanges
+    )
       .pipe(
         debounceTime(500),
         takeUntil(this.destroyed)
@@ -78,8 +86,10 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
       this.bucketName.value,
       this.apiEndpoint.value
     );
+    this.config.virtualRoot = this.virtualRoot.value;
     localStorage.setItem('bucketname', this.bucketName.value);
     localStorage.setItem('apiendpoint', this.apiEndpoint.value);
+    localStorage.setItem('virtualRoot', this.virtualRoot.value);
     setTimeout(() => {
       this.showExplorer = true;
     }, 100);
