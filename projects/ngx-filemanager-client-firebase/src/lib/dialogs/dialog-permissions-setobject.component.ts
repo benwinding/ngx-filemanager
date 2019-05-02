@@ -113,7 +113,7 @@ export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
     this.items = data.files;
     const users$ = data.config.users;
     const groups$ = data.config.groups;
-    this.$allEntities = combineLatest(users$, groups$).pipe(
+    this.$allEntities = combineLatest(groups$, users$).pipe(
       tap(allEntities => this.logger.info('allEntities', { allEntities })),
       map(arr => arr[0].concat(arr[1])),
       map(arr =>
