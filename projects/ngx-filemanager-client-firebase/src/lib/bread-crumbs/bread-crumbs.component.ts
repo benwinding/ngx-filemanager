@@ -56,7 +56,7 @@ export class AppBreadCrumbsComponent {
       return;
     }
     const virtualRoot = this._config.virtualRoot;
-    this.crumbs = crumbFactory.MakeCrumbs(virtualRoot, newPath);
+    this.crumbs = crumbFactory.MakeCrumbs(virtualRoot, newPath || virtualRoot);
 
     this.logger.info('makeCrumbs', {
       crumbs: this.crumbs,

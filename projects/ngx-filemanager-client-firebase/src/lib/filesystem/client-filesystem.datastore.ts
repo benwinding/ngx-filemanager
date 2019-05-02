@@ -2,7 +2,7 @@ import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { ClientCache } from './client-filesystem.cache';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ConsoleLoggerService } from '../logging/console-logger.service';
-import { EnsureTrailingSlash } from '../utils/path-helpers';
+import { EnsureTrailingSlash, EnsurePrefixSlash } from '../utils/path-helpers';
 
 export class ClientFileSystemDataStore {
   private cache = new ClientCache();
@@ -37,12 +37,10 @@ export class ClientFileSystemDataStore {
     this.cache.SetCached(directoryPath, files);
   }
   public SetPath(path: string) {
-    this.logger.info('datastore.SetPath', {path});
-    if (!path.startsWith('/')) {
-      throw new Error('No / at beginning of path!');
-    }
-    const cachedFiles = this.cache.GetCached(path);
-    this._$currentPath.next(path);
+    const pathParsed = EnsurePrefixSlash(path);
+    this.logger.info('datastore.SetPath', {path, pathParsed});
+    const cachedFiles = this.cache.GetCached(pathParsed);
+    this._$currentPath.next(pathParsed);
     this._$currentFiles.next(cachedFiles);
   }
   SelectFile(item: CoreTypes.ResFile) {

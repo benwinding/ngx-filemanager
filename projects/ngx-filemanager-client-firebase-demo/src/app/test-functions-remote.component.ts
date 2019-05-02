@@ -60,10 +60,6 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
   destroyed = new Subject();
 
   constructor(public firebaseClientProvider: ServerFilesystemProviderService) {
-    this.bucketName.setValue(localStorage.getItem('bucketname'));
-    this.apiEndpoint.setValue(localStorage.getItem('apiendpoint'));
-    this.virtualRoot.setValue(localStorage.getItem('virtualRoot') || '/');
-    this.reInitializeExplorer();
     combineLatest(
       this.bucketName.valueChanges,
       this.apiEndpoint.valueChanges,
@@ -74,6 +70,9 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
         takeUntil(this.destroyed)
       )
       .subscribe(() => this.reInitializeExplorer());
+    this.bucketName.setValue(localStorage.getItem('bucketname'));
+    this.apiEndpoint.setValue(localStorage.getItem('apiendpoint'));
+    this.virtualRoot.setValue(localStorage.getItem('virtualRoot') || '/');
   }
 
   ngOnDestroy() {
