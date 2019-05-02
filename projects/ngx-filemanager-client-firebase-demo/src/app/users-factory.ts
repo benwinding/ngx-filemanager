@@ -1,4 +1,4 @@
-import { NameUid } from 'ngx-filemanager-client';
+import { NameUid } from 'ngx-filemanager-client-firebase';
 import { BehaviorSubject } from 'rxjs';
 import * as uuid from 'uuid/v4';
 

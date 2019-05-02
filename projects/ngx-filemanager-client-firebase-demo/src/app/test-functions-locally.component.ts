@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {
   FileManagerConfig,
   ServerFilesystemProviderService,
-} from 'ngx-filemanager-client';
+} from 'ngx-filemanager-client-firebase';
 import { $users, $groups } from './users-factory';
 
 @Component({

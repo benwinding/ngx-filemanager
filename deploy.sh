@@ -4,11 +4,11 @@ case "$1" in
       popd
       ;;
   client)
-      yarn client-build && pushd dist/ngx-filemanager-client && npm publish
+      yarn client-build && pushd dist/ngx-filemanager-client-firebase && npm publish
       popd
       ;;
   api)
-      yarn api-build && pushd dist/ngx-filemanager-api && npm publish
+      yarn api-build && pushd dist/ngx-filemanager-api-firebase && npm publish
       popd
       ;;
   *)

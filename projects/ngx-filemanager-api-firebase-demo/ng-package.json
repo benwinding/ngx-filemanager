@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/ngx-filemanager-api-demo",
+  "dest": "../../dist/ngx-filemanager-api-firebase-demo",
   "lib": {
     "entryFile": "src/index.ts"
   }

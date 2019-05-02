@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": "./src",
-    "outDir": "../../dist/ngx-filemanager-api-demo",
+    "outDir": "../../dist/ngx-filemanager-api-firebase-demo",
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -23,11 +23,11 @@
       "ngx-filemanager-core/*": [
         "/home/ben/work/ngx-filemanager/projects/ngx-filemanager-core/src/*"
       ],
-      "ngx-filemanager-api": [
-        "/home/ben/work/ngx-filemanager/projects/ngx-filemanager-api/src"
+      "ngx-filemanager-api-firebase": [
+        "/home/ben/work/ngx-filemanager/projects/ngx-filemanager-api-firebase/src"
       ],
-      "ngx-filemanager-api/*": [
-        "/home/ben/work/ngx-filemanager/projects/ngx-filemanager-api/src/*"
+      "ngx-filemanager-api-firebase/*": [
+        "/home/ben/work/ngx-filemanager/projects/ngx-filemanager-api-firebase/src/*"
       ]
     }
   },

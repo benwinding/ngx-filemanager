@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import {
   FileManagerConfig,
   ServerFilesystemProviderService
-} from 'ngx-filemanager-client';
+} from 'ngx-filemanager-client-firebase';
 import { FormControl } from '@angular/forms';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';

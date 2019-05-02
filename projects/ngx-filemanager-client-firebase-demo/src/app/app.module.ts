@@ -11,7 +11,7 @@ import {
 } from '@angular/material';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgxFilemanagerClientFirebaseModule } from 'ngx-filemanager-client';
+import { NgxFilemanagerClientFirebaseModule } from 'ngx-filemanager-client-firebase';
 import { AppTestFunctionsLocallyComponent } from './test-functions-locally.component';
 import { AppTestStubFilesystemComponent } from './test-stub-filesystem.component';
 import { AppTestFunctionsRemoteComponent } from './test-functions-remote.component';

@@ -17,7 +17,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-import { FileManagerEndpointExpress } from '../../ngx-filemanager-api/src/public_api';
+import { FileManagerEndpointExpress } from '../../ngx-filemanager-api-firebase/src/public_api';
 app.use('/ApiPublic/files/', FileManagerEndpointExpress(admin.storage()));
 
 const PORT = process.env.PORT || 4444;
