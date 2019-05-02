@@ -120,6 +120,10 @@ async function TryCheckWritePermission(
   try {
     const parentPath = paths.GetParentDir(newDirPath);
     const parentDir = bucket.file(parentPath);
+    const [fileExists] = await parentDir.exists();
+    if (!fileExists) {
+      return TryCheckWritePermission(bucket, parentPath, claims);
+    }
     const parentPermissions = await perms.queries.RetrieveFilePermissions(
       parentDir
     );

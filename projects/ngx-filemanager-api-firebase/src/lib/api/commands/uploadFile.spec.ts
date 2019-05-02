@@ -13,7 +13,7 @@ test('creates file and deletes it', async () => {
     new Buffer('hi there'),
     claims
   );
-  await testHelper.delayMs(200);
+  await testHelper.delayMs(500);
   const file = testBucket.file('uploadFile.spec.ts/upload/myfile.txt');
   const exists = await testHelper.existsFile(testBucket, file.name);
   expect(exists).toBe(true);
@@ -25,7 +25,7 @@ test('get next filename in directory', async () => {
   const existingPath2 = 'uploadFile.spec.ts/test2/file2 (2).txt';
   const existingFile = testBucket.file(existingPath1);
   await testHelper.uploadTestFile(existingFile);
-  await testHelper.delayMs(200);
+  await testHelper.delayMs(500);
   const nextFile = await GetNextFreeFilenameRecursively(testBucket, existingFile);
   expect(nextFile.name).toBe(existingPath2);
   await testHelper.removeDir(testBucket, '/uploadFile.spec.ts/test2/');
@@ -38,6 +38,7 @@ test('get next filename in directory recursive', async () => {
   const existingFile = testBucket.file(existingPath1);
   const existingFile2 = testBucket.file(existingPath2);
   await testHelper.uploadTestFiles([existingFile, existingFile2]);
+  await testHelper.delayMs(500);
   const nextFile = await GetNextFreeFilenameRecursively(testBucket, existingFile);
   await testHelper.removeDir(testBucket, '/uploadFile.spec.ts/test3/');
   expect(nextFile.name).toBe(existingPath3);

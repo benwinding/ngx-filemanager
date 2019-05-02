@@ -12,11 +12,6 @@ import {
   AppDialogCopyComponent,
   CopyDialogInterface
 } from '../dialogs/dialog-copy-or-move.component';
-import {
-  PermissionsDialogInterface,
-  PermissionsDialogResponseInterface,
-  AppDialogPermissionsSetComponent
-} from '../dialogs/dialog-permissions-set.component';
 import { FileManagerConfig } from '../configuration/client-configuration';
 import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
 import * as path from 'path-browserify';

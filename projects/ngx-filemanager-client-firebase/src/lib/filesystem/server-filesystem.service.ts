@@ -180,7 +180,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     recursive?: boolean
   ): Promise<CoreTypes.ResBodySetPermissions> {
     const req: CoreTypes.ReqBodySetPermissionsObject = {
-      ...this.makeBaseRequest('changePermissions'),
+      ...this.makeBaseRequest('changePermissionsObject'),
       items: items,
       permissionsObj: permissionsObj,
       recursive: recursive

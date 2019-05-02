@@ -1,7 +1,7 @@
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
-import { storage } from '../utils/storage-helper';
 import { testHelper } from '../utils/test-helper';
 import { permsCommands } from './permissions-commands';
+import { permsQueries } from './permissions-queries';
 
 const testBucket = testHelper.testBucket;
 
@@ -13,8 +13,10 @@ test('set permissions to file', async () => {
     writers: [],
     others: 'read'
   };
+  await testHelper.delayMs(500);
   await permsCommands.UpdateFilePermissions(file1, blankPerms);
-  const uploadedPerms: CoreTypes.FilePermissionsObject = await storage.GetMetaProperty(file1, 'permissions');
-  expect(uploadedPerms.readers.length).toBe(1);
+  await testHelper.delayMs(500);
+  const uploadedPerms: CoreTypes.FilePermissionsObject = await permsQueries.RetrieveFilePermissions(file1);
   await testHelper.removeFile(testBucket, file1.name);
-}, 30000);
+  expect(uploadedPerms.readers.length).toBe(1);
+}, 60000);

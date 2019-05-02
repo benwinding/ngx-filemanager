@@ -119,3 +119,20 @@ test('EnsureGoogleStoragePathDir 3', () => {
   const result = paths.EnsureGoogleStoragePathDir('root/dir');
   return expect(result).toBe('root/dir/');
 });
+
+// GetParent
+
+test('must handle root', () => {
+  const result = paths.GetParentDir('/');
+  return expect(result).toBe('');
+});
+
+test('must handle sub dir', () => {
+  const result = paths.GetParentDir('/cascasc');
+  return expect(result).toBe('');
+});
+
+test('must handle sub dir', () => {
+  const result = paths.GetParentDir('/sub/casasc');
+  return expect(result).toBe('sub/');
+});

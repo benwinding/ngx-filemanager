@@ -5,6 +5,7 @@ import {
   GetListWithoutPermissions
 } from './storage-helper';
 import { testHelper } from './test-helper';
+import { perms } from '../permissions';
 
 // Setup local firebase admin, using service account credentials
 const testBucket = testHelper.testBucket;
@@ -59,4 +60,44 @@ test('list get files and directories and translate', async () => {
   );
   await testHelper.removeDir(testBucket, 'storage-helper.spec.ts/test4/');
   expect(result.length).toBe(3);
+}, 60000);
+
+test('TryCheckWritePermission, of phantom dir, has permissions', async () => {
+  const rootDir = '/storage-helper.spec.ts/test5/';
+  // Upload dir with read/write permissions
+  const permissionsObj = perms.factory.blankPermissionsObj();
+  permissionsObj.others = 'read/write';
+  await testHelper.uploadTestFileWithPerms(
+    testBucket.file('storage-helper.spec.ts/test5/'),
+    permissionsObj
+  );
+  await testHelper.delayMs(500);
+  // Should be able to write to anything within that sub tree (if not exists)
+  const shouldNotThrow = async () => {
+    const subDirPath = rootDir + 'sub1/sub23/sub4/';
+    const claims = perms.factory.blankUserClaim();
+    await storage.TryCheckWritePermission(testBucket, subDirPath, claims);
+  }
+  expect(shouldNotThrow()).resolves.not.toThrow();
+  await testHelper.removeDir(testBucket, rootDir);
+}, 60000);
+
+test('TryCheckWritePermission, of phantom dir, no permission', async () => {
+  const rootDir = '/storage-helper.spec.ts/test5/';
+  // Upload dir with read/write permissions
+  const permissionsObj = perms.factory.blankPermissionsObj();
+  permissionsObj.others = 'read';
+  await testHelper.uploadTestFileWithPerms(
+    testBucket.file('storage-helper.spec.ts/test5/'),
+    permissionsObj
+  );
+  await testHelper.delayMs(500);
+  // Should be able to write to anything within that sub tree (if not exists)
+  const shouldThrow = async () => {
+    const subDirPath = rootDir + 'sub1/sub23/sub4/';
+    const claims = perms.factory.blankUserClaim();
+    await storage.TryCheckWritePermission(testBucket, subDirPath, claims);
+  }
+  expect(shouldThrow()).rejects.toThrow();
+  await testHelper.removeDir(testBucket, rootDir);
 }, 60000);

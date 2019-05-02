@@ -1,8 +1,3 @@
-import * as uuid from 'uuid/v4';
-import {
-  TryChangeSingleFilePermissions,
-  SetPermissionToObj
-} from './changePermissions';
 import { testHelper } from '../../utils/test-helper';
 import { perms } from '../../permissions';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
@@ -18,13 +13,14 @@ test('set permissions with claims in group', async () => {
     others: 'hidden'
   };
   await testHelper.uploadTestFileWithPerms(file1, blankPerms);
+  await testHelper.delayMs(500);
 
   const testClaims = perms.factory.blankUserClaim();
   testClaims.groups = ['12345'];
 
   const newPerms: CoreTypes.FilePermissionsObject = {
     writers: ['12345'],
-    readers: [],
+    readers: ['Example'],
     others: 'hidden'
   };
 
@@ -35,6 +31,6 @@ test('set permissions with claims in group', async () => {
       testClaims
     );
   };
-  await expect(shouldNotThrow()).resolves.not.toThrowError();
+  await expect(shouldNotThrow()).resolves.not.toThrow();
   await testHelper.removeFile(testBucket, file1.name);
 }, 60000);

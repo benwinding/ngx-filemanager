@@ -16,7 +16,7 @@ test('test creating and removing directory no-permissions', async () => {
 
 test('test creating and removing directory with-permissions', async () => {
   // Make parent directory
-  const parentDir = '/createFolder.spec.ts/test1/parentPerms';
+  const parentDir = '/createFolder.spec.ts/test2/parentPerms';
   await CreateFolderWithoutPermissions(testBucket, parentDir);
   const parentDirPath = paths.EnsureGoogleStoragePathDir(parentDir);
   const file = testBucket.file(parentDirPath);
@@ -26,10 +26,30 @@ test('test creating and removing directory with-permissions', async () => {
   await perms.commands.UpdateFilePermissions(file, newPermissions);
   await testHelper.delayMs(200);
   const shouldThrow = async () => {
-    const permissionsDirSub = '/createFolder.spec.ts/test1/parentPerms/mysub';
+    const permissionsDirSub = '/createFolder.spec.ts/test2/parentPerms/mysub';
     return CreateFolder(testBucket, permissionsDirSub, null);
   };
-  await expect(shouldThrow()).rejects.toThrowError();
+  await expect(shouldThrow()).rejects.toThrow();
+  await testHelper.removeDir(testBucket, parentDir);
+}, 60000);
+
+test('test with-permissions createDir and create parentDir', async () => {
+  // Make parent directory
+  const parentDir = '/createFolder.spec.ts/test3/';
+  await CreateFolderWithoutPermissions(testBucket, parentDir);
+  const parentDirPath = paths.EnsureGoogleStoragePathDir(parentDir);
+  const file = testBucket.file(parentDirPath);
+  // Set parent permissions
+  const newPermissions = testHelper.blankPermissionWithReaders([]);
+  newPermissions.others = 'read/write';
+  await perms.commands.UpdateFilePermissions(file, newPermissions);
+  await testHelper.delayMs(200);
+  const shouldNotThrow = async () => {
+    // Create sub directory in path without direct parent (should still work)
+    const permissionsDirSub = '/createFolder.spec.ts/test3/parentPerms/mysub';
+    return CreateFolder(testBucket, permissionsDirSub, null);
+  };
+  await expect(shouldNotThrow()).resolves.not.toThrow();
   await testHelper.removeDir(testBucket, parentDir);
 }, 60000);
 

@@ -47,6 +47,15 @@ function uploadTestFiles(files: File[]) {
   return Promise.all(files.map(file => uploadTestFile(file)));
 }
 
+function uploadTestFilesWithPerms(
+  files: File[],
+  permissionsObj: CoreTypes.FilePermissionsObject
+) {
+  return Promise.all(
+    files.map(file => uploadTestFileWithPerms(file, permissionsObj))
+  );
+}
+
 async function tryCheckExists(bucket: Bucket, objectPath: string) {
   try {
     const file = bucket.file(objectPath);
@@ -67,7 +76,10 @@ async function tryRemove(bucket: Bucket, objectPath: string) {
     }
     return false;
   } catch (error) {
-    console.log('test-helper: tryRemove() unable to delete file that doesn\'t exist...', {objectPath});
+    console.log(
+      "test-helper: tryRemove() unable to delete file that doesn't exist...",
+      { objectPath }
+    );
   }
 }
 
@@ -83,12 +95,17 @@ async function removeFiles(files: File[]) {
 async function removeDir(bucket: Bucket, dirPath: string) {
   const pathParsed = paths.EnsureGoogleStoragePathDir(dirPath);
   await tryRemove(bucket, pathParsed);
-  console.log('test-helper: removeDir() removed directory', {dirPath});
+  console.log('test-helper: removeDir() removed directory', { dirPath });
   try {
-    const childrenToRemove = await storage.GetAllChildrenWithPrefix(bucket, pathParsed);
+    const childrenToRemove = await storage.GetAllChildrenWithPrefix(
+      bucket,
+      pathParsed
+    );
     await Promise.all(childrenToRemove.map(c => c.delete()));
   } catch (error) {
-    console.log('test-helper: removeDir() problem removing children of path', {dirPath});
+    console.log('test-helper: removeDir() problem removing children of path', {
+      dirPath
+    });
   }
 }
 
@@ -130,8 +147,9 @@ export const testHelper = {
   blankPermissionWithReaders,
   blankPermissionWithWriters,
   uploadTestFile,
-  uploadTestFiles,
   uploadTestFileWithPerms,
+  uploadTestFiles,
+  uploadTestFilesWithPerms,
   removeFile,
   removeFiles,
   removeDir,

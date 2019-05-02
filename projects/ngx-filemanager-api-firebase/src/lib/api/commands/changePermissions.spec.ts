@@ -34,7 +34,7 @@ test('set permissions without any claims', async () => {
       blankClaims
     );
   };
-  await expect(shouldThrow()).rejects.toThrowError();
+  await expect(shouldThrow()).rejects.toThrow();
   await testHelper.removeFile(testBucket, file1.name);
 }, 60000);
 
@@ -59,7 +59,7 @@ test('set permissions with claims', async () => {
       blankClaims
     );
   };
-  await expect(shouldNotThrow()).resolves.not.toThrowError();
+  await expect(shouldNotThrow()).resolves;
   await testHelper.removeFile(testBucket, file1.name);
 }, 60000);
 
@@ -84,6 +84,6 @@ test('set permissions with claims in group', async () => {
       blankClaims
     );
   };
-  await expect(shouldNotThrow()).resolves.not.toThrowError();
+  await expect(shouldNotThrow()).resolves;
   await testHelper.removeFile(testBucket, file1.name);
 }, 60000);
