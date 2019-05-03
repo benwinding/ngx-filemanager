@@ -252,8 +252,7 @@ export class NgxFileMangerApiFireBaseClass {
   ): Promise<CoreTypes.ResBodySetPermissions> {
     try {
       await CheckHasBodyProp(body, 'items');
-      await CheckHasBodyProp(body, 'role');
-      await CheckHasBodyProp(body, 'entity');
+      await CheckHasBodyProp(body, 'permissionsObj');
       const bucket = await this.getBucket(body.bucketname);
       const result = await commands.ChangePermissionsObject(
         bucket,
