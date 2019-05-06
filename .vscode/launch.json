@@ -1,6 +1,7 @@
 {
   "version": "0.2.0",
   "configurations": [
+
     {
       "name": "Launch TypeScript",
       "type": "node",
@@ -39,6 +40,23 @@
         "${fileBasenameNoExtension}",
         "--config",
         "${workspaceFolder}/projects/ngx-filemanager-api-firebase/jest.config.js"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest Current File - Client",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": [
+        "${fileBasenameNoExtension}",
+        "--config",
+        "${workspaceFolder}/projects/ngx-filemanager-client-firebase/jest.config.js"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",

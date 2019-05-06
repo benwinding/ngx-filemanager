@@ -112,6 +112,13 @@ function Add2ToPath(inputPath: string): string {
   return fileName;
 }
 
+function Add2ToPathDir(inputPath: string): string {
+  const pathWithoutSlash = EnsureNoTrailingSlash(inputPath);
+  const pathWith2 = pathWithoutSlash + ' (2)';
+  const newDirName =  EnsureTrailingSlash(pathWith2);
+  return newDirName;
+}
+
 function GetFileNameWithExtension(inputPath: string): string {
   const fileNameWithExt = inputPath.split('/').pop();
   return fileNameWithExt;
@@ -164,4 +171,5 @@ export const paths = {
   GetFileNameWithoutExtension,
   GetPathUpToLastBracket,
   Add2ToPath,
+  Add2ToPathDir
 };

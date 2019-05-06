@@ -141,3 +141,24 @@ test('must handle sub dir', () => {
   const result = paths.GetParentDir('sub/');
   return expect(result).toBe('');
 });
+
+test('adds (2) to file', () => {
+  const result = paths.Add2ToPath('sub/file.txt');
+  return expect(result).toBe('sub/file (2).txt');
+});
+
+test('adds (2) to file (2)', () => {
+  const result = paths.Add2ToPath('sub/file (2).txt');
+  return expect(result).toBe('sub/file (2) (2).txt');
+});
+
+test('adds (2) to directory', () => {
+  const result = paths.Add2ToPathDir('sub/dir/');
+  return expect(result).toBe('sub/dir (2)/');
+});
+
+test('adds (2) to directory (2)', () => {
+  const result = paths.Add2ToPathDir('sub/dir (2)/');
+  return expect(result).toBe('sub/dir (2) (2)/');
+});
+

@@ -1,4 +1,4 @@
-import { Bucket } from '../../types/google-cloud-types';
+import { Bucket, File } from '../../types/google-cloud-types';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { paths } from '../../utils/paths';
 import { storage } from '../../utils/storage-helper';
@@ -21,6 +21,20 @@ export async function CreateFolderWithoutPermissions(
   return result;
 }
 
+export async function GetNextFreeFoldernameRecursively(
+  bucket: Bucket,
+  inputDir: File
+): Promise<File> {
+  const [exists] = await inputDir.exists();
+  if (!exists) {
+    return inputDir;
+  }
+  const filePath = inputDir.name;
+  const nextPath = paths.Add2ToPathDir(filePath);
+  const nextFreeFile = bucket.file(nextPath);
+  return GetNextFreeFoldernameRecursively(bucket, nextFreeFile);
+}
+
 export async function CreateFolder(
   bucket: Bucket,
   newDirectoryPath: string,
@@ -28,8 +42,10 @@ export async function CreateFolder(
 ) {
   try {
     const newDirPath = paths.EnsureGoogleStoragePathDir(newDirectoryPath);
-    await storage.TryCheckWritePermission(bucket, newDirPath, claims);
-    return CreateFolderWithoutPermissions(bucket, newDirPath);
+    const newDir = bucket.file(newDirPath);
+    const newDirPathNoClobber = await GetNextFreeFoldernameRecursively(bucket, newDir);
+    await storage.TryCheckWritePermission(bucket, newDirPathNoClobber.name, claims);
+    return CreateFolderWithoutPermissions(bucket, newDirPathNoClobber.name);
   } catch (error) {
     throw new Error(error);
   }

@@ -46,4 +46,9 @@ export class ClientFileSystemDataStore {
   SelectFile(item: CoreTypes.ResFile) {
     this._$selectedFile.next(item);
   }
+  exists(fullPath: string, cwd: string): boolean {
+    const filesInDir = this.cache.GetCached(cwd);
+    const exists = filesInDir.find(f => f.fullPath === fullPath);
+    return !!exists;
+  }
 }

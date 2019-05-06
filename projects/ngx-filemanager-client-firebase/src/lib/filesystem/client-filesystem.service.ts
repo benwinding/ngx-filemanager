@@ -8,6 +8,7 @@ import { ClientFileSystemDataStore } from './client-filesystem.datastore';
 import * as path from 'path-browserify';
 import { IconUrlResolverService } from '../utils/icon-url-resolver.service';
 import { CoreTypes } from 'ngx-filemanager-core';
+import { Add2ToPathDir } from '../utils/path-helpers';
 
 // tslint:disable:member-ordering
 @Injectable()
@@ -53,13 +54,14 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     this.store.SetPath(folderPath);
   }
   async OnCreateFolder(newPath: string): Promise<void> {
-    const directoryPath = path.dirname(newPath);
-    const cachedFiles = this.store.GetCached(directoryPath);
-    const folderName = path.basename(newPath);
-    const newFolder = MakeClientDirectory(folderName, newPath);
+    const cwd = path.dirname(newPath);
+    const cachedFiles = this.store.GetCached(cwd);
+    const newDirPathNoClobber = this.getNextFreeFoldernameRecursively(newPath, cwd);
+    const folderName = path.basename(newDirPathNoClobber);
+    const newFolder = MakeClientDirectory(folderName, newDirPathNoClobber);
     cachedFiles.unshift(newFolder);
-    this.store.SetDirectoryFiles(cachedFiles, directoryPath);
-    this.store.SetPath(directoryPath);
+    this.store.SetDirectoryFiles(cachedFiles, cwd);
+    this.store.SetPath(cwd);
   }
   async OnUploadedFiles(uploadedFiles: string[]) {
     if (!Array.isArray(uploadedFiles) || !uploadedFiles.length) {
@@ -107,6 +109,15 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     directoryPath: string
   ): Promise<void> {
     this.store.SetDirectoryFiles(res.result, directoryPath);
+  }
+
+  public getNextFreeFoldernameRecursively(inputDir: string, cwd: string): string {
+    const exists = this.store.exists(inputDir, cwd);
+    if (!exists) {
+      return inputDir;
+    }
+    const nextPath = Add2ToPathDir(inputDir);
+    return this.getNextFreeFoldernameRecursively(nextPath, cwd);
   }
 
   private async removeSingleFromList(filePath: string) {
