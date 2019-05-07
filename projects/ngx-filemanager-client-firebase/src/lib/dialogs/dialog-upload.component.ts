@@ -73,6 +73,7 @@ export class AppDialogUploadFilesComponent {
     // acceptedFiles: 'image/*',
     // addRemoveLinks: true,
     uploadMultiple: false,
+    dictDefaultMessage: 'Click or drag multiple files to upload',
     previewTemplate: `
     <div class="dz-preview dz-file-preview">
       <div data-dz-remove style="
