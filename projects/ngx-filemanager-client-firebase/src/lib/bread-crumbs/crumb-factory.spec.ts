@@ -4,7 +4,7 @@ export function logObj(obj) {
   console.log(JSON.stringify(obj, null, 2));
 }
 
-test('should not be able to escape virtual root', () => {
+it('should not be able to escape virtual root', () => {
   const virtualRoot = '/sssss';
   const testPath = '/';
   const tryThis = () => {
@@ -13,21 +13,21 @@ test('should not be able to escape virtual root', () => {
   expect(tryThis).toThrowError();
 });
 
-test('should have single folder as root', () => {
+it('should have single folder as root', () => {
   const virtualRoot = '/';
   const testPath = '/';
   const crumbs = crumbFactory.MakeCrumbs(virtualRoot, testPath);
   expect(crumbs.length).toBe(1);
 });
 
-test('should have single folder as root', () => {
+it('should have single folder as root', () => {
   const virtualRoot = '/subfolder';
   const testPath = '/subfolder';
   const crumbs = crumbFactory.MakeCrumbs(virtualRoot, testPath);
   expect(crumbs.length).toBe(1);
 });
 
-test('should have 2 crumbs', () => {
+it('should have 2 crumbs', () => {
   const virtualRoot = '/subfolder';
   const testPath = '/subfolder/sub1';
   const crumbs = crumbFactory.MakeCrumbs(virtualRoot, testPath);
@@ -35,7 +35,7 @@ test('should have 2 crumbs', () => {
   expect(crumbs.length).toBe(2);
 });
 
-test('should have many crumbs', () => {
+it('should have many crumbs', () => {
   const virtualRoot = '/subfolder';
   const testPath = '/subfolder/sub1/sub2/sub3';
   const crumbs = crumbFactory.MakeCrumbs(virtualRoot, testPath);

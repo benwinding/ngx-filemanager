@@ -1,5 +1,6 @@
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { ConsoleLoggerService } from '../logging/console-logger.service';
+import { EnsureTrailingSlash } from '../utils/path-helpers';
 
 export class ClientCache {
   private logger = new ConsoleLoggerService();
@@ -9,11 +10,13 @@ export class ClientCache {
   } = {};
   private cacheLimit = 20;
 
-  public GetCached(folderPath: string) {
-    return this.cachedFolders[folderPath] || [];
+  public GetCached(input: string) {
+    const directoryPath = EnsureTrailingSlash(input);
+    return this.cachedFolders[directoryPath] || [];
   }
-  public SetCached(folderPath: string, newFolderFiles: CoreTypes.ResFile[]) {
-    const oldFolders = this.GetCached(folderPath);
+  public SetCached(input: string, newFolderFiles: CoreTypes.ResFile[]) {
+    const directoryPath = EnsureTrailingSlash(input);
+    const oldFolders = this.GetCached(directoryPath);
     this.logger.info('SetCached()', {
       from: oldFolders.length,
       to: newFolderFiles.length
@@ -21,7 +24,7 @@ export class ClientCache {
     if (this.cachedCount > this.cacheLimit) {
       this.removeRandomFolderPath();
     }
-    this.cachedFolders[folderPath] = newFolderFiles;
+    this.cachedFolders[directoryPath] = newFolderFiles;
   }
 
   private get cachedCount() {

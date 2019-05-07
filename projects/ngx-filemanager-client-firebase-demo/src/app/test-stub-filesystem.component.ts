@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { FileSystemProvider } from 'ngx-filemanager-core';
-import { FileSystemStub } from './file-system-stub';
-import { FileManagerConfig } from 'ngx-filemanager-client-firebase';
+import {
+  FileManagerConfig,
+  FileSystemStub
+} from 'ngx-filemanager-client-firebase';
 import { $users, $groups } from './users-factory';
 
 @Component({

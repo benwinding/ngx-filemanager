@@ -8,7 +8,7 @@ import { ClientFileSystemDataStore } from './client-filesystem.datastore';
 import * as path from 'path-browserify';
 import { IconUrlResolverService } from '../utils/icon-url-resolver.service';
 import { CoreTypes } from 'ngx-filemanager-core';
-import { Add2ToPathDir } from '../utils/path-helpers';
+import { Add2ToPathDir, EnsureTrailingSlash, EnsureNoTrailingSlash, Add2ToPath } from '../utils/path-helpers';
 
 // tslint:disable:member-ordering
 @Injectable()
@@ -67,11 +67,21 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     if (!Array.isArray(uploadedFiles) || !uploadedFiles.length) {
       return;
     }
-    const directoryPath = this.store.CurrentPath();
-    const cachedFiles = this.store.GetCached(directoryPath);
-    const newFiles = uploadedFiles.map(f => MakeClientFile(f));
-    const allFiles = cachedFiles.concat(newFiles);
-    this.store.SetDirectoryFiles(allFiles, directoryPath);
+    const cwd = this.store.CurrentPath();
+    uploadedFiles.map(f => this.recursivelyTryAddFile(cwd, f));
+  }
+  private recursivelyTryAddFile(cwd: string, newFilePath: string) {
+    const filePath = EnsureNoTrailingSlash(newFilePath);
+    const exists = this.store.exists(filePath, cwd);
+    if (!exists) {
+      const newFile = MakeClientFile(newFilePath);
+      const oldFiles = this.store.GetCached(cwd);
+      const newFiles = [...oldFiles, newFile];
+      this.store.SetDirectoryFiles(newFiles, cwd);
+      return;
+    }
+    const filePathWith2 = Add2ToPath(filePath);
+    return this.recursivelyTryAddFile(cwd, filePathWith2);
   }
   async OnCopy(singleFileName: string, newPath: string): Promise<void> {}
   async OnMove(item: string, newPath: string): Promise<void> {
@@ -100,7 +110,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     items: string[],
     permissionsObj: CoreTypes.FilePermissionsObject,
     recursive?: boolean
-  ): Promise<void> {};
+  ): Promise<void> {}
   async OnRemove(items: string[]): Promise<void> {
     return this.removeMultiple(items);
   }
@@ -112,11 +122,12 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   }
 
   public getNextFreeFoldernameRecursively(inputDir: string, cwd: string): string {
-    const exists = this.store.exists(inputDir, cwd);
+    const folderPath = EnsureTrailingSlash(inputDir);
+    const exists = this.store.exists(folderPath, cwd);
     if (!exists) {
       return inputDir;
     }
-    const nextPath = Add2ToPathDir(inputDir);
+    const nextPath = Add2ToPathDir(folderPath);
     return this.getNextFreeFoldernameRecursively(nextPath, cwd);
   }
 
@@ -142,7 +153,11 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   }
 
   private async removeMultiple(filePaths: string[]) {
-    const directoryPath = path.dirname(filePaths[0]);
+    const firstPath = filePaths[0];
+    if (!firstPath) {
+      return;
+    }
+    const directoryPath = path.dirname(firstPath);
     const removeSet = new Set(
       filePaths.map(filePath => path.basename(filePath))
     );

@@ -31,7 +31,7 @@ export function EnsureAbsoluteDirectory(inputPath: string): string {
   return pathParsed;
 }
 
-function EnsureNoTrailingSlash(inputPath: string): string {
+export function EnsureNoTrailingSlash(inputPath: string): string {
   const hasTrailing = HasTrailingSlash(inputPath);
   const pathParsed = hasTrailing ? inputPath.slice(0, -1) : inputPath;
   return pathParsed;

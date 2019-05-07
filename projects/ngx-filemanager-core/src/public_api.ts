@@ -55,4 +55,7 @@ export interface FileSystemProvider {
   GetUploadApiUrl(currentPath: string): string;
   CreateDownloadLink(file: CoreTypes.ResFile): Promise<string>;
   GetSingle(item: string): Promise<CoreTypes.ResBodyGetSingle>;
+
+  // Optional
+  Upload(item: string): Promise<boolean>;
 }

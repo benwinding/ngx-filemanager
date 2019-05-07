@@ -29,8 +29,7 @@ export class ClientFileSystemDataStore {
   public CurrentFiles() {
     return this._$currentFiles.value;
   }
-  public GetCached(input: string) {
-    const directoryPath = EnsureTrailingSlash(input);
+  public GetCached(directoryPath: string) {
     return this.cache.GetCached(directoryPath);
   }
   public SetDirectoryFiles(files: CoreTypes.ResFile[], directoryPath: string) {

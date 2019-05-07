@@ -224,6 +224,10 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     }
   }
 
+  async Upload(item: string): Promise<boolean> {
+    return null;
+  }
+
   async GetSingle(item: string): Promise<CoreTypes.ResBodyGetSingle> {
     try {
       const req: CoreTypes.ReqBodyGetSingle = {

@@ -67,18 +67,18 @@ export class OptimisticFilesystemService
     this.refreshEmitter
       .pipe(
         takeUntil(this.destroyed),
-        tap((currentPath) => {
+        tap(currentPath => {
           this.clientFilesystem.OnList(currentPath);
         }),
         debounceTime(800)
       )
-      .subscribe(async (currentPath) => {
+      .subscribe(async currentPath => {
         this.updateListFromServer(currentPath);
       });
   }
 
   private reportError(error: Error, msg: string, title: string) {
-    this.logger.error('optimistic-filesystem:', {error, title, msg});
+    this.logger.error('optimistic-filesystem:', { error, title, msg });
     this.notifications.notify(error.message, title);
   }
 
@@ -87,7 +87,9 @@ export class OptimisticFilesystemService
       this.logger.info('onHandleList', { directoryPath });
       const apiResult = await this.serverFilesystem.List(directoryPath);
       await this.clientFilesystem.UpdateList(apiResult, directoryPath);
-      const currentDirectory = await this.$CurrentPath.pipe(take(1)).toPromise();
+      const currentDirectory = await this.$CurrentPath
+        .pipe(take(1))
+        .toPromise();
       if (currentDirectory === directoryPath) {
         this.clientFilesystem.OnList(directoryPath);
         await this.selectFirstInCurrentDirectory();
@@ -110,8 +112,10 @@ export class OptimisticFilesystemService
       this.clientFilesystem.OnRemove([newPath]);
     }
   }
-  async HandleUploadClientOnly(uploadedFiles: string[]): Promise<any> {
+  async HandleUpload(uploadedFiles: string[]): Promise<any> {
+    this.logger.info('HandleUpload', { uploadedFiles });
     this.clientFilesystem.OnUploadedFiles(uploadedFiles);
+    return Promise.all(uploadedFiles.map(f => this.serverFilesystem.Upload(f)));
   }
   async HandleCopy(singleFileName: string, newPath: string): Promise<any> {
     try {
@@ -178,7 +182,11 @@ export class OptimisticFilesystemService
       this.clientFilesystem.OnSetPermissions(item, role, entity, recursive);
       await this.serverFilesystem.SetPermissions(item, role, entity, recursive);
     } catch (error) {
-      this.reportError(error, 'Cannot set permissions to item', 'Permissions Error');
+      this.reportError(
+        error,
+        'Cannot set permissions to item',
+        'Permissions Error'
+      );
     }
   }
   async HandleMoveMultiple(items: string[], newPath: string): Promise<any> {
@@ -225,7 +233,11 @@ export class OptimisticFilesystemService
         recursive
       );
     } catch (error) {
-      this.reportError(error, 'Cannot set permissions to items', 'Permissions Error');
+      this.reportError(
+        error,
+        'Cannot set permissions to items',
+        'Permissions Error'
+      );
     }
   }
   async HandleSetPermissionsObjectMultiple(
@@ -250,7 +262,11 @@ export class OptimisticFilesystemService
         recursive
       );
     } catch (error) {
-      this.reportError(error, 'Cannot set permissions to items', 'Permissions Error');
+      this.reportError(
+        error,
+        'Cannot set permissions to items',
+        'Permissions Error'
+      );
     }
   }
   async HandleRemove(items: string[]): Promise<any> {
@@ -270,7 +286,11 @@ export class OptimisticFilesystemService
       const parentPath = path.dirname(currentPath);
       await this.HandleList(parentPath);
     } catch (error) {
-      this.reportError(error, 'Cannot navigate to parent directory', 'Navigate Error');
+      this.reportError(
+        error,
+        'Cannot navigate to parent directory',
+        'Navigate Error'
+      );
       throw new Error(error.message);
     }
   }

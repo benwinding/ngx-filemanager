@@ -10,7 +10,7 @@ function makeTestClient(): ClientFileSystemService {
   return client;
 }
 
-test('client creates and lists 2 folders', async () => {
+it('client creates and lists 2 folders', async () => {
   const client = makeTestClient();
   await client.OnCreateFolder('/dir1/');
   await client.OnCreateFolder('/dir2/');
@@ -19,7 +19,7 @@ test('client creates and lists 2 folders', async () => {
   expect(files.length).toBe(2);
 }, 60000);
 
-test('client creates 2 folders should add (2) to third', async () => {
+it('client creates 2 folders should add (2) to third', async () => {
   const client = makeTestClient();
   await client.OnCreateFolder('/dir1/');
   await client.OnCreateFolder('/dir2/');
@@ -34,7 +34,7 @@ test('client creates 2 folders should add (2) to third', async () => {
   expect(hasFile).toBeTruthy();
 }, 60000);
 
-test('client creates 2 folders should add (2) to third', async () => {
+it('client creates 2 folders should add (2) to third', async () => {
   const client = makeTestClient();
   await client.OnCreateFolder('/dir1/');
   const nextFolder = client.getNextFreeFoldernameRecursively('/dir1/', '/');

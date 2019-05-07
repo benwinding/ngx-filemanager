@@ -17,7 +17,8 @@ import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.compon
 import * as path from 'path-browserify';
 import {
   UploadDialogInterface,
-  AppDialogUploadFilesComponent
+  AppDialogUploadFilesComponent,
+  UploadDialogResponseInterface
 } from '../dialogs/dialog-upload.component';
 import { LoggerService } from '../logging/logger.service';
 import { NotificationService } from '../notifications/notification.service';
@@ -215,8 +216,14 @@ export class ActionHandlersService {
       currentPath: currentPath,
       uploadApiUrl: this.fileSystem.GetUploadApiUrl(currentPath)
     };
-    const uploadedPaths: string[] = await this.openDialog(AppDialogUploadFilesComponent, data);
-    this.optimisticFs.HandleUploadClientOnly(uploadedPaths);
+    const res: UploadDialogResponseInterface = await this.openDialog(
+      AppDialogUploadFilesComponent,
+      data
+    );
+    const filesToAdd = res.uploaded.map(f => path.join(currentPath, f));
+    await this.optimisticFs.HandleUpload(filesToAdd);
+    const filesToRemove = res.removed.map(f => path.join(currentPath, f));
+    await this.optimisticFs.HandleRemove(filesToRemove);
     await this.optimisticFs.HandleList(currentPath);
   }
 
@@ -227,6 +234,10 @@ export class ActionHandlersService {
       this.logger.info('onClickNewFolder   no folder created...');
       return;
     }
+    this.OnNewFolder(newDirName);
+  }
+
+  public async OnNewFolder(newDirName: string) {
     const currentDirectory = await this.GetCurrentPath();
     const newDirectoryPath = path.join(currentDirectory, newDirName);
     await this.optimisticFs.HandleCreateFolder(newDirectoryPath);

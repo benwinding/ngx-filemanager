@@ -9,6 +9,11 @@ export interface UploadDialogInterface {
   uploadApiUrl: string;
 }
 
+export interface UploadDialogResponseInterface {
+  uploaded: string[];
+  removed: string[];
+}
+
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-upload-files-dialog',
@@ -26,6 +31,8 @@ export interface UploadDialogInterface {
         <dropzone
           *ngIf="dropzoneConfig"
           [config]="dropzoneConfig"
+          (removedFile)="onRemove($event)"
+          (canceled)="onSingleCancelled($event)"
           (success)="onUploadSuccess($event)"
           (processing)="onProcessingBegin($event)"
           (error)="onError($event)"
@@ -42,7 +49,18 @@ export interface UploadDialogInterface {
         </btns-cancel-ok>
       </ng-template>
     </base-dialog>
+    <div #hidden></div>
   `,
+  styles: [
+    `
+      .dz-image {
+        display: none;
+      }
+      .dz-details > img {
+        display: none;
+      }
+    `
+  ],
   styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogUploadFilesComponent {
@@ -53,11 +71,58 @@ export class AppDialogUploadFilesComponent {
       'https://httpbin.org/post/upload?bucketname=resvu-integration-tests.appspot.com&directoryPath=/',
     maxFilesize: 50,
     // acceptedFiles: 'image/*',
-    uploadMultiple: false
+    // addRemoveLinks: true,
+    uploadMultiple: false,
+    previewTemplate: `
+    <div class="dz-preview dz-file-preview">
+      <div data-dz-remove style="
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        font-size: 40px;
+        z-index: 1111;
+      ">
+        <span style="cursor: pointer;">⮿</span>
+      </div>
+      <div class="dz-image">
+        <img data-dz-thumbnail />
+      </div>
+      <div class="dz-details">
+        <div class="dz-filename"><span data-dz-name></span></div>
+        <div class="dz-size" data-dz-size></div>
+      </div>
+      <div class="dz-progress">
+        <span class="dz-upload" data-dz-uploadprogress></span>
+      </div>
+      <div class="dz-error-message"><span data-dz-errormessage=""></span></div>
+      <div class="dz-success-mark">
+        <span style="
+          font-size: 81px;
+          margin-left: -4px;
+          margin-top: -11px;
+          position: fixed;
+          color: #4caf50;
+        ">✔</span>
+      </div>
+      <div class="dz-error-mark">
+        <span style="
+          font-size: 81px;
+          margin-left: -4px;
+          margin-top: -11px;
+          position: fixed;
+          color: #f44336;
+        ">✘</span>
+      </div>
+      <a data-dz-remove style="display: none;">
+      </a>
+    </div>
+    `
   };
 
   uploadQueue: {} = {};
   uploadedFiles: string[] = [];
+  removedFiles: string[] = [];
+
   get isDoneUploading() {
     return Object.keys(this.uploadQueue).length < 1;
   }
@@ -73,11 +138,19 @@ export class AppDialogUploadFilesComponent {
   }
 
   onSubmit() {
-    this.dialogRef.close(this.uploadedFiles);
+    const response: UploadDialogResponseInterface = {
+      uploaded: this.uploadedFiles,
+      removed: this.removedFiles
+    };
+    this.dialogRef.close(response);
   }
 
   onCancel() {
-    this.dialogRef.close();
+    const response: UploadDialogResponseInterface = {
+      uploaded: [],
+      removed: this.removedFiles.concat(this.uploadedFiles)
+    };
+    this.dialogRef.close(response);
   }
 
   onProcessingBegin($event) {
@@ -98,12 +171,33 @@ export class AppDialogUploadFilesComponent {
     const file = $event.shift();
     const uuid = file.upload.uuid;
     const message = $event.shift();
-    console.error('Error uploading file to server', { $event });
+    this.logger.error('Error uploading file to server', { $event });
     this.notifications.notify(
       'Error uploading file: ' + message,
       'Upload Error'
     );
     this.removeFromQueue(uuid);
+  }
+
+  onRemove($event) {
+    const file = $event;
+    if (file.status === 'success') {
+      return;
+    }
+    const uuid = file.upload.uuid;
+    this.removeFromQueue(uuid);
+    this.uploadedFiles = this.uploadedFiles.filter(
+      fname => fname !== file.name
+    );
+    this.removedFiles.push(file.name);
+    this.logger.info('onRemove', { $event });
+  }
+
+  onSingleCancelled($event) {
+    const file = $event;
+    const uuid = file.upload.uuid;
+    this.removeFromQueue(uuid);
+    this.logger.info('onSingleCancelled', { $event });
   }
 
   addToQueue(uuid: string) {

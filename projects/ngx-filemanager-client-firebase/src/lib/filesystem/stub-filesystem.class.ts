@@ -1,61 +1,18 @@
 import { CoreTypes, FileSystemProvider } from 'ngx-filemanager-core';
 import * as path from 'path-browserify';
-import { ConsoleLoggerService } from './logger';
-
-function MakeItem(filePath: string): CoreTypes.ResFile {
-  const isDir = filePath.endsWith('/');
-  return {
-    name: isDir ? path.basename(filePath) : filePath,
-    fullPath: filePath,
-    rightsFirebase: [],
-    permissions: {
-      others: 'read/write',
-      readers: ['Example Reader'],
-      writers: ['Example Writer', 'Managers']
-    },
-    size: '111',
-    date: new Date().toISOString(),
-    type: isDir ? 'dir' : 'file'
-  };
-}
+import { ConsoleLoggerService } from '../logging/console-logger.service';
+import {
+  EnsureTrailingSlash,
+  Add2ToPathDir,
+  Add2ToPath,
+  EnsureNoTrailingSlash
+} from '../utils/path-helpers';
+import { stubFiles, MakeDir, MakeFile } from './stub-files';
 
 export class FileSystemStub implements FileSystemProvider {
   logger = new ConsoleLoggerService();
 
-  files: CoreTypes.ResFile[] = [
-    MakeItem('/image1.png'),
-    MakeItem('/image2.jpeg'),
-    MakeItem('/subfile.txt'),
-    MakeItem('/subfile.mp3'),
-    MakeItem('/subfile.mp4'),
-    MakeItem('/tables.csv'),
-    MakeItem('/time.docx'),
-    MakeItem('/emptyFolder/'),
-    MakeItem('/subfolder/'),
-    MakeItem('/subfolder/file.txt'),
-
-    MakeItem('/subfolder/sub1/'),
-    MakeItem('/subfolder/sub1/file.txt'),
-    MakeItem('/subfolder/sub1/sub1/'),
-    MakeItem('/subfolder/sub1/sub1/file.txt'),
-    MakeItem('/subfolder/sub1/sub1/sub1/'),
-    MakeItem('/subfolder/sub1/sub1/sub1/file.txt'),
-    MakeItem('/subfolder/sub1/sub2/'),
-    MakeItem('/subfolder/sub1/sub2/file.txt'),
-    MakeItem('/subfolder/sub1/sub2/sub1/'),
-    MakeItem('/subfolder/sub1/sub2/sub1/file.txt'),
-
-    MakeItem('/subfolder/sub2/'),
-    MakeItem('/subfolder/sub2/file.txt'),
-    MakeItem('/subfolder/sub2/sub1/'),
-    MakeItem('/subfolder/sub2/sub1/file.txt'),
-    MakeItem('/subfolder/sub2/sub1/sub1/'),
-    MakeItem('/subfolder/sub2/sub1/sub1/file.txt'),
-    MakeItem('/subfolder/sub2/sub2/'),
-    MakeItem('/subfolder/sub2/sub2/file.txt'),
-    MakeItem('/subfolder/sub2/sub2/sub1/'),
-    MakeItem('/subfolder/sub2/sub2/sub1/file.txt')
-  ];
+  files: CoreTypes.ResFile[] = stubFiles;
 
   private async fakeDelay() {
     return new Promise((resolve, reject) => {
@@ -154,9 +111,18 @@ export class FileSystemStub implements FileSystemProvider {
   }
   async CreateFolder(newPath: string): Promise<CoreTypes.ResBodyCreateFolder> {
     await this.fakeDelay();
-    const parsed = newPath.endsWith('/') ? newPath : newPath + '/';
-    this.files.push(MakeItem(parsed));
+    this.recursivelyTryToCreateFolder(newPath);
     return null;
+  }
+  private recursivelyTryToCreateFolder(newPath: string) {
+    const directoryPath = EnsureTrailingSlash(newPath);
+    const exists = !!this.selectMatches([directoryPath], true).length;
+    if (!exists) {
+      this.files.push(MakeDir(directoryPath));
+      return;
+    }
+    const newPathWith2 = Add2ToPathDir(directoryPath);
+    return this.recursivelyTryToCreateFolder(newPathWith2);
   }
   async SetPermissions(
     item: string,
@@ -201,7 +167,21 @@ export class FileSystemStub implements FileSystemProvider {
     });
     return this.recursivelySetPermissions(items, role, entity, recursive);
   }
-
+  async Upload(item: string): Promise<boolean> {
+    await this.fakeDelay();
+    this.recursivelyTryToAddFile(item);
+    return null;
+  }
+  private recursivelyTryToAddFile(filePath: string) {
+    const parsedFilePath = EnsureNoTrailingSlash(filePath);
+    const exists = !!this.selectMatches([parsedFilePath], true).length;
+    if (!exists) {
+      this.files.push(MakeFile(parsedFilePath));
+      return;
+    }
+    const newPathWith2 = Add2ToPath(parsedFilePath);
+    return this.recursivelyTryToAddFile(newPathWith2);
+  }
   recursivelySetPermissions(
     items: string[],
     role: CoreTypes.PermissionsRole,
