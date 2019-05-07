@@ -220,6 +220,10 @@ export class ActionHandlersService {
       AppDialogUploadFilesComponent,
       data
     );
+    if (!res) {
+      this.logger.info('onClickUpload canceled...');
+      return;
+    }
     const filesToAdd = res.uploaded.map(f => path.join(currentPath, f));
     await this.optimisticFs.HandleUpload(filesToAdd);
     const filesToRemove = res.removed.map(f => path.join(currentPath, f));
