@@ -4,12 +4,14 @@ import { EnsureAbsoluteDirectory } from '../utils/path-helpers';
 export interface BreadCrumb {
   label: string;
   path?: string;
+  icon?: string;
   virtualPath?: string;
 }
 
 function MakeRootCrumb(virtualRoot): BreadCrumb {
   return {
-    label: 'Root',
+    label: '',
+    icon: 'home',
     path: virtualRoot,
     virtualPath: '/'
   };

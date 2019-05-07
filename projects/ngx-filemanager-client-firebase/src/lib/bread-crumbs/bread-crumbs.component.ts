@@ -23,6 +23,7 @@ import { crumbFactory, BreadCrumb } from './crumb-factory';
           [disabled]="last"
           (click)="onClickCrumb(crumb); myButton.disabled = true"
         >
+          <mat-icon *ngIf="crumb.icon">{{ crumb.icon }}</mat-icon>
           {{ crumb.label }}
         </button>
       </div>
