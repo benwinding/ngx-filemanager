@@ -101,8 +101,8 @@ export class AppDialogUploadFilesComponent {
           font-size: 81px;
           margin-left: -4px;
           margin-top: -11px;
-          position: fixed;
           color: #4caf50;
+          position: absolute;
         ">✔</span>
       </div>
       <div class="dz-error-mark">
@@ -110,8 +110,8 @@ export class AppDialogUploadFilesComponent {
           font-size: 81px;
           margin-left: -4px;
           margin-top: -11px;
-          position: fixed;
           color: #f44336;
+          position: absolute;
         ">✘</span>
       </div>
       <a data-dz-remove style="display: none;">
