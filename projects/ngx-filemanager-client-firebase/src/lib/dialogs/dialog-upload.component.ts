@@ -32,7 +32,7 @@ export interface UploadDialogResponseInterface {
           *ngIf="dropzoneConfig"
           [config]="dropzoneConfig"
           (removedFile)="onRemove($event)"
-          (canceled)="onSingleCancelled($event)"
+          (canceled)="onSingleCanceled($event)"
           (success)="onUploadSuccess($event)"
           (processing)="onProcessingBegin($event)"
           (error)="onError($event)"
@@ -154,13 +154,14 @@ export class AppDialogUploadFilesComponent {
   }
 
   onProcessingBegin($event) {
-    const uuid = $event.upload.uuid;
+    const file = $event;
+    const uuid = file.upload.uuid;
     this.logger.info('onProcessingBegin', { $event, uuid });
     this.addToQueue(uuid);
   }
 
   onUploadSuccess($event) {
-    const file = $event.shift();
+    const file = $event[0];
     const uuid = file.upload.uuid;
     this.logger.info('onUploadSuccess', { $event, uuid });
     this.uploadedFiles.push(file.name);
@@ -168,20 +169,33 @@ export class AppDialogUploadFilesComponent {
   }
 
   onError($event) {
-    const file = $event.shift();
+    const file = $event[0];
+    const status = file.status;
+    this.logger.info('onError', { $event, file, status });
     const uuid = file.upload.uuid;
-    const message = $event.shift();
-    this.logger.error('Error uploading file to server', { $event });
+    this.removeFromQueue(uuid);
+    if (status === 'canceled') {
+      this.logger.info('onError: Canceled', {
+        $event,
+        file
+      });
+      return;
+    }
+    const message = $event[1];
+    this.logger.error('Error uploading file to server', {
+      $event
+    });
     this.notifications.notify(
       'Error uploading file: ' + message,
       'Upload Error'
     );
-    this.removeFromQueue(uuid);
   }
 
   onRemove($event) {
     const file = $event;
-    if (file.status === 'success') {
+    const status = file.status;
+    this.logger.info('onRemove', { $event, status });
+    if (status === 'success') {
       return;
     }
     const uuid = file.upload.uuid;
@@ -190,14 +204,13 @@ export class AppDialogUploadFilesComponent {
       fname => fname !== file.name
     );
     this.removedFiles.push(file.name);
-    this.logger.info('onRemove', { $event });
   }
 
-  onSingleCancelled($event) {
+  onSingleCanceled($event) {
     const file = $event;
     const uuid = file.upload.uuid;
     this.removeFromQueue(uuid);
-    this.logger.info('onSingleCancelled', { $event });
+    this.logger.info('onSingleCanceled', { $event });
   }
 
   addToQueue(uuid: string) {
