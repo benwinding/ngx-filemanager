@@ -1,9 +1,10 @@
 <div class="page-container">
   <mat-drawer-container>
-    <mat-drawer-content>
+    <mat-drawer-content [class.loaded]="initLoaded">
       <div
         class="bulk-actions-container"
         [class.hidden]="($BulkSelected | async).length < 1"
+        *ngIf="initLoaded"
       >
         <bulk-actions
           (clickedCancelBulk)="this.onClickedCancelBulk()"

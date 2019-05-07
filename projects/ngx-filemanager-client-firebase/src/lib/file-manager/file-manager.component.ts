@@ -32,6 +32,8 @@ export class NgxFileManagerComponent implements OnInit {
   public $BulkSelected = new BehaviorSubject<CoreTypes.ResFile[]>([]);
   private $triggerClearSelected = new Subject<void>();
 
+  public initLoaded;
+
   constructor(
     private actionHandlers: ActionHandlersService,
     private logger: LoggerService
@@ -68,6 +70,7 @@ export class NgxFileManagerComponent implements OnInit {
       this.tryCreateVirtualRoot(this.config.virtualRoot);
       this.actionHandlers.OnNavigateTo(this.config.virtualRoot);
     }
+    this.initLoaded = true;
   }
 
   async tryCreateVirtualRoot(virtualRoot: string) {

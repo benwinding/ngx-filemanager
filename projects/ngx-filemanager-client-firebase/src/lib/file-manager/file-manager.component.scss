@@ -5,6 +5,12 @@
 mat-drawer {
   width: 300px;
 }
+mat-drawer-content {
+  overflow: hidden;
+}
+mat-drawer-content .loaded {
+  overflow: auto;
+}
 mat-drawer-container {
   width: 100%;
 }
