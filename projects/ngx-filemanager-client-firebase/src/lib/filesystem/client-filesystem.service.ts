@@ -24,6 +24,9 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   get $selectedFile() {
     return this.store.$selectedFile;
   }
+  get $LoadingStatus() {
+    return this.store.$loadingStatus;
+  }
 
   private static instanceCount = 0;
   private instanceCountIncr() {

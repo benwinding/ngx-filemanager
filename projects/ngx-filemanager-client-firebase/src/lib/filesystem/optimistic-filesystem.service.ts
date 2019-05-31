@@ -84,7 +84,7 @@ export class OptimisticFilesystemService
 
   private async updateListFromServer(directoryPath: string) {
     try {
-      this.logger.info('onHandleList', { directoryPath });
+      this.logger.info('updateListFromServer', { directoryPath });
       const apiResult = await this.serverFilesystem.List(directoryPath);
       await this.clientFilesystem.UpdateList(apiResult, directoryPath);
       const currentDirectory = await this.$CurrentPath

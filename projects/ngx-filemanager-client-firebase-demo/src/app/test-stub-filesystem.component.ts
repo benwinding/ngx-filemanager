@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FileSystemProvider } from 'ngx-filemanager-core';
 import {
   FileManagerConfig,
   FileSystemStub
@@ -17,10 +16,14 @@ import { $users, $groups } from './users-factory';
   `
 })
 export class AppTestStubFilesystemComponent {
-  public blankFileSystem: FileSystemProvider = new FileSystemStub();
+  public blankFileSystem = new FileSystemStub();
   public config: FileManagerConfig = {
     virtualRoot: '/subfolder',
     users: $users,
     groups: $groups
   };
+
+  constructor() {
+    this.blankFileSystem.setFakeDelay(2000);
+  }
 }

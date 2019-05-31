@@ -55,6 +55,10 @@ export class ActionHandlersService {
     return this.optimisticFs.$FilesWithIcons;
   }
 
+  get $LoadingStatus() {
+    return this.clientFilesystem.$LoadingStatus;
+  }
+
   constructor(
     private clientFilesystem: ClientFileSystemService,
     private optimisticFs: OptimisticFilesystemService,

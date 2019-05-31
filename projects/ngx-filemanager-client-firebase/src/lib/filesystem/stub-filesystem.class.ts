@@ -10,15 +10,20 @@ import {
 import { stubFiles, MakeDir, MakeFile } from './stub-files';
 
 export class FileSystemStub implements FileSystemProvider {
+  private fakeDelayMs = 1000;
   logger = new ConsoleLoggerService();
 
   files: CoreTypes.ResFile[] = stubFiles;
+
+  public setFakeDelay(newDelay: number) {
+    this.fakeDelayMs = newDelay;
+  }
 
   private async fakeDelay() {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve();
-      }, 1000);
+      }, this.fakeDelayMs);
     });
   }
   private selectMatches(items: string[], isMatch: boolean) {

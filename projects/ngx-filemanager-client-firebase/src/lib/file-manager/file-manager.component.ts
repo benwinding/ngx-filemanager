@@ -53,6 +53,10 @@ export class NgxFileManagerComponent implements OnInit {
     return this.actionHandlers.$SelectedFile;
   }
 
+  get $BackgroundLoadingStatus() {
+    return this.actionHandlers.$LoadingStatus;
+  }
+
   async ngOnInit() {
     if (!this.fileSystem) {
       throw new Error(

@@ -4,10 +4,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ConsoleLoggerService } from '../logging/console-logger.service';
 import { EnsureTrailingSlash, EnsurePrefixSlash } from '../utils/path-helpers';
 
+export type LOADING_STATUS = 'BEGIN_REQUEST' | 'LOADING_REQUEST' | 'IDLE';
+
 export class ClientFileSystemDataStore {
   private cache = new ClientCache();
 
   private _$currentFiles = new BehaviorSubject<CoreTypes.ResFile[]>([]);
+  private _$loadingStatus = new BehaviorSubject<LOADING_STATUS>('IDLE');
   private _$currentPath = new BehaviorSubject<string>(null);
   private _$selectedFile = new BehaviorSubject<CoreTypes.ResFile>(null);
 
@@ -21,6 +24,9 @@ export class ClientFileSystemDataStore {
   }
   public get $selectedFile(): Observable<CoreTypes.ResFile> {
     return this._$selectedFile;
+  }
+  public get $loadingStatus(): Observable<LOADING_STATUS> {
+    return this._$loadingStatus;
   }
 
   public CurrentPath() {

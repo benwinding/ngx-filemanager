@@ -3,11 +3,17 @@ import { CoreTypes, FileSystemProvider } from 'ngx-filemanager-core/public_api';
 import { HttpClient } from '@angular/common/http';
 import { LoggerService } from '../logging/logger.service';
 import { NotificationService } from '../notifications/notification.service';
+import {
+  FileSystemRequestBuilder,
+  ActiveRequestsMap
+} from './server-filesystem-request';
 
 @Injectable()
 export class ServerFilesystemProviderService implements FileSystemProvider {
   private bucketname: string;
   private apiEndpoint: string;
+
+  private activeRequestsMap: ActiveRequestsMap = {};
 
   constructor(
     private http: HttpClient,
@@ -15,39 +21,16 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     private notifications: NotificationService
   ) {}
 
-  private async fetchPostAuth<T>(url, body): Promise<T> {
-    const options = {
-      headers: {}
-    };
-    options['responseType'] = 'json';
-    options.headers['Content-Type'] = 'application/json';
-    try {
-      const response = await this.http.post(url, body, options).toPromise();
-      this.logger.info('fetchPostAuth: ', {
-        action: body.action,
-        reqBody: body,
-        resBody: response
-      });
-      return response as T;
-    } catch (apiErrorResponse) {
-      console.error('API Post Error', { apiErrorResponse });
-      if (apiErrorResponse.error && apiErrorResponse.error.errorDetail) {
-        const detail = apiErrorResponse.error.errorDetail;
-        throw new Error('API Response: ' + detail);
-      }
-      throw new Error(
-        'API request failed, status:' + apiErrorResponse.statusText
-      );
-    }
-  }
-
-  private makeBaseRequest(
-    action: CoreTypes.FileManagerAction
-  ): CoreTypes.ReqBodyAction {
-    return {
+  private makeAPIRequest(action: CoreTypes.FileManagerAction) {
+    this.logger.info('makeAPIRequest', { action, context: this });
+    return new FileSystemRequestBuilder(
+      this.http,
+      this.apiEndpoint,
+      this.activeRequestsMap
+    ).AddBody({
       action: action,
       bucketname: this.bucketname
-    };
+    });
   }
 
   Initialize(bucketname: string, apiEndpoint: string) {
@@ -56,66 +39,66 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
   }
 
   List(path: string): Promise<CoreTypes.ResBodyList> {
-    const req: CoreTypes.ReqBodyList = {
-      ...this.makeBaseRequest('list'),
-      path: path
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('list')
+      .PatchBody<CoreTypes.ReqBodyList>({
+        path: path
+      })
+      .POST();
   }
 
   CreateFolder(newPath: string): Promise<CoreTypes.ResBodyCreateFolder> {
-    const req: CoreTypes.ReqBodyCreateFolder = {
-      ...this.makeBaseRequest('createFolder'),
-      newPath: newPath
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('createFolder')
+      .PatchBody<CoreTypes.ReqBodyCreateFolder>({
+        newPath: newPath
+      })
+      .POST();
   }
 
   Copy(
     singleFileName: string,
     newPath: string
   ): Promise<CoreTypes.ResBodyCopy> {
-    const req: CoreTypes.ReqBodyCopy = {
-      ...this.makeBaseRequest('copy'),
-      singleFileName: singleFileName,
-      newPath: newPath
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('copy')
+      .PatchBody<CoreTypes.ReqBodyCopy>({
+        singleFileName: singleFileName,
+        newPath: newPath
+      })
+      .POST();
   }
 
   Move(item: string, newPath: string): Promise<CoreTypes.ResBodyMove> {
-    const req: CoreTypes.ReqBodyMove = {
-      ...this.makeBaseRequest('move'),
-      items: [item],
-      newPath: newPath
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('move')
+      .PatchBody<CoreTypes.ReqBodyMove>({
+        items: [item],
+        newPath: newPath
+      })
+      .POST();
   }
 
   Rename(item: string, newItemPath: string): Promise<CoreTypes.ResBodyRename> {
-    const req: CoreTypes.ReqBodyRename = {
-      ...this.makeBaseRequest('rename'),
-      item: item,
-      newItemPath: newItemPath
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('rename')
+      .PatchBody<CoreTypes.ReqBodyRename>({
+        item: item,
+        newItemPath: newItemPath
+      })
+      .POST();
   }
 
   Edit(item: string, content: string): Promise<CoreTypes.ResBodyEdit> {
-    const req: CoreTypes.ReqBodyEdit = {
-      ...this.makeBaseRequest('edit'),
-      item: item,
-      content: content
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('edit')
+      .PatchBody<CoreTypes.ReqBodyEdit>({
+        item: item,
+        content: content
+      })
+      .POST();
   }
 
   Getcontent(item: string): Promise<CoreTypes.ResBodyGetContent> {
-    const req: CoreTypes.ReqBodyGetContent = {
-      ...this.makeBaseRequest('getContent'),
-      item: item
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('getContent')
+      .PatchBody<CoreTypes.ReqBodyEdit>({
+        item: item
+      })
+      .POST();
   }
 
   SetPermissions(
@@ -124,38 +107,38 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<CoreTypes.ResBodySetPermissions> {
-    const req: CoreTypes.ReqBodySetPermissions = {
-      ...this.makeBaseRequest('changePermissions'),
-      items: [item],
-      role: role,
-      entity: entity,
-      recursive: recursive
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('changePermissions')
+      .PatchBody<CoreTypes.ReqBodySetPermissions>({
+        items: [item],
+        role: role,
+        entity: entity,
+        recursive: recursive
+      })
+      .POST();
   }
 
   MoveMultiple(
     items: string[],
     newPath: string
   ): Promise<CoreTypes.ResBodyMove> {
-    const req: CoreTypes.ReqBodyMove = {
-      ...this.makeBaseRequest('move'),
-      items: items,
-      newPath: newPath
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('move')
+      .PatchBody<CoreTypes.ReqBodyMove>({
+        items: items,
+        newPath: newPath
+      })
+      .POST();
   }
 
   CopyMultiple(
     items: string[],
     newPath: string
   ): Promise<CoreTypes.ResBodyCopy> {
-    const req: CoreTypes.ReqBodyCopy = {
-      ...this.makeBaseRequest('copy'),
-      items: items,
-      newPath: newPath
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('copy')
+      .PatchBody<CoreTypes.ReqBodyCopy>({
+        items: items,
+        newPath: newPath
+      })
+      .POST();
   }
 
   SetPermissionsMultiple(
@@ -164,14 +147,14 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     entity: CoreTypes.FilePermissionEntity,
     recursive?: boolean
   ): Promise<CoreTypes.ResBodySetPermissions> {
-    const req: CoreTypes.ReqBodySetPermissions = {
-      ...this.makeBaseRequest('changePermissions'),
-      items: items,
-      role: role,
-      entity: entity,
-      recursive: recursive
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('changePermissions')
+      .PatchBody<CoreTypes.ReqBodySetPermissions>({
+        items: items,
+        role: role,
+        entity: entity,
+        recursive: recursive
+      })
+      .POST();
   }
 
   SetPermissionsObjectMultiple(
@@ -179,21 +162,29 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     permissionsObj: CoreTypes.FilePermissionsObject,
     recursive?: boolean
   ): Promise<CoreTypes.ResBodySetPermissions> {
-    const req: CoreTypes.ReqBodySetPermissionsObject = {
-      ...this.makeBaseRequest('changePermissionsObject'),
-      items: items,
-      permissionsObj: permissionsObj,
-      recursive: recursive
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('changePermissionsObject')
+      .PatchBody<CoreTypes.ReqBodySetPermissionsObject>({
+        items: items,
+        permissionsObj: permissionsObj,
+        recursive: recursive
+      })
+      .POST();
   }
 
   Remove(items: string[]): Promise<CoreTypes.ResBodyRemove> {
-    const req: CoreTypes.ReqBodyRemove = {
-      ...this.makeBaseRequest('remove'),
-      items: items
-    };
-    return this.fetchPostAuth(this.apiEndpoint, req);
+    return this.makeAPIRequest('remove')
+      .PatchBody<CoreTypes.ReqBodyRemove>({
+        items: items
+      })
+      .POST();
+  }
+
+  GetSingle(item: string): Promise<CoreTypes.ResBodyGetSingle> {
+    return this.makeAPIRequest('getSingle')
+      .PatchBody<CoreTypes.ReqBodyGetSingle>({
+        item: item
+      })
+      .POST();
   }
 
   GetUploadApiUrl(currentPath: string): string {
@@ -209,14 +200,13 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
 
   async CreateDownloadLink(file: CoreTypes.ResFile): Promise<string> {
     try {
-      const req: CoreTypes.ReqBodyGetSingle = {
-        ...this.makeBaseRequest('getSingle'),
-        item: file.fullPath
-      };
-      const response = await this.fetchPostAuth<CoreTypes.ResBodyGetSingle>(
-        this.apiEndpoint,
-        req
-      );
+      const response: CoreTypes.ResBodyGetSingle = await this.makeAPIRequest(
+        'getSingle'
+      )
+        .PatchBody<CoreTypes.ReqBodyGetSingle>({
+          item: file.fullPath
+        })
+        .POST();
       const url = response.result.url;
       return url;
     } catch (error) {
@@ -226,21 +216,5 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
 
   async Upload(item: string): Promise<boolean> {
     return null;
-  }
-
-  async GetSingle(item: string): Promise<CoreTypes.ResBodyGetSingle> {
-    try {
-      const req: CoreTypes.ReqBodyGetSingle = {
-        ...this.makeBaseRequest('getSingle'),
-        item: item
-      };
-      const response = await this.fetchPostAuth<CoreTypes.ResBodyGetSingle>(
-        this.apiEndpoint,
-        req
-      );
-      return response;
-    } catch (error) {
-      throw new Error(error.message);
-    }
   }
 }
