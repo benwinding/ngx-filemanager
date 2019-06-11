@@ -72,13 +72,12 @@ export class OptimisticFilesystemService
       .pipe(
         takeUntil(this.destroyed),
         debounceTime(800),
-        switchMap(async currentPath => {
-          await this.clientFilesystem.OnList(currentPath);
-          return currentPath;
+        tap(async currentPath => {
+          return this.clientFilesystem.OnList(currentPath);
         })
       )
       .subscribe(async currentPath => {
-        await this.updateListFromServer(currentPath);
+        return this.updateListFromServer(currentPath);
       });
   }
 

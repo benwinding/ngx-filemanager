@@ -69,14 +69,12 @@ export class NgxFileManagerComponent implements OnInit {
   get $hasSending() {
     return this.$status.pipe(
       map(s => !!s.find(status => status === 'SENDING')),
-      tap(hasSending => console.log({ hasSending }))
     );
   }
 
   get $hasFailed() {
     return this.$status.pipe(
       map(s => !!s.find(status => status === 'FAILED')),
-      tap(hasFailed => console.log({ hasFailed }))
     );
   }
 

@@ -191,7 +191,7 @@ export class FileDetailsComponent {
       }
       this.imageUrl = await this.fileSystem.CreateDownloadLink(this.file);
     } catch (error) {
-      this.logger.error('Error setting ImageUrl', { error });
+      this.logger.error('Error setting ImageUrl', { error }, error);
     }
   }
 
