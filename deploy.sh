@@ -12,6 +12,6 @@ case "$1" in
       popd
       ;;
   *)
-      echo $"Usage: $0 {start|stop|restart|condrestart|status}"
+      echo $"Usage: $0 {core|client|api}"
       exit 1
  esac
