@@ -35,7 +35,7 @@
         <div
           class="mat-elevation-z8 expander-container has-pointer mat-table"
         >
-          {{ $BackgroundLoadingStatus | async }}
+          {{ requestMap | async | json }}
         </div>
         <div
           class="mat-elevation-z8 expander-container has-pointer mat-table"

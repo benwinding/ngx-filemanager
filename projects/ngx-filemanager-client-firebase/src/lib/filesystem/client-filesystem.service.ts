@@ -8,7 +8,12 @@ import { ClientFileSystemDataStore } from './client-filesystem.datastore';
 import * as path from 'path-browserify';
 import { IconUrlResolverService } from '../utils/icon-url-resolver.service';
 import { CoreTypes } from 'ngx-filemanager-core';
-import { Add2ToPathDir, EnsureTrailingSlash, EnsureNoTrailingSlash, Add2ToPath } from '../utils/path-helpers';
+import {
+  Add2ToPathDir,
+  EnsureTrailingSlash,
+  EnsureNoTrailingSlash,
+  Add2ToPath
+} from '../utils/path-helpers';
 
 // tslint:disable:member-ordering
 @Injectable()
@@ -23,9 +28,6 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   }
   get $selectedFile() {
     return this.store.$selectedFile;
-  }
-  get $LoadingStatus() {
-    return this.store.$loadingStatus;
   }
 
   private static instanceCount = 0;
@@ -59,7 +61,10 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
   async OnCreateFolder(newPath: string): Promise<void> {
     const cwd = path.dirname(newPath);
     const cachedFiles = this.store.GetCached(cwd);
-    const newDirPathNoClobber = this.getNextFreeFoldernameRecursively(newPath, cwd);
+    const newDirPathNoClobber = this.getNextFreeFoldernameRecursively(
+      newPath,
+      cwd
+    );
     const folderName = path.basename(newDirPathNoClobber);
     const newFolder = MakeClientDirectory(folderName, newDirPathNoClobber);
     cachedFiles.unshift(newFolder);
@@ -124,7 +129,10 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     this.store.SetDirectoryFiles(res.result, directoryPath);
   }
 
-  public getNextFreeFoldernameRecursively(inputDir: string, cwd: string): string {
+  public getNextFreeFoldernameRecursively(
+    inputDir: string,
+    cwd: string
+  ): string {
     const folderPath = EnsureTrailingSlash(inputDir);
     const exists = this.store.exists(folderPath, cwd);
     if (!exists) {

@@ -57,6 +57,7 @@ import { IconUrlResolverService } from './utils/icon-url-resolver.service';
 import { AppDialogMyDetailsComponent } from './dialogs/dialog-my-details.components';
 import { AppDialogPermissionsSetObjectComponent } from './dialogs/dialog-permissions-setobject.component';
 import { AppControlTagMultipleComponent } from './dialogs/tags-control.component';
+import { FilemanagerStatusService } from './filesystem/status.service';
 
 export function getBaseHref(platformLocation: PlatformLocation): string {
   return platformLocation.getBaseHrefFromDOM();
@@ -123,6 +124,7 @@ const dialogComponents = [
   exports: [NgxFileManagerComponent],
   providers: [
     ServerFilesystemProviderService,
+    FilemanagerStatusService,
     NotificationService,
     {
       provide: APP_BASE_HREF,

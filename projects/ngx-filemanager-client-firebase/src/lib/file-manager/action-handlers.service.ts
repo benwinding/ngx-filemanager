@@ -55,10 +55,6 @@ export class ActionHandlersService {
     return this.optimisticFs.$FilesWithIcons;
   }
 
-  get $LoadingStatus() {
-    return this.clientFilesystem.$LoadingStatus;
-  }
-
   constructor(
     private clientFilesystem: ClientFileSystemService,
     private optimisticFs: OptimisticFilesystemService,
@@ -201,7 +197,7 @@ export class ActionHandlersService {
 
   public async OnNavigateTo(folderPath: string) {
     this.logger.info('action-handlers.OnNavigateTo', { folderPath });
-    this.optimisticFs.HandleList(folderPath);
+    return this.optimisticFs.HandleList(folderPath);
   }
 
   public async OnNavigateToParent() {
@@ -242,7 +238,7 @@ export class ActionHandlersService {
       this.logger.info('onClickNewFolder   no folder created...');
       return;
     }
-    this.OnNewFolder(newDirName);
+    return this.OnNewFolder(newDirName);
   }
 
   public async OnNewFolder(newDirName: string) {
@@ -255,7 +251,7 @@ export class ActionHandlersService {
   public async OnDownloadFile(file: CoreTypes.ResFile) {
     const res = await this.fileSystem.GetSingle(file.fullPath);
     const newFile = res.result.file;
-    this.optimisticFs.onSelectItem(newFile);
+    await this.optimisticFs.onSelectItem(newFile);
     this.initiateDownload(file.name, res.result.url);
     const currentDirectory = await this.GetCurrentPath();
     await this.optimisticFs.HandleList(currentDirectory);
@@ -272,7 +268,7 @@ export class ActionHandlersService {
 
   public async RefreshExplorer() {
     const currentPath = await this.GetCurrentPath();
-    this.optimisticFs.HandleList(currentPath);
+    return this.optimisticFs.HandleList(currentPath);
   }
 
   private async openDialog(comp: any, data?: any) {

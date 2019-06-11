@@ -2,32 +2,18 @@ import { Injectable } from '@angular/core';
 import { CoreTypes, FileSystemProvider } from 'ngx-filemanager-core/public_api';
 import { HttpClient } from '@angular/common/http';
 import { LoggerService } from '../logging/logger.service';
-import { NotificationService } from '../notifications/notification.service';
-import {
-  FileSystemRequestBuilder,
-  ActiveRequestsMap
-} from './server-filesystem-request';
+import { FileSystemRequestBuilder } from './server-filesystem-request';
 
 @Injectable()
 export class ServerFilesystemProviderService implements FileSystemProvider {
   private bucketname: string;
   private apiEndpoint: string;
 
-  private activeRequestsMap: ActiveRequestsMap = {};
-
-  constructor(
-    private http: HttpClient,
-    private logger: LoggerService,
-    private notifications: NotificationService
-  ) {}
+  constructor(private http: HttpClient, private logger: LoggerService) {}
 
   private makeAPIRequest(action: CoreTypes.FileManagerAction) {
     this.logger.info('makeAPIRequest', { action, context: this });
-    return new FileSystemRequestBuilder(
-      this.http,
-      this.apiEndpoint,
-      this.activeRequestsMap
-    ).AddBody({
+    return new FileSystemRequestBuilder(this.http, this.apiEndpoint).AddBody({
       action: action,
       bucketname: this.bucketname
     });

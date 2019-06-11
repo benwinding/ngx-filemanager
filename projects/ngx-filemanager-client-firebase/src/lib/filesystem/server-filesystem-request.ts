@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { take } from 'rxjs/operators';
+import { FilemanagerStatusService } from './status.service';
+
 export class FileSystemRequestBuilder {
   private options = {
     headers: {}
@@ -8,7 +10,6 @@ export class FileSystemRequestBuilder {
   constructor(
     private http: HttpClient,
     private url: string,
-    private requestsMap: ActiveRequestsMap
   ) {}
   AddBody(body) {
     this.body = {
@@ -44,15 +45,12 @@ export class FileSystemRequestBuilder {
   async POST() {
     const key = this.makeRequestKey();
     try {
-      this.requestsMap[key] = { status: 'Request Initiated' };
       const response = await this.http
         .post(this.url, this.body, this.options)
         .pipe(take(1))
         .toPromise();
-      this.requestsMap[key] = { status: 'Request Completed' };
       return response as any;
     } catch (apiErrorResponse) {
-      this.requestsMap[key] = { status: 'API Post Error', error: apiErrorResponse };
       console.error('API Post Error', { apiErrorResponse });
       if (apiErrorResponse.error && apiErrorResponse.error.errorDetail) {
         const detail = apiErrorResponse.error.errorDetail;
@@ -63,11 +61,4 @@ export class FileSystemRequestBuilder {
       );
     }
   }
-}
-
-export interface ActiveRequestsMap {
-  [action: string]: {
-    status: string;
-    error?: string;
-  };
 }

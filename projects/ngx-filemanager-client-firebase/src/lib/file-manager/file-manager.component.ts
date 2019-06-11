@@ -8,6 +8,7 @@ import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
 import { ActionHandlersService } from './action-handlers.service';
 import { FileSystemProvider, CoreTypes } from 'ngx-filemanager-core/public_api';
+import { FilemanagerStatusService } from '../filesystem/status.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -33,11 +34,15 @@ export class NgxFileManagerComponent implements OnInit {
   private $triggerClearSelected = new Subject<void>();
 
   public initLoaded;
+  public requestMap;
 
   constructor(
     private actionHandlers: ActionHandlersService,
-    private logger: LoggerService
-  ) {}
+    private logger: LoggerService,
+    private status: FilemanagerStatusService
+  ) {
+    this.requestMap = this.status.ActiveRequestsMap;
+  }
 
   // Getters
 
@@ -51,10 +56,6 @@ export class NgxFileManagerComponent implements OnInit {
 
   get $SelectedFile() {
     return this.actionHandlers.$SelectedFile;
-  }
-
-  get $BackgroundLoadingStatus() {
-    return this.actionHandlers.$LoadingStatus;
   }
 
   async ngOnInit() {
@@ -71,8 +72,10 @@ export class NgxFileManagerComponent implements OnInit {
     this.actionHandlers.init(this.fileSystem, this.config);
     this.makeConfig();
     if (this.config && this.config.virtualRoot) {
-      this.tryCreateVirtualRoot(this.config.virtualRoot);
-      this.actionHandlers.OnNavigateTo(this.config.virtualRoot);
+      await Promise.all([
+        this.tryCreateVirtualRoot(this.config.virtualRoot),
+        this.actionHandlers.OnNavigateTo(this.config.virtualRoot)
+      ]);
     }
     this.initLoaded = true;
   }
@@ -82,11 +85,11 @@ export class NgxFileManagerComponent implements OnInit {
       return;
     }
     try {
-      this.logger.info('trying to create virtualRoot folder', {virtualRoot});
+      this.logger.info('trying to create virtualRoot folder', { virtualRoot });
       await this.fileSystem.CreateFolder(virtualRoot);
-      this.logger.info('sucessfully created folder', {virtualRoot});
+      this.logger.info('sucessfully created folder', { virtualRoot });
     } catch (error) {
-      this.logger.info('failed to create virtual root folder', {error});
+      this.logger.info('failed to create virtual root folder', { error });
     }
   }
 
@@ -118,7 +121,8 @@ export class NgxFileManagerComponent implements OnInit {
         {
           label: 'Rename',
           icon: 'border_color',
-          onClick: async (file: CoreTypes.ResFile) => this.actionHandlers.OnRename(file)
+          onClick: async (file: CoreTypes.ResFile) =>
+            this.actionHandlers.OnRename(file)
         },
         {
           label: 'Permissions',
@@ -144,12 +148,12 @@ export class NgxFileManagerComponent implements OnInit {
         this.logger.info('onSelectItemDoubleClick!', { item });
         if (item.type === 'dir') {
           this.clearBulkSelected();
-          this.actionHandlers.OnNavigateTo(item.fullPath);
+          return this.actionHandlers.OnNavigateTo(item.fullPath);
         }
       },
       onSelectItem: (item: CoreTypes.ResFile) => {
         this.logger.info('onSelectItem!', { item });
-        this.actionHandlers.OnSelectItemByPath(item.fullPath);
+        return this.actionHandlers.OnSelectItemByPath(item.fullPath);
       },
       $triggerSelectItem: this.$SelectedFile,
       $triggerClearSelected: this.$triggerClearSelected,
