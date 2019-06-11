@@ -10,7 +10,7 @@
     "client-test": "jest --config projects/ngx-filemanager-client-firebase/jest.config.js --watchAll",
     "client-test-ng": "ng test --project=ngx-filemanager-client-firebase",
     "client-demo-build": "ng build --project=ngx-filemanager-client-firebase-demo --prod",
-    "client-demo-start": "BROWSER=none ng serve --project=ngx-filemanager-client-firebase-demo --watch --vendor-source-map --sourceMap=true --port=4300",
+    "client-demo-start": "BROWSER=none ng serve --project=ngx-filemanager-client-firebase-demo --watch --vendor-source-map --sourceMap=true --port=4303",
     "client-demo-deploy": "npm run client-demo-build && gh-pages -d dist/ngx-filemanager-client-firebase-demo/",
     "api-build": "ng build --project=ngx-filemanager-api-firebase",
     "api-watch": "ng build --project=ngx-filemanager-api-firebase --watch",

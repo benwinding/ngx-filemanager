@@ -32,22 +32,32 @@
           [config]="config"
         >
         </bread-crumbs>
-        <div
-          class="mat-elevation-z8 expander-container has-pointer mat-table"
-        >
-          {{ requestMap | async | json }}
-        </div>
-        <div
-          class="mat-elevation-z8 expander-container has-pointer mat-table"
-          (click)="isFileDetailsOpen = !isFileDetailsOpen"
-        >
-          <mat-icon
-            matTooltip="View File Details"
-            class="expander-icon"
-            [class.drawer-out]="isFileDetailsOpen"
-            [class.drawer-in]="!isFileDetailsOpen"
-            >expand_more</mat-icon
+        <div class="flex-h">
+          <mat-progress-spinner
+            *ngIf="$hasSending | async"
+            mode="indeterminate"
+            [diameter]="40"
+            color="primary"
+          ></mat-progress-spinner>
+          <mat-progress-spinner
+            *ngIf="$hasFailed | async"
+            mode="determinate"
+            [diameter]="40"
+            color="warn"
+            [value]="100"
+          ></mat-progress-spinner>
+          <div
+            class="mat-elevation-z8 expander-container has-pointer mat-table"
+            (click)="isFileDetailsOpen = !isFileDetailsOpen"
           >
+            <mat-icon
+              matTooltip="View File Details"
+              class="expander-icon"
+              [class.drawer-out]="isFileDetailsOpen"
+              [class.drawer-in]="!isFileDetailsOpen"
+              >expand_more</mat-icon
+            >
+          </div>
         </div>
       </div>
       <app-file-table [config]="autoTableConfig"> </app-file-table>

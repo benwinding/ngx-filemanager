@@ -11,7 +11,7 @@ export class FilemanagerStatusService {
   }
 
   public UpdateStatus(key: string, status: RequestStatus, error?: string) {
-    console.log({ key, status, error });
+    console.log('UpdateStatus()', { key, status, error });
     let currentValue: ActiveRequestsMap;
     currentValue = this._ActiveRequestsMap.value;
     if (!currentValue[key]) {

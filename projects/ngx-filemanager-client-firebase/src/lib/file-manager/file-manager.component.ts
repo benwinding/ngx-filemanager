@@ -1,6 +1,6 @@
 import { OnInit, Component, Input } from '@angular/core';
 import { AutoTableConfig } from 'ngx-auto-table/public_api';
-import { take, map } from 'rxjs/operators';
+import { take, map, tap } from 'rxjs/operators';
 import { FileManagerConfig } from '../configuration/client-configuration';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
@@ -56,6 +56,28 @@ export class NgxFileManagerComponent implements OnInit {
 
   get $SelectedFile() {
     return this.actionHandlers.$SelectedFile;
+  }
+
+  get $status() {
+    return this.status.ActiveRequestsMap.pipe(
+      map(requests => {
+        return Object.keys(requests).map(k => requests[k].status);
+      })
+    );
+  }
+
+  get $hasSending() {
+    return this.$status.pipe(
+      map(s => !!s.find(status => status === 'SENDING')),
+      tap(hasSending => console.log({ hasSending }))
+    );
+  }
+
+  get $hasFailed() {
+    return this.$status.pipe(
+      map(s => !!s.find(status => status === 'FAILED')),
+      tap(hasFailed => console.log({ hasFailed }))
+    );
   }
 
   async ngOnInit() {
