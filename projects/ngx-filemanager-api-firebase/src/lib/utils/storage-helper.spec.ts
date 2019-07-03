@@ -6,6 +6,7 @@ import {
 } from './storage-helper';
 import { testHelper } from './test-helper';
 import { perms } from '../permissions';
+import { permHelper } from '../permissions/permissions-helper';
 
 test('set and get update permissions obj to object storage', async () => {
   const testBucket = testHelper.getBucket();
@@ -15,8 +16,8 @@ test('set and get update permissions obj to object storage', async () => {
   await testHelper.removeFile(testBucket, 'storage-helper.spec.ts/file1.txt');
   const file = testBucket.file('storage-helper.spec.ts/file.txt');
   await testHelper.uploadTestFile(file);
-  await storage.SetMetaProperty(file, 'propname', obj);
-  const objFromStorage = await storage.GetMetaProperty(file, 'propname');
+  await permHelper.SetMetaProperty(file, 'propname', obj);
+  const objFromStorage = await permHelper.GetMetaProperty(file, 'propname');
   expect(objFromStorage['rand']).toBe(obj.rand);
 }, 60000);
 

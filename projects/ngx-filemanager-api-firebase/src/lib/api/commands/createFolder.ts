@@ -38,14 +38,20 @@ export async function GetNextFreeFoldernameRecursively(
 export async function CreateFolder(
   bucket: Bucket,
   newDirectoryPath: string,
-  claims: CoreTypes.UserCustomClaims
+  claims: CoreTypes.UserCustomClaims,
+  disableNoClobber?: boolean
 ) {
   try {
     const newDirPath = paths.EnsureGoogleStoragePathDir(newDirectoryPath);
     const newDir = bucket.file(newDirPath);
-    const newDirPathNoClobber = await GetNextFreeFoldernameRecursively(bucket, newDir);
-    await storage.TryCheckWritePermission(bucket, newDirPathNoClobber.name, claims);
-    return CreateFolderWithoutPermissions(bucket, newDirPathNoClobber.name);
+    let newDirToAdd: File;
+    if (!disableNoClobber) {
+      newDirToAdd = await GetNextFreeFoldernameRecursively(bucket, newDir);
+    } else {
+      newDirToAdd = newDir;
+    }
+    await storage.TryCheckWritePermission(bucket, newDirToAdd.name, claims);
+    return CreateFolderWithoutPermissions(bucket, newDirToAdd.name);
   } catch (error) {
     throw new Error(error);
   }

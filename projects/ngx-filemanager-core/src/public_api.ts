@@ -14,7 +14,7 @@ export * from './lib/core-types';
 export interface FileSystemProvider {
   // Actions
   List(path: string): Promise<CoreTypes.ResBodyList>;
-  CreateFolder(newPath: string): Promise<CoreTypes.ResBodyCreateFolder>;
+  CreateFolder(newPath: string, disableNoClobber?: boolean): Promise<CoreTypes.ResBodyCreateFolder>;
 
   // File/Directory Actions
 

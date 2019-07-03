@@ -3,13 +3,13 @@ import { File } from '../types/google-cloud-types';
 import { GetTokenFromRequest } from './token-helper';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { permsFactory } from './permissions.factory';
-import { storage } from '../utils/storage-helper';
 import { VError } from 'verror';
+import { permHelper } from './permissions-helper';
 
 async function RetrieveFilePermissions(
   file: File
 ): Promise<CoreTypes.FilePermissionsObject> {
-  const fromStorage: CoreTypes.FilePermissionsObject = await storage.GetMetaProperty(
+  const fromStorage: CoreTypes.FilePermissionsObject = await permHelper.GetMetaProperty(
     file,
     'permissions'
   );

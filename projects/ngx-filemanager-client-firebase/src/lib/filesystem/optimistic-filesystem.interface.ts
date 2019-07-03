@@ -3,7 +3,7 @@ import { CoreTypes } from 'ngx-filemanager-core/public_api';
 export interface OptimisticFilesystem {
   // Actions
   HandleList(path: string): Promise<any>;
-  HandleCreateFolder(newPath: string): Promise<any>;
+  HandleCreateFolder(newPath: string, disableNoClobber?: boolean): Promise<any>;
   // File/Directory Actions
   HandleCopy(singleFileName: string, newPath: string): Promise<any>;
   HandleMove(item: string, newPath: string): Promise<any>;

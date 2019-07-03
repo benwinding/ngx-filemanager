@@ -114,9 +114,14 @@ export class FileSystemStub implements FileSystemProvider {
       }
     };
   }
-  async CreateFolder(newPath: string): Promise<CoreTypes.ResBodyCreateFolder> {
+  async CreateFolder(newPath: string, disableNoClobber?: boolean): Promise<CoreTypes.ResBodyCreateFolder> {
     await this.fakeDelay();
-    this.recursivelyTryToCreateFolder(newPath);
+    if (disableNoClobber ) {
+      const directoryPath = EnsureTrailingSlash(newPath);
+      this.files.push(MakeDir(directoryPath));
+    } else {
+      this.recursivelyTryToCreateFolder(newPath);
+    }
     return null;
   }
   private recursivelyTryToCreateFolder(newPath: string) {

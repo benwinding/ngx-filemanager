@@ -67,6 +67,10 @@ export class ActionHandlersService {
     this.config = config;
     this.fileSystem = fileSystem;
     this.optimisticFs.initialize(this.fileSystem, this.clientFilesystem);
+    const initialPath = this.config.initialPath;
+    this.OnNewFolderClobber(initialPath).catch(e => {
+      this.logger.error('init() OnNewFolderClobber: error', e, {initialPath});
+    });
   }
 
   public async OnRename(file: CoreTypes.ResFile) {
@@ -245,6 +249,13 @@ export class ActionHandlersService {
     const currentDirectory = await this.GetCurrentPath();
     const newDirectoryPath = path.join(currentDirectory, newDirName);
     await this.optimisticFs.HandleCreateFolder(newDirectoryPath);
+    await this.optimisticFs.HandleList(currentDirectory);
+  }
+
+  public async OnNewFolderClobber(newDirName: string) {
+    const currentDirectory = await this.GetCurrentPath();
+    const newDirectoryPath = path.join(currentDirectory, newDirName);
+    await this.optimisticFs.HandleCreateFolder(newDirectoryPath, true);
     await this.optimisticFs.HandleList(currentDirectory);
   }
 

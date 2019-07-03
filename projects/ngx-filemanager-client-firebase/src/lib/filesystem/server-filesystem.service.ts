@@ -32,7 +32,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
       .POST();
   }
 
-  CreateFolder(newPath: string): Promise<CoreTypes.ResBodyCreateFolder> {
+  CreateFolder(newPath: string, disableNoClobber?: boolean): Promise<CoreTypes.ResBodyCreateFolder> {
     return this.makeAPIRequest('createFolder')
       .PatchBody<CoreTypes.ReqBodyCreateFolder>({
         newPath: newPath

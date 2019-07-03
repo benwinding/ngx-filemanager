@@ -97,6 +97,7 @@ export namespace CoreTypes {
 
   export interface ReqBodyCreateFolder extends ReqBodyAction {
     newPath: string;
+    disableNoClobber?: boolean;
   }
 
   export interface ResBodyCreateFolder extends ResBodySuccess {}

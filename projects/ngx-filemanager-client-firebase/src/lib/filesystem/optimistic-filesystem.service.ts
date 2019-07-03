@@ -111,13 +111,13 @@ export class OptimisticFilesystemService
   async HandleList(directoryPath: string): Promise<any> {
     this.refreshEmitter.next(directoryPath);
   }
-  async HandleCreateFolder(newPath: string): Promise<any> {
+  async HandleCreateFolder(newPath: string, disableNoClobber?: boolean): Promise<any> {
     try {
       this.status.UpdateStatus(newPath, 'SENDING');
       this.logger.info('HandleCreateFolder', { newPath });
       await Promise.all([
-        this.clientFilesystem.OnCreateFolder(newPath),
-        this.serverFilesystem.CreateFolder(newPath)
+        this.clientFilesystem.OnCreateFolder(newPath, disableNoClobber),
+        this.serverFilesystem.CreateFolder(newPath, disableNoClobber)
       ]);
       this.status.UpdateStatus(newPath, 'SUCCESS');
     } catch (error) {

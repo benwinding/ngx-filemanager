@@ -58,7 +58,7 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     this.logger.info('client.OnList', { folderPath });
     this.store.SetPath(folderPath);
   }
-  async OnCreateFolder(newPath: string): Promise<void> {
+  async OnCreateFolder(newPath: string, disableNoClobber?: boolean): Promise<void> {
     const cwd = path.dirname(newPath);
     const cachedFiles = this.store.GetCached(cwd);
     const newDirPathNoClobber = this.getNextFreeFoldernameRecursively(

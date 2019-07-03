@@ -8,7 +8,7 @@ export interface ClientFileSystem {
 
   // Actions
   OnList(path: string): Promise<void>;
-  OnCreateFolder(newPath: string): Promise<void>;
+  OnCreateFolder(newPath: string, disableNoClobber?: boolean): Promise<void>;
   // File/Directory Actions
   OnCopy(singleFileName: string, newPath: string): Promise<void>;
   OnMove(item: string, newPath: string): Promise<void>;

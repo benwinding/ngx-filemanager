@@ -5,7 +5,9 @@ import { CoreTypes } from 'ngx-filemanager-core/public_api';
 async function CheckHasBodyProp(body: {}, bodyFieldName: string) {
   const exists = body[bodyFieldName];
   if (!exists) {
-    throw new Error(`Request is missing property in req.body: '${bodyFieldName}'`);
+    throw new Error(
+      `Request is missing property in req.body: '${bodyFieldName}'`
+    );
   }
 }
 
@@ -205,12 +207,17 @@ export class NgxFileMangerApiFireBaseClass {
 
   async HandleCreateFolder(
     body: CoreTypes.ReqBodyCreateFolder,
-    claims: CoreTypes.UserCustomClaims
+    claims: CoreTypes.UserCustomClaims,
   ): Promise<CoreTypes.ResBodyCreateFolder> {
     try {
       await CheckHasBodyProp(body, 'newPath');
       const bucket = await this.getBucket(body.bucketname);
-      const result = await commands.CreateFolder(bucket, body.newPath, claims);
+      const result = await commands.CreateFolder(
+        bucket,
+        body.newPath,
+        claims,
+        body.disableNoClobber
+      );
       const response: CoreTypes.ResBodyCreateFolder = {
         result: result
       };
