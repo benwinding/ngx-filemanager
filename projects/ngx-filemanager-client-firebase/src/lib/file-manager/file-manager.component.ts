@@ -93,24 +93,10 @@ export class NgxFileManagerComponent implements OnInit {
     this.makeConfig();
     if (this.config && this.config.virtualRoot) {
       await Promise.all([
-        this.tryCreateVirtualRoot(this.config.virtualRoot),
         this.actionHandlers.OnNavigateTo(this.config.virtualRoot)
       ]);
     }
     this.initLoaded = true;
-  }
-
-  async tryCreateVirtualRoot(virtualRoot: string) {
-    if (virtualRoot === '/') {
-      return;
-    }
-    try {
-      this.logger.info('trying to create virtualRoot folder', { virtualRoot });
-      await this.fileSystem.CreateFolder(virtualRoot);
-      this.logger.info('sucessfully created folder', { virtualRoot });
-    } catch (error) {
-      this.logger.info('failed to create virtual root folder', { error });
-    }
   }
 
   makeConfig() {
