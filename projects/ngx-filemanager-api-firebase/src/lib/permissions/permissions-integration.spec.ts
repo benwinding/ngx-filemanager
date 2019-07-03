@@ -4,7 +4,7 @@ import { permsQueries } from './permissions-queries';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
 
 test('TryChangeSingleFilePermissions', async () => {
-  const testBucket = testHelper.testBucket;
+  const testBucket = testHelper.getBucket();
   const file = testBucket.file(
     'changePermissions/TryChangeSingleFilePermissions.txt'
   );

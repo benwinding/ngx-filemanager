@@ -2,10 +2,9 @@ import { GetList } from './list';
 import { testHelper } from '../../utils/test-helper';
 import { perms } from '../../permissions';
 
-const testBucket = testHelper.testBucket;
-
 test('should list files with permissions', async () => {
   // Add files
+  const testBucket = testHelper.getBucket();
   const file1 = testBucket.file('list.spec.ts/test2/file1.txt');
   const file2 = testBucket.file('list.spec.ts/test2/file2.txt');
   const files = [file1, file2];
@@ -20,14 +19,15 @@ test('should list files with permissions', async () => {
   });
   await testHelper.delayMs(200);
   // testHelper.logObj({result});
-  await testHelper.removeDir(testBucket, 'list.spec.ts/test2');
+  // await testHelper.removeDir(testBucket, 'list.spec.ts/test2');
   expect(result.length).toBe(2);
 }, 60000);
 
 test('should not list files with permissions', async () => {
   // Add files
+  const testBucket = testHelper.getBucket();
   const file1 = testBucket.file('list.spec.ts/test3/file1.txt');
-  const file2 = testBucket.file('list.spec.ts/test3/file2.txt');
+  const file2 = testBucket.file('list.spec.ts/test3/file3.txt');
   const files = [file1, file2];
   await testHelper.uploadTestFiles(files);
   // Set permissions
@@ -46,6 +46,7 @@ test('should not list files with permissions', async () => {
 
 test('should list empty directories', async () => {
   // Add files
+  const testBucket = testHelper.getBucket();
   const file1 = testBucket.file('list.spec.ts/test4/dir1/');
   const file2 = testBucket.file('list.spec.ts/test4/dir2/');
   const files = [file1, file2];
@@ -63,6 +64,7 @@ test('should list empty directories', async () => {
 
 test('should list empty sub directories', async () => {
   // Add files
+  const testBucket = testHelper.getBucket();
   const file1 = testBucket.file('list.spec.ts/test5/dir1/');
   const file2 = testBucket.file('list.spec.ts/test5/dir2/sub1/upload.txt');
   const files = [file1, file2];

@@ -3,9 +3,8 @@ import { testHelper } from '../../utils/test-helper';
 import { perms } from '../../permissions';
 import { paths } from '../../utils/paths';
 
-const testBucket = testHelper.testBucket;
-
 test('test creating and removing directory no-permissions', async () => {
+  const testBucket = testHelper.getBucket();
   const tempDir = '/createFolder.spec.ts/test1/temp';
   await CreateFolderWithoutPermissions(testBucket, tempDir);
   await testHelper.delayMs(200);
@@ -15,6 +14,7 @@ test('test creating and removing directory no-permissions', async () => {
 }, 60000);
 
 test('test creating and removing directory with-permissions', async () => {
+  const testBucket = testHelper.getBucket();
   // Make parent directory
   const parentDir = '/createFolder.spec.ts/test2/parentPerms';
   await CreateFolderWithoutPermissions(testBucket, parentDir);
@@ -34,6 +34,7 @@ test('test creating and removing directory with-permissions', async () => {
 }, 60000);
 
 test('test with-permissions createDir and create parentDir', async () => {
+  const testBucket = testHelper.getBucket();
   // Make parent directory
   const parentDir = '/createFolder.spec.ts/test3/';
   await CreateFolderWithoutPermissions(testBucket, parentDir);
@@ -54,6 +55,7 @@ test('test with-permissions createDir and create parentDir', async () => {
 }, 60000);
 
 test('test create duplicate folder', async () => {
+  const testBucket = testHelper.getBucket();
   // Make parent directory
   const parentDir = '/createFolder.spec.ts/test4/';
   const existingDir = '/createFolder.spec.ts/test4/exists1/';

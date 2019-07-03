@@ -3,9 +3,8 @@ import { perms } from '../../permissions';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { TryChangeSingleFilePermissionsObject } from './changePermissionsObject';
 
-const testBucket = testHelper.testBucket;
-
 test('set permissions with claims in group', async () => {
+  const testBucket = testHelper.getBucket();
   const file1 = testBucket.file('changePermissionsObject.spec.ts/test1/file1.txt');
   const blankPerms: CoreTypes.FilePermissionsObject = {
     writers: ['12345'],

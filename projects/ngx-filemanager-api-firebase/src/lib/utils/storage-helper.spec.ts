@@ -7,10 +7,8 @@ import {
 import { testHelper } from './test-helper';
 import { perms } from '../permissions';
 
-// Setup local firebase admin, using service account credentials
-const testBucket = testHelper.testBucket;
-
 test('set and get update permissions obj to object storage', async () => {
+  const testBucket = testHelper.getBucket();
   const obj = {
     rand: uuid()
   } as any;
@@ -21,6 +19,7 @@ test('set and get update permissions obj to object storage', async () => {
 }, 60000);
 
 test('list get files in sub directory', async () => {
+  const testBucket = testHelper.getBucket();
   await testHelper.uploadTestFiles([
     testBucket.file('storage-helper.spec.ts/test2/sub1/file1.txt'),
     testBucket.file('storage-helper.spec.ts/test2/sub1/file2.txt'),
@@ -35,6 +34,7 @@ test('list get files in sub directory', async () => {
 }, 60000);
 
 test('list get files and directories', async () => {
+  const testBucket = testHelper.getBucket();
   await testHelper.uploadTestFiles([
     testBucket.file('storage-helper.spec.ts/test3/file1.txt'),
     testBucket.file('storage-helper.spec.ts/test3/file2.txt'),
@@ -49,6 +49,7 @@ test('list get files and directories', async () => {
 }, 60000);
 
 test('list get files and directories and translate', async () => {
+  const testBucket = testHelper.getBucket();
   await testHelper.uploadTestFiles([
     testBucket.file('storage-helper.spec.ts/test4/file1.txt'),
     testBucket.file('storage-helper.spec.ts/test4/file2.txt'),
@@ -63,6 +64,7 @@ test('list get files and directories and translate', async () => {
 }, 60000);
 
 test('TryCheckWritePermission, of phantom dir, has permissions', async () => {
+  const testBucket = testHelper.getBucket();
   const rootDir = '/storage-helper.spec.ts/test5/';
   // Upload dir with read/write permissions
   const permissionsObj = perms.factory.blankPermissionsObj();
@@ -77,12 +79,13 @@ test('TryCheckWritePermission, of phantom dir, has permissions', async () => {
     const subDirPath = rootDir + 'sub1/sub23/sub4/';
     const claims = perms.factory.blankUserClaim();
     await storage.TryCheckWritePermission(testBucket, subDirPath, claims);
-  }
-  expect(shouldNotThrow()).resolves.not.toThrow();
+  };
+  await expect(shouldNotThrow()).resolves.not.toThrow();
   await testHelper.removeDir(testBucket, rootDir);
 }, 60000);
 
 test('TryCheckWritePermission, of phantom dir, no permission', async () => {
+  const testBucket = testHelper.getBucket();
   const rootDir = '/storage-helper.spec.ts/test5/';
   // Upload dir with read/write permissions
   const permissionsObj = perms.factory.blankPermissionsObj();
@@ -97,7 +100,7 @@ test('TryCheckWritePermission, of phantom dir, no permission', async () => {
     const subDirPath = rootDir + 'sub1/sub23/sub4/';
     const claims = perms.factory.blankUserClaim();
     await storage.TryCheckWritePermission(testBucket, subDirPath, claims);
-  }
-  expect(shouldThrow()).rejects.toThrow();
+  };
+  await expect(shouldThrow()).rejects.toThrow();
   await testHelper.removeDir(testBucket, rootDir);
 }, 60000);

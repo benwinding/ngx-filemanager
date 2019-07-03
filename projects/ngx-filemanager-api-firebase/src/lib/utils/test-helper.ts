@@ -7,32 +7,39 @@ import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import * as CICULAR from 'circular-json';
 import * as admin from 'firebase-admin';
 import { storage } from './storage-helper';
-import { delayMs } from './time-helper';
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../serviceAccountKey.TESTS.json');
 const testbucketname = 'resvu-integration-tests.appspot.com';
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: testbucketname
-});
-
-const testStorage = admin.storage();
-const testBucket = testStorage.bucket(testbucketname);
 
 function logObj(obj) {
   console.log(CICULAR.stringify(obj, null, 2));
 }
 
+function getBucket() {
+  if (!admin.apps || !admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      storageBucket: testbucketname
+    });
+  }
+  const testStorage = admin.storage();
+  const testBucket = testStorage.bucket(testbucketname);
+  return testBucket;
+}
+
 async function uploadTestFile(file: File) {
-  const buffer = new Buffer('hi there');
+  const content = 'hi there' + Math.random().toString().slice(0, 20);
+  const buffer = new Buffer(content);
   const fileOptions = {
     contentType: 'text/plain'
   };
+  await delay(1000);
+  console.log('test-helper: uploadTestFile() about to try and upload test file: ', {fileName: file.name});
   try {
     await file.save(buffer, fileOptions);
   } catch (error) {
-    console.error('test-helper: uploadTestFile', error);
+    console.error('test-helper: uploadTestFile', {fileName: file.name}, error);
     throw new Error(error);
   }
 }
@@ -45,12 +52,20 @@ async function uploadTestFileWithPerms(
   const fileOptions = {
     contentType: 'text/plain'
   };
+  await delay(1000);
   await file.save(buffer, fileOptions);
   await perms.commands.UpdateFilePermissions(file, permissionsObj);
 }
 
-function uploadTestFiles(files: File[]) {
-  return Promise.all(files.map(file => uploadTestFile(file)));
+async function uploadTestFiles(files: File[]) {
+  try {
+    for (const file of files) {
+      await uploadTestFile(file);
+    }
+  } catch (error) {
+    console.error('test-helper uploadTestFiles()', {filenames: files.map(f => f.name)});
+    throw new VError(error);
+  }
 }
 
 function uploadTestFilesWithPerms(
@@ -76,7 +91,7 @@ async function tryRemove(bucket: Bucket, objectPath: string) {
   try {
     console.log('test-helper: deleting object: ' + objectPath);
     const file = bucket.file(objectPath);
-    await delayMs(1000);
+    await delay(1000);
     const [exists] = await file.exists();
     if (exists) {
       await file.delete();
@@ -163,6 +178,6 @@ export const testHelper = {
   existsFile,
   existsDir,
   logObj,
-  testBucket,
+  getBucket,
   delayMs: delay
 };

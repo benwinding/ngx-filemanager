@@ -1,9 +1,8 @@
 import { RemoveFileWithChildren } from './remove';
 import { testHelper } from '../../utils/test-helper';
 
-const testBucket = testHelper.testBucket;
-
 test('remove item that dont exist', async () => {
+  const testBucket = testHelper.getBucket();
   const result = await RemoveFileWithChildren(testBucket, '/cacsascas/');
   expect(result).toBe(true);
 });

@@ -3,9 +3,8 @@ import { testHelper } from '../utils/test-helper';
 import { permsCommands } from './permissions-commands';
 import { permsQueries } from './permissions-queries';
 
-const testBucket = testHelper.testBucket;
-
 test('set permissions to file', async () => {
+  const testBucket = testHelper.getBucket();
   const file1 = testBucket.file('permissions-commands.spec.ts/test12/file1.txt');
   await testHelper.uploadTestFile(file1);
   const blankPerms: CoreTypes.FilePermissionsObject = {

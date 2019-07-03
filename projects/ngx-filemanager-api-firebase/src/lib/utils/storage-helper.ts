@@ -77,7 +77,15 @@ async function SetMetaProperty(
     const res = await file.setMetadata(metaObj);
     return res[0];
   } catch (error) {
-    const [fileExists] = await file.exists();
+    let fileExists: boolean;
+    try {
+      [fileExists] = await file.exists();
+    } catch (e) {
+      console.error(
+        'storage-helper: SetMetaProperty() error getting file.exists',
+        e
+      );
+    }
     console.error('storage-helper: SetMetaProperty() error setting meta', {
       fileExists,
       filePath: file.name,

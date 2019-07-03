@@ -4,6 +4,7 @@ import { GetTokenFromRequest } from './token-helper';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { permsFactory } from './permissions.factory';
 import { storage } from '../utils/storage-helper';
+import { VError } from 'verror';
 
 async function RetrieveFilePermissions(
   file: File
@@ -129,10 +130,10 @@ function CheckCanEditPermissions(
     'write'
   );
   if (!canEditPermissions) {
-    throw new Error('Cannot edit permissions here');
+    throw new VError('Cannot edit permissions here');
   }
   if (!canEditPermissionsAfter) {
-    throw new Error(
+    throw new VError(
       'Cannot change permissions, so you wont be able to change back'
     );
   }

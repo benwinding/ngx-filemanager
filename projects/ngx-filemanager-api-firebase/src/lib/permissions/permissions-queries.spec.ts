@@ -2,8 +2,6 @@ import { permsFactory } from './permissions.factory';
 import { permsQueries } from './permissions-queries';
 import { testHelper } from '../utils/test-helper';
 
-const testBucket = testHelper.testBucket;
-
 test('check not part of array permsQueries.IsPartOfArray', () => {
   const isInArray = permsQueries.IsPartOfArray(['ascascasc'], ['sssss']);
   expect(isInArray).toBe(false);
@@ -15,6 +13,7 @@ test('test permsQueries.IsPartOfArray', () => {
 });
 
 test('test default file permissions when uploaded', async () => {
+  const testBucket = testHelper.getBucket();
   const file = testBucket.file(
     'permissions-helper.spec.ts/blankPermissions.txt'
   );

@@ -7,9 +7,8 @@ import { testHelper } from '../../utils/test-helper';
 import { perms } from '../../permissions';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
 
-const testBucket = testHelper.testBucket;
-
 test('set permissions to object', async () => {
+  const testBucket = testHelper.getBucket();
   const oldPermissions = perms.factory.blankPermissionsObj();
   const entity = uuid();
   const newPermissions = SetPermissionToObj(oldPermissions, 'READER', entity);
@@ -17,6 +16,7 @@ test('set permissions to object', async () => {
 }, 60000);
 
 test('set permissions without any claims', async () => {
+  const testBucket = testHelper.getBucket();
   const file1 = testBucket.file('changePermissions.spec.ts/test1/file5.txt');
   const blankPerms: CoreTypes.FilePermissionsObject = {
     readers: [],
@@ -39,6 +39,7 @@ test('set permissions without any claims', async () => {
 }, 60000);
 
 test('set permissions with claims', async () => {
+  const testBucket = testHelper.getBucket();
   const file1 = testBucket.file('changePermissions.spec.ts/test2/file3.txt');
   const blankPerms: CoreTypes.FilePermissionsObject = {
     readers: [],
@@ -64,13 +65,14 @@ test('set permissions with claims', async () => {
 }, 60000);
 
 test('set permissions with claims in group', async () => {
-  const file1 = testBucket.file('changePermissions.spec.ts/test3/file1.txt');
+  const testBucket = testHelper.getBucket();
+  const file11 = testBucket.file('changePermissions.spec.ts1/test3/file55.txt');
   const blankPerms: CoreTypes.FilePermissionsObject = {
     writers: ['12345'],
     readers: [],
     others: 'hidden'
   };
-  await testHelper.uploadTestFileWithPerms(file1, blankPerms);
+  await testHelper.uploadTestFileWithPerms(file11, blankPerms);
   await testHelper.delayMs(500);
 
   const blankClaims = perms.factory.blankUserClaim();
@@ -78,12 +80,12 @@ test('set permissions with claims in group', async () => {
 
   const shouldNotThrow = async () => {
     return TryChangeSingleFilePermissions(
-      file1,
+      file11,
       'WRITER',
       '11111',
       blankClaims
     );
   };
-  await expect(shouldNotThrow()).resolves;
-  await testHelper.removeFile(testBucket, file1.name);
+  await (await expect(shouldNotThrow()).resolves.not.toThrow());
+  await testHelper.removeFile(testBucket, file11.name);
 }, 60000);
