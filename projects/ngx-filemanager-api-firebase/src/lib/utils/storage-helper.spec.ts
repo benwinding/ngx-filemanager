@@ -12,7 +12,9 @@ test('set and get update permissions obj to object storage', async () => {
   const obj = {
     rand: uuid()
   } as any;
+  await testHelper.removeFile(testBucket, 'storage-helper.spec.ts/file1.txt');
   const file = testBucket.file('storage-helper.spec.ts/file.txt');
+  await testHelper.uploadTestFile(file);
   await storage.SetMetaProperty(file, 'propname', obj);
   const objFromStorage = await storage.GetMetaProperty(file, 'propname');
   expect(objFromStorage['rand']).toBe(obj.rand);
@@ -20,6 +22,7 @@ test('set and get update permissions obj to object storage', async () => {
 
 test('list get files in sub directory', async () => {
   const testBucket = testHelper.getBucket();
+  await testHelper.removeDir(testBucket, 'storage-helper.spec.ts/test2/sub1');
   await testHelper.uploadTestFiles([
     testBucket.file('storage-helper.spec.ts/test2/sub1/file1.txt'),
     testBucket.file('storage-helper.spec.ts/test2/sub1/file2.txt'),
@@ -50,6 +53,7 @@ test('list get files and directories', async () => {
 
 test('list get files and directories and translate', async () => {
   const testBucket = testHelper.getBucket();
+  await testHelper.removeDir(testBucket, 'storage-helper.spec.ts/test4/');
   await testHelper.uploadTestFiles([
     testBucket.file('storage-helper.spec.ts/test4/file1.txt'),
     testBucket.file('storage-helper.spec.ts/test4/file2.txt'),

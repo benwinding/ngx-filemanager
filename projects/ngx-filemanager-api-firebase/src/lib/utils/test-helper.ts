@@ -34,14 +34,15 @@ async function uploadTestFile(file: File) {
   const fileOptions = {
     contentType: 'text/plain'
   };
-  await delay(1000);
   console.log('test-helper: uploadTestFile() about to try and upload test file: ', {fileName: file.name});
   try {
+    await delay(500);
     await file.save(buffer, fileOptions);
   } catch (error) {
     console.error('test-helper: uploadTestFile', {fileName: file.name}, error);
     throw new Error(error);
   }
+  await delay(500);
 }
 
 async function uploadTestFileWithPerms(
@@ -52,9 +53,17 @@ async function uploadTestFileWithPerms(
   const fileOptions = {
     contentType: 'text/plain'
   };
-  await delay(1000);
-  await file.save(buffer, fileOptions);
-  await perms.commands.UpdateFilePermissions(file, permissionsObj);
+
+  try {
+    await delay(500);
+    await file.save(buffer, fileOptions);
+    await delay(500);
+    await perms.commands.UpdateFilePermissions(file, permissionsObj);
+    await delay(500);
+  } catch (error) {
+    console.error('test-helper: uploadTestFile', {fileName: file.name}, error);
+    throw new Error(error);
+  }
 }
 
 async function uploadTestFiles(files: File[]) {
@@ -68,19 +77,26 @@ async function uploadTestFiles(files: File[]) {
   }
 }
 
-function uploadTestFilesWithPerms(
+async function uploadTestFilesWithPerms(
   files: File[],
   permissionsObj: CoreTypes.FilePermissionsObject
 ) {
-  return Promise.all(
-    files.map(file => uploadTestFileWithPerms(file, permissionsObj))
-  );
+  try {
+    for (const file of files) {
+      await uploadTestFileWithPerms(file, permissionsObj);
+    }
+  } catch (error) {
+    console.error('test-helper uploadTestFilesWithPerms()', {filenames: files.map(f => f.name)});
+    throw new VError(error);
+  }
 }
 
 async function tryCheckExists(bucket: Bucket, objectPath: string) {
   try {
+    await delay(100);
     const file = bucket.file(objectPath);
     const [exists] = await file.exists();
+    await delay(100);
     return exists;
   } catch (error) {
     throw new VError(error);
@@ -91,11 +107,12 @@ async function tryRemove(bucket: Bucket, objectPath: string) {
   try {
     console.log('test-helper: deleting object: ' + objectPath);
     const file = bucket.file(objectPath);
-    await delay(1000);
+    await delay(500);
     const [exists] = await file.exists();
     if (exists) {
       await file.delete();
     }
+    await delay(500);
     return false;
   } catch (error) {
     console.log(
@@ -103,6 +120,7 @@ async function tryRemove(bucket: Bucket, objectPath: string) {
       { objectPath }
     );
   }
+  await delay(500);
 }
 
 async function removeFile(bucket: Bucket, filePath: string) {
@@ -116,14 +134,20 @@ async function removeFiles(files: File[]) {
 
 async function removeDir(bucket: Bucket, dirPath: string) {
   const pathParsed = paths.EnsureGoogleStoragePathDir(dirPath);
+  await delay(200);
   await tryRemove(bucket, pathParsed);
+  await delay(200);
   console.log('test-helper: removeDir() removed directory', { dirPath });
   try {
     const childrenToRemove = await storage.GetAllChildrenWithPrefix(
       bucket,
       pathParsed
     );
-    await Promise.all(childrenToRemove.map(c => c.delete()));
+    for (const child of childrenToRemove) {
+      await delay(100);
+      await child.delete();
+    }
+    await delay(100);
   } catch (error) {
     console.log('test-helper: removeDir() problem removing children of path', {
       dirPath
@@ -157,8 +181,8 @@ function blankPermissionWithWriters(
   return newPermissions;
 }
 
-async function delay(ms: number) {
-  return new Promise((resolve, reject) => {
+async function delay(ms: number): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
     setTimeout(() => {
       resolve();
     }, ms);

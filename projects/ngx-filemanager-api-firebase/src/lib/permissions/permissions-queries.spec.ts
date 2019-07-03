@@ -17,10 +17,12 @@ test('test default file permissions when uploaded', async () => {
   const file = testBucket.file(
     'permissions-helper.spec.ts/blankPermissions.txt'
   );
+  await testHelper.removeFile(testBucket, 'permissions-helper.spec.ts/blankPermissions.txt');
+  await testHelper.uploadTestFileWithPerms(file, permsFactory.blankPermissionsObj());
   const permissions = await permsQueries.RetrieveFilePermissions(file);
   console.log('perms', { permissions });
   expect(permissions.others).toBe('read/write');
-});
+}, 60000);
 
 test('TryCheckHasAnyPermissions', () => {
   const shouldError = () => {
