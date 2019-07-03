@@ -26,9 +26,7 @@ async function RetrieveCustomClaims(req: Request) {
   try {
     token = await GetTokenFromRequest(req);
   } catch (error) {
-    console.warn('No token found on request, no permissions for user', {
-      error
-    });
+    console.log('No bearer token found on request, no permissions for user');
     return permsFactory.blankUserClaim();
   }
   const claims = token as CoreTypes.UserCustomClaims;
