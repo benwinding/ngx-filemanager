@@ -7,6 +7,7 @@ import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import * as CICULAR from 'circular-json';
 import * as admin from 'firebase-admin';
 import { storage } from './storage-helper';
+import { delayMs } from './time-helper';
 // Setup local firebase admin, using service account credentials
 const serviceAccount = require('../../../../../serviceAccountKey.TESTS.json');
 const testbucketname = 'resvu-integration-tests.appspot.com';
@@ -23,12 +24,17 @@ function logObj(obj) {
   console.log(CICULAR.stringify(obj, null, 2));
 }
 
-function uploadTestFile(file: File) {
+async function uploadTestFile(file: File) {
   const buffer = new Buffer('hi there');
   const fileOptions = {
     contentType: 'text/plain'
   };
-  return file.save(buffer, fileOptions);
+  try {
+    await file.save(buffer, fileOptions);
+  } catch (error) {
+    console.error('test-helper: uploadTestFile', error);
+    throw new Error(error);
+  }
 }
 
 async function uploadTestFileWithPerms(
@@ -68,10 +74,11 @@ async function tryCheckExists(bucket: Bucket, objectPath: string) {
 
 async function tryRemove(bucket: Bucket, objectPath: string) {
   try {
+    console.log('test-helper: deleting object: ' + objectPath);
     const file = bucket.file(objectPath);
+    await delayMs(1000);
     const [exists] = await file.exists();
     if (exists) {
-      console.log('- deleting file: ', file.name);
       await file.delete();
     }
     return false;
