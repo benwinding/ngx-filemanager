@@ -25,15 +25,16 @@ export async function GetNextFreeFoldernameRecursively(
   bucket: Bucket,
   inputDir: File
 ): Promise<File> {
+  const dirNameNoSuffix = paths.EnsureNoTrailingSlash(inputDir.name);
   const childrenMatching = await storage.GetAllChildrenWithPrefix(
     bucket,
-    inputDir.name
+    dirNameNoSuffix
   );
   if (!childrenMatching || !childrenMatching.length) {
     return inputDir;
   }
-  const matchingNames = childrenMatching.map(f => paths.GetParentDir(f.name)).sort();
-  const lastMatch = matchingNames.pop();
+  const matchingNames = childrenMatching.map(f => f.name).sort();
+  const lastMatch = matchingNames.shift();
   const nextPath = paths.Add2ToPathDir(lastMatch);
   const nextFreeFile = bucket.file(nextPath);
   return nextFreeFile;
