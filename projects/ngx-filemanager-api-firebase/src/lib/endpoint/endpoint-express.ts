@@ -37,8 +37,10 @@ endpoint.use(PostRequestsOnly);
 import { ParseUploadFile, UploadedFile } from './middleware-upload';
 import { permsQueries } from '../permissions/permissions-queries';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
-endpoint.post(
+endpoint.use(
   '/upload',
+  OptionRequestsAreOk,
+  PostRequestsOnly,
   HasQueryParam('bucketname'),
   HasQueryParam('directoryPath'),
   ParseUploadFile,
