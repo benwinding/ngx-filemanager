@@ -7,10 +7,9 @@ export function logObj(obj) {
 it('should not be able to escape virtual root', () => {
   const virtualRoot = '/sssss';
   const testPath = '/';
-  const tryThis = () => {
-    crumbFactory.MakeCrumbs(virtualRoot, testPath);
-  };
-  expect(tryThis).toThrowError();
+  const crumbs = crumbFactory.MakeCrumbs(virtualRoot, testPath);
+  expect(crumbs.length).toBe(1);
+  expect(crumbs[0].icon).not.toBe('home');
 });
 
 it('should have single folder as root', () => {

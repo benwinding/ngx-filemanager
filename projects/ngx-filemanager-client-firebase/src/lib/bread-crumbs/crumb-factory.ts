@@ -17,11 +17,21 @@ function MakeRootCrumb(virtualRoot): BreadCrumb {
   };
 }
 
+function MakeWarningCrumb(virtualRoot): BreadCrumb {
+  return {
+    label: '',
+    icon: 'mood_bad',
+    path: virtualRoot,
+    virtualPath: virtualRoot
+  };
+}
+
 const MakeCrumbs = (virtualRoot: string, absolutePath: string) => {
   const virtualRootParsed = EnsureAbsoluteDirectory(virtualRoot);
   const absolutePathParsed = EnsureAbsoluteDirectory(absolutePath);
   if (absolutePathParsed.indexOf(virtualRootParsed) !== 0) {
-    throw new Error('Absolute path is not within the virtualRoot');
+    console.warn('Absolute path is not within the virtualRoot', {virtualRoot, absolutePath});
+    return [MakeWarningCrumb(virtualRootParsed)];
   }
 
   if (absolutePathParsed === virtualRootParsed) {
