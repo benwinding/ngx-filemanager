@@ -1,5 +1,5 @@
 import { CoreTypes, FileSystemProvider } from 'ngx-filemanager-core';
-import * as path from 'path-browserify';
+import path from 'path-browserify';
 import { ConsoleLoggerService } from '../logging/console-logger.service';
 import {
   EnsureTrailingSlash,

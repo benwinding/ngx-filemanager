@@ -1,7 +1,7 @@
 import { guesser } from './file-icon-guesser';
 import { Injectable, Inject } from '@angular/core';
 import { APP_BASE_HREF } from '@angular/common';
-import * as path from 'path-browserify';
+import path from 'path-browserify';
 
 @Injectable()
 export class IconUrlResolverService {

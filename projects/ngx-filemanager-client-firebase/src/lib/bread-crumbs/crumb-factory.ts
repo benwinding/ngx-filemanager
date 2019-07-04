@@ -1,4 +1,4 @@
-import * as path from 'path-browserify';
+import path from 'path-browserify';
 import { EnsureAbsoluteDirectory } from '../utils/path-helpers';
 
 export interface BreadCrumb {

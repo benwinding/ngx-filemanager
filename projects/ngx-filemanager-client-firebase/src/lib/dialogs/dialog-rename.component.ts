@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import * as path from 'path-browserify';
+import path from 'path-browserify';
 
 export interface RenameDialogInterface {
   currentPath: string;
