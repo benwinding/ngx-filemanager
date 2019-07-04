@@ -26,7 +26,6 @@ endpoint.use((req: Request, res: Response, next: NextFunction) => {
     next();
   }
 });
-endpoint.use();
 
 endpoint.use('/hello', async (req, res) => {
   console.log('HELLO');

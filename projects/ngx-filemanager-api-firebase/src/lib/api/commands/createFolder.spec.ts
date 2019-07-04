@@ -71,3 +71,22 @@ test('test create duplicate folder', async () => {
   await testHelper.removeDir(testBucket, parentDir);
 }, 60000);
 
+test('should create folder(2) to protect from phantom directory', async () => {
+  const testBucket = testHelper.getBucket();
+  // Make parent directory
+  const parentDir = 'createFolder.spec.ts/test5';
+  const phantomDir___ = parentDir + '/phantom/test';
+  const shouldCollide = parentDir + '/phantom';
+  const shouldBeThis_ = parentDir + '/phantom (2)/';
+
+  const shouldCollideFile = testBucket.file(shouldCollide);
+
+  await CreateFolderWithoutPermissions(testBucket, parentDir);
+  await CreateFolderWithoutPermissions(testBucket, phantomDir___);
+  const nextFile = await GetNextFreeFoldernameRecursively(testBucket, shouldCollideFile);
+
+  await testHelper.delayMs(200);
+  await expect(nextFile.name).toBe(shouldBeThis_);
+  await testHelper.removeDir(testBucket, parentDir);
+}, 60000);
+
