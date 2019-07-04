@@ -1,9 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { OptimisticFilesystem } from './optimistic-filesystem.interface';
 import { ClientFileSystemService } from './client-filesystem.service';
-import { take, takeUntil, debounceTime, tap, switchMap } from 'rxjs/operators';
+import { take, takeUntil, debounceTime, tap, switchMap, auditTime } from 'rxjs/operators';
 import { LoggerService } from '../logging/logger.service';
-import * as path from 'path-browserify';
+import path from 'path-browserify';
 import { NotificationService } from '../notifications/notification.service';
 import { Subject } from 'rxjs';
 import { FileSystemProvider, CoreTypes } from 'ngx-filemanager-core/public_api';
@@ -71,7 +71,7 @@ export class OptimisticFilesystemService
     this.refreshEmitter
       .pipe(
         takeUntil(this.destroyed),
-        debounceTime(800),
+        auditTime(800),
         tap(async currentPath => {
           return this.clientFilesystem.OnList(currentPath);
         })

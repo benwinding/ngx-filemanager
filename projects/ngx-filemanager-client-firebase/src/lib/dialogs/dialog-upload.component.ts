@@ -136,6 +136,11 @@ export class AppDialogUploadFilesComponent {
   ) {
     this.currentDirectory = data.currentPath;
     this.dropzoneConfig.url = data.uploadApiUrl;
+    this.logger.info('initializing:', {
+      currentDirectory: this.currentDirectory,
+      dropzoneConfig: this.dropzoneConfig,
+      data: data
+    });
   }
 
   onSubmit() {
