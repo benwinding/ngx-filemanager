@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
+const cors = require('cors');
 
 export function OptionRequestsAreOk(
   req: Request,
@@ -49,4 +50,34 @@ export function HasQueryParam(paramName: string): RequestHandler {
     }
     next();
   };
+}
+
+export async function AddCors(req: Request, res: Response, next: NextFunction) {
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Authorization, X-Requested-With, Accept, Content-Type, Origin, Cache-Control, X-File-Name'
+  );
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  try {
+    await new Promise((resolve, reject) => {
+      cors({ origin: true })(req, res, () => {
+        resolve();
+      });
+    });
+    next();
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+export function LogRequest(req: Request, res: Response, next: NextFunction) {
+  const body = req.body;
+  const msg = `
+---- request: ${req.url}
+method: ${req.method}
+ query: ${JSON.stringify(req.query, null, 4)}
+  body: ${JSON.stringify(body, null, 4)}
+----`;
+  console.log(msg);
+  next();
 }

@@ -4,16 +4,29 @@ import {
   OptionRequestsAreOk,
   PostRequestsOnly,
   HasBodyProp,
-  HasQueryParam
+  HasQueryParam,
+  AddCors,
+  LogRequest
 } from './middleware-helpers';
 import { Storage } from '../types/google-cloud-types';
 import { NgxFileMangerApiFireBaseClass } from '../api/firebase-storage-api';
 import { VError } from 'verror';
+import { Request, Response, NextFunction } from 'express';
 
 let fmApi: NgxFileMangerApiFireBaseClass;
+let LOGGING = false;
 
 const endpoint = express();
+endpoint.use(AddCors);
 endpoint.use(OptionRequestsAreOk);
+endpoint.use((req: Request, res: Response, next: NextFunction) => {
+  if (LOGGING) {
+    LogRequest(req, res, next);
+  } else {
+    next();
+  }
+});
+endpoint.use();
 
 endpoint.use('/hello', async (req, res) => {
   console.log('HELLO');
@@ -153,11 +166,19 @@ async function notImplemented(req, res) {
   res.status(501).send('That request has not been implemented: ' + bodyString);
 }
 
+export interface FileManagerEndpointOptions {
+  logging?: boolean;
+  storage: Storage;
+}
+
 /*
 Use by attaching to a firebase function
 exports.FileManagerApi = StorageEndpoint;
 */
-export const FileManagerEndpointExpress = (storage: Storage) => {
-  fmApi = new NgxFileMangerApiFireBaseClass(storage);
+export const FileManagerEndpointExpress = (
+  options: FileManagerEndpointOptions
+) => {
+  LOGGING = options.logging;
+  fmApi = new NgxFileMangerApiFireBaseClass(options.storage);
   return endpoint;
 };
