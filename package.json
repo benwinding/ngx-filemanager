@@ -71,6 +71,7 @@
     "@types/uuid": "^3.4.4",
     "@types/verror": "^1.10.3",
     "codelyzer": "^4.5.0",
+    "gh-pages": "^2.0.1",
     "jasmine": "^3.4.0",
     "jest": "^24.8.0",
     "jest-skipped-reporter": "^0.0.4",
