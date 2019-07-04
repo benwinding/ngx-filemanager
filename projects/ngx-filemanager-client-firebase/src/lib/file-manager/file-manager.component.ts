@@ -89,13 +89,17 @@ export class NgxFileManagerComponent implements OnInit {
         '<ngx-filemanager> must have input selector [config] set'
       );
     }
-    this.actionHandlers.init(this.fileSystem, this.config);
-    this.makeConfig();
-    if (this.config && this.config.virtualRoot) {
-      await Promise.all([
-        this.actionHandlers.OnNavigateTo(this.config.virtualRoot)
-      ]);
+    if (!this.config.virtualRoot) {
+      console.warn('<ngx-filemanager> warning config.virtualRoot not set, using bucket root "/"');
+      this.config.virtualRoot = '/';
     }
+    if (!this.config.initialPath) {
+      console.warn('<ngx-filemanager> warning config.initialPath not set, using virtualRoot: ' + this.config.virtualRoot);
+      this.config.initialPath = this.config.virtualRoot;
+    }
+    await this.actionHandlers.init(this.fileSystem, this.config);
+    await this.actionHandlers.OnNavigateTo(this.config.virtualRoot);
+    this.makeConfig();
     this.initLoaded = true;
   }
 

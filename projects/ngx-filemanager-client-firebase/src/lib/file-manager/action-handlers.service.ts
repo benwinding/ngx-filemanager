@@ -14,7 +14,7 @@ import {
 } from '../dialogs/dialog-copy-or-move.component';
 import { FileManagerConfig } from '../configuration/client-configuration';
 import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
-import * as path from 'path-browserify';
+import path from 'path-browserify';
 import {
   UploadDialogInterface,
   AppDialogUploadFilesComponent,
@@ -40,7 +40,8 @@ export class ActionHandlersService {
   }
 
   public async GetCurrentPath() {
-    return this.$CurrentPath.pipe(take(1)).toPromise();
+    const current = await this.$CurrentPath.pipe(take(1)).toPromise();
+    return current || '';
   }
 
   get $CurrentPathIsRoot() {
@@ -63,14 +64,16 @@ export class ActionHandlersService {
     private notifications: NotificationService
   ) {}
 
-  public init(fileSystem: FileSystemProvider, config: FileManagerConfig) {
+  public async init(fileSystem: FileSystemProvider, config: FileManagerConfig) {
     this.config = config;
     this.fileSystem = fileSystem;
+    this.logger.info('init()', {fileSystem, config});
     this.optimisticFs.initialize(this.fileSystem, this.clientFilesystem);
-    const initialPath = this.config.initialPath;
-    this.OnNewFolderClobber(initialPath).catch(e => {
-      this.logger.error('init() OnNewFolderClobber: error', e, {initialPath});
-    });
+    try {
+      await this.clientFilesystem.OnList(config.initialPath);
+    } catch (error) {
+      this.logger.error('init() OnNewFolderClobber: error', error, {fileSystem, config});
+    }
   }
 
   public async OnRename(file: CoreTypes.ResFile) {
@@ -253,6 +256,9 @@ export class ActionHandlersService {
   }
 
   public async OnNewFolderClobber(newDirName: string) {
+    if (newDirName === '/') {
+      return;
+    }
     const currentDirectory = await this.GetCurrentPath();
     const newDirectoryPath = path.join(currentDirectory, newDirName);
     await this.optimisticFs.HandleCreateFolder(newDirectoryPath, true);
