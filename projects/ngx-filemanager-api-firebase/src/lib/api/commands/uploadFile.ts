@@ -2,6 +2,7 @@ import { Bucket, File } from '../../types/google-cloud-types';
 import * as path from 'path';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { paths } from '../../utils/paths';
+import { storage } from '../../utils/storage-helper';
 
 export async function SaveBufferToPath(
   file: File,
@@ -15,18 +16,27 @@ export async function SaveBufferToPath(
   return file.save(buffer, fileOptions);
 }
 
-export async function GetNextFreeFilenameRecursively(
+export async function GetNextFreeFilename(
   bucket: Bucket,
   inputFile: File
 ): Promise<File> {
+  const inputFilePath = inputFile.name;
+  const childrenMatching = await storage.GetAllChildrenWithPrefix(
+    bucket,
+    inputFilePath
+  );
+  if (!childrenMatching || !childrenMatching.length) {
+    return inputFile;
+  }
   const [exists] = await inputFile.exists();
   if (!exists) {
     return inputFile;
   }
-  const filePath = inputFile.name;
-  const nextPath = paths.Add2ToPath(filePath);
+  const matchingNames = childrenMatching.map(f => f.name).sort();
+  const lastMatch = matchingNames.shift();
+  const nextPath = paths.Add2ToPath(lastMatch);
   const nextFreeFile = bucket.file(nextPath);
-  return GetNextFreeFilenameRecursively(bucket, nextFreeFile);
+  return nextFreeFile;
 }
 
 export async function UploadFile(
@@ -42,7 +52,7 @@ export async function UploadFile(
   const file = bucket.file(bucketFilePath);
   const [exists] = await file.exists();
   if (exists) {
-    const uniqueFile = await GetNextFreeFilenameRecursively(bucket, file);
+    const uniqueFile = await GetNextFreeFilename(bucket, file);
     return SaveBufferToPath(uniqueFile, mimetype, buffer);
   }
   return SaveBufferToPath(file, mimetype, buffer);

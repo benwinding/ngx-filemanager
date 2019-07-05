@@ -21,7 +21,7 @@ export async function CreateFolderWithoutPermissions(
   return result;
 }
 
-export async function GetNextFreeFoldernameRecursively(
+export async function GetNextFreeFoldername(
   bucket: Bucket,
   inputDir: File
 ): Promise<File> {
@@ -51,7 +51,7 @@ export async function CreateFolder(
     const newDir = bucket.file(newDirPath);
     let newDirToAdd: File;
     if (!disableNoClobber) {
-      newDirToAdd = await GetNextFreeFoldernameRecursively(bucket, newDir);
+      newDirToAdd = await GetNextFreeFoldername(bucket, newDir);
     } else {
       newDirToAdd = newDir;
     }

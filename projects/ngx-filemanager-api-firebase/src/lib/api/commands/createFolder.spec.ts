@@ -1,4 +1,4 @@
-import { CreateFolder, CreateFolderWithoutPermissions, GetNextFreeFoldernameRecursively } from './createFolder';
+import { CreateFolder, CreateFolderWithoutPermissions, GetNextFreeFoldername } from './createFolder';
 import { testHelper } from '../../utils/test-helper';
 import { perms } from '../../permissions';
 import { paths } from '../../utils/paths';
@@ -64,7 +64,7 @@ test('test create duplicate folder', async () => {
 
   await CreateFolderWithoutPermissions(testBucket, parentDir);
   await CreateFolderWithoutPermissions(testBucket, existingDir);
-  const nextFile = await GetNextFreeFoldernameRecursively(testBucket, existing);
+  const nextFile = await GetNextFreeFoldername(testBucket, existing);
 
   await testHelper.delayMs(200);
   await expect(nextFile.name).toBe(nextDir);
@@ -83,7 +83,7 @@ test('should create folder(2) to protect from phantom directory', async () => {
 
   await CreateFolderWithoutPermissions(testBucket, parentDir);
   await CreateFolderWithoutPermissions(testBucket, phantomDir___);
-  const nextFile = await GetNextFreeFoldernameRecursively(testBucket, shouldCollideFile);
+  const nextFile = await GetNextFreeFoldername(testBucket, shouldCollideFile);
 
   await testHelper.delayMs(200);
   await expect(nextFile.name).toBe(shouldBeThis_);

@@ -1,4 +1,4 @@
-import { UploadFile, GetNextFreeFilenameRecursively } from './uploadFile';
+import { UploadFile, GetNextFreeFilename } from './uploadFile';
 import { testHelper } from '../../utils/test-helper';
 
 test('creates file and deletes it', async () => {
@@ -26,7 +26,7 @@ test('get next filename in directory', async () => {
   const existingFile = testBucket.file(existingPath1);
   await testHelper.uploadTestFile(existingFile);
   await testHelper.delayMs(500);
-  const nextFile = await GetNextFreeFilenameRecursively(testBucket, existingFile);
+  const nextFile = await GetNextFreeFilename(testBucket, existingFile);
   expect(nextFile.name).toBe(existingPath2);
   await testHelper.removeDir(testBucket, '/uploadFile.spec.ts/test2/');
 }, 60000);
@@ -40,7 +40,7 @@ test('get next filename in directory recursive', async () => {
   const existingFile2 = testBucket.file(existingPath2);
   await testHelper.uploadTestFiles([existingFile, existingFile2]);
   await testHelper.delayMs(500);
-  const nextFile = await GetNextFreeFilenameRecursively(testBucket, existingFile);
+  const nextFile = await GetNextFreeFilename(testBucket, existingFile);
   await testHelper.removeDir(testBucket, '/uploadFile.spec.ts/test3/');
   expect(nextFile.name).toBe(existingPath3);
 }, 60000);
