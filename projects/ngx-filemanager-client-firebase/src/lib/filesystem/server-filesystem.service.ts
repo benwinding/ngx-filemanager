@@ -3,6 +3,7 @@ import { CoreTypes, FileSystemProvider } from 'ngx-filemanager-core/public_api';
 import { HttpClient } from '@angular/common/http';
 import { LoggerService } from '../logging/logger.service';
 import { FileSystemRequestBuilder } from './server-filesystem-request';
+import { EnsureNoTrailingSlash } from '../utils/path-helpers';
 
 @Injectable()
 export class ServerFilesystemProviderService implements FileSystemProvider {
@@ -21,7 +22,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
 
   Initialize(bucketname: string, apiEndpoint: string) {
     this.bucketname = bucketname;
-    this.apiEndpoint = apiEndpoint;
+    this.apiEndpoint = EnsureNoTrailingSlash(apiEndpoint);
   }
 
   List(path: string): Promise<CoreTypes.ResBodyList> {
