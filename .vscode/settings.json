@@ -15,5 +15,6 @@
     "**/.project": true,
     "**/.settings": true,
     "**/.factorypath": true
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
