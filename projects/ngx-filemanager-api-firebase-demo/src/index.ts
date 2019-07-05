@@ -8,8 +8,7 @@ app.use(bodyParser.json());
 app.use(AddCors);
 
 import * as admin from 'firebase-admin';
-// const serviceAccount = require('../../../serviceAccountKey.json'); // api-demo-debug
-const serviceAccount = require('../../../../serviceAccountKey.json'); // api-demo-watch-tsc
+const serviceAccount = require('../../../serviceAccountKey.json'); // api-demo-debug
 
 // Setup local firebase admin, using service account credentials
 admin.initializeApp({
