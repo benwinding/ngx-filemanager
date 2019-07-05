@@ -20,15 +20,15 @@ export async function GetNextFreeFilename(
   bucket: Bucket,
   inputFile: File
 ): Promise<File> {
-  const inputFilePath = inputFile.name;
-  const childrenMatching = await storage.GetAllChildrenWithPrefix(
+  const dirNameNoSuffix = paths.GetParentDir(inputFile.name);
+  const childrenMatching = await storage.GetListWithoutPermissions(
     bucket,
-    inputFilePath
+    dirNameNoSuffix
   );
   if (!childrenMatching || !childrenMatching.length) {
     return inputFile;
   }
-  const matchingNames = childrenMatching.map(f => f.name).sort();
+  const matchingNames = childrenMatching.map(f => f.fullPath).sort();
   const lastMatch = matchingNames.shift();
   const nextPath = paths.Add2ToPath(lastMatch);
   const nextFreeFile = bucket.file(nextPath);
