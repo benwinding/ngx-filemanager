@@ -28,10 +28,6 @@ export async function GetNextFreeFilename(
   if (!childrenMatching || !childrenMatching.length) {
     return inputFile;
   }
-  const [exists] = await inputFile.exists();
-  if (!exists) {
-    return inputFile;
-  }
   const matchingNames = childrenMatching.map(f => f.name).sort();
   const lastMatch = matchingNames.shift();
   const nextPath = paths.Add2ToPath(lastMatch);
