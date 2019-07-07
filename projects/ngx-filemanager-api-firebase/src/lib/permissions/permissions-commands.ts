@@ -6,7 +6,7 @@ async function UpdateFilePermissions(
   file: File,
   newPermissions: CoreTypes.FilePermissionsObject
 ) {
-  return permHelper.SetMetaProperty(file, 'permissions', newPermissions);
+  return permHelper.SetMetaPropertyObj(file, 'permissions', newPermissions);
 }
 
 export const permsCommands = {

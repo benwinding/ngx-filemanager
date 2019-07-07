@@ -16,8 +16,8 @@ test('set and get update permissions obj to object storage', async () => {
   await testHelper.removeFile(testBucket, 'storage-helper.spec.ts/file1.txt');
   const file = testBucket.file('storage-helper.spec.ts/file.txt');
   await testHelper.uploadTestFile(file);
-  await permHelper.SetMetaProperty(file, 'propname', obj);
-  const objFromStorage = await permHelper.GetMetaProperty(file, 'propname');
+  await permHelper.SetMetaPropertyObj(file, 'propname', obj);
+  const objFromStorage = await permHelper.GetMetaPropertyObj(file, 'propname');
   expect(objFromStorage['rand']).toBe(obj.rand);
 }, 60000);
 

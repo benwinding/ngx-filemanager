@@ -9,10 +9,9 @@ import { permHelper } from './permissions-helper';
 async function RetrieveFilePermissions(
   file: File
 ): Promise<CoreTypes.FilePermissionsObject> {
-  const fromStorage: CoreTypes.FilePermissionsObject = await permHelper.GetMetaProperty(
-    file,
-    'permissions'
-  );
+  const fromStorage = await permHelper.GetMetaPropertyObj<
+    CoreTypes.FilePermissionsObject
+  >(file, 'permissions');
   const blank = permsFactory.blankPermissionsObj();
   const safePerms = {
     ...blank,

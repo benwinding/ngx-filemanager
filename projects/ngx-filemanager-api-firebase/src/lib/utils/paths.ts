@@ -95,6 +95,16 @@ function IsCurrentPathFile(
   return isCurrentPathFile;
 }
 
+function IsObjNameDir(storageObjectName: string) {
+  const filePathParsed = EnsurePrefixSlash(storageObjectName);
+  const isDir = HasTrailingSlash(filePathParsed);
+  return isDir;
+}
+
+function IsObjNameFile(storageObjectName: string) {
+  return !IsObjNameDir(storageObjectName);
+}
+
 function GetSubDirectory(
   currentDirectoryPath: string,
   absObjectPath: string
@@ -165,6 +175,8 @@ export const paths = {
   GetRelativePath,
   IsCurrentPath,
   IsCurrentPathFile,
+  IsObjNameDir,
+  IsObjNameFile,
   GetSubDirectory,
   GetParentDir,
   GetFileNameWithExtension,
