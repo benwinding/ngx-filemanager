@@ -71,7 +71,10 @@ export async function AddCors(req: Request, res: Response, next: NextFunction) {
 }
 
 export function LogRequest(req: Request, res: Response, next: NextFunction) {
-  const body = req.body;
+  let body = {};
+  if (!req.body.type || req.body.type !== 'Buffer') {
+    body = req.body;
+  }
   const msg = `
 ---- request: ${req.url}
 method: ${req.method}
