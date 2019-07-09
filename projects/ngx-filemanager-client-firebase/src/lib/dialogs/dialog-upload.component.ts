@@ -69,7 +69,7 @@ export class AppDialogUploadFilesComponent {
   dropzoneConfig: DropzoneConfigInterface = {
     url:
       'https://httpbin.org/post/upload?bucketname=resvu-integration-tests.appspot.com&directoryPath=/',
-    maxFilesize: 50,
+    maxFilesize: 10, // FIREBASE LIMIT see: https://cloud.google.com/functions/quotas#resource_limits
     // acceptedFiles: 'image/*',
     // addRemoveLinks: true,
     uploadMultiple: false,
