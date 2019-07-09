@@ -11,6 +11,10 @@ case "$1" in
       yarn api-build && pushd dist/ngx-filemanager-api-firebase && npm publish
       popd
       ;;
+  demo)
+      yarn client-demo-build && gh-pages -d dist/ngx-filemanager-client-firebase-demo/
+      popd
+      ;;
   *)
       echo $"Usage: $0 {core|client|api}"
       exit 1
