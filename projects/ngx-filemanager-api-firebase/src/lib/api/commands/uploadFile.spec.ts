@@ -45,27 +45,3 @@ test('get next filename in directory recursive', async () => {
   await testHelper.removeDir(testBucket, '/uploadFile.spec.ts/test3/');
   expect(nextFile.name).toBe(existingPath3);
 }, 60000);
-
-test('should add storage size (kb) to parent obj meta', async () => {
-  const testBucket = testHelper.getBucket();
-  const testFolder = 'uploadFile.spec.ts/test4/';
-  const parentDirPath = testFolder + 'parentDir/';
-  const parentDir = testBucket.file(parentDirPath);
-  await testHelper.uploadTestFile(parentDir);
-
-  const claims = {} as any;
-  await UploadFile(
-    testBucket,
-    parentDirPath,
-    'child.txt',
-    'text/plain',
-    new Buffer('hi there'),
-    claims
-  );
-  await testHelper.delayMs(200);
-  const childFilePath = parentDirPath + 'child.txt';
-  const childFile = testBucket.file(childFilePath);
-  const hasStorage = await permHelper.GetMetaPropertyString(childFile, 'size_children');
-  await testHelper.removeDir(testBucket, '/uploadFile.spec.ts/test3/');
-  expect(hasStorage).toBe('20kb');
-}, 60000);

@@ -5,7 +5,7 @@ import { MakeClientDirectory, MakeClientFile } from '../utils/file.factory';
 import { ClientFileSystem } from './client-filesystem.interface';
 import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemDataStore } from './client-filesystem.datastore';
-import path from 'path-browserify';
+import * as path from 'path-browserify';
 import { IconUrlResolverService } from '../utils/icon-url-resolver.service';
 import { CoreTypes } from 'ngx-filemanager-core';
 import {

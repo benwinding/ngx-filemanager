@@ -71,15 +71,12 @@ export async function AddCors(req: Request, res: Response, next: NextFunction) {
 }
 
 export function LogRequest(req: Request, res: Response, next: NextFunction) {
-  let body = {};
-  if (!req.body.type || req.body.type !== 'Buffer') {
-    body = req.body;
-  }
+  const body = JSON.stringify(req.body || {}, null, 4).slice(0, 500);
   const msg = `
 ---- request: ${req.url}
 method: ${req.method}
  query: ${JSON.stringify(req.query, null, 4)}
-  body: ${JSON.stringify(body, null, 4)}
+  body: ${body}
 ----`;
   console.log(msg);
   next();

@@ -89,7 +89,7 @@ async function tryChangePermissions(
   entity: CoreTypes.FilePermissionEntity,
   isRecursive: boolean,
   claims: CoreTypes.UserCustomClaims
-): Promise<request.Response[]> {
+): Promise<{}[]> {
   if (isRecursive) {
     try {
       const allChildren = await storage.GetAllChildrenWithPrefix(

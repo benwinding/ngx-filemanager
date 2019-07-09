@@ -1,10 +1,8 @@
-import { permHelper } from './../../permissions/permissions-helper';
 import { Bucket, File } from '../../types/google-cloud-types';
 import * as path from 'path';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
 import { paths } from '../../utils/paths';
 import { storage } from '../../utils/storage-helper';
-import { sizeHelper } from '../../utils/size-helper';
 
 export async function SaveBufferToPath(
   file: File,
@@ -50,14 +48,13 @@ export async function UploadFile(
   const desiredFile = bucket.file(bucketFilePath);
   try {
     let file: File;
-    const [exists] = await file.exists();
+    const [exists] = await desiredFile.exists();
     if (exists) {
       file = await GetNextFreeFilename(bucket, file);
     } else {
       file = desiredFile;
     }
     await SaveBufferToPath(file, mimetype, buffer);
-    await sizeHelper.AddSizeToParents(bucket, file);
   } catch (error) {
     throw new Error('UploadFile: ' + error);
   }

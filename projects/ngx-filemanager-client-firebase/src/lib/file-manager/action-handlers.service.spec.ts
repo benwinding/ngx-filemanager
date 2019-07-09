@@ -9,6 +9,7 @@ import { NotificationService } from '../notifications/notification.service';
 import { ServerFilesystemProviderService, getBaseHref, FileManagerConfig } from '../../public_api';
 import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
 import { MatSnackBar, MatDialog } from '@angular/material';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 class SnackStub {
   notify(msg: string, title?: string, isError?: boolean) {}
@@ -22,6 +23,9 @@ class DialogStub {
 describe('', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [
+        HttpClientModule
+      ],
       providers: [
         { provide: MatSnackBar, useClass: SnackStub },
         { provide: MatDialog, useClass: DialogStub },
