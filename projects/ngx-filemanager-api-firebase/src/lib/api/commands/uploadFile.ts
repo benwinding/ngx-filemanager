@@ -50,7 +50,7 @@ export async function UploadFile(
     let file: File;
     const [exists] = await desiredFile.exists();
     if (exists) {
-      file = await GetNextFreeFilename(bucket, file);
+      file = await GetNextFreeFilename(bucket, desiredFile);
     } else {
       file = desiredFile;
     }

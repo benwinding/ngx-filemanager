@@ -4,11 +4,12 @@ import * as Express from 'express';
 import { AddCors } from './middleware';
 const app: Express.Application = express();
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '100mb'}));
 app.use(AddCors);
 
 import * as admin from 'firebase-admin';
-const serviceAccount = require('../../../serviceAccountKey.json'); // api-demo-debug
+// const serviceAccount = require('../../../serviceAccountKey.json'); // api-demo-debug
+const serviceAccount = require('../../../../serviceAccountKey.json'); // api-demo-debug
 
 // Setup local firebase admin, using service account credentials
 admin.initializeApp({
@@ -22,7 +23,7 @@ app.use('/filebrowser/', FileManagerEndpointExpress({
   storage: admin.storage()
 }));
 
-const PORT = process.env.PORT || 4444;
+const PORT = process.env.PORT || 3333;
 app.listen(PORT, () => {
   console.log('server listening on PORT=' + PORT);
 });
