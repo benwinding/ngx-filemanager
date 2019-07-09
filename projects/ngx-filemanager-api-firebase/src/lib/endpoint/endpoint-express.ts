@@ -37,6 +37,7 @@ endpoint.use(PostRequestsOnly);
 import { ParseUploadFile, UploadedFile } from './middleware-upload';
 import { permsQueries } from '../permissions/permissions-queries';
 import { CoreTypes } from 'ngx-filemanager-core/public_api';
+
 endpoint.use(
   '/upload',
   OptionRequestsAreOk,
@@ -47,9 +48,9 @@ endpoint.use(
   async (req, res, next) => {
     const bucketname: string = req.query.bucketname;
     const directoryPath: string = req.query.directoryPath;
-    const files = req.files as UploadedFile[];
-    const userClaims = await permsQueries.RetrieveCustomClaims(req);
     try {
+      const files = req.files as UploadedFile[];
+      const userClaims = await permsQueries.RetrieveCustomClaims(req);
       const results = await Promise.all(
         files.map(file =>
           trySaveFile(bucketname, directoryPath, file, userClaims)
