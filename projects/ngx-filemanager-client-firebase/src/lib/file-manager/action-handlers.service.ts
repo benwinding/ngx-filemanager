@@ -220,8 +220,8 @@ export class ActionHandlersService {
     this.logger.info('onClickUpload');
     const currentPath = await this.GetCurrentPath();
     const data: UploadDialogInterface = {
-      currentPath: currentPath,
-      uploadApiUrl: this.fileSystem.GetUploadApiUrl(currentPath)
+      currentDirectory: currentPath,
+      firebaseConfig: this.config.firebaseConfig
     };
     const res: UploadDialogResponseInterface = await this.openDialog(
       AppDialogUploadFilesComponent,
@@ -233,8 +233,6 @@ export class ActionHandlersService {
     }
     const filesToAdd = res.uploaded.map(f => path.join(currentPath, f));
     await this.optimisticFs.HandleUpload(filesToAdd);
-    const filesToRemove = res.removed.map(f => path.join(currentPath, f));
-    await this.optimisticFs.HandleRemove(filesToRemove);
     await this.optimisticFs.HandleList(currentPath);
   }
 

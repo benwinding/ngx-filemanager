@@ -58,6 +58,7 @@ import { AppDialogMyDetailsComponent } from './dialogs/dialog-my-details.compone
 import { AppDialogPermissionsSetObjectComponent } from './dialogs/dialog-permissions-setobject.component';
 import { AppControlTagMultipleComponent } from './dialogs/tags-control.component';
 import { FilemanagerStatusService } from './filesystem/status.service';
+import { FormFileFirebaseModule } from './file-upload/file-upload.module';
 
 export function getBaseHref(platformLocation: PlatformLocation): string {
   return platformLocation.getBaseHrefFromDOM();
@@ -97,6 +98,8 @@ const dialogComponents = [
     ReactiveFormsModule,
     AutoTableModule,
     DropzoneModule,
+
+    FormFileFirebaseModule,
 
     MatAutocompleteModule,
     MatButtonModule,

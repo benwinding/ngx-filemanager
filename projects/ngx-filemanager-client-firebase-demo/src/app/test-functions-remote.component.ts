@@ -7,6 +7,7 @@ import { FormControl } from '@angular/forms';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { Subject, combineLatest } from 'rxjs';
 import { $users, $groups } from './users-factory';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-test-page',
@@ -40,7 +41,7 @@ import { $users, $groups } from './users-factory';
 
     <h2>File Explorer</h2>
     <div *ngIf="showExplorer">
-      <ngx-filemanager [fileSystem]="firebaseClientProvider" [config]="config">
+      <ngx-filemanager [fileSystem]="serverFilesystemProvider" [config]="config">
       </ngx-filemanager>
     </div>
   `
@@ -49,7 +50,8 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
   public config: FileManagerConfig = {
     virtualRoot: '/',
     users: $users,
-    groups: $groups
+    groups: $groups,
+    firebaseConfig: environment.firebaseConfig
   };
 
   bucketName = new FormControl('my-test-bucketname');
@@ -59,12 +61,12 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
 
   destroyed = new Subject();
 
-  constructor(public firebaseClientProvider: ServerFilesystemProviderService) {
-    combineLatest(
+  constructor(public serverFilesystemProvider: ServerFilesystemProviderService) {
+    combineLatest([
       this.bucketName.valueChanges,
       this.apiEndpoint.valueChanges,
       this.virtualRoot.valueChanges
-    )
+    ])
       .pipe(
         debounceTime(500),
         takeUntil(this.destroyed)
@@ -81,10 +83,12 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
 
   async reInitializeExplorer() {
     this.showExplorer = false;
-    this.firebaseClientProvider.Initialize(
-      this.bucketName.value,
-      this.apiEndpoint.value
-    );
+    const bucketName = this.bucketName.value;
+    this.serverFilesystemProvider.Initialize({
+      bucketname: bucketName,
+      apiEndpoint: this.apiEndpoint.value,
+      storage: null
+    });
     this.config.virtualRoot = this.virtualRoot.value;
     localStorage.setItem('bucketname', this.bucketName.value);
     localStorage.setItem('apiendpoint', this.apiEndpoint.value);

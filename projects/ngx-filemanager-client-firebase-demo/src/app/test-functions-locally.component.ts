@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {
   FileManagerConfig,
-  ServerFilesystemProviderService,
+  ServerFilesystemProviderService
 } from 'ngx-filemanager-client-firebase';
 import { $users, $groups } from './users-factory';
 
@@ -27,6 +27,10 @@ export class AppTestFunctionsLocallyComponent {
     // const bucketName = 'cl-building-storage';
     // const apiEndpoint =
     //   'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files';
-    this.firebaseClientProvider.Initialize(bucketName, apiEndpoint);
+    this.firebaseClientProvider.Initialize({
+      bucketname: bucketName,
+      apiEndpoint: apiEndpoint,
+      storage: null
+    });
   }
 }

@@ -7,6 +7,7 @@ import { EnsureNoTrailingSlash } from '../utils/path-helpers';
 
 @Injectable()
 export class ServerFilesystemProviderService implements FileSystemProvider {
+  public storage: firebase.storage.Storage;
   private bucketname: string;
   private apiEndpoint: string;
 
@@ -20,9 +21,13 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     });
   }
 
-  Initialize(bucketname: string, apiEndpoint: string) {
-    this.bucketname = bucketname;
-    this.apiEndpoint = EnsureNoTrailingSlash(apiEndpoint);
+  Initialize(config: {
+    bucketname: string;
+    apiEndpoint: string;
+    storage: firebase.storage.Storage;
+  }) {
+    this.bucketname = config.bucketname;
+    this.apiEndpoint = EnsureNoTrailingSlash(config.apiEndpoint);
   }
 
   List(path: string): Promise<CoreTypes.ResBodyList> {
@@ -33,7 +38,10 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
       .POST();
   }
 
-  CreateFolder(newPath: string, disableNoClobber?: boolean): Promise<CoreTypes.ResBodyCreateFolder> {
+  CreateFolder(
+    newPath: string,
+    disableNoClobber?: boolean
+  ): Promise<CoreTypes.ResBodyCreateFolder> {
     return this.makeAPIRequest('createFolder')
       .PatchBody<CoreTypes.ReqBodyCreateFolder>({
         newPath: newPath
