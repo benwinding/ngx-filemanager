@@ -94,7 +94,7 @@ export class AppDialogUploadFilesComponent {
   onSubmit() {
     const files = this.filesControl.value as FormArrayFileObject[];
     const response: UploadDialogResponseInterface = {
-      uploaded: files.map(f => f.id)
+      uploaded: files.map(f => f.value.name)
     };
     this.dialogRef.close(response);
   }

@@ -11,6 +11,7 @@ import { CoreTypes } from 'ngx-filemanager-core/public_api';
       [columnDefinitions]="{
         icon: { template: iconTemplate },
         name: { template: nameTemplate, forceWrap: true },
+        size: { template: sizeTemplate, forceWrap: true },
         date: { template: dateTemplate }
       }"
       id="main-table"
@@ -24,9 +25,9 @@ import { CoreTypes } from 'ngx-filemanager-core/public_api';
         </div>
       </ng-template>
       <ng-template #sizeTemplate let-row>
-        <div matTooltip="Click For Details">
+        <small matTooltip="Click For Details">
           {{ row.size | fileSize }}
-        </div>
+        </small>
       </ng-template>
       <ng-template #dateTemplate let-row>
         <div matTooltip="Click For Details">
