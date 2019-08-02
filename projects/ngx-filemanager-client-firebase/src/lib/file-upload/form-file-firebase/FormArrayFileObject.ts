@@ -9,6 +9,7 @@ export interface FormArrayFileObject {
       thumb?: string;
       fileicon?: string;
       progress?: number;
+      completed?: boolean;
     };
   };
 }

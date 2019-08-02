@@ -7,7 +7,6 @@ import { EnsureNoTrailingSlash } from '../utils/path-helpers';
 
 @Injectable()
 export class ServerFilesystemProviderService implements FileSystemProvider {
-  public storage: firebase.storage.Storage;
   private bucketname: string;
   private apiEndpoint: string;
 
@@ -24,7 +23,6 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
   Initialize(config: {
     bucketname: string;
     apiEndpoint: string;
-    storage: firebase.storage.Storage;
   }) {
     this.bucketname = config.bucketname;
     this.apiEndpoint = EnsureNoTrailingSlash(config.apiEndpoint);

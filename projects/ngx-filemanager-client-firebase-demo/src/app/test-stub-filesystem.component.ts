@@ -19,6 +19,8 @@ export class AppTestStubFilesystemComponent {
   public blankFileSystem = new FileSystemStub();
   public config: FileManagerConfig = {
     virtualRoot: '/subfolder',
+    bucketName: '',
+    firebaseConfig: {},
     users: $users,
     groups: $groups
   };

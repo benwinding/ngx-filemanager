@@ -221,7 +221,8 @@ export class ActionHandlersService {
     const currentPath = await this.GetCurrentPath();
     const data: UploadDialogInterface = {
       currentDirectory: currentPath,
-      firebaseConfig: this.config.firebaseConfig
+      firebaseConfig: this.config.firebaseConfig,
+      bucketName: this.config.bucketName
     };
     const res: UploadDialogResponseInterface = await this.openDialog(
       AppDialogUploadFilesComponent,

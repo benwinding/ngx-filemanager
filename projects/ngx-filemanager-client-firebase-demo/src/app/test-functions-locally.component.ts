@@ -4,6 +4,7 @@ import {
   ServerFilesystemProviderService
 } from 'ngx-filemanager-client-firebase';
 import { $users, $groups } from './users-factory';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-test-page',
@@ -19,7 +20,9 @@ export class AppTestFunctionsLocallyComponent {
   public config: FileManagerConfig = {
     virtualRoot: '/clientTesting/',
     users: $users,
-    groups: $groups
+    groups: $groups,
+    firebaseConfig: environment.firebaseConfig,
+    bucketName: environment.firebaseConfig.storageBucket
   };
   constructor(public firebaseClientProvider: ServerFilesystemProviderService) {
     const bucketName = 'resvu-integration-tests.appspot.com';
@@ -29,8 +32,7 @@ export class AppTestFunctionsLocallyComponent {
     //   'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files';
     this.firebaseClientProvider.Initialize({
       bucketname: bucketName,
-      apiEndpoint: apiEndpoint,
-      storage: null
+      apiEndpoint: apiEndpoint
     });
   }
 }

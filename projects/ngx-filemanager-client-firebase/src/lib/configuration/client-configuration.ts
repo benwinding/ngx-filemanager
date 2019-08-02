@@ -7,10 +7,12 @@ export interface NameUid {
 
 export interface FileManagerConfig {
   virtualRoot: string; // Users can't navigate above this root
+
+  bucketName: string; // For uploads
+  firebaseConfig: {}; // For uploads
+
   disableLogging?: boolean;
   initialPath?: string;
-
-  firebaseConfig?: {}; // Firebase functions endpoint
 
   users?: Observable<NameUid[]>;
   groups?: Observable<NameUid[]>;

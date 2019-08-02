@@ -15,14 +15,13 @@ import { Subject, timer } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 import { getFileIcon, isFileImage } from './file-icon.helper';
 import { FormBase } from './form-base-class';
-import { EnsureTrailingSlash } from '../../utils/path-helpers';
+import { EnsureTrailingSlash, TrimSlashes } from '../../utils/path-helpers';
 import { NotificationService } from '../../notifications/notification.service';
-const uuidv4 = require('uuid/v4');
 
 export interface FormFilesConfiguration {
   directory: string;
-  firebaseConfig: {};
   bucketname?: string;
+  firebaseConfig: {};
   maxFiles?: number;
   imageCompressionQuality?: number;
   imageCompressionMaxSize?: number;
@@ -124,25 +123,31 @@ export class FormFileFirebaseComponent extends FormBase<FormArrayFileObject[]>
       app = firebase.initializeApp(this.config.firebaseConfig);
     }
     this.storage = app.storage(this.currentBucketName());
-    timer(500)
+    timer(0, 1000)
       .pipe(takeUntil(this.destroyed))
       .subscribe(() => {
-        const allFiles = this.value;
-        const allFilesProgress = allFiles
-          .filter(f => !!f)
-          .filter(f => !!f.value)
-          .filter(f => !!f.value.props)
-          .map(f => f.value.props.progress);
-
-        const stillUploading = allFilesProgress
-          .map(p => p === 100)
-          .reduce((pTotal, pCurrent) => pTotal || pCurrent, false);
-        this.uploadStatusChanged.emit(stillUploading);
+        this.checkAllUploadsAreDone();
       });
   }
 
   ngOnDestroy() {
     this.destroyed.next();
+  }
+
+  checkAllUploadsAreDone() {
+    const allFiles = this.value;
+    const completeArray = allFiles
+      .filter(f => !!f)
+      .filter(f => !!f.value)
+      .filter(f => !!f.value.props)
+      .map(f => f.value.props.completed);
+
+    const haveAllFilesComplete = completeArray.reduce(
+      (previous, currentComplete) => previous && currentComplete,
+      true
+    );
+    const isStillUploading = !haveAllFilesComplete;
+    this.uploadStatusChanged.emit(isStillUploading);
   }
 
   get isMultiple() {
@@ -170,8 +175,17 @@ export class FormFileFirebaseComponent extends FormBase<FormArrayFileObject[]>
     this.ensureValueIsArray();
     this.value = this.value.filter(f => f.id !== fileObject.id);
     if (fileObject.bucket_path) {
-      await this.storage.refFromURL(fileObject.bucket_path).delete();
-      console.log('form-files: file deleted from storage', { fileObject });
+      try {
+        await this.storage.refFromURL(fileObject.bucket_path).delete();
+        console.log('form-files: clickRemoveTag() file deleted from storage', {
+          fileObject
+        });
+      } catch (error) {
+        console.log(
+          'form-files: clickRemoveTag() problem deleting file',
+          error
+        );
+      }
     }
   }
 
@@ -185,15 +199,11 @@ export class FormFileFirebaseComponent extends FormBase<FormArrayFileObject[]>
 
   async beginUploadTask(file: File) {
     const bucketPath = 'gs://' + this.currentBucketName();
-    const uniqueFileName = uuidv4();
+    const uniqueFileName = file.name;
     const originalFileName = file.name;
     const dir = this.config.directory;
-    let fullPath = bucketPath;
-    if (!!dir && dir !== '/') {
-      fullPath = fullPath + '/' + dir;
-    }
-    fullPath = EnsureTrailingSlash(fullPath);
-    fullPath = fullPath + uniqueFileName;
+    const dirPath = `${TrimSlashes(bucketPath)}/${TrimSlashes(dir)}`;
+    const fullPath = `${TrimSlashes(dirPath)}/${uniqueFileName}`;
     console.log('beginUploadTask()', { fileData: file, bucketPath, fullPath });
     let fileParsed;
     if (file.type === 'image/*') {
@@ -285,6 +295,7 @@ export class FormFileFirebaseComponent extends FormBase<FormArrayFileObject[]>
     if (isImage) {
       file.imageurl = url;
     }
+    file.value.props.completed = true;
     this.writeValue(this.value);
   }
 
@@ -300,7 +311,8 @@ export class FormFileFirebaseComponent extends FormBase<FormArrayFileObject[]>
         props: {
           thumb: null,
           fileicon: fileIcon,
-          progress: 0
+          progress: 0,
+          completed: false
         }
       }
     };

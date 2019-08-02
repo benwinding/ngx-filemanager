@@ -51,7 +51,8 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     virtualRoot: '/',
     users: $users,
     groups: $groups,
-    firebaseConfig: environment.firebaseConfig
+    firebaseConfig: environment.firebaseConfig,
+    bucketName: ''
   };
 
   bucketName = new FormControl('my-test-bucketname');
@@ -86,10 +87,10 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     const bucketName = this.bucketName.value;
     this.serverFilesystemProvider.Initialize({
       bucketname: bucketName,
-      apiEndpoint: this.apiEndpoint.value,
-      storage: null
+      apiEndpoint: this.apiEndpoint.value
     });
     this.config.virtualRoot = this.virtualRoot.value;
+    this.config.bucketName = this.bucketName.value;
     localStorage.setItem('bucketname', this.bucketName.value);
     localStorage.setItem('apiendpoint', this.apiEndpoint.value);
     localStorage.setItem('virtualRoot', this.virtualRoot.value);

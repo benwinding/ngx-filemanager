@@ -4,61 +4,57 @@ import { FormArrayFileObject } from './FormArrayFileObject';
 @Component({
   selector: 'app-uploaded-files-list',
   template: `
-    <p>Uploaded files:</p>
-    <div class="file-list">
-      <div class="file-row" *ngFor="let file of uploadedFiles">
-        <img class="file-icon" image [src]="file['fileicon']" />
-        <a class="file-link has-ellipsis" [href]="file.id" target="_blank">
-          <span class="file-linkname">{{ file.value.name }}</span>
-          <mat-icon class="i-open">open_in_new</mat-icon>
-          <img
-            *ngIf="file['imageurl']"
-            class="file-thumb"
-            image
-            [src]="file['imageurl']"
-          />
-        </a>
-        <mat-icon
-          id="i-delete"
-          *ngIf="!disabled"
-          class="has-pointer"
-          (click)="this.clickRemoveTag.emit(file)"
-          >cancel</mat-icon
-        >
-        <mat-progress-bar
-          class="progress"
-          mode="determinate"
-          [value]="getProgress(file)"
-        ></mat-progress-bar>
+    <p *ngIf="uploadedFiles?.length">Uploaded files:</p>
+    <div>
+      <div *ngFor="let file of uploadedFiles">
+        <div class="full-width flex-h">
+          <mat-icon id="i-done" *ngIf="!disabled && isDone(file)"
+            >done</mat-icon
+          >
+          <img class="file-icon" image [src]="file['fileicon']" />
+          <a class="full-width flex-h has-ellipsis" [href]="file.id" target="_blank">
+            <span class="has-ellipsis">{{ file.value.name }}</span>
+            <mat-icon class="i-open">open_in_new</mat-icon>
+            <img
+              *ngIf="file['imageurl']"
+              class="file-thumb"
+              image
+              [src]="file['imageurl']"
+            />
+          </a>
+          <mat-icon
+            *ngIf="!disabled"
+            class="has-pointer"
+            (click)="this.clickRemoveTag.emit(file)"
+            >cancel</mat-icon
+          >
+        </div>
+        <div class="full-width">
+          <mat-progress-bar
+            class="progress"
+            mode="determinate"
+            [value]="getProgress(file)"
+          ></mat-progress-bar>
+        </div>
       </div>
     </div>
   `,
   styles: [
     `
-      .file-list {
+      .full-width {
         width: 100%;
       }
-      .file-row {
-        display: grid;
+      .flex-h {
+        display: flex;
+        flex-direction: row;
         align-items: center;
-        grid-template-columns: min-content auto min-content;
       }
-      #i-delete {
-        float: right;
-      }
-      .file-title {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
+      .has-pointer {
+        cursor: pointer;
       }
       .file-link {
         display: flex;
         align-items: center;
-      }
-      .file-linkname {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
       }
       .file-thumb,
       .file-icon {
@@ -66,13 +62,15 @@ import { FormArrayFileObject } from './FormArrayFileObject';
         height: 30px;
       }
       .file-thumb {
-        background-color: darkgrey;
+        background-color: #ddd;
       }
       .i-open {
         font-size: 1em;
       }
-      .progress {
-        grid-column: 1 / span 3;
+      .has-ellipsis {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
       }
     `
   ]
@@ -86,9 +84,22 @@ export class FormFileUploadedFileListComponent {
   clickRemoveTag = new EventEmitter<FormArrayFileObject>();
 
   getProgress(file: FormArrayFileObject) {
+    const isDone = this.isDone(file);
+    if (isDone) {
+      return 100;
+    }
     if (file && file.value && file.value.props) {
-      return file.value.props.progress;
+      const p = file.value.props.progress;
+      return p * 0.95; // 95% until download completed
     }
     return 100;
+  }
+
+  isDone(file: FormArrayFileObject): boolean {
+    if (file && file.value && file.value.props) {
+      const c = file.value.props.completed;
+      return c;
+    }
+    return false;
   }
 }

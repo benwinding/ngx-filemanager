@@ -5,11 +5,12 @@ import { NotificationService } from '../notifications/notification.service';
 import { FormControl } from '@angular/forms';
 import { FormFilesConfiguration } from '../file-upload/form-file-firebase/form-file-firebase.component';
 import { Subject, BehaviorSubject } from 'rxjs';
+import { FormArrayFileObject } from '../file-upload/form-file-firebase/FormArrayFileObject';
 
 export interface UploadDialogInterface {
   currentDirectory: string;
   firebaseConfig: {};
-  bucketName?: string;
+  bucketName: string;
 }
 
 export interface UploadDialogResponseInterface {
@@ -30,13 +31,14 @@ export interface UploadDialogResponseInterface {
         <h5>To Folder: {{ currentDirectory }}</h5>
       </ng-template>
       <ng-template #bodyTemplate>
-        <form-file-firebase
-          [formControl]="filesControl"
-          [config]="config"
-          (onUploadStart)="isUploading.next(true)"
-          (onUploadsFinished)="isUploading.next(false)"
-        >
-        </form-file-firebase>
+        <div style="width: 100%;">
+          <form-file-firebase
+            [formControl]="filesControl"
+            [config]="config"
+            (uploadStatusChanged)="isUploading.next($event)"
+          >
+          </form-file-firebase>
+        </div>
       </ng-template>
       <ng-template #actionsTemplate>
         <btns-cancel-ok
@@ -44,7 +46,7 @@ export interface UploadDialogResponseInterface {
           okLabel="Finish"
           (clickedCancel)="onCancel()"
           (clickedOk)="onSubmit()"
-          [okDisabled]="!(isUploading | async)"
+          [okDisabled]="isUploading | async"
         >
         </btns-cancel-ok>
       </ng-template>
@@ -90,15 +92,16 @@ export class AppDialogUploadFilesComponent {
   }
 
   onSubmit() {
+    const files = this.filesControl.value as FormArrayFileObject[];
     const response: UploadDialogResponseInterface = {
-      uploaded: this.filesControl.value,
+      uploaded: files.map(f => f.id)
     };
     this.dialogRef.close(response);
   }
 
   onCancel() {
     const response: UploadDialogResponseInterface = {
-      uploaded: [],
+      uploaded: []
     };
     this.dialogRef.close(response);
   }

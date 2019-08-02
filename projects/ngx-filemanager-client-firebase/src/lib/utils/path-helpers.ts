@@ -6,6 +6,10 @@ export function HasPrefixSlash(inputPath: string): boolean {
   return hasPrefix;
 }
 
+export function TrimSlashes(inputPath: string): string {
+  return inputPath.replace(/^\/+|\/+$/g, '');
+}
+
 export function HasTrailingSlash(inputPath: string): boolean {
   if (!inputPath || !inputPath.length) {
     return false;
