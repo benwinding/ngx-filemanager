@@ -4,7 +4,12 @@ import {
   ServerFilesystemProviderService
 } from 'ngx-filemanager-client-firebase';
 import { FormControl } from '@angular/forms';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  takeUntil,
+  map,
+  distinctUntilChanged
+} from 'rxjs/operators';
 import { Subject, combineLatest } from 'rxjs';
 import { $users, $groups } from './users-factory';
 import { environment } from '../environments/environment';
@@ -37,11 +42,23 @@ import { environment } from '../environments/environment';
           [formControl]="virtualRoot"
         />
       </mat-form-field>
+      <mat-form-field>
+        <textarea
+          matInput
+          placeholder="firebaseConfig"
+          type="text"
+          [formControl]="firebaseConfig"
+        >
+        </textarea>
+      </mat-form-field>
     </mat-card>
 
     <h2>File Explorer</h2>
     <div *ngIf="showExplorer">
-      <ngx-filemanager [fileSystem]="serverFilesystemProvider" [config]="config">
+      <ngx-filemanager
+        [fileSystem]="serverFilesystemProvider"
+        [config]="config"
+      >
       </ngx-filemanager>
     </div>
   `
@@ -58,15 +75,30 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
   bucketName = new FormControl('my-test-bucketname');
   apiEndpoint = new FormControl('http://localhost:4444/ApiPublic/files');
   virtualRoot = new FormControl('/');
+  firebaseConfig = new FormControl('');
+
   showExplorer = true;
 
   destroyed = new Subject();
 
-  constructor(public serverFilesystemProvider: ServerFilesystemProviderService) {
+  constructor(
+    public serverFilesystemProvider: ServerFilesystemProviderService
+  ) {
     combineLatest([
       this.bucketName.valueChanges,
       this.apiEndpoint.valueChanges,
-      this.virtualRoot.valueChanges
+      this.virtualRoot.valueChanges,
+      this.firebaseConfig.valueChanges.pipe(
+        map(v => {
+          try {
+            const json = JSON.stringify(JSON.parse(v));
+            return json;
+          } catch (error) {
+            return '';
+          }
+        }),
+        distinctUntilChanged()
+      )
     ])
       .pipe(
         debounceTime(500),
@@ -76,6 +108,7 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     this.bucketName.setValue(localStorage.getItem('bucketname'));
     this.apiEndpoint.setValue(localStorage.getItem('apiendpoint'));
     this.virtualRoot.setValue(localStorage.getItem('virtualRoot') || '/');
+    this.firebaseConfig.setValue(localStorage.getItem('firebaseConfig') || '');
   }
 
   ngOnDestroy() {
@@ -94,6 +127,7 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     localStorage.setItem('bucketname', this.bucketName.value);
     localStorage.setItem('apiendpoint', this.apiEndpoint.value);
     localStorage.setItem('virtualRoot', this.virtualRoot.value);
+    localStorage.setItem('firebaseConfig', this.firebaseConfig.value);
     setTimeout(() => {
       this.showExplorer = true;
     }, 100);
