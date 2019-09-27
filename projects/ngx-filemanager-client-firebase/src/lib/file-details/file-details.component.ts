@@ -45,7 +45,7 @@ import { LoggerService } from '../logging/logger.service';
         <h6 class="ml-10">{{ file.size | fileSize }}</h6>
         <h5 class="mt-5">Date</h5>
         <h6 class="ml-10">{{ file.date | date: 'short' }}</h6>
-        <span class="flex-row space-between">
+        <span class="flex-row space-between align-top">
           <h5 class="mt-5">Permissions</h5>
           <button
             mat-mini-fab
@@ -82,7 +82,7 @@ import { LoggerService } from '../logging/logger.service';
         <h5 class="mt-5">Type</h5>
         <h6 *ngIf="!isFile" class="ml-10">Directory</h6>
         <h6 *ngIf="isFile" class="capitalize ml-10">{{ getFileType(file.name) }}</h6>
-        <div *ngIf="isFile" class="flex-row space-between">
+        <div *ngIf="isFile" class="flex-row space-between align-top">
           <h5 class="mt-5">Download</h5>
           <button
             mat-mini-fab
