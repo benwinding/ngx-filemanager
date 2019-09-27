@@ -60,7 +60,11 @@
           </div>
         </div>
       </div>
-      <app-file-table [config]="autoTableConfig"> </app-file-table>
+      <app-file-table
+        [config]="autoTableConfig"
+        (clickedDownload)="this.onDetailsClickDownload($event)"
+      >
+      </app-file-table>
     </mat-drawer-content>
     <mat-drawer
       #drawer

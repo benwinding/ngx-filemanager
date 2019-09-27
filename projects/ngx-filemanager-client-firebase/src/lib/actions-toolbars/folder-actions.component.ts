@@ -62,15 +62,6 @@ export class AppFolderActionsComponent implements OnInit {
         $disabled: this.$CurrentPathIsRoot
       },
       {
-        label: 'Upload Files',
-        icon: 'file_upload',
-        onClick: (item: ActionButton) => {
-          this.clickedUploadFiles.emit();
-        },
-        color: 'secondary',
-        $disabled: of(false)
-      },
-      {
         label: 'Refresh',
         icon: 'refresh',
         onClick: (item: ActionButton) => {
@@ -82,6 +73,15 @@ export class AppFolderActionsComponent implements OnInit {
         },
         color: 'secondary',
         $disabled: $isRefreshing
+      },
+      {
+        label: 'Upload Files',
+        icon: 'file_upload',
+        onClick: (item: ActionButton) => {
+          this.clickedUploadFiles.emit();
+        },
+        color: 'secondary',
+        $disabled: of(false)
       },
       {
         label: 'New Folder',

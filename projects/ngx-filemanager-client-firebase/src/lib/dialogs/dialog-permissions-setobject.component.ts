@@ -35,18 +35,20 @@ export interface PermissionsObjectDialogResponseInterface {
         <h2>Set Permissions</h2>
       </ng-template>
       <ng-template #bodyTemplate>
-        <h5>Selected Items</h5>
-        <ol>
-          <li *ngFor="let file of items">
+        <h5 class="my-5">Selected Items</h5>
+        <mat-chip-list class="mb-5">
+          <mat-chip *ngFor="let file of items">
+            <mat-icon *ngIf="file.type === 'file'">description</mat-icon>
+            <mat-icon *ngIf="file.type !== 'file'">folder</mat-icon>
             {{ file.name }}
-          </li>
-        </ol>
+          </mat-chip>
+        </mat-chip-list>
 
+        <h5 class="my-5">Anyone's Permissions</h5>
         <mat-form-field class="full-width">
           <mat-select
             matInput
             [formControl]="othersControl"
-            placeholder="Anyone's Permissions"
           >
             <mat-option
               *ngFor="let permission of othersOptions"
@@ -57,16 +59,18 @@ export interface PermissionsObjectDialogResponseInterface {
           </mat-select>
         </mat-form-field>
 
-        <h5>Read Permissions</h5>
+        <h5 class="my-5">Read Permissions</h5>
         <app-control-tag-multiple
+          class="full-width -mt-15"
           [control]="allReadersControl"
           [selectChoices$]="$allEntities"
           [allowCustom]="false"
         >
         </app-control-tag-multiple>
 
-        <h5>Write Permissions</h5>
+        <h5 class="my-5">Write Permissions</h5>
         <app-control-tag-multiple
+          class="full-width -mt-15"
           [control]="allWritersControl"
           [selectChoices$]="$allEntities"
           [allowCustom]="false"
@@ -85,7 +89,20 @@ export interface PermissionsObjectDialogResponseInterface {
       </ng-template>
     </base-dialog>
   `,
-  styleUrls: ['../shared-utility-styles.scss']
+  styleUrls: ['../shared-utility-styles.scss'],
+  styles: [
+    `
+      .my-5 {
+        margin: 5px 0;
+      }
+      .mb-5 {
+        margin-bottom: 5px;
+      }
+      .-mt-15 {
+        margin-top: -15px;
+      }
+    `
+  ]
 })
 export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
   items: CoreTypes.ResFile[];

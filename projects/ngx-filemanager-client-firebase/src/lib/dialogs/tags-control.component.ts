@@ -69,6 +69,9 @@ export interface Tag {
   `,
   styles: [
     `
+      .full-width {
+        width: 100%;
+      }
       .tag-icon {
         color: grey;
         right: 15px;
