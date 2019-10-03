@@ -10,7 +10,7 @@ import { ActionButton } from './ActionButton';
         <div class="flex-row">
           <div *ngFor="let action of bulkActions">
             <button
-              class="action flex-row align-center"
+              class="mr-10 flex-row align-center"
               mat-raised-button
               [color]="action.color"
               (click)="action.onClick(action)"
@@ -23,13 +23,6 @@ import { ActionButton } from './ActionButton';
       </mat-toolbar-row>
     </mat-toolbar>
   `,
-  styles: [
-    `
-      button.action {
-        margin-right: 10px;
-      }
-    `
-  ],
   styleUrls: [
     '../shared-utility-styles.scss'
   ]
