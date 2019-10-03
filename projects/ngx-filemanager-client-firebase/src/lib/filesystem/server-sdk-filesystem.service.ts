@@ -1,70 +1,44 @@
 import { Injectable } from '@angular/core';
-import { CoreTypes, FileSystemProvider } from 'projects/ngx-filemanager-core/src/public_api';
-import { HttpClient } from '@angular/common/http';
+import {
+  CoreTypes,
+  FileSystemProvider
+} from 'projects/ngx-filemanager-core/src/public_api';
 import { LoggerService } from '../logging/logger.service';
-import { FileSystemRequestBuilder } from './server-filesystem-request';
-import { EnsureNoTrailingSlash } from '../utils/path-helpers';
-import { translateStorageItemToResFile, translateStoragePrefixToResFile } from './server-sdk-translators';
+import {
+  translateStorageItemToResFile,
+  translateStoragePrefixToResFile
+} from './server-sdk-translators';
 
 @Injectable()
-export class ServerFilesystemProviderService implements FileSystemProvider {
-  private bucketname: string;
-  private apiEndpoint: string;
+export class ServerSDKFilesystemProviderService implements FileSystemProvider {
   private bucket: firebase.storage.Storage;
 
-  constructor(private http: HttpClient, private logger: LoggerService) {}
+  constructor(private logger: LoggerService) {}
 
-  private makeAPIRequest(action: CoreTypes.FileManagerAction) {
-    this.logger.info('makeAPIRequest', { action, context: this });
-    return new FileSystemRequestBuilder(this.http, this.apiEndpoint).AddBody({
-      action: action,
-      bucketname: this.bucketname
-    });
-  }
-
-  Initialize(config: {
-    bucketname: string;
-    apiEndpoint: string;
-    storageBucket: firebase.storage.Storage;
-  }) {
-    this.bucketname = config.bucketname;
-    this.apiEndpoint = EnsureNoTrailingSlash(config.apiEndpoint);
-    this.bucket = config.storageBucket;
-  }
-
-  ListOld(path: string): Promise<CoreTypes.ResBodyList> {
-    return this.makeAPIRequest('list')
-      .PatchBody<CoreTypes.ReqBodyList>({
-        path: path
-      })
-      .POST();
+  Initialize(config: { bucket: firebase.storage.Storage }): void {
+    this.bucket = config.bucket;
   }
 
   async List(path: string): Promise<CoreTypes.ResBodyList> {
     this.logger.info('List()', {path});
-    try {
-      const results = await this.bucket.ref(path).list();
-      const filesProm = Promise.all(
-        results.items.map(ref => translateStorageItemToResFile(ref))
-      );
-      const prefixesProm = Promise.all(
-        results.prefixes.map(ref => translateStoragePrefixToResFile(ref))
-      );
-      const [files, prefixes] = await Promise.all([filesProm, prefixesProm]);
-      return {
-        result: prefixes.concat(files)
-      };
-    } catch (error) {
-      console.error(error);
-      throw new Error(error);
-    }
+    const results = await this.bucket.ref(path).list();
+    const filesProm = Promise.all(
+      results.items.map(ref => translateStorageItemToResFile(ref))
+    );
+    const prefixesProm = Promise.all(
+      results.prefixes.map(ref => translateStoragePrefixToResFile(ref))
+    );
+    const [prefixes, files] = await Promise.all([filesProm, prefixesProm]);
+    return {
+      result: prefixes.concat(files)
+    };
   }
-
 
   CreateFolder(
     newPath: string,
     disableNoClobber?: boolean
   ): Promise<CoreTypes.ResBodyCreateFolder> {
+    this.logger.info('List()', {newPath});
     return this.makeAPIRequest('createFolder')
       .PatchBody<CoreTypes.ReqBodyCreateFolder>({
         newPath: newPath

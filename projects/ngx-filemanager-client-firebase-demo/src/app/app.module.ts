@@ -7,7 +7,8 @@ import { CommonModule } from '@angular/common';
 import {
   MatFormFieldModule,
   MatInputModule,
-  MatCardModule
+  MatCardModule,
+  MatSnackBarModule
 } from '@angular/material';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -16,6 +17,7 @@ import { AppTestFunctionsLocallyComponent } from './test-functions-locally.compo
 import { AppTestStubFilesystemComponent } from './test-stub-filesystem.component';
 import { AppTestFunctionsRemoteComponent } from './test-functions-remote.component';
 import { AppPermissionsSelectionComponent } from './permissions-selection.component';
+import { MatReduceModule } from 'mat-reduce';
 
 @NgModule({
   declarations: [
@@ -32,8 +34,10 @@ import { AppPermissionsSelectionComponent } from './permissions-selection.compon
     AppRoutingModule,
     NgxFilemanagerClientFirebaseModule,
     FormsModule,
+    MatReduceModule,
     ReactiveFormsModule,
     MatFormFieldModule,
+    MatSnackBarModule,
     MatInputModule,
     MatCardModule
   ],

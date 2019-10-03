@@ -10,6 +10,7 @@ export interface FileManagerConfig {
 
   bucketName: string; // For uploads
   firebaseConfig: {}; // For uploads
+  firebaseApp?: firebase.app.App; // For uploads
 
   disableLogging?: boolean;
   initialPath?: string;

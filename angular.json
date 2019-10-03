@@ -166,14 +166,16 @@
               "projects/ngx-filemanager-client-firebase-demo/src/assets",
               {
                 "glob": "**/*",
-                "input": "./dist/ngx-filemanager-client-firebase/assets",
+                "input": "projects/ngx-filemanager-client-firebase/src/assets",
                 "output": "./assets/fileicons"
               }
             ],
             "styles": [
               "projects/ngx-filemanager-client-firebase-demo/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/quill/dist/quill.min.js"
+            ]
           },
           "configurations": {
             "production": {
