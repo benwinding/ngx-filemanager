@@ -1,5 +1,5 @@
 import { File } from '../types/google-cloud-types';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
 import { permHelper } from './permissions-helper';
 
 async function UpdateFilePermissions(

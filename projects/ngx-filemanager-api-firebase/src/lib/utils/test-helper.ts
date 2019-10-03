@@ -2,7 +2,7 @@ import { Bucket, File } from '../types/google-cloud-types';
 import { VError } from 'verror';
 import { paths } from './paths';
 import { perms } from '../permissions';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
 
 import * as CICULAR from 'circular-json';
 import * as admin from 'firebase-admin';

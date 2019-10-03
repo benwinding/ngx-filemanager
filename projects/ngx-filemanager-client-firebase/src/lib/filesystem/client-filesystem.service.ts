@@ -7,7 +7,7 @@ import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemDataStore } from './client-filesystem.datastore';
 import * as path from 'path-browserify';
 import { IconUrlResolverService } from '../utils/icon-url-resolver.service';
-import { CoreTypes } from 'ngx-filemanager-core';
+import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
 import {
   Add2ToPathDir,
   EnsureTrailingSlash,

@@ -6,7 +6,7 @@ import { LoggerService } from '../logging/logger.service';
 import path from 'path-browserify';
 import { NotificationService } from '../notifications/notification.service';
 import { Subject } from 'rxjs';
-import { FileSystemProvider, CoreTypes } from 'ngx-filemanager-core/public_api';
+import { FileSystemProvider, CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
 import { FilemanagerStatusService } from './status.service';
 
 import { v4 as uuidv4 } from 'uuid';

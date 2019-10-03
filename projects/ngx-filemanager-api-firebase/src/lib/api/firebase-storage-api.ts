@@ -1,7 +1,7 @@
 import { Storage, Bucket } from '../types/google-cloud-types';
 import { commands } from './commands';
 import { VError } from 'verror';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
 async function CheckHasBodyProp(body: {}, bodyFieldName: string) {
   const exists = body[bodyFieldName];
   if (!exists) {

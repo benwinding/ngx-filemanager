@@ -7,7 +7,7 @@ import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem
 import { LoggerService } from '../logging/logger.service';
 import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
 import { ActionHandlersService } from './action-handlers.service';
-import { FileSystemProvider, CoreTypes } from 'ngx-filemanager-core/public_api';
+import { FileSystemProvider, CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
 import { FilemanagerStatusService } from '../filesystem/status.service';
 
 @Component({

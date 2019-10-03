@@ -5,7 +5,7 @@ import * as path from 'path';
 import { VError } from 'verror';
 import { perms } from '../permissions';
 import { paths } from './paths';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
 
 export function translateRawStorage(storageObject: File): FileFromStorage {
   const filePath = storageObject.name;
