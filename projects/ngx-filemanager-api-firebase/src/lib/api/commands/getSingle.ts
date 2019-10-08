@@ -1,6 +1,6 @@
 import { Bucket, File } from '../../types/google-cloud-types';
 import { GetSignedUrlConfig } from '@google-cloud/storage';
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../../types';
 import {
   translateStorageToResFile,
   translateRawStorage

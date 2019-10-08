@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { AutoTableConfig } from 'ngx-auto-table';
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../../core-types';
 
 @Component({
   // tslint:disable-next-line:component-selector

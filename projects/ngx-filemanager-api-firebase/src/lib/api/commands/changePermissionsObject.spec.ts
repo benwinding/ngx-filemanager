@@ -1,6 +1,6 @@
 import { testHelper } from '../../utils/test-helper';
 import { perms } from '../../permissions';
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../../types';
 import { TryChangeSingleFilePermissionsObject } from './changePermissionsObject';
 
 test('set permissions with claims in group', async () => {

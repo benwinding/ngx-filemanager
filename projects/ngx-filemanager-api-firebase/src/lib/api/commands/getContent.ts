@@ -1,6 +1,6 @@
 import { Bucket } from '../../types/google-cloud-types';
 import { StreamToPromise } from '../../utils/translation-helpers';
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../../types';
 import { VError } from 'verror';
 
 export async function GetFileContent(

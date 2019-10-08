@@ -1,7 +1,7 @@
 import { Bucket } from '../../types/google-cloud-types';
 import { getResultFromArray } from '../../utils/translation-helpers';
 import * as path from 'path';
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../../types';
 import { VError } from 'verror';
 import { paths } from '../../utils/paths';
 import { storage } from '../../utils/storage-helper';

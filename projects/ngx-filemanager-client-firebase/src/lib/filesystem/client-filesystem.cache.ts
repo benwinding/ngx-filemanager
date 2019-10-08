@@ -1,4 +1,4 @@
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../../core-types';
 import { ConsoleLoggerService } from '../logging/console-logger.service';
 import { EnsureTrailingSlash } from '../utils/path-helpers';
 

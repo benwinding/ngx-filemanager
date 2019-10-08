@@ -1,4 +1,4 @@
-import { CoreTypes, FileSystemProvider } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes, FileSystemProvider } from '../../core-types';
 import path from 'path-browserify';
 import { ConsoleLoggerService } from '../logging/console-logger.service';
 import {

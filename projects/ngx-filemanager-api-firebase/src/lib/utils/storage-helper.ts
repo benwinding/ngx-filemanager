@@ -6,7 +6,7 @@ import { GetFilesOptions } from '@google-cloud/storage';
 import { Bucket, File, FileFromStorage } from '../types/google-cloud-types';
 import { paths } from './paths';
 import { perms } from '../permissions';
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../types';
 import {
   translateStorageToResFile,
   makePhantomStorageFolder,

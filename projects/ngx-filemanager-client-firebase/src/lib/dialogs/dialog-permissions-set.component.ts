@@ -6,7 +6,7 @@ import {
   FileManagerConfig,
   NameUid
 } from '../configuration/client-configuration';
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../../core-types';
 import { LoggerService } from '../logging/logger.service';
 
 export interface PermissionsDialogInterface {

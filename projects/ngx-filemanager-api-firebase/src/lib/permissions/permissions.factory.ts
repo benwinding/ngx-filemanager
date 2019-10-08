@@ -1,4 +1,4 @@
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../types';
 
 function blankUserClaim(): CoreTypes.UserCustomClaims {
   return {

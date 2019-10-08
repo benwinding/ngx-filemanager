@@ -1,15 +1,13 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { Observable, Subject, forkJoin, combineLatest } from 'rxjs';
+import { Observable, Subject, combineLatest } from 'rxjs';
 import {
-  FileManagerConfig,
-  NameUid
-} from '../configuration/client-configuration';
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+  FileManagerConfig} from '../configuration/client-configuration';
+import { CoreTypes } from '../../core-types';
 import { LoggerService } from '../logging/logger.service';
 import { Tag } from './tags-control.component';
-import { map, take, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -130,7 +128,7 @@ export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
     this.items = data.files;
     const users$ = data.config.users;
     const groups$ = data.config.groups;
-    this.$allEntities = combineLatest(groups$, users$).pipe(
+    this.$allEntities = combineLatest([groups$, users$]).pipe(
       tap(allEntities => this.logger.info('allEntities', { allEntities })),
       map(arr => arr[0].concat(arr[1])),
       map(arr =>

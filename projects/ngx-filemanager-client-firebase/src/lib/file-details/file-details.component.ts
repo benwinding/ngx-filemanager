@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { guesser } from '../utils/file-icon-guesser';
-import { FileSystemProvider, CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { FileSystemProvider, CoreTypes } from '../../core-types';
 import { promiseDelay } from '../utils/delayer';
 import { LoggerService } from '../logging/logger.service';
 

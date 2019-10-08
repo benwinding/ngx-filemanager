@@ -1,5 +1,5 @@
 import { Bucket, File } from '../../types/google-cloud-types';
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../../types';
 import { paths } from '../../utils/paths';
 import { storage } from '../../utils/storage-helper';
 import { perms } from '../../permissions';

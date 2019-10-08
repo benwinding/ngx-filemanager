@@ -1,5 +1,5 @@
 import * as path from 'path-browserify';
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../../core-types';
 import { EnsureNoTrailingSlash, EnsureTrailingSlash } from '../utils/path-helpers';
 
 export function MakeItem2(itemPath: string): CoreTypes.ResFile {

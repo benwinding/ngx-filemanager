@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 import { NgxFileMangerApiFireBaseClass } from './firebase-storage-api';
-import { CoreTypes } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes } from '../types';
 import { testHelper } from '../utils/test-helper';
 
 // const testBucket = testHelper.testBucket;
