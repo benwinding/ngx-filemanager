@@ -1,1 +1,1 @@
-export * from '../../../../dist/ngx-filemanager-core/ngx-filemanager-core';
+export * from 'projects/ngx-filemanager-core/src/public_api';

@@ -15,7 +15,15 @@
     "lib": [
       "dom",
       "es2018"
-    ]
+    ],
+    "paths": {
+      "projects/ngx-filemanager-core": [
+        "dist/ngx-filemanager-core"
+      ],
+      "projects/ngx-filemanager-core/*": [
+        "dist/ngx-filemanager-core/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "annotateForClosureCompiler": true,
