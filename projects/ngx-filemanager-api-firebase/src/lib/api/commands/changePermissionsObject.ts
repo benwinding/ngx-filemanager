@@ -12,14 +12,15 @@ export async function TryChangeSingleFilePermissionsObject(
   claims: CoreTypes.UserCustomClaims
 ) {
   try {
-    const currentFilePermissions = await perms.queries.RetrieveFilePermissions(
-      file
-    );
-    perms.queries.CheckCanEditPermissions(
-      currentFilePermissions,
-      newPermissions,
-      claims
-    );
+    // Disabled for new Admin Flag in config
+    // const currentFilePermissions = await perms.queries.RetrieveFilePermissions(
+    //   file
+    // );
+    // perms.queries.CheckCanEditPermissions(
+    //   currentFilePermissions,
+    //   newPermissions,
+    //   claims
+    // );
     const res = await perms.commands.UpdateFilePermissions(
       file,
       newPermissions

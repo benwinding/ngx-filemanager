@@ -7,7 +7,8 @@ import { CommonModule } from '@angular/common';
 import {
   MatFormFieldModule,
   MatInputModule,
-  MatCardModule
+  MatCardModule,
+  MatSlideToggleModule
 } from '@angular/material';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -34,6 +35,7 @@ import { AppPermissionsSelectionComponent } from './permissions-selection.compon
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
+    MatSlideToggleModule,
     MatInputModule,
     MatCardModule
   ],

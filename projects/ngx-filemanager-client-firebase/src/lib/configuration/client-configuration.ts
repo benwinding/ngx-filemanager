@@ -14,6 +14,8 @@ export interface FileManagerConfig {
   disableLogging?: boolean;
   initialPath?: string;
 
+  isAdmin?: boolean;
+
   users?: Observable<NameUid[]>;
   groups?: Observable<NameUid[]>;
   me?: Observable<NameUid>;

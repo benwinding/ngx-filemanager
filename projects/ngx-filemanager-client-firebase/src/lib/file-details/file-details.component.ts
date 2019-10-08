@@ -52,6 +52,7 @@ import { LoggerService } from '../logging/logger.service';
             color="primary"
             class="has-pointer"
             matTooltip="Click to Set Permissions"
+            [disabled]="!isAdmin"
             (click)="this.clickedSetPermissions.emit(file)"
           >
             <mat-icon>lock_outline</mat-icon>
@@ -180,6 +181,8 @@ export class FileDetailsComponent {
   get file() {
     return this._file;
   }
+  @Input()
+  isAdmin: boolean;
   @Input()
   fileSystem: FileSystemProvider;
   @Output()

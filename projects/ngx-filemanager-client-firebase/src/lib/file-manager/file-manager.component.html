@@ -7,6 +7,7 @@
         *ngIf="initLoaded"
       >
         <bulk-actions
+          [isAdmin]="this.config.isAdmin"
           (clickedCancelBulk)="this.onClickedCancelBulk()"
           (clickedBulkCopy)="this.onClickedBulkCopy()"
           (clickedBulkMove)="this.onClickedBulkMove()"
@@ -75,6 +76,7 @@
       opened
     >
       <ngx-filemanager-file-details
+        [isAdmin]="config.isAdmin"
         [file]="$SelectedFile | async"
         [fileSystem]="fileSystem"
         (clickedDelete)="this.onDetailsClickDelete($event)"

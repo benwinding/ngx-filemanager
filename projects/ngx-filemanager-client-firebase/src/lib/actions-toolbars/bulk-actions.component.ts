@@ -1,5 +1,6 @@
 import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
 import { ActionButton } from './ActionButton';
+import { Observable, of } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -12,6 +13,7 @@ import { ActionButton } from './ActionButton';
             <button
               class="mr-10 flex-row align-center"
               mat-raised-button
+              [disabled]="action.$disabled | async"
               [color]="action.color"
               (click)="action.onClick(action)"
             >
@@ -23,13 +25,11 @@ import { ActionButton } from './ActionButton';
       </mat-toolbar-row>
     </mat-toolbar>
   `,
-  styleUrls: [
-    '../shared-utility-styles.scss'
-  ]
+  styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppBulkActionsComponent implements OnInit {
   @Input()
-  bulkActions: ActionButton[];
+  isAdmin: boolean;
   @Output()
   clickedCancelBulk = new EventEmitter<void>();
   @Output()
@@ -41,48 +41,39 @@ export class AppBulkActionsComponent implements OnInit {
   @Output()
   clickedBulkDelete = new EventEmitter<void>();
 
+  bulkActions: ActionButton[];
+
   ngOnInit() {
-    this.bulkActions = [
-      {
-        label: 'Cancel',
-        icon: 'clear',
-        onClick: (item: ActionButton) => {
-          this.clickedCancelBulk.emit();
-        },
-        color: 'secondary'
-      },
-      {
-        label: 'Copy',
-        icon: 'content_copy',
-        onClick: (item: ActionButton) => {
-          this.clickedBulkCopy.emit();
-        },
-        color: 'secondary'
-      },
-      {
-        label: 'Move',
-        icon: 'forward',
-        onClick: (item: ActionButton) => {
-          this.clickedBulkMove.emit();
-        },
-        color: 'secondary'
-      },
-      {
-        label: 'Set Permissions',
-        icon: 'lock_outline',
-        onClick: (item: ActionButton) => {
-          this.clickedBulkPermissions.emit();
-        },
-        color: 'secondary'
-      },
-      {
-        label: 'Delete',
-        icon: 'delete',
-        onClick: (item: ActionButton) => {
-          this.clickedBulkDelete.emit();
-        },
-        color: 'secondary'
-      }
-    ];
+    this.bulkActions = [];
+    const addBulk = (
+      label: string,
+      icon: string,
+      onClick: (item: ActionButton) => void,
+      $disabled?: Observable<boolean>
+    ) => {
+      this.bulkActions.push({
+        label,
+        icon,
+        color: null,
+        onClick: (item: ActionButton) => onClick(item),
+        $disabled: $disabled || of(false)
+      });
+    };
+
+    addBulk('Cancel', 'clear', (item: ActionButton) => {
+      this.clickedCancelBulk.emit();
+    });
+    addBulk('Copy', 'content_copy', (item: ActionButton) => {
+      this.clickedBulkCopy.emit();
+    });
+    addBulk('Move', 'forward', (item: ActionButton) => {
+      this.clickedBulkMove.emit();
+    });
+    addBulk('Set Permissions', 'lock_outline', (item: ActionButton) => {
+      this.clickedBulkPermissions.emit();
+    }, of(!this.isAdmin));
+    addBulk('Delete', 'delete', (item: ActionButton) => {
+      this.clickedBulkDelete.emit();
+    });
   }
 }
