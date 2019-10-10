@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FileSystemProvider, CoreTypes } from 'ngx-filemanager-core';
+import { FileSystemProvider, CoreTypes } from '../../core-types';
 import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
 import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
 import { MatDialog } from '@angular/material';

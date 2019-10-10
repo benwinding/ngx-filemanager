@@ -8,35 +8,26 @@ import { of, BehaviorSubject, Observable } from 'rxjs';
   template: `
     <mat-toolbar>
       <mat-toolbar-row class="scroll-x">
-        <div *ngFor="let action of bulkActions">
+        <div *ngFor="let action of actions">
           <button
-            class="action has-pointer"
+            class="mr-10 has-pointer"
             mat-raised-button
             [color]="action.color"
             (click)="action.onClick(action)"
             [disabled]="action.$disabled | async"
           >
-            <mat-icon inline="true" >{{ action.icon }}</mat-icon>
+            <mat-icon inline="true">{{ action.icon }}</mat-icon>
             {{ action.label }}
           </button>
         </div>
       </mat-toolbar-row>
     </mat-toolbar>
   `,
-  styles: [
-    `
-      button.action {
-        margin-right: 10px;
-      }
-    `
-  ],
-  styleUrls: [
-    '../shared-utility-styles.scss'
-  ]
+  styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppFolderActionsComponent implements OnInit {
   @Input()
-  bulkActions: ActionButton[];
+  $CurrentPathIsRoot: Observable<boolean>;
   @Output()
   clickedUpFolder = new EventEmitter<void>();
   @Output()
@@ -46,52 +37,51 @@ export class AppFolderActionsComponent implements OnInit {
   @Output()
   clickedUploadFiles = new EventEmitter<void>();
 
-  @Input()
-  $CurrentPathIsRoot: Observable<boolean>;
+  actions: ActionButton[];
 
   ngOnInit() {
     const $isRefreshing = new BehaviorSubject<boolean>(false);
-    this.bulkActions = [
-      {
-        label: 'Back',
-        icon: 'reply',
-        onClick: (item: ActionButton) => {
-          this.clickedUpFolder.emit();
-        },
-        color: 'secondary',
-        $disabled: this.$CurrentPathIsRoot
+    this.actions = [];
+    const addAction = (
+      label: string,
+      icon: string,
+      onClick: (item: ActionButton) => void,
+      disabled?: Observable<boolean>
+    ) => {
+      this.actions.push({
+        label,
+        icon,
+        color: null,
+        onClick: (item: ActionButton) => onClick(item),
+        $disabled: disabled || of(false)
+      });
+    };
+
+    addAction(
+      'Back',
+      'reply',
+      (item: ActionButton) => {
+        this.clickedUpFolder.emit();
       },
-      {
-        label: 'Upload Files',
-        icon: 'file_upload',
-        onClick: (item: ActionButton) => {
-          this.clickedUploadFiles.emit();
-        },
-        color: 'secondary',
-        $disabled: of(false)
+      this.$CurrentPathIsRoot
+    );
+    addAction(
+      'Refresh',
+      'refresh',
+      (item: ActionButton) => {
+        $isRefreshing.next(true);
+        setTimeout(() => {
+          $isRefreshing.next(false);
+        }, 1000);
+        this.clickedRefresh.emit();
       },
-      {
-        label: 'Refresh',
-        icon: 'refresh',
-        onClick: (item: ActionButton) => {
-          $isRefreshing.next(true);
-          setTimeout(() => {
-            $isRefreshing.next(false);
-          }, 1000);
-          this.clickedRefresh.emit();
-        },
-        color: 'secondary',
-        $disabled: $isRefreshing
-      },
-      {
-        label: 'New Folder',
-        icon: 'create_new_folder',
-        onClick: (item: ActionButton) => {
-          this.clickedNewFolder.emit();
-        },
-        color: 'secondary',
-        $disabled: of(false)
-      },
-    ];
+      $isRefreshing
+    );
+    addAction('Upload Files', 'file_upload', (item: ActionButton) => {
+      this.clickedUploadFiles.emit();
+    });
+    addAction('New Folder', 'create_new_folder', (item: ActionButton) => {
+      this.clickedNewFolder.emit();
+    });
   }
 }

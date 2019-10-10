@@ -1,4 +1,4 @@
-import { CoreTypes } from 'ngx-filemanager-core';
+import { CoreTypes } from '../../core-types';
 import path from 'path-browserify';
 
 // temporary directory for the client while it refreshes

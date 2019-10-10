@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { CoreTypes, FileSystemProvider } from 'ngx-filemanager-core';
+import { CoreTypes, FileSystemProvider } from '../../core-types';
 import { AutoTableConfig } from 'ngx-auto-table';
 import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
 import { LoggerService } from '../logging/logger.service';
@@ -89,8 +89,8 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
     private logger: LoggerService
   ) {}
 
-  ngOnInit() {
-    this.actionHandlers.init(this.serverFilesystem, null);
+  async ngOnInit() {
+    await this.actionHandlers.init(this.serverFilesystem, null);
     this.tableConfig = {
       data$: this.actionHandlers.$FilesWithIcons,
       onSelectItemDoubleClick: async (item: CoreTypes.ResFile) => {
@@ -107,7 +107,7 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
     };
     this.tableConfig.hideFilter = true;
     this.tableConfig.hideChooseColumns = true;
-    this.actionHandlers.OnNavigateTo(this.currentDirectory);
+    return this.actionHandlers.OnNavigateTo(this.currentDirectory);
   }
 
   get $CurrentPathIsRoot() {

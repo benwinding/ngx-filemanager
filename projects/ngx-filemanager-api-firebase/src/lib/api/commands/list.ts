@@ -1,7 +1,7 @@
 import { Bucket } from '../../types/google-cloud-types';
 import { VError } from 'verror';
 import { perms } from '../../permissions';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from '../../types';
 import { storage } from '../../utils/storage-helper';
 
 export async function GetList(

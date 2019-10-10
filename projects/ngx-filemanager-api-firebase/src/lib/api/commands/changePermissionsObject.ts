@@ -1,7 +1,7 @@
 import { File } from '../../types/google-cloud-types';
 import { Bucket } from '@google-cloud/storage';
 import * as request from 'request';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from '../../types';
 import { VError } from 'verror';
 import { perms } from '../../permissions';
 import { storage } from '../../utils/storage-helper';
@@ -12,14 +12,15 @@ export async function TryChangeSingleFilePermissionsObject(
   claims: CoreTypes.UserCustomClaims
 ) {
   try {
-    const currentFilePermissions = await perms.queries.RetrieveFilePermissions(
-      file
-    );
-    perms.queries.CheckCanEditPermissions(
-      currentFilePermissions,
-      newPermissions,
-      claims
-    );
+    // Disabled for new Admin Flag in config
+    // const currentFilePermissions = await perms.queries.RetrieveFilePermissions(
+    //   file
+    // );
+    // perms.queries.CheckCanEditPermissions(
+    //   currentFilePermissions,
+    //   newPermissions,
+    //   claims
+    // );
     const res = await perms.commands.UpdateFilePermissions(
       file,
       newPermissions

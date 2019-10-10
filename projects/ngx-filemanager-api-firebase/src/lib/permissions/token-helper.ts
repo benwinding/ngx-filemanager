@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from '../types';
 
 export async function GetTokenFromRequest(req: Request) {
   let idToken;

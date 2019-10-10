@@ -1,5 +1,5 @@
 import { Bucket } from '../../types/google-cloud-types';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from '../../types';
 
 export async function EditFile(
   bucket: Bucket,

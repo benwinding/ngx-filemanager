@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { AutoTableConfig } from 'ngx-auto-table';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from '../../core-types';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -12,7 +12,8 @@ import { CoreTypes } from 'ngx-filemanager-core/public_api';
         icon: { template: iconTemplate },
         name: { template: nameTemplate, forceWrap: true },
         size: { template: sizeTemplate, forceWrap: true },
-        date: { template: dateTemplate }
+        date: { template: dateTemplate },
+        actions: { template: actionsTemplate }
       }"
       id="main-table"
     >
@@ -36,11 +37,12 @@ import { CoreTypes } from 'ngx-filemanager-core/public_api';
       </ng-template>
       <ng-template #actionsTemplate let-row>
         <button
+          *ngIf="row.type === 'file'"
           mat-mini-fab
           color="primary"
           (click)="this.clickedDownload.emit(row)"
         >
-          <mat-icon>launch</mat-icon>
+          <mat-icon>file_download</mat-icon>
         </button>
       </ng-template>
     </ngx-auto-table>

@@ -1,4 +1,4 @@
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from '../../core-types';
 import { Observable } from 'rxjs';
 
 export interface ClientFileSystem {

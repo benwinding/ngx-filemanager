@@ -12,6 +12,9 @@
 .align-center {
   align-items: center;
 }
+.align-top {
+  align-items: start;
+}
 .fit-content {
   width: fit-content;
 }
@@ -41,4 +44,7 @@
 }
 .m0 {
   margin: 0px;
+}
+.mr-10 {
+  margin-right: 10px;
 }

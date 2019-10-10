@@ -5,7 +5,7 @@ import {
 } from './changePermissions';
 import { testHelper } from '../../utils/test-helper';
 import { perms } from '../../permissions';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from '../../types';
 
 test('set permissions to object', async () => {
   const testBucket = testHelper.getBucket();

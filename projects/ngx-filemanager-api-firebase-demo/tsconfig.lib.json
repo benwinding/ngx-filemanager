@@ -17,6 +17,12 @@
       "es2018"
     ],
     "paths": {
+      "projects/ngx-filemanager-core/*": [
+        "../ngx-filemanager-core/*"
+      ],
+      "projects/ngx-filemanager-api-firebase/*": [
+        "../ngx-filemanager-api-firebase/*"
+      ],
       "ngx-filemanager-core/*": [
         "../ngx-filemanager-core/src/*"
       ],

@@ -166,7 +166,7 @@
               "projects/ngx-filemanager-client-firebase-demo/src/assets",
               {
                 "glob": "**/*",
-                "input": "./dist/ngx-filemanager-client-firebase/assets",
+                "input": "./projects/ngx-filemanager-client-firebase/src/assets",
                 "output": "./assets/fileicons"
               }
             ],

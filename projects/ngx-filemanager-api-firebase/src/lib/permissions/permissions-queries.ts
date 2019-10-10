@@ -1,7 +1,7 @@
 import { FilePermission } from './unix-conversion';
 import { File } from '../types/google-cloud-types';
 import { GetTokenFromRequest } from './token-helper';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+import { CoreTypes } from '../types';
 import { permsFactory } from './permissions.factory';
 import { VError } from 'verror';
 import { permHelper } from './permissions-helper';

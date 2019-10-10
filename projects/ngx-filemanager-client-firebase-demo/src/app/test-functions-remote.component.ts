@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import {
   FileManagerConfig,
   ServerFilesystemProviderService
-} from 'ngx-filemanager-client-firebase';
+} from 'projects/ngx-filemanager-client-firebase/src/public_api';
 import { FormControl } from '@angular/forms';
 import {
   debounceTime,
@@ -51,6 +51,13 @@ import { environment } from '../environments/environment';
         >
         </textarea>
       </mat-form-field>
+      <div>
+        <p>Is Admin? ({{isAdminControl.value ? 'Yes' : 'No'}})</p>
+        <mat-slide-toggle
+          [formControl]="isAdminControl"
+        >
+        </mat-slide-toggle>
+      </div>
     </mat-card>
 
     <h2>File Explorer</h2>
@@ -76,6 +83,7 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
   apiEndpoint = new FormControl('http://localhost:4444/ApiPublic/files');
   virtualRoot = new FormControl('/');
   firebaseConfig = new FormControl('');
+  isAdminControl = new FormControl(false);
 
   showExplorer = true;
 
@@ -98,7 +106,8 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
           }
         }),
         distinctUntilChanged()
-      )
+      ),
+      this.isAdminControl.valueChanges,
     ])
       .pipe(
         debounceTime(500),
@@ -124,6 +133,7 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     });
     this.config.virtualRoot = this.virtualRoot.value;
     this.config.bucketName = this.bucketName.value;
+    this.config.isAdmin = this.isAdminControl.value;
     localStorage.setItem('bucketname', this.bucketName.value);
     localStorage.setItem('apiendpoint', this.apiEndpoint.value);
     localStorage.setItem('virtualRoot', this.virtualRoot.value);

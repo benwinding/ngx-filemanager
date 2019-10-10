@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CoreTypes, FileSystemProvider } from 'ngx-filemanager-core/public_api';
+import { CoreTypes, FileSystemProvider } from '../../core-types';
 import { HttpClient } from '@angular/common/http';
 import { LoggerService } from '../logging/logger.service';
 import { FileSystemRequestBuilder } from './server-filesystem-request';

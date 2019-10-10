@@ -1,15 +1,13 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { Observable, Subject, forkJoin, combineLatest } from 'rxjs';
+import { Observable, Subject, combineLatest } from 'rxjs';
 import {
-  FileManagerConfig,
-  NameUid
-} from '../configuration/client-configuration';
-import { CoreTypes } from 'ngx-filemanager-core/public_api';
+  FileManagerConfig} from '../configuration/client-configuration';
+import { CoreTypes } from '../../core-types';
 import { LoggerService } from '../logging/logger.service';
 import { Tag } from './tags-control.component';
-import { map, take, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -35,18 +33,20 @@ export interface PermissionsObjectDialogResponseInterface {
         <h2>Set Permissions</h2>
       </ng-template>
       <ng-template #bodyTemplate>
-        <h5>Selected Items</h5>
-        <ol>
-          <li *ngFor="let file of items">
+        <h5 class="my-5">Selected Items</h5>
+        <mat-chip-list class="mb-5">
+          <mat-chip *ngFor="let file of items">
+            <mat-icon *ngIf="file.type === 'file'">description</mat-icon>
+            <mat-icon *ngIf="file.type !== 'file'">folder</mat-icon>
             {{ file.name }}
-          </li>
-        </ol>
+          </mat-chip>
+        </mat-chip-list>
 
+        <h5 class="my-5">Anyone's Permissions</h5>
         <mat-form-field class="full-width">
           <mat-select
             matInput
             [formControl]="othersControl"
-            placeholder="Anyone's Permissions"
           >
             <mat-option
               *ngFor="let permission of othersOptions"
@@ -57,16 +57,18 @@ export interface PermissionsObjectDialogResponseInterface {
           </mat-select>
         </mat-form-field>
 
-        <h5>Read Permissions</h5>
+        <h5 class="my-5">Read Permissions</h5>
         <app-control-tag-multiple
+          class="full-width -mt-15"
           [control]="allReadersControl"
           [selectChoices$]="$allEntities"
           [allowCustom]="false"
         >
         </app-control-tag-multiple>
 
-        <h5>Write Permissions</h5>
+        <h5 class="my-5">Write Permissions</h5>
         <app-control-tag-multiple
+          class="full-width -mt-15"
           [control]="allWritersControl"
           [selectChoices$]="$allEntities"
           [allowCustom]="false"
@@ -85,7 +87,20 @@ export interface PermissionsObjectDialogResponseInterface {
       </ng-template>
     </base-dialog>
   `,
-  styleUrls: ['../shared-utility-styles.scss']
+  styleUrls: ['../shared-utility-styles.scss'],
+  styles: [
+    `
+      .my-5 {
+        margin: 5px 0;
+      }
+      .mb-5 {
+        margin-bottom: 5px;
+      }
+      .-mt-15 {
+        margin-top: -15px;
+      }
+    `
+  ]
 })
 export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
   items: CoreTypes.ResFile[];
@@ -113,7 +128,7 @@ export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
     this.items = data.files;
     const users$ = data.config.users;
     const groups$ = data.config.groups;
-    this.$allEntities = combineLatest(groups$, users$).pipe(
+    this.$allEntities = combineLatest([groups$, users$]).pipe(
       tap(allEntities => this.logger.info('allEntities', { allEntities })),
       map(arr => arr[0].concat(arr[1])),
       map(arr =>
