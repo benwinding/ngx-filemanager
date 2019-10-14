@@ -9,6 +9,7 @@
     "sourceMap": true,
     "inlineSources": true,
     "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "importHelpers": true,
     "resolveJsonModule": true,
@@ -16,7 +17,12 @@
     "lib": [
       "dom",
       "es2018"
-    ]
+    ],
+    "paths": {
+      "projects/ngx-filemanager-api-firebase/src/*": [
+        "dist/ngx-filemanager-api-firebase/*"
+      ]
+    }
   },
   "exclude": [
     "src/test.ts",
