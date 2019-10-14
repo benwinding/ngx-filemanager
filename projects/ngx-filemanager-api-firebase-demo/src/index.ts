@@ -9,11 +9,11 @@ app.use(AddCors);
 
 import * as admin from 'firebase-admin';
 // const serviceAccount = require('../../../serviceAccountKey.json'); // api-demo-debug
-const serviceAccount = require('../../../../serviceAccountKey.json'); // api-demo-debug
+import serviceAccount from '../../../serviceAccountKey.json';
 
 // Setup local firebase admin, using service account credentials
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount as any)
 });
 
 import { FileManagerEndpointExpress } from '../../ngx-filemanager-api-firebase/src/public_api';

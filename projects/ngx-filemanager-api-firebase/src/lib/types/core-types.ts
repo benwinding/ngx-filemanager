@@ -1,2 +1,2 @@
-import { CoreTypes } from '../../../../../dist/ngx-filemanager-core';
+import { CoreTypes } from 'ngx-filemanager-core/public_api';
 export { CoreTypes };

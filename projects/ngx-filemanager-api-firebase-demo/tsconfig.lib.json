@@ -12,32 +12,11 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "resolveJsonModule": true,
+    "esModuleInterop": true,
     "lib": [
       "dom",
       "es2018"
-    ],
-    "paths": {
-      "projects/ngx-filemanager-core/*": [
-        "../ngx-filemanager-core/*"
-      ],
-      "projects/ngx-filemanager-api-firebase/*": [
-        "../ngx-filemanager-api-firebase/*"
-      ],
-      "ngx-filemanager-core/*": [
-        "../ngx-filemanager-core/src/*"
-      ],
-      "ngx-filemanager-api-firebase/*": [
-        "../ngx-filemanager-api-firebase/src/*"
-      ]
-    }
-  },
-  "angularCompilerOptions": {
-    "annotateForClosureCompiler": true,
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
-    "enableResourceInlining": true
+    ]
   },
   "exclude": [
     "src/test.ts",

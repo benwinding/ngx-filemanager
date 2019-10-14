@@ -61,7 +61,7 @@ export interface Tag {
         #auto="matAutocomplete"
         (optionSelected)="selectedTag($event)"
       >
-        <mat-option *ngFor="let tag of (filteredTags | async)" [value]="tag">
+        <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
           {{ tag.name }}
         </mat-option>
       </mat-autocomplete>
@@ -102,9 +102,9 @@ export class AppControlTagMultipleComponent implements OnInit, OnDestroy {
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
   filteredTags: Observable<Tag[]>;
-  @ViewChild('tagInput')
+  @ViewChild('tagInput', { static: false })
   tagInput: ElementRef<HTMLInputElement>;
-  @ViewChild('auto')
+  @ViewChild('auto', { static: false })
   matAutocomplete: MatAutocomplete;
   selectInitial: Tag[];
 

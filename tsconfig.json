@@ -9,6 +9,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "target": "es5",
     "typeRoots": [
       "node_modules/@types"
@@ -19,22 +20,13 @@
     ],
     "paths": {
       "ngx-filemanager-core": [
-        "dist/ngx-filemanager-core"
+        "./dist/ngx-filemanager-core"
       ],
       "ngx-filemanager-core/*": [
-        "dist/ngx-filemanager-core/*"
+        "./dist/ngx-filemanager-core/*"
       ],
-      "ngx-filemanager-api-firebase": [
-        "dist/ngx-filemanager-api-firebase"
-      ],
-      "ngx-filemanager-api-firebase/*": [
-        "dist/ngx-filemanager-api-firebase/*"
-      ],
-      "ngx-filemanager-client-firebase": [
-        "dist/ngx-filemanager-client-firebase"
-      ],
-      "ngx-filemanager-client-firebase/*": [
-        "dist/ngx-filemanager-client-firebase/*"
+      "projects/ngx-filemanager-core/src/*": [
+        "./dist/ngx-filemanager-core/*"
       ]
     }
   }

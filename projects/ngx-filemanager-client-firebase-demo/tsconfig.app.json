@@ -7,5 +7,13 @@
   "exclude": [
     "test.ts",
     "**/*.spec.ts"
-  ]
+  ],
+  "paths": {
+    "projects/ngx-filemanager-core/src/public_api": [
+      "dist/ngx-filemanager-core/*"
+    ],
+    "projects/ngx-filemanager-client/src/public_api": [
+      "dist/ngx-filemanager-client/*"
+    ]
+  }
 }

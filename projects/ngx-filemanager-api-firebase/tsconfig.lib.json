@@ -14,8 +14,18 @@
     "types": [],
     "lib": ["dom", "es2018"],
     "paths": {
-      "projects/ngx-filemanager-core": ["dist/ngx-filemanager-core"],
-      "projects/ngx-filemanager-core/*": ["dist/ngx-filemanager-core/*"]
+      "ngx-filemanager-core": [
+        "dist/ngx-filemanager-core"
+      ],
+      "ngx-filemanager-core/public_api": [
+        "dist/ngx-filemanager-core/public_api"
+      ],
+      "ngx-filemanager-core/*": [
+        "dist/ngx-filemanager-core/*"
+      ],
+      "projects/ngx-filemanager-core/src/*": [
+        "dist/ngx-filemanager-core/*"
+      ]
     }
   },
   "angularCompilerOptions": {
