@@ -17,7 +17,7 @@
       "es2018"
     ],
     "paths": {
-      "projects/ngx-filemanager-core/src/public_api": [
+      "projects/ngx-filemanager-core/src/*": [
         "dist/ngx-filemanager-core/*"
       ]
     }
