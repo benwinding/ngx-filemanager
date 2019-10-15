@@ -1,6 +1,6 @@
 import * as path from 'path-browserify';
-import { CoreTypes } from '../../core-types';
-import { EnsureNoTrailingSlash, EnsureTrailingSlash } from '../utils';
+import { CoreTypes } from '../../../core-types';
+import { EnsureNoTrailingSlash, EnsureTrailingSlash } from '../../utils';
 
 export function MakeItem2(itemPath: string): CoreTypes.ResFile {
   return {

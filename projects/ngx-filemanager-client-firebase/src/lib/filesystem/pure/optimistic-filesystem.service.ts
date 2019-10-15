@@ -2,14 +2,14 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { OptimisticFilesystem } from './optimistic-filesystem.interface';
 import { ClientFileSystemService } from './client-filesystem.service';
 import { take, takeUntil, debounceTime, tap, switchMap, auditTime } from 'rxjs/operators';
-import { LoggerService } from '../logging';
+import { LoggerService } from '../../logging';
 import path from 'path-browserify';
-import { NotificationService } from '../notifications/notification.service';
+import { NotificationService } from '../../notifications/notification.service';
 import { Subject } from 'rxjs';
-import { CoreTypes, FileSystemProvider } from '../../core-types';
-import { FilemanagerStatusService } from './status.service';
+import { CoreTypes, FileSystemProvider } from '../../../core-types';
 
 import { v4 as uuidv4 } from 'uuid';
+import { FilemanagerStatusService } from '../state';
 
 // tslint:disable:member-ordering
 

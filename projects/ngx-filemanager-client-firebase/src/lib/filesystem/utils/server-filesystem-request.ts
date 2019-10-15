@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { take } from 'rxjs/operators';
-import { FilemanagerStatusService } from './status.service';
 
 export class FileSystemRequestBuilder {
   private options = {

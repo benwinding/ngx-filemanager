@@ -2,7 +2,7 @@ import { map, filter } from 'rxjs/operators';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as path from 'path-browserify';
-import { CoreTypes } from '../../core-types';
+import { CoreTypes } from '../../../core-types';
 import {
   Add2ToPathDir,
   EnsureTrailingSlash,
@@ -11,10 +11,10 @@ import {
   IconUrlResolverService,
   MakeClientDirectory,
   MakeClientFile
-} from '../utils';
-import { LoggerService } from '../logging';
+} from '../../utils';
+import { LoggerService } from '../../logging';
 import { ClientFileSystem } from './client-filesystem.interface';
-import { ClientFileSystemDataStore } from './client-filesystem.datastore';
+import { ClientFileSystemDataStore } from '../state';
 
 // tslint:disable:member-ordering
 @Injectable()

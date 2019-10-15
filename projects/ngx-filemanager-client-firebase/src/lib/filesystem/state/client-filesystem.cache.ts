@@ -1,6 +1,6 @@
-import { CoreTypes } from '../../core-types';
-import { ConsoleLoggerService } from '../logging';
-import { EnsureTrailingSlash } from '../utils';
+import { CoreTypes } from '../../../core-types';
+import { ConsoleLoggerService } from '../../logging';
+import { EnsureTrailingSlash } from '../../utils';
 
 export class ClientCache {
   private logger = new ConsoleLoggerService();

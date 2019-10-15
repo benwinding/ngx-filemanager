@@ -2,4 +2,11 @@
  * Public API Surface of ngx-filemanager-client-firebase
  */
 
-export * from './lib';
+export {
+  NgxFileManagerComponent,
+  NgxFilemanagerClientFirebaseModule,
+  NameUid,
+  FileManagerConfig,
+  ServerFilesystemProviderService,
+  FileSystemStub
+} from './lib';

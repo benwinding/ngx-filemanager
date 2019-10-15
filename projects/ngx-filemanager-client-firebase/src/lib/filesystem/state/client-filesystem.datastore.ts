@@ -1,8 +1,8 @@
-import { CoreTypes } from '../../core-types';
+import { CoreTypes } from '../../../core-types';
 import { ClientCache } from './client-filesystem.cache';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ConsoleLoggerService } from '../logging';
-import { EnsurePrefixSlash } from '../utils';
+import { ConsoleLoggerService } from '../../logging';
+import { EnsurePrefixSlash } from '../../utils';
 
 export class ClientFileSystemDataStore {
   private cache = new ClientCache();

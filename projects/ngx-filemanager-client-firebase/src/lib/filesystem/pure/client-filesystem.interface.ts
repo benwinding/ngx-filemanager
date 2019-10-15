@@ -1,4 +1,4 @@
-import { CoreTypes } from '../../core-types';
+import { CoreTypes } from '../../../core-types';
 import { Observable } from 'rxjs';
 
 export interface ClientFileSystem {

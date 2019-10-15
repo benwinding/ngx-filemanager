@@ -1,5 +1,5 @@
-import { ConsoleLoggerService } from '../logging';
-import { IconUrlResolverService } from '../utils';
+import { ConsoleLoggerService } from '../../logging';
+import { IconUrlResolverService } from '../../utils';
 import { ClientFileSystemService } from './client-filesystem.service';
 
 function makeTestClient(): ClientFileSystemService {
