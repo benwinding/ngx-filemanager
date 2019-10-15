@@ -18,6 +18,7 @@ export interface CopyDialogInterface {
   selector: 'ngx-filemanager-copy-dialog',
   template: `
     <base-dialog
+      *ngIf="currentDir"
       [header]="headerTemplate"
       [body]="bodyTemplate"
       [actions]="actionsTemplate"
@@ -75,8 +76,12 @@ export class AppDialogCopyComponent {
     public dialogRef: MatDialogRef<AppDialogCopyComponent>,
     @Inject(MAT_DIALOG_DATA) public data: CopyDialogInterface
   ) {
+    this.init().catch();
+  }
+
+  async init() {
     this.logger.info('initializing dialog:', {data: this.data});
-    this.items = data.files;
+    this.items = this.data.files;
     if (this.data.isCopy) {
       this.OkLabel = 'Copy';
       this.OkIcon = 'content_copy';
@@ -84,8 +89,8 @@ export class AppDialogCopyComponent {
       this.OkLabel = 'Move';
       this.OkIcon = 'forward';
     }
-    this.actionHandlers = this.data.actionHandler;
-    this.$CurrentPathIsRoot = this.data.actionHandler.$CurrentPathIsRoot;
+    this.actionHandlers = await this.data.actionHandler.CloneProvider();
+    this.$CurrentPathIsRoot = this.actionHandlers.$CurrentPathIsRoot;
     const firstFile = [...this.items].pop();
     this.currentDir = EnsureTrailingSlash(path.dirname(firstFile.fullPath));
   }

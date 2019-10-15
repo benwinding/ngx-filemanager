@@ -299,4 +299,16 @@ export class ActionHandlersService {
       .toPromise();
     return result;
   }
+
+  public async CloneProvider(): Promise<ActionHandlersService> {
+    const cloned = new ActionHandlersService(
+      this.clientFilesystem.CloneProvider(),
+      this.optimisticFs.CloneProvider(),
+      this.dialog,
+      this.logger,
+      this.notifications,
+    );
+    await cloned.init(this.fileSystem, this.config);
+    return cloned;
+  }
 }

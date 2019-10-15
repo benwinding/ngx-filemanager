@@ -13,6 +13,10 @@ export class ClientFileSystemDataStore {
 
   private logger = new ConsoleLoggerService();
 
+  public SetCache(cache: ClientCache) {
+    this.cache = cache;
+  }
+
   public get $currentFiles(): Observable<CoreTypes.ResFile[]> {
     return this._$currentFiles;
   }
@@ -37,7 +41,7 @@ export class ClientFileSystemDataStore {
   }
   public SetPath(path: string) {
     const pathParsed = EnsurePrefixSlash(path);
-    this.logger.info('datastore.SetPath', {path, pathParsed});
+    this.logger.info('datastore.SetPath', { path, pathParsed });
     const cachedFiles = this.cache.GetCached(pathParsed);
     this._$currentPath.next(pathParsed);
     this._$currentFiles.next(cachedFiles);
@@ -49,5 +53,16 @@ export class ClientFileSystemDataStore {
     const filesInDir = this.cache.GetCached(cwd);
     const exists = filesInDir.find(f => f.fullPath === fullPath);
     return !!exists;
+  }
+
+  CloneStore(): ClientFileSystemDataStore {
+    const newStore = new ClientFileSystemDataStore();
+    newStore.SetPath(this.CurrentPath());
+    newStore.SetDirectoryFiles(
+      this._$currentFiles.getValue(),
+      this.CurrentPath()
+    );
+    newStore.SetCache(this.cache);
+    return newStore;
   }
 }

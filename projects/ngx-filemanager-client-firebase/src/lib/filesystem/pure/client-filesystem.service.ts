@@ -55,6 +55,10 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     this.instanceCountDecr();
   }
 
+  public SetStore(store: ClientFileSystemDataStore) {
+    this.store = store;
+  }
+
   async OnList(folderPath: string): Promise<void> {
     this.logger.info('client.OnList', { folderPath });
     this.store.SetPath(folderPath);
@@ -216,5 +220,15 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
       file['icon'] = this.iconResolver.getFolderIconUrl(file.name);
     }
     return file;
+  }
+
+  CloneProvider(): ClientFileSystemService {
+    const newClone = new ClientFileSystemService(
+      this.logger,
+      this.iconResolver
+    );
+    const newStore = this.store.CloneStore();
+    newClone.SetStore(newStore);
+    return newClone;
   }
 }

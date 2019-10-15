@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { OptimisticFilesystem } from './optimistic-filesystem.interface';
 import { ClientFileSystemService } from './client-filesystem.service';
-import { take, takeUntil, debounceTime, tap, switchMap, auditTime } from 'rxjs/operators';
+import { take, takeUntil, tap, auditTime } from 'rxjs/operators';
 import { LoggerService } from '../../logging';
 import path from 'path-browserify';
 import { NotificationService } from '../../notifications/notification.service';
@@ -111,7 +111,10 @@ export class OptimisticFilesystemService
   async HandleList(directoryPath: string): Promise<any> {
     this.refreshEmitter.next(directoryPath);
   }
-  async HandleCreateFolder(newPath: string, disableNoClobber?: boolean): Promise<any> {
+  async HandleCreateFolder(
+    newPath: string,
+    disableNoClobber?: boolean
+  ): Promise<any> {
     try {
       this.status.UpdateStatus(newPath, 'SENDING');
       this.logger.info('HandleCreateFolder', { newPath });
@@ -271,7 +274,10 @@ export class OptimisticFilesystemService
     recursive?: boolean
   ): Promise<any> {
     try {
-      this.status.UpdateStatus('HandleSetPermissionsMultiple' + items, 'SENDING');
+      this.status.UpdateStatus(
+        'HandleSetPermissionsMultiple' + items,
+        'SENDING'
+      );
       this.logger.info('HandleSetPermissionsMultiple', {
         items,
         role,
@@ -292,14 +298,20 @@ export class OptimisticFilesystemService
           recursive
         )
       ]);
-      this.status.UpdateStatus('HandleSetPermissionsMultiple' + items, 'SUCCESS');
+      this.status.UpdateStatus(
+        'HandleSetPermissionsMultiple' + items,
+        'SUCCESS'
+      );
     } catch (error) {
       this.reportError(
         error,
         'Cannot set permissions to items',
         'Permissions Error'
       );
-      this.status.UpdateStatus('HandleSetPermissionsMultiple' + items, 'FAILED');
+      this.status.UpdateStatus(
+        'HandleSetPermissionsMultiple' + items,
+        'FAILED'
+      );
     }
   }
   async HandleSetPermissionsObjectMultiple(
@@ -308,7 +320,10 @@ export class OptimisticFilesystemService
     recursive?: boolean
   ): Promise<any> {
     try {
-      this.status.UpdateStatus('HandleSetPermissionsObjectMultiple' + items, 'SENDING');
+      this.status.UpdateStatus(
+        'HandleSetPermissionsObjectMultiple' + items,
+        'SENDING'
+      );
       this.logger.info('HandleSetPermissionsMultiple', {
         items,
         permissionsObj,
@@ -326,14 +341,20 @@ export class OptimisticFilesystemService
           recursive
         )
       ]);
-      this.status.UpdateStatus('HandleSetPermissionsObjectMultiple' + items, 'SUCCESS');
+      this.status.UpdateStatus(
+        'HandleSetPermissionsObjectMultiple' + items,
+        'SUCCESS'
+      );
     } catch (error) {
       this.reportError(
         error,
         'Cannot set permissions to items',
         'Permissions Error'
       );
-      this.status.UpdateStatus('HandleSetPermissionsObjectMultiple' + items, 'FAILED');
+      this.status.UpdateStatus(
+        'HandleSetPermissionsObjectMultiple' + items,
+        'FAILED'
+      );
     }
   }
   async HandleRemove(items: string[]): Promise<any> {
@@ -390,5 +411,18 @@ export class OptimisticFilesystemService
     const currentFiles = this.clientFilesystem.CurrentFiles();
     const firstSelected = [...currentFiles].shift();
     this.clientFilesystem.onSelectItem(firstSelected);
+  }
+
+  CloneProvider(): OptimisticFilesystemService {
+    const newClone = new OptimisticFilesystemService(
+      this.logger,
+      this.notifications,
+      this.status
+    );
+    newClone.initialize(
+      this.serverFilesystem.CloneProvider(),
+      this.clientFilesystem.CloneProvider()
+    );
+    return newClone;
   }
 }

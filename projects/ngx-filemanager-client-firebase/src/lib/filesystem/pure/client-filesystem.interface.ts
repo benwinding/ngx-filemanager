@@ -38,4 +38,6 @@ export interface ClientFileSystem {
   OnRemove(items: string[]): Promise<void>;
   // Actions
   UpdateList(res: CoreTypes.ResBodyList, directoryPath: string): Promise<void>;
+
+  CloneProvider(): ClientFileSystem;
 }
