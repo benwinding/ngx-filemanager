@@ -1,32 +1,28 @@
 import { Injectable } from '@angular/core';
-import { FileSystemProvider, CoreTypes } from '../../core-types';
-import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
-import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
 import { MatDialog } from '@angular/material';
+import { take, map } from 'rxjs/operators';
+import path from 'path-browserify';
+import { FileSystemProvider, CoreTypes } from '../../core-types';
+import { LoggerService } from '../logging';
+import { NotificationService } from '../notifications';
 import {
   RenameDialogInterface,
-  AppDialogRenameComponent
-} from '../dialogs/dialog-rename.component';
-import { take, map } from 'rxjs/operators';
-import {
+  AppDialogRenameComponent,
+  CopyDialogInterface,
   AppDialogCopyComponent,
-  CopyDialogInterface
-} from '../dialogs/dialog-copy-or-move.component';
-import { FileManagerConfig } from '../configuration/client-configuration';
-import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
-import path from 'path-browserify';
-import {
-  UploadDialogInterface,
-  AppDialogUploadFilesComponent,
-  UploadDialogResponseInterface
-} from '../dialogs/dialog-upload.component';
-import { LoggerService } from '../logging/logger.service';
-import { NotificationService } from '../notifications/notification.service';
-import {
   PermissionsObjectDialogInterface,
   PermissionsObjectDialogResponseInterface,
-  AppDialogPermissionsSetObjectComponent
-} from '../dialogs/dialog-permissions-setobject.component';
+  AppDialogPermissionsSetObjectComponent,
+  UploadDialogInterface,
+  UploadDialogResponseInterface,
+  AppDialogUploadFilesComponent,
+  AppDialogNewFolderComponent
+} from '../dialogs';
+import { FileManagerConfig } from '../configuration';
+import {
+  ClientFileSystemService,
+  OptimisticFilesystemService
+} from '../filesystem';
 
 @Injectable()
 export class ActionHandlersService {
@@ -67,12 +63,15 @@ export class ActionHandlersService {
   public async init(fileSystem: FileSystemProvider, config: FileManagerConfig) {
     this.config = config;
     this.fileSystem = fileSystem;
-    this.logger.info('init()', {fileSystem, config});
+    this.logger.info('init()', { fileSystem, config });
     this.optimisticFs.initialize(this.fileSystem, this.clientFilesystem);
     try {
       await this.clientFilesystem.OnList(config.initialPath);
     } catch (error) {
-      this.logger.error('init() OnNewFolderClobber: error', error, {fileSystem, config});
+      this.logger.error('init() OnNewFolderClobber: error', error, {
+        fileSystem,
+        config
+      });
     }
   }
 
@@ -102,7 +101,7 @@ export class ActionHandlersService {
     const data: CopyDialogInterface = {
       files: files,
       isCopy: false,
-      serverFilesystem: this.fileSystem
+      actionHandler: this
     };
     const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
     if (!newFolderPath) {
@@ -123,7 +122,7 @@ export class ActionHandlersService {
     const data: CopyDialogInterface = {
       files: files,
       isCopy: true,
-      serverFilesystem: this.fileSystem
+      actionHandler: this
     };
     const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
     this.logger.info('OnCopyMultiple', { files, newFolderPath });

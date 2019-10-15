@@ -1,12 +1,12 @@
-import { CoreTypes, FileSystemProvider } from '../../core-types';
 import path from 'path-browserify';
-import { ConsoleLoggerService } from '../logging/console-logger.service';
+import { CoreTypes, FileSystemProvider } from '../../core-types';
+import { ConsoleLoggerService } from '../logging';
 import {
   EnsureTrailingSlash,
   Add2ToPathDir,
   Add2ToPath,
   EnsureNoTrailingSlash
-} from '../utils/path-helpers';
+} from '../utils';
 import { stubFiles, MakeDir, MakeFile } from './stub-files';
 
 export class FileSystemStub implements FileSystemProvider {
@@ -271,6 +271,10 @@ export class FileSystemStub implements FileSystemProvider {
     const itemsNotDeleted = this.files.filter(f => !itemsSet.has(f.fullPath));
     this.files = itemsNotDeleted;
     return null;
+  }
+
+  CloneProvider(): FileSystemProvider {
+    return new FileSystemStub();
   }
 
   private ensureTrailingSlash(inputPath: string) {

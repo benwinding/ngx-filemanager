@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, PlatformLocation } from '@angular/common';
+import { APP_BASE_HREF, CommonModule, PlatformLocation } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AutoTableModule } from 'ngx-auto-table';
 import {
@@ -28,37 +28,38 @@ import {
 } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
-
-import { FileDetailsComponent } from './file-details/file-details.component';
-import { FileSizePipe } from './utils/file-size.pipe';
-import { ServerFilesystemProviderService } from './filesystem/server-filesystem.service';
-
-import { AppFileTableComponent } from './file-table/file-table.component';
-import { AppBreadCrumbsComponent } from './bread-crumbs/bread-crumbs.component';
-import { AppBulkActionsComponent } from './actions-toolbars/bulk-actions.component';
-import { AppFolderActionsComponent } from './actions-toolbars/folder-actions.component';
-import { NgxFileManagerComponent } from './file-manager/file-manager.component';
-
-import { BaseDialogComponent } from './dialogs/base-dialog.component';
-import { AppBtnsCancelOkComponent } from './dialogs/btns-cancel-ok.component';
-import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component';
-import { AppDialogRenameComponent } from './dialogs/dialog-rename.component';
-import { AppDialogNewFolderComponent } from './dialogs/dialog-new-folder.component';
-import { AppDialogPermissionsSetComponent } from './dialogs/dialog-permissions-set.component';
-import { AppDialogCopyComponent } from './dialogs/dialog-copy-or-move.component';
-import { LoggerService } from './logging/logger.service';
-import { ConsoleLoggerService } from './logging/console-logger.service';
-import { AppFileTableMiniFolderBrowserComponent } from './file-table-mini/file-table-mini-folder-browser.component';
-import { AppActionsMiniBrowserComponent } from './file-table-mini/actions-mini-browser.component';
-import { NotificationService } from './notifications/notification.service';
-
-import { APP_BASE_HREF } from '@angular/common';
-import { IconUrlResolverService } from './utils/icon-url-resolver.service';
-import { AppDialogMyDetailsComponent } from './dialogs/dialog-my-details.components';
-import { AppDialogPermissionsSetObjectComponent } from './dialogs/dialog-permissions-setobject.component';
-import { AppControlTagMultipleComponent } from './dialogs/tags-control.component';
-import { FilemanagerStatusService } from './filesystem/status.service';
-import { FormFileFirebaseModule } from './file-upload/file-upload.module';
+import {
+  BaseDialogComponent,
+  AppDialogRenameComponent,
+  AppDialogNewFolderComponent,
+  AppDialogPermissionsSetComponent,
+  AppDialogPermissionsSetObjectComponent,
+  AppDialogCopyComponent,
+  AppDialogUploadFilesComponent,
+  AppDialogMyDetailsComponent,
+  AppBtnsCancelOkComponent,
+  AppControlTagMultipleComponent
+} from './dialogs';
+import { AppFileTableComponent } from './file-table';
+import {
+  AppFileTableMiniFolderBrowserComponent,
+  AppActionsMiniBrowserComponent
+} from './file-table-mini';
+import { AppBreadCrumbsComponent } from './bread-crumbs';
+import {
+  AppBulkActionsComponent,
+  AppFolderActionsComponent
+} from './actions-toolbars';
+import { FileDetailsComponent } from './file-details';
+import { FileSizePipe, IconUrlResolverService } from './utils';
+import { FormFileFirebaseModule } from './file-upload';
+import {
+  ServerFilesystemProviderService,
+  FilemanagerStatusService
+} from './filesystem';
+import { NotificationService } from './notifications';
+import { LoggerService, ConsoleLoggerService } from './logging';
+import { NgxFileManagerComponent } from './file-manager';
 
 export function getBaseHref(platformLocation: PlatformLocation): string {
   return platformLocation.getBaseHrefFromDOM();

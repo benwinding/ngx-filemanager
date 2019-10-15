@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { CoreTypes, FileSystemProvider } from '../../core-types';
 import { HttpClient } from '@angular/common/http';
-import { LoggerService } from '../logging/logger.service';
+import { CoreTypes, FileSystemProvider } from '../../core-types';
+import { LoggerService } from '../logging';
 import { FileSystemRequestBuilder } from './server-filesystem-request';
-import { EnsureNoTrailingSlash } from '../utils/path-helpers';
+import { EnsureNoTrailingSlash } from '../utils';
 
 @Injectable()
 export class ServerFilesystemProviderService implements FileSystemProvider {
@@ -189,6 +189,10 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
       '&directoryPath=' +
       currentPath;
     return uploadApiEndpoint;
+  }
+
+  CloneProvider(): FileSystemProvider {
+    return new ServerFilesystemProviderService(this.http, this.logger);
   }
 
   async CreateDownloadLink(file: CoreTypes.ResFile): Promise<string> {

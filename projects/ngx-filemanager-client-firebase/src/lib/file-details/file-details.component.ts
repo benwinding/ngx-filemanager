@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { guesser } from '../utils/file-icon-guesser';
+import { getFileIconName } from '../file-upload';
 import { FileSystemProvider, CoreTypes } from '../../core-types';
-import { promiseDelay } from '../utils/delayer';
-import { LoggerService } from '../logging/logger.service';
+import { promiseDelay } from '../utils';
+import { LoggerService } from '../logging';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -201,7 +201,7 @@ export class FileDetailsComponent {
   constructor(private logger: LoggerService) {}
 
   getFileType(fileName: string) {
-    return guesser.getFileIconName(fileName);
+    return getFileIconName(fileName);
   }
 
   get hasInput() {
@@ -211,7 +211,7 @@ export class FileDetailsComponent {
     return this.file.type === 'file';
   }
   get isImage() {
-    return guesser.getFileIconName(this.file.name) === 'image';
+    return getFileIconName(this.file.name) === 'image';
   }
 
   async setImageUrl() {

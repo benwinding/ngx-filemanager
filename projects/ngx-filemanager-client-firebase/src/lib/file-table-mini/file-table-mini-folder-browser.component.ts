@@ -1,12 +1,14 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { CoreTypes, FileSystemProvider } from '../../core-types';
+import { CoreTypes } from '../../core-types';
 import { AutoTableConfig } from 'ngx-auto-table';
-import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
-import { LoggerService } from '../logging/logger.service';
-import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
-
-import { ActionHandlersService } from '../file-manager/action-handlers.service';
-import { FileManagerConfig } from '../configuration/client-configuration';
+import { Observable } from 'rxjs';
+import { LoggerService } from '../logging';
+import { ActionHandlersService } from '../file-manager';
+import {
+  ClientFileSystemService,
+  OptimisticFilesystemService
+} from '../filesystem';
+import { FileManagerConfig } from '../configuration';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -73,24 +75,22 @@ import { FileManagerConfig } from '../configuration/client-configuration';
 })
 export class AppFileTableMiniFolderBrowserComponent implements OnInit {
   @Input()
-  serverFilesystem: FileSystemProvider;
-  @Input()
   currentDirectory: string;
   @Input()
   config: FileManagerConfig;
+  @Input()
+  $CurrentPathIsRoot: Observable<boolean>;
+  @Input()
+  actionHandlers: ActionHandlersService;
 
   @Output()
   selectedDirectory = new EventEmitter<string>();
 
   tableConfig: AutoTableConfig<CoreTypes.ResFile>;
 
-  constructor(
-    private actionHandlers: ActionHandlersService,
-    private logger: LoggerService
-  ) {}
+  constructor(private logger: LoggerService) {}
 
   async ngOnInit() {
-    await this.actionHandlers.init(this.serverFilesystem, null);
     this.tableConfig = {
       data$: this.actionHandlers.$FilesWithIcons,
       onSelectItemDoubleClick: async (item: CoreTypes.ResFile) => {
@@ -108,10 +108,6 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
     this.tableConfig.hideFilter = true;
     this.tableConfig.hideChooseColumns = true;
     return this.actionHandlers.OnNavigateTo(this.currentDirectory);
-  }
-
-  get $CurrentPathIsRoot() {
-    return this.actionHandlers.$CurrentPathIsRoot;
   }
 
   async onUpFolder() {

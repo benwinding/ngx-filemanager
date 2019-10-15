@@ -5,7 +5,7 @@ import { Observable, Subject, combineLatest } from 'rxjs';
 import {
   FileManagerConfig} from '../configuration/client-configuration';
 import { CoreTypes } from '../../core-types';
-import { LoggerService } from '../logging/logger.service';
+import { LoggerService } from '../logging';
 import { Tag } from './tags-control.component';
 import { map, tap } from 'rxjs/operators';
 

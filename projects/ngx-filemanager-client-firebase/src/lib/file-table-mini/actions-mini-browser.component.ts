@@ -1,12 +1,12 @@
 import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
-import { ActionButton } from '../actions-toolbars/ActionButton';
-import { of, BehaviorSubject, Observable } from 'rxjs';
+import { ActionButton } from '../actions-toolbars';
+import { of, Observable } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'actions-mini-browser',
   template: `
-    <mat-toolbar>
+    <mat-toolbar *ngIf="this.bulkActions && this.$CurrentPathIsRoot">
       <mat-toolbar-row class="scroll-x">
         <div *ngFor="let action of bulkActions">
           <button

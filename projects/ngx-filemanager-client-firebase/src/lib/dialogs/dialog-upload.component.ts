@@ -1,11 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { LoggerService } from '../logging/logger.service';
-import { NotificationService } from '../notifications/notification.service';
 import { FormControl } from '@angular/forms';
-import { FormFilesConfiguration } from '../file-upload/form-file-firebase/form-file-firebase.component';
-import { Subject, BehaviorSubject } from 'rxjs';
-import { FormArrayFileObject } from '../file-upload/form-file-firebase/FormArrayFileObject';
+import { BehaviorSubject } from 'rxjs';
+import { LoggerService } from '../logging';
+import { NotificationService } from '../notifications';
+import { FormFilesConfiguration, FormArrayFileObject } from '../file-upload';
 
 export interface UploadDialogInterface {
   currentDirectory: string;

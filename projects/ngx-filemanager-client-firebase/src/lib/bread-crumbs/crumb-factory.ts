@@ -1,5 +1,5 @@
 import * as path from 'path-browserify';
-import { EnsureAbsoluteDirectory } from '../utils/path-helpers';
+import { EnsureAbsoluteDirectory } from '../utils';
 
 export interface BreadCrumb {
   label: string;

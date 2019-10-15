@@ -5,9 +5,9 @@ import { Observable, Subject } from 'rxjs';
 import {
   FileManagerConfig,
   NameUid
-} from '../configuration/client-configuration';
+} from '../configuration';
 import { CoreTypes } from '../../core-types';
-import { LoggerService } from '../logging/logger.service';
+import { LoggerService } from '../logging';
 
 export interface PermissionsDialogInterface {
   files: CoreTypes.ResFile[];

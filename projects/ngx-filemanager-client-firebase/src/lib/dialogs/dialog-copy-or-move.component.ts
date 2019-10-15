@@ -1,14 +1,16 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { CoreTypes, FileSystemProvider } from '../../core-types';
-import { LoggerService } from '../logging/logger.service';
+import { CoreTypes } from '../../core-types';
+import { LoggerService } from '../logging';
 import path from 'path-browserify';
-import { EnsureTrailingSlash } from '../utils/path-helpers';
+import { Observable } from 'rxjs';
+import { EnsureTrailingSlash } from '../utils';
+import { ActionHandlersService } from '../file-manager';
 
 export interface CopyDialogInterface {
   files: CoreTypes.ResFile[];
   isCopy: boolean;
-  serverFilesystem: FileSystemProvider;
+  actionHandler: ActionHandlersService;
 }
 
 @Component({
@@ -32,9 +34,10 @@ export interface CopyDialogInterface {
         </ol>
         <div>
           <app-file-table-mini-folder-browser
+            [$CurrentPathIsRoot]="$CurrentPathIsRoot"
             (selectedDirectory)="onClickedItem($event)"
-            [serverFilesystem]="this.serverFilesystem"
-            currentDirectory="/"
+            [actionHandlers]="this.actionHandlers"
+            [currentDirectory]="currentDir"
           >
           </app-file-table-mini-folder-browser>
         </div>
@@ -60,7 +63,9 @@ export class AppDialogCopyComponent {
   copyToPath: string;
   currentDir: string;
   items: CoreTypes.ResFile[];
-  serverFilesystem: FileSystemProvider;
+  actionHandlers: ActionHandlersService;
+
+  $CurrentPathIsRoot: Observable<boolean>;
 
   OkLabel: string;
   OkIcon: string;
@@ -79,7 +84,8 @@ export class AppDialogCopyComponent {
       this.OkLabel = 'Move';
       this.OkIcon = 'forward';
     }
-    this.serverFilesystem = data.serverFilesystem;
+    this.actionHandlers = this.data.actionHandler;
+    this.$CurrentPathIsRoot = this.data.actionHandler.$CurrentPathIsRoot;
     const firstFile = [...this.items].pop();
     this.currentDir = EnsureTrailingSlash(path.dirname(firstFile.fullPath));
   }

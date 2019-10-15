@@ -1,14 +1,16 @@
 import { OnInit, Component, Input } from '@angular/core';
 import { AutoTableConfig } from 'ngx-auto-table/public_api';
 import { take, map, tap } from 'rxjs/operators';
-import { FileManagerConfig } from '../configuration/client-configuration';
 import { Subject, BehaviorSubject } from 'rxjs';
-import { OptimisticFilesystemService } from '../filesystem/optimistic-filesystem.service';
-import { LoggerService } from '../logging/logger.service';
-import { ClientFileSystemService } from '../filesystem/client-filesystem.service';
+import {
+  ClientFileSystemService,
+  OptimisticFilesystemService,
+  FilemanagerStatusService
+} from '../filesystem';
+import { FileSystemProvider, CoreTypes } from '../../core-types';
+import { FileManagerConfig } from '../configuration';
+import { LoggerService } from '../logging';
 import { ActionHandlersService } from './action-handlers.service';
-import { CoreTypes, FileSystemProvider } from '../../core-types';
-import { FilemanagerStatusService } from '../filesystem/status.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -68,14 +70,12 @@ export class NgxFileManagerComponent implements OnInit {
 
   get $hasSending() {
     return this.$status.pipe(
-      map(s => !!s.find(status => status === 'SENDING')),
+      map(s => !!s.find(status => status === 'SENDING'))
     );
   }
 
   get $hasFailed() {
-    return this.$status.pipe(
-      map(s => !!s.find(status => status === 'FAILED')),
-    );
+    return this.$status.pipe(map(s => !!s.find(status => status === 'FAILED')));
   }
 
   async ngOnInit() {
@@ -90,11 +90,16 @@ export class NgxFileManagerComponent implements OnInit {
       );
     }
     if (!this.config.virtualRoot) {
-      console.warn('<ngx-filemanager> warning config.virtualRoot not set, using bucket root "/"');
+      console.warn(
+        '<ngx-filemanager> warning config.virtualRoot not set, using bucket root "/"'
+      );
       this.config.virtualRoot = '/';
     }
     if (!this.config.initialPath) {
-      console.warn('<ngx-filemanager> warning config.initialPath not set, using virtualRoot: ' + this.config.virtualRoot);
+      console.warn(
+        '<ngx-filemanager> warning config.initialPath not set, using virtualRoot: ' +
+          this.config.virtualRoot
+      );
       this.config.initialPath = this.config.virtualRoot;
     }
     await this.actionHandlers.init(this.fileSystem, this.config);

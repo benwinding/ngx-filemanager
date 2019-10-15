@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { OptimisticFilesystem } from './optimistic-filesystem.interface';
 import { ClientFileSystemService } from './client-filesystem.service';
 import { take, takeUntil, debounceTime, tap, switchMap, auditTime } from 'rxjs/operators';
-import { LoggerService } from '../logging/logger.service';
+import { LoggerService } from '../logging';
 import path from 'path-browserify';
 import { NotificationService } from '../notifications/notification.service';
 import { Subject } from 'rxjs';

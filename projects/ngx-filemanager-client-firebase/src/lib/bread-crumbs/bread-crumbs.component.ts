@@ -1,6 +1,6 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
-import { LoggerService } from '../logging/logger.service';
-import { FileManagerConfig } from '../configuration/client-configuration';
+import { LoggerService } from '../logging';
+import { FileManagerConfig } from '../configuration';
 import { crumbFactory, BreadCrumb } from './crumb-factory';
 
 @Component({

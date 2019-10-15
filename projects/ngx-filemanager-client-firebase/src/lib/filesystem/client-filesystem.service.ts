@@ -1,19 +1,20 @@
 import { map, filter } from 'rxjs/operators';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MakeClientDirectory, MakeClientFile } from '../utils/file.factory';
-import { ClientFileSystem } from './client-filesystem.interface';
-import { LoggerService } from '../logging/logger.service';
-import { ClientFileSystemDataStore } from './client-filesystem.datastore';
 import * as path from 'path-browserify';
-import { IconUrlResolverService } from '../utils/icon-url-resolver.service';
 import { CoreTypes } from '../../core-types';
 import {
   Add2ToPathDir,
   EnsureTrailingSlash,
   EnsureNoTrailingSlash,
-  Add2ToPath
-} from '../utils/path-helpers';
+  Add2ToPath,
+  IconUrlResolverService,
+  MakeClientDirectory,
+  MakeClientFile
+} from '../utils';
+import { LoggerService } from '../logging';
+import { ClientFileSystem } from './client-filesystem.interface';
+import { ClientFileSystemDataStore } from './client-filesystem.datastore';
 
 // tslint:disable:member-ordering
 @Injectable()
@@ -58,7 +59,10 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     this.logger.info('client.OnList', { folderPath });
     this.store.SetPath(folderPath);
   }
-  async OnCreateFolder(newPath: string, disableNoClobber?: boolean): Promise<void> {
+  async OnCreateFolder(
+    newPath: string,
+    disableNoClobber?: boolean
+  ): Promise<void> {
     const cwd = path.dirname(newPath);
     const cachedFiles = this.store.GetCached(cwd);
     const newDirPathNoClobber = this.getNextFreeFoldernameRecursively(

@@ -1,6 +1,6 @@
+import { ConsoleLoggerService } from '../logging';
+import { IconUrlResolverService } from '../utils';
 import { ClientFileSystemService } from './client-filesystem.service';
-import { IconUrlResolverService } from '../utils/icon-url-resolver.service';
-import { ConsoleLoggerService } from '../logging/console-logger.service';
 
 function makeTestClient(): ClientFileSystemService {
   let client: ClientFileSystemService;
