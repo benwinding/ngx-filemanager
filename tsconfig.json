@@ -24,9 +24,6 @@
       ],
       "ngx-filemanager-core/*": [
         "./dist/ngx-filemanager-core/*"
-      ],
-      "projects/ngx-filemanager-core/src/*": [
-        "./dist/ngx-filemanager-core/*"
       ]
     }
   }

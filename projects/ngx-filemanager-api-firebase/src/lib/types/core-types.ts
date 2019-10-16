@@ -1,2 +1,2 @@
-import { CoreTypes, FileSystemProvider } from 'projects/ngx-filemanager-core/src/public_api';
+import { CoreTypes, FileSystemProvider } from 'ngx-filemanager-core';
 export { CoreTypes, FileSystemProvider };
