@@ -1,12 +1,12 @@
 import path from 'path-browserify';
 import { CoreTypes, FileSystemProvider } from '../../../core-types';
-import { ConsoleLoggerService } from '../../logging';
+import { ConsoleLoggerService } from '../../logging/console-logger.service';
 import {
   EnsureTrailingSlash,
   Add2ToPathDir,
   Add2ToPath,
   EnsureNoTrailingSlash
-} from '../../utils';
+} from '../../utils/path-helpers';
 import { stubFiles, MakeDir, MakeFile } from './stub-files';
 
 export class FileSystemStub implements FileSystemProvider {

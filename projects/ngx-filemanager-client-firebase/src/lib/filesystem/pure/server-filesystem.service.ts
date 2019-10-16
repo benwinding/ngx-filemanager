@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CoreTypes, FileSystemProvider } from '../../../core-types';
-import { LoggerService } from '../../logging';
-import { FileSystemRequestBuilder } from '../utils';
-import { EnsureNoTrailingSlash } from '../../utils';
+import { LoggerService } from '../../logging/logger.service';
+import { FileSystemRequestBuilder } from './server-filesystem-request';
+import { EnsureNoTrailingSlash } from '../../utils/path-helpers';
 
 @Injectable()
 export class ServerFilesystemProviderService implements FileSystemProvider {

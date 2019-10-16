@@ -2,13 +2,11 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CoreTypes } from '../../core-types';
 import { AutoTableConfig } from 'ngx-auto-table';
 import { Observable } from 'rxjs';
-import { LoggerService } from '../logging';
-import { ActionHandlersService } from '../file-manager';
-import {
-  ClientFileSystemService,
-  OptimisticFilesystemService
-} from '../filesystem';
-import { FileManagerConfig } from '../configuration';
+import { LoggerService } from '../logging/logger.service';
+import { ActionHandlersService } from '../file-manager/action-handlers.service';
+import { FileManagerConfig } from '../configuration/client-configuration';
+import { ClientFileSystemService } from '../filesystem/pure/client-filesystem.service';
+import { OptimisticFilesystemService } from '../filesystem/pure/optimistic-filesystem.service';
 
 @Component({
   // tslint:disable-next-line:component-selector

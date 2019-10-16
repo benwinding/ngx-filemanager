@@ -1,1 +1,1 @@
-export * from './file-table.component';
+// export * from './file-table.component';

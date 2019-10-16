@@ -3,26 +3,30 @@ import { MatDialog } from '@angular/material';
 import { take, map } from 'rxjs/operators';
 import path from 'path-browserify';
 import { FileSystemProvider, CoreTypes } from '../../core-types';
-import { LoggerService } from '../logging';
-import { NotificationService } from '../notifications';
+import { LoggerService } from '../logging/logger.service';
 import {
   RenameDialogInterface,
-  AppDialogRenameComponent,
+  AppDialogRenameComponent
+} from '../dialogs/dialog-rename.component';
+import {
   CopyDialogInterface,
-  AppDialogCopyComponent,
+  AppDialogCopyComponent
+} from '../dialogs/dialog-copy-or-move.component';
+import {
   PermissionsObjectDialogInterface,
   PermissionsObjectDialogResponseInterface,
-  AppDialogPermissionsSetObjectComponent,
+  AppDialogPermissionsSetObjectComponent
+} from '../dialogs/dialog-permissions-setobject.component';
+import {
   UploadDialogInterface,
   UploadDialogResponseInterface,
-  AppDialogUploadFilesComponent,
-  AppDialogNewFolderComponent
-} from '../dialogs';
-import { FileManagerConfig } from '../configuration';
-import {
-  ClientFileSystemService,
-  OptimisticFilesystemService
-} from '../filesystem';
+  AppDialogUploadFilesComponent
+} from '../dialogs/dialog-upload.component';
+import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
+import { FileManagerConfig } from '../configuration/client-configuration';
+import { ClientFileSystemService } from '../filesystem/pure/client-filesystem.service';
+import { OptimisticFilesystemService } from '../filesystem/pure/optimistic-filesystem.service';
+import { NotificationService } from '../notifications/notification.service';
 
 @Injectable()
 export class ActionHandlersService {
@@ -306,7 +310,7 @@ export class ActionHandlersService {
       this.optimisticFs.CloneProvider(),
       this.dialog,
       this.logger,
-      this.notifications,
+      this.notifications
     );
     await cloned.init(this.fileSystem, this.config);
     return cloned;

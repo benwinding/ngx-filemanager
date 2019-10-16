@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { getFileIconName } from '../file-upload';
 import { FileSystemProvider, CoreTypes } from '../../core-types';
-import { promiseDelay } from '../utils';
-import { LoggerService } from '../logging';
+import { promiseDelay } from '../utils/delayer';
+import { LoggerService } from '../logging/logger.service';
+import { getFileIconName } from '../file-upload/form-file-firebase/file-icon.helper';
 
 @Component({
   // tslint:disable-next-line:component-selector

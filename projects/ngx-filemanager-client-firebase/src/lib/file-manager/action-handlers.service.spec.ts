@@ -3,16 +3,15 @@ import { TestBed } from '@angular/core/testing';
 import { PlatformLocation, APP_BASE_HREF } from '@angular/common';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  ServerFilesystemProviderService,
-  ClientFileSystemService,
-  OptimisticFilesystemService
-} from '../filesystem';
-import { NotificationService } from '../notifications';
-import { getBaseHref } from '../../public_api';
-import { LoggerService, ConsoleLoggerService } from '../logging';
-import { IconUrlResolverService } from '../utils';
-import { FileManagerConfig } from '../configuration';
+import { NotificationService } from '../notifications/notification.service';
+import { getBaseHref } from '../getBaseHref';
+import { LoggerService } from '../logging/logger.service';
+import { ConsoleLoggerService } from '../logging/console-logger.service';
+import { IconUrlResolverService } from '../utils/icon-url-resolver.service';
+import { ClientFileSystemService } from '../filesystem/pure/client-filesystem.service';
+import { OptimisticFilesystemService } from '../filesystem/pure/optimistic-filesystem.service';
+import { ServerFilesystemProviderService } from '../filesystem/pure/server-filesystem.service';
+import { FileManagerConfig } from '../configuration/client-configuration';
 
 class SnackStub {
   notify(msg: string, title?: string, isError?: boolean) {}

@@ -1,16 +1,14 @@
 import { OnInit, Component, Input } from '@angular/core';
-import { AutoTableConfig } from 'ngx-auto-table/public_api';
-import { take, map, tap } from 'rxjs/operators';
+import { take, map } from 'rxjs/operators';
 import { Subject, BehaviorSubject } from 'rxjs';
-import {
-  ClientFileSystemService,
-  OptimisticFilesystemService,
-  FilemanagerStatusService
-} from '../filesystem';
 import { FileSystemProvider, CoreTypes } from '../../core-types';
-import { FileManagerConfig } from '../configuration';
-import { LoggerService } from '../logging';
+import { LoggerService } from '../logging/logger.service';
 import { ActionHandlersService } from './action-handlers.service';
+import { AutoTableConfig } from 'ngx-auto-table';
+import { ClientFileSystemService } from '../filesystem/pure/client-filesystem.service';
+import { OptimisticFilesystemService } from '../filesystem/pure/optimistic-filesystem.service';
+import { FileManagerConfig } from '../configuration/client-configuration';
+import { FilemanagerStatusService } from '../filesystem/state/status.service';
 
 @Component({
   // tslint:disable-next-line:component-selector

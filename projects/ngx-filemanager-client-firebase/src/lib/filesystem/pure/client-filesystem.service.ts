@@ -7,14 +7,13 @@ import {
   Add2ToPathDir,
   EnsureTrailingSlash,
   EnsureNoTrailingSlash,
-  Add2ToPath,
-  IconUrlResolverService,
-  MakeClientDirectory,
-  MakeClientFile
-} from '../../utils';
-import { LoggerService } from '../../logging';
+  Add2ToPath
+} from '../../utils/path-helpers';
+import { LoggerService } from '../../logging/logger.service';
 import { ClientFileSystem } from './client-filesystem.interface';
-import { ClientFileSystemDataStore } from '../state';
+import { ClientFileSystemDataStore } from '../state/client-filesystem.datastore';
+import { IconUrlResolverService } from '../../utils/icon-url-resolver.service';
+import { MakeClientDirectory, MakeClientFile } from '../../utils/file.factory';
 
 // tslint:disable:member-ordering
 @Injectable()
