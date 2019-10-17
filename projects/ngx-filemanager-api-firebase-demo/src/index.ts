@@ -15,7 +15,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as any)
 });
 
-import { FileManagerEndpointExpress } from 'ngx-filemanager-api-firebase';
+import { FileManagerEndpointExpress } from '../../ngx-filemanager-api-firebase/src/public_api';
 // app.use(HasBearerToken);
 app.use('/filebrowser/', FileManagerEndpointExpress({
   logging: true,

@@ -1,21 +1,18 @@
 {
   "version": "0.2.0",
   "configurations": [
-
     {
-      "name": "Launch TypeScript",
+      "name": "Launch API Demo index.ts",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/projects/ngx-filemanager-api-firebase-demo/src/index.ts",
-      "outFiles": [ "${workspaceFolder}/dist/**/*.js" ]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Debug Node Api Demo",
-      // "webRoot": "${workspaceFolder}/projects/ngx-filemanager-api-firebase-demo/src",
-      "program": "${workspaceFolder}/dist/ngx-filemanager-api-firebase-demo/main.js",
-      "stopOnEntry": false,
+      "env": { "TS_NODE_PROJECT": "${workspaceFolder}/projects/ngx-filemanager-api-firebase-demo/tsconfig.lib.json" },
+      "runtimeArgs": [
+          "-r",
+          "ts-node/register"
+      ],
+      "args": [
+          "${workspaceFolder}/projects/ngx-filemanager-api-firebase-demo/src/index.ts"
+      ],
       "sourceMaps": true
     },
     {
