@@ -23,19 +23,28 @@ export async function CreateFolderWithoutPermissions(
 
 export async function GetNextFreeFoldername(
   bucket: Bucket,
-  inputDir: File
+  targetChildDir: File
 ): Promise<File> {
-  const dirNameNoSuffix = paths.GetParentDir(inputDir.name);
+  const parentDirectory = paths.GetParentDir(targetChildDir.name);
   const childrenMatching = await storage.GetListWithoutPermissions(
     bucket,
-    dirNameNoSuffix
+    parentDirectory
   );
-  if (!childrenMatching || !childrenMatching.length) {
-    return inputDir;
+  const isEmptyParent = !childrenMatching || !childrenMatching.length;
+  if (isEmptyParent) {
+    return targetChildDir;
   }
-  const matchingNames = childrenMatching.map(f => f.fullPath).sort();
-  const lastMatch = matchingNames.shift();
-  const nextPath = paths.Add2ToPathDir(lastMatch);
+  const childrenMatchingPaths = childrenMatching.map(f =>
+    paths.EnsureGoogleStoragePathDir(f.fullPath)
+  );
+  const targetFolderPath = paths.EnsureGoogleStoragePathDir(targetChildDir.name);
+  const folderExists = childrenMatchingPaths.some(
+    path => path === targetFolderPath
+  );
+  if (!folderExists) {
+    return targetChildDir;
+  }
+  const nextPath = paths.Add2ToPathDir(targetFolderPath);
   const nextFreeFile = bucket.file(nextPath);
   return nextFreeFile;
 }

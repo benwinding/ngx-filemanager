@@ -71,7 +71,7 @@ test('test create duplicate folder', async () => {
   await testHelper.removeDir(testBucket, parentDir);
 }, 60000);
 
-test('should create folder(2) to protect from phantom directory', async () => {
+test('should create "phantom (2)" to protect from phantom directory', async () => {
   const testBucket = testHelper.getBucket();
   // Make parent directory
   const parentDir = 'createFolder.spec.ts/test5';
