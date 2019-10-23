@@ -39,7 +39,12 @@ export class NgxFileMangerApiFireBaseClass {
     try {
       await CheckHasBodyProp(body, 'path');
       const bucket = await this.getBucket(body.bucketname);
-      const resFiles = await commands.GetList(bucket, body.path, claims);
+      const resFiles = await commands.GetList(
+        bucket,
+        body.path,
+        claims,
+        body.isAdmin
+      );
       const response: CoreTypes.ResBodyList = {
         result: resFiles
       };
@@ -207,7 +212,7 @@ export class NgxFileMangerApiFireBaseClass {
 
   async HandleCreateFolder(
     body: CoreTypes.ReqBodyCreateFolder,
-    claims: CoreTypes.UserCustomClaims,
+    claims: CoreTypes.UserCustomClaims
   ): Promise<CoreTypes.ResBodyCreateFolder> {
     try {
       await CheckHasBodyProp(body, 'newPath');

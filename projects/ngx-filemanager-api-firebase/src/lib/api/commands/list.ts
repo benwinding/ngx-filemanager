@@ -7,13 +7,17 @@ import { storage } from '../../utils/storage-helper';
 export async function GetList(
   bucket: Bucket,
   inputDirectoryPath: string,
-  claims: CoreTypes.UserCustomClaims
+  claims: CoreTypes.UserCustomClaims,
+  isAdmin?: boolean
 ): Promise<CoreTypes.ResFile[]> {
   try {
     const resFiles = await storage.GetListWithoutPermissions(
       bucket,
       inputDirectoryPath
     );
+    if (isAdmin) {
+      return resFiles;
+    }
     const filesAllowed = resFiles.filter(f => {
       return perms.queries.TryCheckFileAccess(f.permissions, claims, 'read');
     });

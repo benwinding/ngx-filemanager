@@ -2,6 +2,7 @@ export namespace CoreTypes {
   export interface ReqBodyAction {
     action: FileManagerAction;
     bucketname: string;
+    isAdmin?: boolean;
   }
 
   export interface ResultObj {

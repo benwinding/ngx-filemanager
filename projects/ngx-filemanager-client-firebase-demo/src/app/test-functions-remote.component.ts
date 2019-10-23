@@ -129,7 +129,8 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     const bucketName = this.bucketName.value;
     this.serverFilesystemProvider.Initialize({
       bucketname: bucketName,
-      apiEndpoint: this.apiEndpoint.value
+      apiEndpoint: this.apiEndpoint.value,
+      isAdmin: true
     });
     this.config.virtualRoot = this.virtualRoot.value;
     this.config.bucketName = this.bucketName.value;

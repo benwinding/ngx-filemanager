@@ -32,7 +32,8 @@ export class AppTestFunctionsLocallyComponent {
     //   'http://localhost:8010/communitilink-r3/us-central1/ApiPublic/files';
     this.firebaseClientProvider.Initialize({
       bucketname: bucketName,
-      apiEndpoint: apiEndpoint
+      apiEndpoint: apiEndpoint,
+      isAdmin: true
     });
   }
 }

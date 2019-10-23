@@ -9,6 +9,7 @@ import { EnsureNoTrailingSlash } from '../../utils/path-helpers';
 export class ServerFilesystemProviderService implements FileSystemProvider {
   private bucketname: string;
   private apiEndpoint: string;
+  private isAdmin: boolean;
 
   constructor(private http: HttpClient, private logger: LoggerService) {}
 
@@ -16,15 +17,18 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     this.logger.info('makeAPIRequest', { action, context: this });
     return new FileSystemRequestBuilder(this.http, this.apiEndpoint).AddBody({
       action: action,
-      bucketname: this.bucketname
+      bucketname: this.bucketname,
+      isAdmin: this.isAdmin
     });
   }
 
   Initialize(config: {
     bucketname: string;
     apiEndpoint: string;
+    isAdmin: boolean;
   }) {
     this.bucketname = config.bucketname;
+    this.isAdmin = config.isAdmin;
     this.apiEndpoint = EnsureNoTrailingSlash(config.apiEndpoint);
   }
 
