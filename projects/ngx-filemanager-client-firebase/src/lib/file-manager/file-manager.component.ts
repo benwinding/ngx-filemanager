@@ -175,7 +175,7 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
         this.logger.info('onSelectItem!', { item });
         return this.actionHandlers.OnSelectItemByPath(item.fullPath);
       },
-      $triggerSelectItem: this.$SelectedFile,
+      $triggerSelectItem: this.actionHandlers.$SelectedFile,
       $triggerClearSelected: this.$triggerClearSelected,
       filterText: 'Search here...',
       hideChooseColumns: true,
