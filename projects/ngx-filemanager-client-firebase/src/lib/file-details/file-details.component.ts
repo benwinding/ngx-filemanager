@@ -60,32 +60,40 @@ import { FileManagerConfig } from '../configuration/client-configuration';
           </button>
         </span>
         <div class="ml-10 -mt-25 mb-10">
-          <h6 *ngIf="readers?.length">Who can see this</h6>
-          <mat-chip-list>
-            <mat-chip *ngFor="let entity of readers">
-              <mat-icon>people</mat-icon>
-              <span>{{ entity }}</span>
-            </mat-chip>
-          </mat-chip-list>
-          <h6 *ngIf="config?.showWriters && writers?.length">Who can edit this</h6>
-          <mat-chip-list>
-            <mat-chip *ngFor="let entity of writers">
-              <mat-icon>people</mat-icon>
-              <span>{{ entity }}</span>
-            </mat-chip>
-          </mat-chip-list>
-          <h6 *ngIf="config?.showOthers && others">Everyone else can</h6>
-          <mat-chip-list>
-            <mat-chip>
-              {{ others }}
-            </mat-chip>
-          </mat-chip-list>
+          <div *ngIf="readers?.length">
+            <h6>Who can see this</h6>
+            <mat-chip-list>
+              <mat-chip *ngFor="let entity of readers">
+                <mat-icon>people</mat-icon>
+                <span>{{ entity }}</span>
+              </mat-chip>
+            </mat-chip-list>
+          </div>
+          <div *ngIf="config?.showWriters && writers?.length">
+            <h6>Who can edit this</h6>
+            <mat-chip-list>
+              <mat-chip *ngFor="let entity of writers">
+                <mat-icon>people</mat-icon>
+                <span>{{ entity }}</span>
+              </mat-chip>
+            </mat-chip-list>
+          </div>
+          <div *ngIf="config?.showOthers && others">
+            <h6>Everyone else can</h6>
+            <mat-chip-list>
+              <mat-chip>
+                {{ others }}
+              </mat-chip>
+            </mat-chip-list>
+          </div>
         </div>
         <h5 class="mt-5">Full Path</h5>
         <h6 class="ml-10">{{ file.fullPath }}</h6>
         <h5 class="mt-5">Type</h5>
         <h6 *ngIf="!isFile" class="ml-10">Directory</h6>
-        <h6 *ngIf="isFile" class="capitalize ml-10">{{ getFileType(file.name) }}</h6>
+        <h6 *ngIf="isFile" class="capitalize ml-10">
+          {{ getFileType(file.name) }}
+        </h6>
         <div *ngIf="isFile" class="flex-row space-between align-top">
           <h5 class="mt-5">Download</h5>
           <button

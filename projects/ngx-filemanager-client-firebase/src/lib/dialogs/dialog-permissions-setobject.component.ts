@@ -2,8 +2,7 @@ import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { Observable, Subject, combineLatest } from 'rxjs';
-import {
-  FileManagerConfig} from '../configuration/client-configuration';
+import { FileManagerConfig } from '../configuration/client-configuration';
 import { CoreTypes } from '../../core-types';
 import { LoggerService } from '../logging/logger.service';
 import { Tag } from './tags-control.component';
@@ -42,38 +41,41 @@ export interface PermissionsObjectDialogResponseInterface {
           </mat-chip>
         </mat-chip-list>
 
-        <h5 class="my-5">Anyone's Permissions</h5>
-        <mat-form-field class="full-width">
-          <mat-select
-            matInput
-            [formControl]="othersControl"
+        <div>
+          <h5 class="my-5">Who can see this</h5>
+          <app-control-tag-multiple
+            class="full-width -mt-15"
+            [control]="allReadersControl"
+            [selectChoices$]="$allEntities"
+            [allowCustom]="false"
           >
-            <mat-option
-              *ngFor="let permission of othersOptions"
-              [value]="permission"
-            >
-              {{ permission }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+          </app-control-tag-multiple>
+        </div>
 
-        <h5 class="my-5">Read Permissions</h5>
-        <app-control-tag-multiple
-          class="full-width -mt-15"
-          [control]="allReadersControl"
-          [selectChoices$]="$allEntities"
-          [allowCustom]="false"
-        >
-        </app-control-tag-multiple>
+        <div *ngIf="config?.showWriters">
+          <h5 class="my-5">Who can edit this</h5>
+          <app-control-tag-multiple
+            class="full-width -mt-15"
+            [control]="allWritersControl"
+            [selectChoices$]="$allEntities"
+            [allowCustom]="false"
+          >
+          </app-control-tag-multiple>
+        </div>
 
-        <h5 class="my-5">Write Permissions</h5>
-        <app-control-tag-multiple
-          class="full-width -mt-15"
-          [control]="allWritersControl"
-          [selectChoices$]="$allEntities"
-          [allowCustom]="false"
-        >
-        </app-control-tag-multiple>
+        <div *ngIf="config?.showOthers">
+          <h5 class="my-5">Everyone else can</h5>
+          <mat-form-field class="full-width">
+            <mat-select matInput [formControl]="othersControl">
+              <mat-option
+                *ngFor="let permission of othersOptions"
+                [value]="permission"
+              >
+                {{ permission }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       </ng-template>
 
       <ng-template #actionsTemplate>
@@ -118,6 +120,7 @@ export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
   $allEntities: Observable<Tag[]>;
 
   destroyed = new Subject();
+  config: FileManagerConfig;
 
   constructor(
     private logger: LoggerService,
@@ -126,8 +129,9 @@ export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
   ) {
     this.logger.info('Initializing setobject dialog', { data });
     this.items = data.files;
-    const users$ = data.config.users;
-    const groups$ = data.config.groups;
+    this.config = data.config;
+    const users$ = this.config.users;
+    const groups$ = this.config.groups;
     this.$allEntities = combineLatest([groups$, users$]).pipe(
       tap(allEntities => this.logger.info('allEntities', { allEntities })),
       map(arr => arr[0].concat(arr[1])),

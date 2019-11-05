@@ -20,6 +20,7 @@ export class AppTestStubFilesystemComponent {
   public config: FileManagerConfig = {
     virtualRoot: '/subfolder',
     bucketName: '',
+    isAdmin: true,
     firebaseConfig: {},
     users: $users,
     groups: $groups
