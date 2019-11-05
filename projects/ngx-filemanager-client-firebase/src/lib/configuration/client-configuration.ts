@@ -19,4 +19,7 @@ export interface FileManagerConfig {
   users?: Observable<NameUid[]>;
   groups?: Observable<NameUid[]>;
   me?: Observable<NameUid>;
+
+  showWriters?: boolean;
+  showOthers?: boolean;
 }

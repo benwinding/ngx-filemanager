@@ -79,6 +79,7 @@
         [isAdmin]="config.isAdmin"
         [file]="$SelectedFile | async"
         [fileSystem]="fileSystem"
+        [config]="config"
         (clickedDelete)="this.onDetailsClickDelete($event)"
         (clickedDownload)="this.onDetailsClickDownload($event)"
         (clickedRename)="this.onDetailsClickRename($event)"

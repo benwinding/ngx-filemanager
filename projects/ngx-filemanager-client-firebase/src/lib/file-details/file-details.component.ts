@@ -3,6 +3,7 @@ import { FileSystemProvider, CoreTypes } from '../../core-types';
 import { promiseDelay } from '../utils/delayer';
 import { LoggerService } from '../logging/logger.service';
 import { getFileIconName } from '../file-upload/form-file-firebase/file-icon.helper';
+import { FileManagerConfig } from '../configuration/client-configuration';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -59,22 +60,24 @@ import { getFileIconName } from '../file-upload/form-file-firebase/file-icon.hel
           </button>
         </span>
         <div class="ml-10 -mt-25 mb-10">
-          <h6 *ngIf="others">Anyone Can</h6>
+          <h6 *ngIf="readers?.length">Who can see this</h6>
+          <mat-chip-list>
+            <mat-chip *ngFor="let entity of readers">
+              <mat-icon>people</mat-icon>
+              <span>{{ entity }}</span>
+            </mat-chip>
+          </mat-chip-list>
+          <h6 *ngIf="config?.showWriters && writers?.length">Who can edit this</h6>
+          <mat-chip-list>
+            <mat-chip *ngFor="let entity of writers">
+              <mat-icon>people</mat-icon>
+              <span>{{ entity }}</span>
+            </mat-chip>
+          </mat-chip-list>
+          <h6 *ngIf="config?.showOthers && others">Everyone else can</h6>
           <mat-chip-list>
             <mat-chip>
               {{ others }}
-            </mat-chip>
-          </mat-chip-list>
-          <h6 *ngIf="readers?.length">Readers</h6>
-          <mat-chip-list>
-            <mat-chip *ngFor="let entity of readers">
-              {{ entity }}
-            </mat-chip>
-          </mat-chip-list>
-          <h6 *ngIf="writers?.length">Writers</h6>
-          <mat-chip-list>
-            <mat-chip *ngFor="let entity of writers">
-              {{ entity }}
             </mat-chip>
           </mat-chip-list>
         </div>
@@ -185,6 +188,8 @@ export class FileDetailsComponent {
   isAdmin: boolean;
   @Input()
   fileSystem: FileSystemProvider;
+  @Input()
+  config: FileManagerConfig;
   @Output()
   clickedDownload = new EventEmitter<CoreTypes.ResFile>();
   @Output()
