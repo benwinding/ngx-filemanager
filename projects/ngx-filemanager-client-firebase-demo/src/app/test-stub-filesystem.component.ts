@@ -27,6 +27,6 @@ export class AppTestStubFilesystemComponent {
   };
 
   constructor() {
-    this.blankFileSystem.setFakeDelay(2000);
+    this.blankFileSystem.setFakeDelay(20);
   }
 }

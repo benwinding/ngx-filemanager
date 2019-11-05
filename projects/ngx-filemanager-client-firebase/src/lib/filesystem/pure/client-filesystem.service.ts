@@ -1,4 +1,4 @@
-import { map, filter } from 'rxjs/operators';
+import { map, filter, take } from 'rxjs/operators';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as path from 'path-browserify';
@@ -125,7 +125,13 @@ export class ClientFileSystemService implements ClientFileSystem, OnDestroy {
     items: string[],
     permissionsObj: CoreTypes.FilePermissionsObject,
     recursive?: boolean
-  ): Promise<void> {}
+  ): Promise<void> {
+    const currentFile = await this.$selectedFile.pipe(take(1)).toPromise();
+    if (items.includes(currentFile.fullPath)) {
+      currentFile.permissions = permissionsObj;
+      this.store.SelectFile(currentFile);
+    }
+  }
   async OnRemove(items: string[]): Promise<void> {
     return this.removeMultiple(items);
   }

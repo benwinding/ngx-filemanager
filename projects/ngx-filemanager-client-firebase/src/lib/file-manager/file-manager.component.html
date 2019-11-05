@@ -77,7 +77,7 @@
     >
       <ngx-filemanager-file-details
         [isAdmin]="config.isAdmin"
-        [file]="$SelectedFile | async"
+        [file]="SelectedFile"
         [fileSystem]="fileSystem"
         [config]="config"
         (clickedDelete)="this.onDetailsClickDelete($event)"

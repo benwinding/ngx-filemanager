@@ -1,6 +1,6 @@
-import { OnInit, Component, Input } from '@angular/core';
-import { take, map } from 'rxjs/operators';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { OnInit, Component, Input, OnDestroy } from '@angular/core';
+import { take, map, takeUntil, tap } from 'rxjs/operators';
+import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { FileSystemProvider, CoreTypes } from '../../core-types';
 import { LoggerService } from '../logging/logger.service';
 import { ActionHandlersService } from './action-handlers.service';
@@ -21,7 +21,7 @@ import { FilemanagerStatusService } from '../filesystem/state/status.service';
     OptimisticFilesystemService
   ]
 })
-export class NgxFileManagerComponent implements OnInit {
+export class NgxFileManagerComponent implements OnInit, OnDestroy {
   @Input()
   fileSystem: FileSystemProvider;
   @Input()
@@ -36,6 +36,12 @@ export class NgxFileManagerComponent implements OnInit {
   public initLoaded;
   public requestMap;
 
+  $CurrentPath: Observable<string>;
+  $CurrentPathIsRoot: Observable<boolean>;
+  SelectedFile: CoreTypes.ResFile;
+
+  destroyed = new Subject();
+
   constructor(
     private actionHandlers: ActionHandlersService,
     private logger: LoggerService,
@@ -45,18 +51,6 @@ export class NgxFileManagerComponent implements OnInit {
   }
 
   // Getters
-
-  get $CurrentPath() {
-    return this.actionHandlers.$CurrentPath;
-  }
-
-  get $CurrentPathIsRoot() {
-    return this.actionHandlers.$CurrentPathIsRoot;
-  }
-
-  get $SelectedFile() {
-    return this.actionHandlers.$SelectedFile;
-  }
 
   get $status() {
     return this.status.ActiveRequestsMap.pipe(
@@ -102,8 +96,21 @@ export class NgxFileManagerComponent implements OnInit {
     }
     await this.actionHandlers.init(this.fileSystem, this.config);
     await this.actionHandlers.OnNavigateTo(this.config.virtualRoot);
+    this.$CurrentPath = this.actionHandlers.$CurrentPath;
+    this.$CurrentPathIsRoot = this.actionHandlers.$CurrentPathIsRoot;
+    this.actionHandlers.$SelectedFile.pipe(takeUntil(this.destroyed), tap(selectedFile => {
+      console.log('this.$SelectedFile.pipe', { selectedFile });
+      this.SelectedFile = null;
+      setTimeout(() => {
+        this.SelectedFile = selectedFile;
+      });
+    })).subscribe();
     this.makeConfig();
     this.initLoaded = true;
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next();
   }
 
   makeConfig() {
