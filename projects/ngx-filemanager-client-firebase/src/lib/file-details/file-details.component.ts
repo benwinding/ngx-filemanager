@@ -29,9 +29,11 @@ import { FileManagerConfig } from '../configuration/client-configuration';
             </button>
           </span>
         </span>
-        <h5 class="mt-5">Name</h5>
-        <span class="ml-10 flex-row space-between align-center">
-          <h6 class="filename">{{ file.name }}</h6>
+        <span class="flex-row space-between align-top mt-5">
+          <div>
+            <h5>Name</h5>
+            <h6 class="filename">{{ file.name }}</h6>
+          </div>
           <button
             mat-mini-fab
             color="primary"
@@ -43,11 +45,41 @@ import { FileManagerConfig } from '../configuration/client-configuration';
           </button>
         </span>
         <h5 class="mt-5">Size</h5>
-        <h6 class="ml-10">{{ file.size | fileSize }}</h6>
+        <h6>{{ file.size | fileSize }}</h6>
         <h5 class="mt-5">Date</h5>
-        <h6 class="ml-10">{{ file.date | date: 'short' }}</h6>
-        <span class="flex-row space-between align-top">
-          <h5 class="mt-5">Permissions</h5>
+        <h6>{{ file.date | date: 'short' }}</h6>
+        <span class="flex-row space-between align-top mt-5">
+          <div>
+            <h5>Permissions</h5>
+            <div class="mb-10">
+              <div *ngIf="readers?.length">
+                <h6>Who can see this</h6>
+                <mat-chip-list>
+                  <mat-chip *ngFor="let entity of readers">
+                    <mat-icon>people</mat-icon>
+                    <span>{{ entity }}</span>
+                  </mat-chip>
+                </mat-chip-list>
+              </div>
+              <div *ngIf="config?.showWriters && writers?.length">
+                <h6>Who can edit this</h6>
+                <mat-chip-list>
+                  <mat-chip *ngFor="let entity of writers">
+                    <mat-icon>people</mat-icon>
+                    <span>{{ entity }}</span>
+                  </mat-chip>
+                </mat-chip-list>
+              </div>
+              <div *ngIf="config?.showOthers && others">
+                <h6>Everyone else can</h6>
+                <mat-chip-list>
+                  <mat-chip>
+                    {{ others }}
+                  </mat-chip>
+                </mat-chip-list>
+              </div>
+            </div>
+          </div>
           <button
             mat-mini-fab
             color="primary"
@@ -59,43 +91,31 @@ import { FileManagerConfig } from '../configuration/client-configuration';
             <mat-icon>lock_outline</mat-icon>
           </button>
         </span>
-        <div class="ml-10 -mt-25 mb-10">
-          <div *ngIf="readers?.length">
-            <h6>Who can see this</h6>
-            <mat-chip-list>
-              <mat-chip *ngFor="let entity of readers">
-                <mat-icon>people</mat-icon>
-                <span>{{ entity }}</span>
-              </mat-chip>
-            </mat-chip-list>
-          </div>
-          <div *ngIf="config?.showWriters && writers?.length">
-            <h6>Who can edit this</h6>
-            <mat-chip-list>
-              <mat-chip *ngFor="let entity of writers">
-                <mat-icon>people</mat-icon>
-                <span>{{ entity }}</span>
-              </mat-chip>
-            </mat-chip-list>
-          </div>
-          <div *ngIf="config?.showOthers && others">
-            <h6>Everyone else can</h6>
-            <mat-chip-list>
-              <mat-chip>
-                {{ others }}
-              </mat-chip>
-            </mat-chip-list>
-          </div>
-        </div>
         <h5 class="mt-5">Full Path</h5>
-        <h6 class="ml-10">{{ file.fullPath }}</h6>
+        <h6>{{ file.fullPath }}</h6>
         <h5 class="mt-5">Type</h5>
-        <h6 *ngIf="!isFile" class="ml-10">Directory</h6>
-        <h6 *ngIf="isFile" class="capitalize ml-10">
+        <h6 *ngIf="!isFile">Directory</h6>
+        <h6 *ngIf="isFile" class="capitalize ">
           {{ getFileType(file.name) }}
         </h6>
-        <div *ngIf="isFile" class="flex-row space-between align-top">
-          <h5 class="mt-5">Download</h5>
+        <div *ngIf="isFile" class="flex-row space-between align-top mt-5">
+          <div>
+            <h5>Download</h5>
+            <div *ngIf="isImage" class="preview">
+              <i>Image Preview</i>
+              <div
+                class="has-pointer"
+                (click)="this.clickedDownload.emit(file)"
+              >
+                <img *ngIf="imageUrl" [src]="imageUrl" />
+              </div>
+            </div>
+            <div *ngIf="!isImage">
+              <h6 class="no-preview-text">
+                No preview available
+              </h6>
+            </div>
+          </div>
           <button
             mat-mini-fab
             color="primary"
@@ -106,23 +126,12 @@ import { FileManagerConfig } from '../configuration/client-configuration';
             <mat-icon>file_download</mat-icon>
           </button>
         </div>
-        <div
-          *ngIf="isFile"
-          class="preview"
-          [class.hidden]="!(isImage && imageUrl)"
-        >
-          <h5>Preview</h5>
-          <div class="has-pointer" (click)="this.clickedDownload.emit(file)">
-            <img *ngIf="imageUrl" [src]="imageUrl" />
-          </div>
-        </div>
       </div>
     </div>
   `,
   styles: [
     `
       .filename {
-        margin: 0px;
         padding-right: 10px;
       }
       .none-selected {
@@ -131,9 +140,6 @@ import { FileManagerConfig } from '../configuration/client-configuration';
         width: 100%;
         margin-top: 100px;
       }
-      .ml-10 {
-        margin-left: 10px;
-      }
       .mb-10 {
         margin-bottom: 10px;
       }
@@ -141,17 +147,24 @@ import { FileManagerConfig } from '../configuration/client-configuration';
         margin-top: -25px;
       }
       .mt-5 {
-        margin-top: 5px;
+        margin-top: 10px;
+      }
+      .no-preview-text {
+        color: grey;
+        font-decoration: italic;
       }
       mat-chip,
       span,
       h2,
       h5,
+      i,
       h6 {
         font-family: sans-serif;
       }
       h5 {
         margin: 0px;
+        color: #616161;
+        font-weight: normal;
       }
       h6 {
         margin: 0px;
@@ -159,7 +172,7 @@ import { FileManagerConfig } from '../configuration/client-configuration';
         overflow-wrap: break-word;
         font-weight: normal;
         margin-bottom: 5px;
-        margin-top: 5px;
+        margin-top: 2px;
       }
       img {
         max-width: 100%;

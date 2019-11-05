@@ -39,6 +39,7 @@ export const stubFiles = [
   MakeDir('/emptyFolder/'),
   MakeDir('/subfolder/'),
   MakeFile('/subfolder/file.txt'),
+  MakeFile('/subfolder/file.png'),
 
   MakeDir('/subfolder/sub1/'),
   MakeFile('/subfolder/sub1/file.txt'),
