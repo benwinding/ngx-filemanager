@@ -1,0 +1,161 @@
+import {
+  Component,
+  Input,
+  OnInit,
+  Output,
+  EventEmitter,
+  OnDestroy
+} from '@angular/core';
+import { ActionDefinition } from 'ngx-auto-table';
+import { CoreTypes } from '../../../core-types';
+import { Subject, Observable } from 'rxjs';
+import { SelectionModel } from '@angular/cdk/collections';
+import { takeUntil } from 'rxjs/operators';
+
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'app-file-table',
+  template: `
+    <div class="full-width">
+      <div class="flex-row align-center">
+        <mat-icon
+          *ngIf="!areAllFoldersChecked"
+          class="has-pointer color-white color-grey-hover"
+          (click)="onCheckAllFolders()"
+          >check_box_outline_blank</mat-icon
+        >
+        <mat-icon
+          *ngIf="areAllFoldersChecked"
+          class="has-pointer color-black color-grey-hover"
+          (click)="onUnCheckAllFolders()"
+          >check_box_outline</mat-icon
+        >
+        <h4 class="p5 m0 color-grey">Folders</h4>
+      </div>
+      <div class="flex-col">
+        <card-folder
+          *ngFor="let folder of folders"
+          [folder]="folder"
+          [checkedItems]="checkedItems"
+          [selectedItem]="selectedItem"
+          [actions]="folderActions"
+          (enterFolder)="enterFolder.emit($event)"
+        >
+        </card-folder>
+      </div>
+      <div class="flex-row align-center">
+        <mat-icon
+          *ngIf="!areAllFilesChecked"
+          class="has-pointer color-white color-grey-hover"
+          (click)="onCheckAllFiles()"
+          >check_box_outline_blank</mat-icon
+        >
+        <mat-icon
+          *ngIf="areAllFilesChecked"
+          class="has-pointer color-black color-grey-hover"
+          (click)="onUnCheckAllFiles()"
+          >check_box_outline</mat-icon
+        >
+        <h4 class="p5 m0 color-grey">Files</h4>
+      </div>
+      <div class="flex-col">
+        <card-file
+          *ngFor="let file of files"
+          [file]="file"
+          [checkedItems]="checkedItems"
+          [selectedItem]="selectedItem"
+          [actions]="fileActions"
+        >
+        </card-file>
+      </div>
+    </div>
+  `,
+  styleUrls: ['../shared-utility-styles.scss']
+})
+export class AppFileTableComponent implements OnInit, OnDestroy {
+  checkedItems = new SelectionModel<string>(true);
+  selectedItem = new SelectionModel<string>(false);
+
+  clearSelected = new Subject();
+
+  @Input()
+  $triggerClearSelected: Observable<void>;
+  @Input()
+  fileActions: ActionDefinition<CoreTypes.ResFile>[];
+  @Input()
+  folderActions: ActionDefinition<CoreTypes.ResFile>[];
+  @Input()
+  files: CoreTypes.ResFile[];
+  @Input()
+  folders: CoreTypes.ResFile[];
+  @Output()
+  checkedChanged = new EventEmitter<CoreTypes.ResFile[]>();
+  @Output()
+  selectedChanged = new EventEmitter<string>();
+  @Output()
+  enterFolder = new EventEmitter<string>();
+
+  private destroyed = new Subject();
+
+  ngOnInit() {
+    this.setExplorerHeight('650px');
+    this.$triggerClearSelected
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(() => this.checkedItems.clear());
+    this.checkedItems.changed.pipe(takeUntil(this.destroyed)).subscribe(() => {
+      const folders = this.folders.filter(f =>
+        this.checkedItems.selected.includes(f.fullPath)
+      );
+      const files = this.files.filter(f =>
+        this.checkedItems.selected.includes(f.fullPath)
+      );
+      const checkedFiles = [...folders, ...files];
+      this.checkedChanged.emit(checkedFiles);
+    });
+    this.selectedItem.changed.pipe(takeUntil(this.destroyed)).subscribe(() => {
+      const [selectedFilePath] = this.selectedItem.selected;
+      this.selectedChanged.emit(selectedFilePath);
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroyed.next();
+  }
+
+  setExplorerHeight(heightVal: string) {
+    const tableEl = document.getElementById('main-table');
+    if (tableEl) {
+      const containerDiv = tableEl.children.item(0) as HTMLDivElement;
+      containerDiv.style.height = heightVal;
+    }
+  }
+
+  get areAllFoldersChecked(): boolean {
+    const currentSelection = this.checkedItems.selected;
+    const hasAllFoldersSelected = this.folders.every(f =>
+      currentSelection.includes(f.fullPath)
+    );
+    return hasAllFoldersSelected;
+  }
+
+  get areAllFilesChecked(): boolean {
+    const currentSelection = this.checkedItems.selected;
+    const hasAllFilesSelected = this.files.every(f =>
+      currentSelection.includes(f.fullPath)
+    );
+    return hasAllFilesSelected;
+  }
+
+  onCheckAllFolders() {
+    this.checkedItems.select(...this.folders.map(f => f.fullPath));
+  }
+  onUnCheckAllFolders() {
+    this.checkedItems.deselect(...this.folders.map(f => f.fullPath));
+  }
+  onCheckAllFiles() {
+    this.checkedItems.select(...this.files.map(f => f.fullPath));
+  }
+  onUnCheckAllFiles() {
+    this.checkedItems.deselect(...this.files.map(f => f.fullPath));
+  }
+}

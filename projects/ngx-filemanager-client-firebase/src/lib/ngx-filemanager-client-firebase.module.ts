@@ -30,29 +30,24 @@ import { HttpClientModule } from '@angular/common/http';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 import { getBaseHref } from './getBaseHref';
-import { NgxFileManagerComponent } from './file-manager/file-manager.component';
-import { AppBreadCrumbsComponent } from './bread-crumbs/bread-crumbs.component';
-import { AppBulkActionsComponent } from './actions-toolbars/bulk-actions.component';
-import { AppFolderActionsComponent } from './actions-toolbars/folder-actions.component';
-import { FileDetailsComponent } from './file-details/file-details.component';
-import { FormFileFirebaseModule } from './file-upload/file-upload.module';
-import { FilemanagerStatusService } from './filesystem/state/status.service';
-import { NotificationService } from './notifications/notification.service';
-import { LoggerService } from './logging/logger.service';
-import { ConsoleLoggerService } from './logging/console-logger.service';
-import { ServerFilesystemProviderService } from './filesystem/pure/server-filesystem.service';
-import { IconUrlResolverService } from './utils/icon-url-resolver.service';
-import { CardFileComponent } from './file-table/card-file.component';
-import { CardFolderComponent } from './file-table/card-folder.component';
-import { AppFileTableComponent } from './file-table/file-table.component';
-import { NgxFilemanagerClientDialogsModule } from './dialogs/dialogs.module';
-import { FileSizeModule } from './file-size/file-size.module';
+import { NgxFileManagerComponent } from './ui/file-manager/file-manager.component';
+import { AppBreadCrumbsComponent } from './ui/bread-crumbs/bread-crumbs.component';
+import { AppBulkActionsComponent } from './ui/actions-toolbars/bulk-actions.component';
+import { AppFolderActionsComponent } from './ui/actions-toolbars/folder-actions.component';
+import { FileDetailsComponent } from './ui/file-details/file-details.component';
+import { FormFileFirebaseModule } from './ui/file-upload/file-upload.module';
+import { FilemanagerStatusService } from './state/state/status.service';
+import { NotificationService } from './state/pure/notification.service';
+import { LoggerService } from './state/logging/logger.service';
+import { ConsoleLoggerService } from './state/logging/console-logger.service';
+import { ServerFilesystemProviderService } from './state/pure/server-filesystem.service';
+import { IconUrlResolverService } from './state/pure/icon-url-resolver.service';
+import { NgxFilemanagerClientDialogsModule } from './ui/dialogs/dialogs.module';
+import { FileSizeModule } from './ui/file-size/file-size.module';
+import { AppFileTableModule } from './ui/file-table/file-table.module';
 
 const declarations = [
   NgxFileManagerComponent,
-  CardFileComponent,
-  CardFolderComponent,
-  AppFileTableComponent,
   AppBreadCrumbsComponent,
   AppBulkActionsComponent,
   AppFolderActionsComponent,
@@ -70,6 +65,7 @@ const declarations = [
     DropzoneModule,
     FileSizeModule,
 
+    AppFileTableModule,
     FormFileFirebaseModule,
     NgxFilemanagerClientDialogsModule,
 
