@@ -29,20 +29,11 @@ import {
 import { HttpClientModule } from '@angular/common/http';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
-
 import { getBaseHref } from './getBaseHref';
 import { BaseDialogComponent } from './dialogs/base-dialog.component';
-import { AppDialogRenameComponent } from './dialogs/dialog-rename.component';
-import { AppDialogNewFolderComponent } from './dialogs/dialog-new-folder.component';
-import { AppDialogPermissionsSetComponent } from './dialogs/dialog-permissions-set.component';
-import { AppDialogPermissionsSetObjectComponent } from './dialogs/dialog-permissions-setobject.component';
-import { AppDialogCopyComponent } from './dialogs/dialog-copy-or-move.component';
-import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component';
-import { AppDialogMyDetailsComponent } from './dialogs/dialog-my-details.components';
 import { AppBtnsCancelOkComponent } from './dialogs/btns-cancel-ok.component';
 import { AppControlTagMultipleComponent } from './dialogs/tags-control.component';
 import { NgxFileManagerComponent } from './file-manager/file-manager.component';
-import { AppFileTableComponent } from './file-table/file-table.component';
 import { AppFileTableMiniFolderBrowserComponent } from './file-table-mini/file-table-mini-folder-browser.component';
 import { AppBreadCrumbsComponent } from './bread-crumbs/bread-crumbs.component';
 import { AppActionsMiniBrowserComponent } from './file-table-mini/actions-mini-browser.component';
@@ -57,6 +48,20 @@ import { ConsoleLoggerService } from './logging/console-logger.service';
 import { ServerFilesystemProviderService } from './filesystem/pure/server-filesystem.service';
 import { FileSizePipe } from './utils/file-size.pipe';
 import { IconUrlResolverService } from './utils/icon-url-resolver.service';
+import {
+  AppFileTableComponent,
+  CardFileComponent,
+  CardFolderComponent
+} from './file-table';
+import {
+  AppDialogRenameComponent,
+  AppDialogNewFolderComponent,
+  AppDialogPermissionsSetComponent,
+  AppDialogPermissionsSetObjectComponent,
+  AppDialogCopyComponent,
+  AppDialogUploadFilesComponent,
+  AppDialogMyDetailsComponent
+} from './dialogs';
 
 const entryComponents = [
   BaseDialogComponent,
@@ -73,6 +78,8 @@ const declarations = [
   ...entryComponents,
   NgxFileManagerComponent,
   AppFileTableComponent,
+  CardFileComponent,
+  CardFolderComponent,
   AppFileTableMiniFolderBrowserComponent,
   AppBreadCrumbsComponent,
   AppActionsMiniBrowserComponent,

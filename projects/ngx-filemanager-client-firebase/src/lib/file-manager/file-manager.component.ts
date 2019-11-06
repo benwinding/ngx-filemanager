@@ -4,11 +4,12 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { FileSystemProvider, CoreTypes } from '../../core-types';
 import { LoggerService } from '../logging/logger.service';
 import { ActionHandlersService } from './action-handlers.service';
-import { AutoTableConfig } from 'ngx-auto-table';
+import { AutoTableConfig, ActionDefinition } from 'ngx-auto-table';
 import { ClientFileSystemService } from '../filesystem/pure/client-filesystem.service';
 import { OptimisticFilesystemService } from '../filesystem/pure/optimistic-filesystem.service';
 import { FileManagerConfig } from '../configuration/client-configuration';
 import { FilemanagerStatusService } from '../filesystem/state/status.service';
+import { sortObjectArrayCase } from '../utils/sort-helpers';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -27,11 +28,10 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
   @Input()
   config: FileManagerConfig;
 
-  public autoTableConfig: AutoTableConfig<CoreTypes.ResFile>;
   public isFileDetailsOpen = true;
 
   public $BulkSelected = new BehaviorSubject<CoreTypes.ResFile[]>([]);
-  private $triggerClearSelected = new Subject<void>();
+  public $triggerClearSelected = new Subject<void>();
 
   public initLoaded;
   public requestMap;
@@ -41,6 +41,12 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
   SelectedFile: CoreTypes.ResFile;
 
   destroyed = new Subject();
+
+  folderActions: ActionDefinition<CoreTypes.ResFile>[];
+  fileActions: ActionDefinition<CoreTypes.ResFile>[];
+
+  folders$: Observable<CoreTypes.ResFile[]>;
+  files$: Observable<CoreTypes.ResFile[]>;
 
   constructor(
     private actionHandlers: ActionHandlersService,
@@ -98,13 +104,18 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
     await this.actionHandlers.OnNavigateTo(this.config.virtualRoot);
     this.$CurrentPath = this.actionHandlers.$CurrentPath;
     this.$CurrentPathIsRoot = this.actionHandlers.$CurrentPathIsRoot;
-    this.actionHandlers.$SelectedFile.pipe(takeUntil(this.destroyed), tap(selectedFile => {
-      console.log('this.$SelectedFile.pipe', { selectedFile });
-      this.SelectedFile = null;
-      setTimeout(() => {
-        this.SelectedFile = selectedFile;
-      });
-    })).subscribe();
+    this.actionHandlers.$SelectedFile
+      .pipe(
+        takeUntil(this.destroyed),
+        tap(selectedFile => {
+          console.log('this.$SelectedFile.pipe', { selectedFile });
+          this.SelectedFile = null;
+          setTimeout(() => {
+            this.SelectedFile = selectedFile;
+          });
+        })
+      )
+      .subscribe();
     this.makeConfig();
     this.initLoaded = true;
   }
@@ -114,74 +125,106 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
   }
 
   makeConfig() {
-    this.autoTableConfig = {
-      data$: this.actionHandlers.$FilesWithIcons,
-      // debug: true,
-      actionsBulk: [
-        {
-          label: 'Copy',
-          icon: 'content_copy',
-          onClick: async (files: CoreTypes.ResFile[]) =>
-            this.actionHandlers.OnCopyMultiple(files)
-        }
-      ],
-      actions: [
-        {
-          label: 'Copy',
-          icon: 'content_copy',
-          onClick: async (file: CoreTypes.ResFile) =>
-            this.actionHandlers.OnCopyMultiple([file])
-        },
-        {
-          label: 'Move',
-          icon: 'forward',
-          onClick: async (file: CoreTypes.ResFile) =>
-            this.actionHandlers.OnMoveMultiple([file])
-        },
-        {
-          label: 'Rename',
-          icon: 'border_color',
-          onClick: async (file: CoreTypes.ResFile) =>
-            this.actionHandlers.OnRename(file)
-        },
-        {
-          label: 'Permissions',
-          icon: 'lock_outline',
-          onClick: async (file: CoreTypes.ResFile) =>
-            this.actionHandlers.OnSetPermissionsMultiple([file])
-        },
-        {
-          label: 'Delete',
-          icon: 'delete',
-          onClick: async (file: CoreTypes.ResFile) =>
-            this.actionHandlers.OnDeleteMultiple([file])
-        }
-      ],
-      onSelectedBulk: (files: CoreTypes.ResFile[]) => {
-        this.logger.info('onSelectedBulk', {
-          files,
-          length: files.length
-        });
-        this.$BulkSelected.next(files);
+    this.fileActions = [
+      {
+        label: 'Download',
+        icon: 'file_download',
+        onClick: async (file: CoreTypes.ResFile) =>
+          this.actionHandlers.OnDownloadFile(file)
       },
-      onSelectItemDoubleClick: async (item: CoreTypes.ResFile) => {
-        this.logger.info('onSelectItemDoubleClick!', { item });
-        if (item.type === 'dir') {
-          this.clearBulkSelected();
-          return this.actionHandlers.OnNavigateTo(item.fullPath);
-        }
+      {
+        label: 'Copy',
+        icon: 'content_copy',
+        onClick: async (file: CoreTypes.ResFile) =>
+          this.actionHandlers.OnCopyMultiple([file])
       },
-      onSelectItem: (item: CoreTypes.ResFile) => {
-        this.logger.info('onSelectItem!', { item });
-        return this.actionHandlers.OnSelectItemByPath(item.fullPath);
+      {
+        label: 'Move',
+        icon: 'forward',
+        onClick: async (file: CoreTypes.ResFile) =>
+          this.actionHandlers.OnMoveMultiple([file])
       },
-      $triggerSelectItem: this.actionHandlers.$SelectedFile,
-      $triggerClearSelected: this.$triggerClearSelected,
-      filterText: 'Search here...',
-      hideChooseColumns: true,
-      hideFilter: true,
-      initialSort: 'name'
-    };
+      {
+        label: 'Rename',
+        icon: 'border_color',
+        onClick: async (file: CoreTypes.ResFile) =>
+          this.actionHandlers.OnRename(file)
+      },
+      {
+        label: 'Permissions',
+        icon: 'lock_outline',
+        onClick: async (file: CoreTypes.ResFile) =>
+          this.actionHandlers.OnSetPermissionsMultiple([file])
+      },
+      {
+        label: 'Delete',
+        icon: 'delete',
+        onClick: async (file: CoreTypes.ResFile) =>
+          this.actionHandlers.OnDeleteMultiple([file])
+      }
+    ];
+    this.folderActions = [
+      {
+        label: 'Copy',
+        icon: 'content_copy',
+        onClick: async (file: CoreTypes.ResFile) =>
+          this.actionHandlers.OnCopyMultiple([file])
+      },
+      {
+        label: 'Move',
+        icon: 'forward',
+        onClick: async (file: CoreTypes.ResFile) =>
+          this.actionHandlers.OnMoveMultiple([file])
+      },
+      {
+        label: 'Rename',
+        icon: 'border_color',
+        onClick: async (file: CoreTypes.ResFile) =>
+          this.actionHandlers.OnRename(file)
+      },
+      {
+        label: 'Permissions',
+        icon: 'lock_outline',
+        onClick: async (file: CoreTypes.ResFile) =>
+          this.actionHandlers.OnSetPermissionsMultiple([file])
+      },
+      {
+        label: 'Delete',
+        icon: 'delete',
+        onClick: async (file: CoreTypes.ResFile) =>
+          this.actionHandlers.OnDeleteMultiple([file])
+      }
+    ];
+    const allFiles$ = new BehaviorSubject<CoreTypes.ResFile[]>([]);
+    this.actionHandlers.$FilesWithIcons.subscribe(files =>
+      allFiles$.next(files)
+    );
+    this.folders$ = allFiles$.pipe(
+      tap(folders => console.log('folders', { folders })),
+      map(items =>
+        items
+          .filter(a => a.type === 'dir')
+          .sort(sortObjectArrayCase('name', 'asc'))
+      )
+    );
+    this.files$ = allFiles$.pipe(
+      tap(files => console.log('files', { files })),
+      map(items =>
+        items
+          .filter(a => a.type === 'file')
+          .sort(sortObjectArrayCase('name', 'asc'))
+      )
+    );
+  }
+
+  async onEnterFolder(itemPath: string) {
+    this.logger.info('onSelectItemDoubleClick!', { itemPath });
+    this.clearBulkSelected();
+    return this.actionHandlers.OnNavigateTo(itemPath);
+  }
+  async onSelectedFilePath(itemPath: string) {
+    this.logger.info('onSelectItem!', { itemPath });
+    return this.actionHandlers.OnSelectItemByPath(itemPath);
   }
 
   public async onDetailsClickDelete(file: CoreTypes.ResFile) {

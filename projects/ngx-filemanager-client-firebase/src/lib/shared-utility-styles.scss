@@ -1,3 +1,16 @@
+mat-chip,
+small,
+i,
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: sans-serif;
+}
 .is-red {
   background: red;
 }
@@ -48,6 +61,39 @@
 .m0 {
   margin: 0px;
 }
+.mb-10 {
+  margin-bottom: 10px;
+}
 .mr-10 {
   margin-right: 10px;
+}
+.color-grey {
+  color: rgb(140, 140, 140);
+}
+.rounded {
+  border-radius: 5px;
+}
+.bg-grey-light {
+  background-color: rgba(95, 95, 95, 0.2);
+}
+.bg-grey-dark {
+  background-color: rgba(50, 50, 50, 0.39);
+}
+.bg-grey-hover {
+  transition: background-color 0.5s;
+}
+.bg-grey-hover:hover {
+  background-color: rgba(95, 95, 95, 0.336);
+}
+.color-white {
+  color: white;
+}
+.color-grey-hover {
+  transition: color 0.5s;
+}
+.color-grey-hover:hover {
+  color: #444;
+}
+.color-black {
+  color: #000;
 }

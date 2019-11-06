@@ -62,8 +62,15 @@
         </div>
       </div>
       <app-file-table
-        [config]="autoTableConfig"
-        (clickedDownload)="this.onDetailsClickDownload($event)"
+        *ngIf="folders$ && files$"
+        [folders]="folders$ | async"
+        [files]="files$ | async"
+        [fileActions]="fileActions"
+        [folderActions]="folderActions"
+        [$triggerClearSelected]="$triggerClearSelected"
+        (checkedChanged)="$BulkSelected.next($event)"
+        (selectedChanged)="this.onSelectedFilePath($event)"
+        (enterFolder)="this.onEnterFolder($event)"
       >
       </app-file-table>
     </mat-drawer-content>

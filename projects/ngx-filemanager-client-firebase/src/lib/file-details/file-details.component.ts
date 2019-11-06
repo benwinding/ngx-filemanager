@@ -153,14 +153,6 @@ import { FileManagerConfig } from '../configuration/client-configuration';
         color: grey;
         font-decoration: italic;
       }
-      mat-chip,
-      span,
-      h2,
-      h5,
-      i,
-      h6 {
-        font-family: sans-serif;
-      }
       h5 {
         margin: 0px;
         color: #616161;
@@ -170,7 +162,7 @@ import { FileManagerConfig } from '../configuration/client-configuration';
         margin: 0px;
         font-size: 1em;
         overflow-wrap: break-word;
-        font-weight: normal;
+        font-weight: bold;
         margin-bottom: 5px;
         margin-top: 2px;
       }
