@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FileSystemProvider, CoreTypes } from '../../../core-types';
 import { promiseDelay } from '../../utils/delayer';
-import { LoggerService } from '../../state/logging/logger.service';
+import { LoggerService } from '../../services/logging/logger.service';
 import { getFileIconName } from '../file-upload/form-file-firebase/file-icon.helper';
 import { FileManagerConfig } from '../../configuration/client-configuration';
 

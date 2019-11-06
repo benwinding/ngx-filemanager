@@ -1,7 +1,7 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { crumbFactory, BreadCrumb } from './crumb-factory';
 import { FileManagerConfig } from '../../configuration/client-configuration';
-import { LoggerService } from '../../state/logging/logger.service';
+import { LoggerService } from '../../services/logging/logger.service';
 
 @Component({
   // tslint:disable-next-line:component-selector

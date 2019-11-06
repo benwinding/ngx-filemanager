@@ -2,13 +2,13 @@ import { OnInit, Component, Input, OnDestroy } from '@angular/core';
 import { take, map, takeUntil, tap } from 'rxjs/operators';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { FileSystemProvider, CoreTypes } from '../../../core-types';
-import { LoggerService } from '../../state/logging/logger.service';
+import { LoggerService } from '../../services/logging/logger.service';
 import { ActionHandlersService } from './action-handlers.service';
 import { AutoTableConfig, ActionDefinition } from 'ngx-auto-table';
-import { ClientFileSystemService } from '../../state/pure/client-filesystem.service';
-import { OptimisticFilesystemService } from '../../state/pure/optimistic-filesystem.service';
+import { ClientFileSystemService } from '../../services/pure/client-filesystem.service';
+import { OptimisticFilesystemService } from '../../services/pure/optimistic-filesystem.service';
 import { FileManagerConfig } from '../../configuration/client-configuration';
-import { FilemanagerStatusService } from '../../state/state/status.service';
+import { FilemanagerStatusService } from '../../services/state/status.service';
 import { sortObjectArrayCase } from '../../utils/sort-helpers';
 
 @Component({

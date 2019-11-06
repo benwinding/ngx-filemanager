@@ -4,7 +4,7 @@ import { FormControl } from '@angular/forms';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { FileManagerConfig } from '../../configuration/client-configuration';
 import { CoreTypes } from '../../../core-types';
-import { LoggerService } from '../../state/logging/logger.service';
+import { LoggerService } from '../../services/logging/logger.service';
 import { map, tap } from 'rxjs/operators';
 
 import { v4 as uuidv4 } from 'uuid';

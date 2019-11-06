@@ -16,7 +16,7 @@ import { take, takeUntil } from 'rxjs/operators';
 import { getFileIcon, isFileImage } from './file-icon.helper';
 import { FormBase } from './form-base-class';
 import { TrimSlashes } from '../../../utils/path-helpers';
-import { NotificationService } from '../../../state/pure/notification.service';
+import { NotificationService } from '../../../services/pure/notification.service';
 
 export interface FormFilesConfiguration {
   directory: string;

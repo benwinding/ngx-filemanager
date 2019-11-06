@@ -3,14 +3,14 @@ import { TestBed } from '@angular/core/testing';
 import { PlatformLocation, APP_BASE_HREF } from '@angular/common';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
-import { NotificationService } from '../../state/pure/notification.service';
+import { NotificationService } from '../../services/pure/notification.service';
 import { getBaseHref } from '../../getBaseHref';
-import { LoggerService } from '../../state/logging/logger.service';
-import { ConsoleLoggerService } from '../../state/logging/console-logger.service';
-import { IconUrlResolverService } from '../../state/pure/icon-url-resolver.service';
-import { ClientFileSystemService } from '../../state/pure/client-filesystem.service';
-import { OptimisticFilesystemService } from '../../state/pure/optimistic-filesystem.service';
-import { ServerFilesystemProviderService } from '../../state/pure/server-filesystem.service';
+import { LoggerService } from '../../services/logging/logger.service';
+import { ConsoleLoggerService } from '../../services/logging/console-logger.service';
+import { IconUrlResolverService } from '../../services/pure/icon-url-resolver.service';
+import { ClientFileSystemService } from '../../services/pure/client-filesystem.service';
+import { OptimisticFilesystemService } from '../../services/pure/optimistic-filesystem.service';
+import { ServerFilesystemProviderService } from '../../services/pure/server-filesystem.service';
 import { FileManagerConfig } from '../../configuration/client-configuration';
 
 class SnackStub {

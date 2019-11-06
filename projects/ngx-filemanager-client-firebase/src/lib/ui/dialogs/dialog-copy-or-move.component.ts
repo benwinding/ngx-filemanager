@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { CoreTypes } from '../../../core-types';
-import { LoggerService } from '../../state/logging/logger.service';
+import { LoggerService } from '../../services/logging/logger.service';
 import path from 'path-browserify';
 import { Observable } from 'rxjs';
 import { EnsureTrailingSlash } from '../../utils/path-helpers';

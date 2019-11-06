@@ -7,7 +7,7 @@ import {
   NameUid
 } from '../../configuration/client-configuration';
 import { CoreTypes } from '../../../core-types';
-import { LoggerService } from '../../state/logging/logger.service';
+import { LoggerService } from '../../services/logging/logger.service';
 
 export interface PermissionsDialogInterface {
   files: CoreTypes.ResFile[];

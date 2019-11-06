@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material';
 import { take, map } from 'rxjs/operators';
 import path from 'path-browserify';
 import { FileSystemProvider, CoreTypes } from '../../../core-types';
-import { LoggerService } from '../../state/logging/logger.service';
+import { LoggerService } from '../../services/logging/logger.service';
 import {
   RenameDialogInterface,
   AppDialogRenameComponent
@@ -24,9 +24,9 @@ import {
 } from '../dialogs/dialog-upload.component';
 import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
 import { FileManagerConfig } from '../../configuration/client-configuration';
-import { ClientFileSystemService } from '../../state/pure/client-filesystem.service';
-import { OptimisticFilesystemService } from '../../state/pure/optimistic-filesystem.service';
-import { NotificationService } from '../../state/pure/notification.service';
+import { ClientFileSystemService } from '../../services/pure/client-filesystem.service';
+import { OptimisticFilesystemService } from '../../services/pure/optimistic-filesystem.service';
+import { NotificationService } from '../../services/pure/notification.service';
 
 @Injectable()
 export class ActionHandlersService {
