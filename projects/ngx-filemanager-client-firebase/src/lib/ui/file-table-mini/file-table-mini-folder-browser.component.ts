@@ -1,12 +1,13 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CoreTypes } from '../../../core-types';
-import { AutoTableConfig } from 'ngx-auto-table';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { LoggerService } from '../../services/logging/logger.service';
 import { ActionHandlersService } from '../file-manager/action-handlers.service';
 import { FileManagerConfig } from '../../configuration/client-configuration';
 import { ClientFileSystemService } from '../../services/pure/client-filesystem.service';
 import { OptimisticFilesystemService } from '../../services/pure/optimistic-filesystem.service';
+import { takeUntil } from 'rxjs/operators';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -18,38 +19,19 @@ import { OptimisticFilesystemService } from '../../services/pure/optimistic-file
       [$CurrentPathIsRoot]="$CurrentPathIsRoot"
     >
     </actions-mini-browser>
-    <ngx-auto-table
-      [config]="tableConfig"
-      [columnDefinitions]="{
-        icon: { template: iconTemplate },
-        name: { template: nameTemplate, forceWrap: true },
-        date: { template: dateTemplate }
-      }"
-    >
-      <ng-template #iconTemplate let-row>
-        <img
-          class="icon"
-          [class.greyed]="row.type === 'file'"
-          [src]="row.icon"
-          matTooltip="Click For Details"
-        />
-      </ng-template>
-      <ng-template #nameTemplate let-row>
-        <div class="break-word" matTooltip="Click For Details">
-          {{ row.name }}
-        </div>
-      </ng-template>
-      <ng-template #sizeTemplate let-row>
-        <div matTooltip="Click For Details">
-          {{ row.size | fileSize }}
-        </div>
-      </ng-template>
-      <ng-template #dateTemplate let-row>
-        <div matTooltip="Click For Details">
-          {{ row.date | date: 'short' }}
-        </div>
-      </ng-template>
-    </ngx-auto-table>
+    <div class="full-width">
+      <h4 class="p5 m0 color-grey">Folders</h4>
+      <div class="flex-col">
+        <card-folder
+          *ngFor="let folder of folders"
+          [folder]="folder"
+          [selectedItem]="selectedItem"
+          (enterFolder)="onEnterFolder($event)"
+          (selectedItem)="onSelectFolder($event)"
+        >
+        </card-folder>
+      </div>
+    </div>
   `,
   styles: [
     `
@@ -72,6 +54,8 @@ import { OptimisticFilesystemService } from '../../services/pure/optimistic-file
   ]
 })
 export class AppFileTableMiniFolderBrowserComponent implements OnInit {
+  selectedItem = new SelectionModel<string>(false);
+
   @Input()
   currentDirectory: string;
   @Input()
@@ -84,28 +68,27 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
   @Output()
   selectedDirectory = new EventEmitter<string>();
 
-  tableConfig: AutoTableConfig<CoreTypes.ResFile>;
+  folders: CoreTypes.ResFile[];
+
+  destroyed = new Subject();
 
   constructor(private logger: LoggerService) {}
 
   async ngOnInit() {
-    this.tableConfig = {
-      data$: this.actionHandlers.$FilesWithIcons,
-      onSelectItemDoubleClick: async (item: CoreTypes.ResFile) => {
-        this.logger.info('onSelectItemDoubleClick!', { item });
-        if (item.type === 'dir') {
-          await this.actionHandlers.OnNavigateTo(item.fullPath);
-        }
-      },
-      onSelectItem: (item: CoreTypes.ResFile) => {
-        if (item.type === 'dir') {
-          this.selectedDirectory.emit(item.fullPath);
-        }
-      }
-    };
-    this.tableConfig.hideFilter = true;
-    this.tableConfig.hideChooseColumns = true;
+    this.actionHandlers.$FilesWithIcons
+      .pipe(takeUntil(this.destroyed))
+      .subscribe(fileItems => {
+        this.folders = fileItems.filter(f => f.type === 'dir');
+      });
     return this.actionHandlers.OnNavigateTo(this.currentDirectory);
+  }
+
+  async onSelectFolder(folderPath: string) {
+    this.selectedDirectory.emit(folderPath);
+  }
+
+  async onEnterFolder(folderPath: string) {
+    return this.actionHandlers.OnNavigateTo(folderPath);
   }
 
   async onUpFolder() {

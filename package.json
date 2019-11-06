@@ -47,7 +47,6 @@
     "hammerjs": "^2.0.8",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
-    "ngx-auto-table": "^8.1.4",
     "ngx-dropzone-wrapper": "^7.2.1",
     "path-browserify": "^1.0.0",
     "request": "^2.88.0",

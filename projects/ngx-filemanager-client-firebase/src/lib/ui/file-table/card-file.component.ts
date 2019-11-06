@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { CoreTypes } from '../../../core-types';
-import { ActionDefinition } from 'ngx-auto-table';
 import { SelectionModel } from '@angular/cdk/collections';
+import { CoreTypes } from '../../../core-types';
+import { FileActionDefinition } from './FileActionDefinition';
 
 @Component({
   selector: 'card-file',
@@ -63,7 +63,7 @@ export class CardFileComponent {
   @Input()
   file: CoreTypes.ResFile;
   @Input()
-  actions: ActionDefinition<CoreTypes.ResFile>[];
+  actions: FileActionDefinition[];
   @Input()
   checkedItems: SelectionModel<string>;
   @Input()

@@ -21,7 +21,7 @@ import { FileSizeModule } from '../file-size/file-size.module';
     MatButtonModule,
     MatTooltipModule
   ],
-  exports: [AppFileTableComponent],
+  exports: [AppFileTableComponent, CardFolderComponent],
   declarations: [CardFileComponent, CardFolderComponent, AppFileTableComponent],
   providers: []
 })

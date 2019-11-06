@@ -6,11 +6,11 @@ import {
   EventEmitter,
   OnDestroy
 } from '@angular/core';
-import { ActionDefinition } from 'ngx-auto-table';
 import { CoreTypes } from '../../../core-types';
 import { Subject, Observable } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { takeUntil } from 'rxjs/operators';
+import { FileActionDefinition } from './FileActionDefinition';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -81,9 +81,9 @@ export class AppFileTableComponent implements OnInit, OnDestroy {
   @Input()
   $triggerClearSelected: Observable<void>;
   @Input()
-  fileActions: ActionDefinition<CoreTypes.ResFile>[];
+  fileActions: FileActionDefinition[];
   @Input()
-  folderActions: ActionDefinition<CoreTypes.ResFile>[];
+  folderActions: FileActionDefinition[];
   @Input()
   files: CoreTypes.ResFile[];
   @Input()

@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CoreTypes } from '../../../core-types';
-import { ActionDefinition } from 'ngx-auto-table';
 import { SelectionModel } from '@angular/cdk/collections';
+import { CoreTypes } from '../../../core-types';
+import { FileActionDefinition } from './FileActionDefinition';
 
 @Component({
   selector: 'card-folder',
@@ -15,18 +15,20 @@ import { SelectionModel } from '@angular/cdk/collections';
       (dblclick)="onDoubleClick()"
     >
       <div class="flex-row align-center">
-        <mat-icon
-          *ngIf="!isChecked"
-          class="has-pointer color-white color-grey-hover"
-          (click)="onCheck()"
-          >check_box_outline_blank</mat-icon
-        >
-        <mat-icon
-          *ngIf="isChecked"
-          class="has-pointer color-black color-grey-hover"
-          (click)="onUnCheck()"
-          >check_box_outline</mat-icon
-        >
+        <div *ngIf="checkedItems">
+          <mat-icon
+            *ngIf="!isChecked"
+            class="has-pointer color-white color-grey-hover"
+            (click)="onCheck()"
+            >check_box_outline_blank</mat-icon
+          >
+          <mat-icon
+            *ngIf="isChecked"
+            class="has-pointer color-black color-grey-hover"
+            (click)="onUnCheck()"
+            >check_box_outline</mat-icon
+          >
+        </div>
         <img class="mr-10" width="30" [src]="folder['icon']" />
         <div>
           <h5 class="m0 mb-5">{{ folder.name }}</h5>
@@ -34,6 +36,7 @@ import { SelectionModel } from '@angular/cdk/collections';
         </div>
       </div>
       <button
+        *ngIf="actions"
         mat-icon-button
         [matMenuTriggerFor]="menu"
         aria-label="Example icon-button with a menu"
@@ -57,6 +60,9 @@ import { SelectionModel } from '@angular/cdk/collections';
 })
 export class CardFolderComponent {
   get isChecked(): boolean {
+    if (!this.checkedItems) {
+      return;
+    }
     return this.checkedItems.isSelected(this.folder.fullPath);
   }
   get isSelected(): boolean {
@@ -65,7 +71,7 @@ export class CardFolderComponent {
   @Input()
   folder: CoreTypes.ResFile;
   @Input()
-  actions: ActionDefinition<CoreTypes.ResFile>[];
+  actions: FileActionDefinition[];
   @Input()
   checkedItems: SelectionModel<string>;
   @Input()

@@ -4,12 +4,12 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { FileSystemProvider, CoreTypes } from '../../../core-types';
 import { LoggerService } from '../../services/logging/logger.service';
 import { ActionHandlersService } from './action-handlers.service';
-import { AutoTableConfig, ActionDefinition } from 'ngx-auto-table';
 import { ClientFileSystemService } from '../../services/pure/client-filesystem.service';
 import { OptimisticFilesystemService } from '../../services/pure/optimistic-filesystem.service';
 import { FileManagerConfig } from '../../configuration/client-configuration';
 import { FilemanagerStatusService } from '../../services/state/status.service';
 import { sortObjectArrayCase } from '../../utils/sort-helpers';
+import { FileActionDefinition } from '../file-table/FileActionDefinition';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -42,8 +42,8 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
 
   destroyed = new Subject();
 
-  folderActions: ActionDefinition<CoreTypes.ResFile>[];
-  fileActions: ActionDefinition<CoreTypes.ResFile>[];
+  folderActions: FileActionDefinition[];
+  fileActions: FileActionDefinition[];
 
   folders$: Observable<CoreTypes.ResFile[]>;
   files$: Observable<CoreTypes.ResFile[]>;
