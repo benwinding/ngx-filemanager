@@ -55,9 +55,11 @@ import { AppDialogPermissionsSetObjectComponent } from './dialogs/dialog-permiss
 import { AppDialogCopyComponent } from './dialogs/dialog-copy-or-move.component';
 import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component';
 import { AppDialogMyDetailsComponent } from './dialogs/dialog-my-details.components';
-import { AppFileTableComponent } from './file-table/file-table.component';
-import { CardFileComponent } from './file-table/card-file.component';
-import { CardFolderComponent } from './file-table/card-folder.component';
+import {
+  AppFileTableComponent,
+  CardFileComponent,
+  CardFolderComponent
+} from './file-table';
 
 const entryComponents = [
   BaseDialogComponent,
@@ -73,9 +75,9 @@ const entryComponents = [
 const declarations = [
   ...entryComponents,
   NgxFileManagerComponent,
-  AppFileTableComponent,
   CardFileComponent,
   CardFolderComponent,
+  AppFileTableComponent,
   AppFileTableMiniFolderBrowserComponent,
   AppBreadCrumbsComponent,
   AppActionsMiniBrowserComponent,
