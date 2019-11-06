@@ -16,7 +16,7 @@ import { FileActionDefinition } from './FileActionDefinition';
   // tslint:disable-next-line:component-selector
   selector: 'app-file-table',
   template: `
-    <div class="full-width">
+    <div class="files-viewer full-width">
       <div *ngIf="folders?.length" class="flex-row align-center">
         <mat-icon
           *ngIf="!areAllFoldersChecked"
@@ -84,6 +84,9 @@ import { FileActionDefinition } from './FileActionDefinition';
         font-size: 1.2em;
         color: #777;
       }
+      .files-viewer {
+        min-height: 500px;
+      }
     `
   ]
 })
@@ -113,7 +116,6 @@ export class AppFileTableComponent implements OnInit, OnDestroy {
   private destroyed = new Subject();
 
   ngOnInit() {
-    this.setExplorerHeight('650px');
     this.$triggerClearSelected
       .pipe(takeUntil(this.destroyed))
       .subscribe(() => this.checkedItems.clear());
@@ -135,14 +137,6 @@ export class AppFileTableComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroyed.next();
-  }
-
-  setExplorerHeight(heightVal: string) {
-    const tableEl = document.getElementById('main-table');
-    if (tableEl) {
-      const containerDiv = tableEl.children.item(0) as HTMLDivElement;
-      containerDiv.style.height = heightVal;
-    }
   }
 
   get areAllFoldersChecked(): boolean {
