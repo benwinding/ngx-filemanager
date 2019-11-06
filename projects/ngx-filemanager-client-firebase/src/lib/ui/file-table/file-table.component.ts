@@ -17,7 +17,7 @@ import { FileActionDefinition } from './FileActionDefinition';
   selector: 'app-file-table',
   template: `
     <div class="full-width">
-      <div class="flex-row align-center">
+      <div *ngIf="folders?.length" class="flex-row align-center">
         <mat-icon
           *ngIf="!areAllFoldersChecked"
           class="has-pointer color-white color-grey-hover"
@@ -43,7 +43,7 @@ import { FileActionDefinition } from './FileActionDefinition';
         >
         </card-folder>
       </div>
-      <div class="flex-row align-center">
+      <div *ngIf="files?.length" class="flex-row align-center">
         <mat-icon
           *ngIf="!areAllFilesChecked"
           class="has-pointer color-white color-grey-hover"
@@ -68,9 +68,24 @@ import { FileActionDefinition } from './FileActionDefinition';
         >
         </card-file>
       </div>
+      <div class="nothing-here" *ngIf="!files?.length && !folders.length">
+        <p>
+          No folders/files here
+        </p>
+      </div>
     </div>
   `,
-  styleUrls: ['../shared-utility-styles.scss']
+  styleUrls: ['../shared-utility-styles.scss'],
+  styles: [
+    `
+      .nothing-here {
+        padding: 20px;
+        padding-bottom: 100px;
+        font-size: 1.2em;
+        color: #777;
+      }
+    `
+  ]
 })
 export class AppFileTableComponent implements OnInit, OnDestroy {
   checkedItems = new SelectionModel<string>(true);
