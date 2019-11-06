@@ -48,20 +48,16 @@ import { ConsoleLoggerService } from './logging/console-logger.service';
 import { ServerFilesystemProviderService } from './filesystem/pure/server-filesystem.service';
 import { FileSizePipe } from './utils/file-size.pipe';
 import { IconUrlResolverService } from './utils/icon-url-resolver.service';
-import {
-  AppFileTableComponent,
-  CardFileComponent,
-  CardFolderComponent
-} from './file-table';
-import {
-  AppDialogRenameComponent,
-  AppDialogNewFolderComponent,
-  AppDialogPermissionsSetComponent,
-  AppDialogPermissionsSetObjectComponent,
-  AppDialogCopyComponent,
-  AppDialogUploadFilesComponent,
-  AppDialogMyDetailsComponent
-} from './dialogs';
+import { AppDialogRenameComponent } from './dialogs/dialog-rename.component';
+import { AppDialogNewFolderComponent } from './dialogs/dialog-new-folder.component';
+import { AppDialogPermissionsSetComponent } from './dialogs/dialog-permissions-set.component';
+import { AppDialogPermissionsSetObjectComponent } from './dialogs/dialog-permissions-setobject.component';
+import { AppDialogCopyComponent } from './dialogs/dialog-copy-or-move.component';
+import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component';
+import { AppDialogMyDetailsComponent } from './dialogs/dialog-my-details.components';
+import { AppFileTableComponent } from './file-table/file-table.component';
+import { CardFileComponent } from './file-table/card-file.component';
+import { CardFolderComponent } from './file-table/card-folder.component';
 
 const entryComponents = [
   BaseDialogComponent,
