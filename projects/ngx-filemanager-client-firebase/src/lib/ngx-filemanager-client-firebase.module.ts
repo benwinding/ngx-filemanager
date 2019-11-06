@@ -30,13 +30,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 import { getBaseHref } from './getBaseHref';
-import { BaseDialogComponent } from './dialogs/base-dialog.component';
-import { AppBtnsCancelOkComponent } from './dialogs/btns-cancel-ok.component';
-import { AppControlTagMultipleComponent } from './dialogs/tags-control.component';
 import { NgxFileManagerComponent } from './file-manager/file-manager.component';
-import { AppFileTableMiniFolderBrowserComponent } from './file-table-mini/file-table-mini-folder-browser.component';
 import { AppBreadCrumbsComponent } from './bread-crumbs/bread-crumbs.component';
-import { AppActionsMiniBrowserComponent } from './file-table-mini/actions-mini-browser.component';
 import { AppBulkActionsComponent } from './actions-toolbars/bulk-actions.component';
 import { AppFolderActionsComponent } from './actions-toolbars/folder-actions.component';
 import { FileDetailsComponent } from './file-details/file-details.component';
@@ -46,51 +41,25 @@ import { NotificationService } from './notifications/notification.service';
 import { LoggerService } from './logging/logger.service';
 import { ConsoleLoggerService } from './logging/console-logger.service';
 import { ServerFilesystemProviderService } from './filesystem/pure/server-filesystem.service';
-import { FileSizePipe } from './utils/file-size.pipe';
 import { IconUrlResolverService } from './utils/icon-url-resolver.service';
-import { AppDialogRenameComponent } from './dialogs/dialog-rename.component';
-import { AppDialogNewFolderComponent } from './dialogs/dialog-new-folder.component';
-import { AppDialogPermissionsSetComponent } from './dialogs/dialog-permissions-set.component';
-import { AppDialogPermissionsSetObjectComponent } from './dialogs/dialog-permissions-setobject.component';
-import { AppDialogCopyComponent } from './dialogs/dialog-copy-or-move.component';
-import { AppDialogUploadFilesComponent } from './dialogs/dialog-upload.component';
-import { AppDialogMyDetailsComponent } from './dialogs/dialog-my-details.components';
-import {
-  AppFileTableComponent,
-  CardFileComponent,
-  CardFolderComponent
-} from './file-table';
-
-const entryComponents = [
-  BaseDialogComponent,
-  AppDialogRenameComponent,
-  AppDialogNewFolderComponent,
-  AppDialogPermissionsSetComponent,
-  AppDialogPermissionsSetObjectComponent,
-  AppDialogCopyComponent,
-  AppDialogUploadFilesComponent,
-  AppDialogMyDetailsComponent
-];
+import { CardFileComponent } from './file-table/card-file.component';
+import { CardFolderComponent } from './file-table/card-folder.component';
+import { AppFileTableComponent } from './file-table/file-table.component';
+import { NgxFilemanagerClientDialogsModule } from './dialogs/dialogs.module';
+import { FileSizeModule } from './file-size/file-size.module';
 
 const declarations = [
-  ...entryComponents,
   NgxFileManagerComponent,
   CardFileComponent,
   CardFolderComponent,
   AppFileTableComponent,
-  AppFileTableMiniFolderBrowserComponent,
   AppBreadCrumbsComponent,
-  AppActionsMiniBrowserComponent,
   AppBulkActionsComponent,
   AppFolderActionsComponent,
-  AppBtnsCancelOkComponent,
-  AppControlTagMultipleComponent,
   FileDetailsComponent,
-  FileSizePipe
 ];
 
 @NgModule({
-  entryComponents: entryComponents,
   declarations: declarations,
   imports: [
     CommonModule,
@@ -99,8 +68,10 @@ const declarations = [
     ReactiveFormsModule,
     AutoTableModule,
     DropzoneModule,
+    FileSizeModule,
 
     FormFileFirebaseModule,
+    NgxFilemanagerClientDialogsModule,
 
     MatAutocompleteModule,
     MatButtonModule,

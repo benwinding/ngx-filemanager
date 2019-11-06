@@ -5,10 +5,10 @@ import { Observable, Subject, combineLatest } from 'rxjs';
 import { FileManagerConfig } from '../configuration/client-configuration';
 import { CoreTypes } from '../../core-types';
 import { LoggerService } from '../logging/logger.service';
-import { Tag } from './tags-control.component';
 import { map, tap } from 'rxjs/operators';
 
 import { v4 as uuidv4 } from 'uuid';
+import { Tag } from '../tags-control/tags-control.component';
 
 export interface PermissionsObjectDialogInterface {
   files: CoreTypes.ResFile[];
