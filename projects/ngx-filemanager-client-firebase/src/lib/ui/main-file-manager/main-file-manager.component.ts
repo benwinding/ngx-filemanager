@@ -12,6 +12,7 @@ import { sortObjectArrayCase } from '../../utils/sort-helpers';
 import { FileActionDefinition } from '../file-table/FileActionDefinition';
 import { BulkActionDefinition } from '../actions-toolbars/BulkActionDefinition';
 import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
+import { FileDetailActionDefinition } from '../file-details/FileDetailActionDefinition';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -47,6 +48,8 @@ export class LibMainFileManagerComponent implements OnInit, OnDestroy {
   fileActions: FileActionDefinition[];
   bulkActions: BulkActionDefinition[];
   mainActions: MainActionDefinition[];
+
+  fileDetailActions: FileDetailActionDefinition[];
 
   folders$: Observable<CoreTypes.ResFile[]>;
   files$: Observable<CoreTypes.ResFile[]>;
@@ -255,6 +258,37 @@ export class LibMainFileManagerComponent implements OnInit, OnDestroy {
         label: 'New Folder',
         icon: 'create_new_folder',
         onClick: async () => this.actionHandlers.OnNewFolderInCurrentDirectory()
+      }
+    ];
+    this.fileDetailActions = [
+      {
+        label: 'Download',
+        toolTip: 'Click to Download',
+        icon: 'file_download',
+        $disabled: this.actionHandlers.$SelectedFile.pipe(map(f => f.type !== 'file')),
+        onClick: async (file) => this.actionHandlers.OnDownloadFile(file)
+      },
+      {
+        label: 'Rename',
+        toolTip: 'Click to Rename',
+        icon: 'border_color',
+        $disabled: of(!this.config.isAdmin),
+        onClick: async (file) => this.actionHandlers.OnRename(file)
+      },
+      {
+        label: 'Set Permissions',
+        toolTip: 'Click to Set Permissions',
+        icon: 'lock_outline',
+        $disabled: of(!this.config.isAdmin),
+        onClick: async (file) => this.actionHandlers.OnSetPermissionsObjectMultiple([file])
+      },
+      {
+        label: 'Delete',
+        toolTip: 'Click to Delete',
+        icon: 'delete',
+        $disabled: of(!this.config.isAdmin),
+        color: 'warn',
+        onClick: async (file) => this.actionHandlers.OnDeleteMultiple([file])
       }
     ];
     const allFiles$ = new BehaviorSubject<CoreTypes.ResFile[]>([]);

@@ -8,10 +8,10 @@ import { MainActionDefinition } from './MainActionDefinition';
     <mat-toolbar>
       <mat-toolbar-row class="top-toolbar">
         <span class="top-toolbar-label">
-          Main Actions
+          Folder Actions
         </span>
       </mat-toolbar-row>
-      <mat-toolbar-row class="scroll-x">
+      <mat-toolbar-row class="action-toolbar scroll-x">
         <div *ngFor="let action of mainActions">
           <button
             class="mr-10 has-pointer"

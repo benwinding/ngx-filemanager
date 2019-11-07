@@ -4,45 +4,40 @@ import { promiseDelay } from '../../utils/delayer';
 import { LoggerService } from '../../services/logging/logger.service';
 import { getFileIconName } from '../file-upload/form-file-firebase/file-icon.helper';
 import { FileManagerConfig } from '../../configuration/client-configuration';
+import { FileDetailActionDefinition } from './FileDetailActionDefinition';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager-file-details',
   template: `
-    <div class="details-container p5">
+    <div class="details-container ml-5">
       <div *ngIf="!hasInput" class="none-selected">
         <h2>No item selected ...</h2>
       </div>
       <div *ngIf="hasInput">
-        <span class="flex-row space-between align-center">
-          <h2 *ngIf="isFile">File Details</h2>
-          <h2 *ngIf="!isFile">Directory Details</h2>
-          <span>
+        <mat-toolbar color="primary">
+          <mat-toolbar-row class="title-row">
+            <h2 *ngIf="isFile">File Details</h2>
+            <h2 *ngIf="!isFile">Directory Details</h2>
+          </mat-toolbar-row>
+          <mat-toolbar-row class="action-row" *ngFor="let action of actions">
             <button
-              mat-mini-fab
-              color="warn"
-              class="has-pointer"
-              matTooltip="Click to Delete"
-              (click)="this.clickedDelete.emit(file)"
+              mat-raised-button
+              [matTooltip]="action.toolTip"
+              [color]="action.color"
+              (click)="action.onClick(file)"
+              [disabled]="action.$disabled | async"
             >
-              <mat-icon>delete</mat-icon>
+              <mat-icon>{{ action.icon }}</mat-icon>
+              <span>{{ action.label }}</span>
             </button>
-          </span>
-        </span>
+          </mat-toolbar-row>
+        </mat-toolbar>
         <span class="flex-row space-between align-top mt-5">
           <div>
             <h5>Name</h5>
             <h6 class="filename">{{ file.name }}</h6>
           </div>
-          <button
-            mat-mini-fab
-            color="primary"
-            class="has-pointer"
-            matTooltip="Click to Rename"
-            (click)="this.clickedRename.emit(file)"
-          >
-            <mat-icon>border_color</mat-icon>
-          </button>
         </span>
         <h5 class="mt-5">Size</h5>
         <h6>{{ file.size | fileSize }}</h6>
@@ -80,16 +75,6 @@ import { FileManagerConfig } from '../../configuration/client-configuration';
               </div>
             </div>
           </div>
-          <button
-            mat-mini-fab
-            color="primary"
-            class="has-pointer"
-            matTooltip="Click to Set Permissions"
-            [disabled]="!isAdmin"
-            (click)="this.clickedSetPermissions.emit(file)"
-          >
-            <mat-icon>lock_outline</mat-icon>
-          </button>
         </span>
         <h5 class="mt-5">Full Path</h5>
         <h6>{{ file.fullPath }}</h6>
@@ -116,15 +101,6 @@ import { FileManagerConfig } from '../../configuration/client-configuration';
               </h6>
             </div>
           </div>
-          <button
-            mat-mini-fab
-            color="primary"
-            class="has-pointer"
-            matTooltip="Click to Download"
-            (click)="this.clickedDownload.emit(file)"
-          >
-            <mat-icon>file_download</mat-icon>
-          </button>
         </div>
       </div>
     </div>
@@ -143,11 +119,11 @@ import { FileManagerConfig } from '../../configuration/client-configuration';
       .mb-10 {
         margin-bottom: 10px;
       }
-      .-mt-25 {
-        margin-top: -25px;
-      }
       .mt-5 {
         margin-top: 10px;
+      }
+      .ml-5 {
+        margin-left: 5px;
       }
       .no-preview-text {
         color: grey;
@@ -174,10 +150,17 @@ import { FileManagerConfig } from '../../configuration/client-configuration';
         opacity: 1;
         transition: opacity 1s;
       }
-      .hidden {
-        opacity: 0;
-        height: 0px;
-        overflow: hidden;
+      .title-row {
+        height: 45px;
+        padding-left: 8px;
+      }
+      .action-row {
+        height: 45px;
+        padding-left: 8px;
+      }
+      .action-row:last-child {
+        height: 48px;
+        padding-bottom: 4px;
       }
     `
   ],
@@ -189,32 +172,34 @@ export class FileDetailsComponent {
   _file: CoreTypes.ResFile;
   @Input()
   set file(newFile) {
-    this.logger.info('file-details: set file', { newFile });
     this._file = newFile;
-    this.setImageUrl();
+    if (!newFile) {
+      return;
+    }
+    this.logger.info('file-details: set file', { newFile });
+    this.isFile = this.file.type === 'file';
+    this.isImage = getFileIconName(this.file.name) === 'image';
+    this.setImageUrl().catch(e => console.error(e));
     this.setPermissions();
   }
   get file() {
     return this._file;
   }
   @Input()
-  isAdmin: boolean;
-  @Input()
   fileSystem: FileSystemProvider;
   @Input()
   config: FileManagerConfig;
+  @Input()
+  actions: FileDetailActionDefinition[];
   @Output()
   clickedDownload = new EventEmitter<CoreTypes.ResFile>();
-  @Output()
-  clickedDelete = new EventEmitter<CoreTypes.ResFile>();
-  @Output()
-  clickedRename = new EventEmitter<CoreTypes.ResFile>();
-  @Output()
-  clickedSetPermissions = new EventEmitter<CoreTypes.ResFile>();
 
   others: string;
   writers: CoreTypes.FilePermissionEntity[];
   readers: CoreTypes.FilePermissionEntity[];
+
+  isFile: boolean;
+  isImage: boolean;
 
   constructor(private logger: LoggerService) {}
 
@@ -224,12 +209,6 @@ export class FileDetailsComponent {
 
   get hasInput() {
     return !!this.file;
-  }
-  get isFile() {
-    return this.file.type === 'file';
-  }
-  get isImage() {
-    return getFileIconName(this.file.name) === 'image';
   }
 
   async setImageUrl() {

@@ -73,14 +73,11 @@
       opened
     >
       <ngx-filemanager-file-details
-        [isAdmin]="config.isAdmin"
+        [actions]="fileDetailActions"
         [file]="SelectedFile"
         [fileSystem]="fileSystem"
         [config]="config"
-        (clickedDelete)="this.onDetailsClickDelete($event)"
         (clickedDownload)="this.onDetailsClickDownload($event)"
-        (clickedRename)="this.onDetailsClickRename($event)"
-        (clickedSetPermissions)="this.onDetailsClickSinglePermissions($event)"
       >
       </ngx-filemanager-file-details>
     </mat-drawer>

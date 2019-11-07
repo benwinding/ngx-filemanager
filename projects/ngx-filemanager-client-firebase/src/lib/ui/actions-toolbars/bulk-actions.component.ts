@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
           Bulk Actions
         </span>
       </mat-toolbar-row>
-      <mat-toolbar-row class="scroll-x">
+      <mat-toolbar-row class="action-toolbar scroll-x">
         <div class="flex-row" *ngIf="bulkSelected$ | async as selected">
           <div *ngFor="let action of bulkActions">
             <button

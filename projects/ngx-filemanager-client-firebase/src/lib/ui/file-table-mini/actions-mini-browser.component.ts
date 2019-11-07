@@ -11,7 +11,7 @@ import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
           Actions
         </span>
       </mat-toolbar-row>
-      <mat-toolbar-row class="scroll-x">
+      <mat-toolbar-row class="action-toolbar scroll-x">
         <div *ngFor="let action of mainActions">
           <button
             class="action has-pointer"
