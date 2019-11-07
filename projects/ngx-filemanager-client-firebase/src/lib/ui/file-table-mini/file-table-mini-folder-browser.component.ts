@@ -23,7 +23,6 @@ import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
           [folder]="folder"
           [selectedItem]="selectedItem"
           (enterFolder)="onEnterFolder($event)"
-          (selectedItem)="onSelectFolder($event)"
         >
         </card-folder>
       </div>
@@ -78,12 +77,17 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
       .subscribe(fileItems => {
         this.folders = fileItems.filter(f => f.type === 'dir');
       });
+    this.selectedItem.changed.pipe(takeUntil(this.destroyed)).subscribe(() => {
+      const selectedDir = this.selectedItem.selected[0];
+      this.selectedDirectory.emit(selectedDir);
+    });
 
     this.mainActions = [
       {
         label: 'Back',
         icon: 'reply',
         onClick: async () => {
+          this.logger.info('Back clicked');
           await this.actionHandlers.OnNavigateToParent();
           const selectedDirectory = await this.actionHandlers.GetCurrentPath();
           this.selectedDirectory.emit(selectedDirectory);
@@ -100,11 +104,8 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
     return this.actionHandlers.OnNavigateTo(this.currentDirectory);
   }
 
-  async onSelectFolder(folderPath: string) {
-    this.selectedDirectory.emit(folderPath);
-  }
-
   async onEnterFolder(folderPath: string) {
+    this.logger.info('onEnterFolder', { folderPath });
     this.selectedDirectory.emit(folderPath);
     return this.actionHandlers.OnNavigateTo(folderPath);
   }
