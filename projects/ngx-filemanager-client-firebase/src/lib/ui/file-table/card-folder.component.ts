@@ -50,7 +50,7 @@ import { FileActionDefinition } from './FileActionDefinition';
         *ngFor="let action of actions"
         (click)="action.onClick(folder)"
       >
-        <mat-icon>{{ action.icon }}</mat-icon>
+        <mat-icon [color]="action.color">{{ action.icon }}</mat-icon>
         <span>{{ action.label }}</span>
       </button>
     </mat-menu>

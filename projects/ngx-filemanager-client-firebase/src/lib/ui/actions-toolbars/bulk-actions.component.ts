@@ -1,6 +1,7 @@
-import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
-import { ActionButton } from './ActionButton';
-import { Observable, of } from 'rxjs';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { BulkActionDefinition } from './BulkActionDefinition';
+import { CoreTypes } from '../../../core-types';
+import { Observable } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -8,14 +9,14 @@ import { Observable, of } from 'rxjs';
   template: `
     <mat-toolbar color="primary">
       <mat-toolbar-row class="scroll-x">
-        <div class="flex-row">
+        <div class="flex-row" *ngIf="bulkSelected$ | async as selected">
           <div *ngFor="let action of bulkActions">
             <button
               class="mr-10 flex-row align-center"
               mat-raised-button
               [disabled]="action.$disabled | async"
               [color]="action.color"
-              (click)="action.onClick(action)"
+              (click)="executeAction(action, selected)"
             >
               <mat-icon>{{ action.icon }}</mat-icon>
               {{ action.label }}
@@ -27,53 +28,16 @@ import { Observable, of } from 'rxjs';
   `,
   styleUrls: ['../shared-utility-styles.scss']
 })
-export class AppBulkActionsComponent implements OnInit {
+export class AppBulkActionsComponent {
   @Input()
-  isAdmin: boolean;
+  bulkActions: BulkActionDefinition[];
+  @Input()
+  bulkSelected$: Observable<CoreTypes.ResFile[]>;
   @Output()
-  clickedCancelBulk = new EventEmitter<void>();
-  @Output()
-  clickedBulkCopy = new EventEmitter<void>();
-  @Output()
-  clickedBulkMove = new EventEmitter<void>();
-  @Output()
-  clickedBulkPermissions = new EventEmitter<void>();
-  @Output()
-  clickedBulkDelete = new EventEmitter<void>();
+  clearSelected = new EventEmitter<void>();
 
-  bulkActions: ActionButton[];
-
-  ngOnInit() {
-    this.bulkActions = [];
-    const addBulk = (
-      label: string,
-      icon: string,
-      onClick: (item: ActionButton) => void,
-      $disabled?: Observable<boolean>
-    ) => {
-      this.bulkActions.push({
-        label,
-        icon,
-        color: null,
-        onClick: (item: ActionButton) => onClick(item),
-        $disabled: $disabled || of(false)
-      });
-    };
-
-    addBulk('Cancel', 'clear', (item: ActionButton) => {
-      this.clickedCancelBulk.emit();
-    });
-    addBulk('Copy', 'content_copy', (item: ActionButton) => {
-      this.clickedBulkCopy.emit();
-    });
-    addBulk('Move', 'forward', (item: ActionButton) => {
-      this.clickedBulkMove.emit();
-    });
-    addBulk('Set Permissions', 'lock_outline', (item: ActionButton) => {
-      this.clickedBulkPermissions.emit();
-    }, of(!this.isAdmin));
-    addBulk('Delete', 'delete', (item: ActionButton) => {
-      this.clickedBulkDelete.emit();
-    });
+  async executeAction(action: BulkActionDefinition, selected: CoreTypes.ResFile[]) {
+    await action.onClick(selected);
+    this.clearSelected.emit();
   }
 }

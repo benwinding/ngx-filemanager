@@ -7,24 +7,14 @@
         *ngIf="initLoaded"
       >
         <bulk-actions
-          [isAdmin]="this.config.isAdmin"
-          (clickedCancelBulk)="this.onClickedCancelBulk()"
-          (clickedBulkCopy)="this.onClickedBulkCopy()"
-          (clickedBulkMove)="this.onClickedBulkMove()"
-          (clickedBulkPermissions)="this.onClickedBulkPermissions()"
-          (clickedBulkDelete)="this.onClickedBulkDelete()"
+          [bulkActions]="this.bulkActions"
+          [bulkSelected$]="this.$BulkSelected"
+          (clearSelected)="this.ClearBulkSelected()"
         >
         </bulk-actions>
       </div>
       <div class="folder-actions-container">
-        <folder-actions
-          (clickedNewFolder)="this.onClickNewFolder()"
-          (clickedUpFolder)="this.onClickUpFolder()"
-          (clickedRefresh)="this.onClickRefresh()"
-          (clickedUploadFiles)="this.onClickUploadFiles()"
-          [$CurrentPathIsRoot]="$CurrentPathIsRoot"
-        >
-        </folder-actions>
+        <main-actions [mainActions]="this.mainActions"> </main-actions>
       </div>
       <div class="flex-h space-between breadcrumb-container">
         <bread-crumbs

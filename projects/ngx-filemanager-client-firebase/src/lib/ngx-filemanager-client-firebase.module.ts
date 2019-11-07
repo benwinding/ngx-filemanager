@@ -33,7 +33,7 @@ import { getBaseHref } from './getBaseHref';
 import { NgxFileManagerComponent } from './ui/file-manager/file-manager.component';
 import { AppBreadCrumbsComponent } from './ui/bread-crumbs/bread-crumbs.component';
 import { AppBulkActionsComponent } from './ui/actions-toolbars/bulk-actions.component';
-import { AppFolderActionsComponent } from './ui/actions-toolbars/folder-actions.component';
+import { AppMainActionsComponent } from './ui/actions-toolbars/main-actions.component';
 import { FileDetailsComponent } from './ui/file-details/file-details.component';
 import { FormFileFirebaseModule } from './ui/file-upload/file-upload.module';
 import { FilemanagerStatusService } from './services/state/status.service';
@@ -50,7 +50,7 @@ const declarations = [
   NgxFileManagerComponent,
   AppBreadCrumbsComponent,
   AppBulkActionsComponent,
-  AppFolderActionsComponent,
+  AppMainActionsComponent,
   FileDetailsComponent,
 ];
 

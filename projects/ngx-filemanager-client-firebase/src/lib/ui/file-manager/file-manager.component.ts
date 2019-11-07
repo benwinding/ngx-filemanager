@@ -1,6 +1,6 @@
 import { OnInit, Component, Input, OnDestroy } from '@angular/core';
 import { take, map, takeUntil, tap } from 'rxjs/operators';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
+import { Subject, BehaviorSubject, Observable, of } from 'rxjs';
 import { FileSystemProvider, CoreTypes } from '../../../core-types';
 import { LoggerService } from '../../services/logging/logger.service';
 import { ActionHandlersService } from './action-handlers.service';
@@ -10,6 +10,8 @@ import { FileManagerConfig } from '../../configuration/client-configuration';
 import { FilemanagerStatusService } from '../../services/state/status.service';
 import { sortObjectArrayCase } from '../../utils/sort-helpers';
 import { FileActionDefinition } from '../file-table/FileActionDefinition';
+import { BulkActionDefinition } from '../actions-toolbars/BulkActionDefinition';
+import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -44,6 +46,8 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
 
   folderActions: FileActionDefinition[];
   fileActions: FileActionDefinition[];
+  bulkActions: BulkActionDefinition[];
+  mainActions: MainActionDefinition[];
 
   folders$: Observable<CoreTypes.ResFile[]>;
   files$: Observable<CoreTypes.ResFile[]>;
@@ -159,6 +163,7 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
       {
         label: 'Delete',
         icon: 'delete',
+        color: 'warn',
         onClick: async (file: CoreTypes.ResFile) =>
           this.actionHandlers.OnDeleteMultiple([file])
       }
@@ -191,8 +196,66 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
       {
         label: 'Delete',
         icon: 'delete',
+        color: 'warn',
         onClick: async (file: CoreTypes.ResFile) =>
           this.actionHandlers.OnDeleteMultiple([file])
+      }
+    ];
+    this.bulkActions = [
+      {
+        label: 'Cancel',
+        icon: 'clear',
+        onClick: async (item: CoreTypes.ResFile[]) => this.ClearBulkSelected()
+      },
+      {
+        label: 'Copy',
+        icon: 'content_copy',
+        onClick: (items: CoreTypes.ResFile[]) =>
+          this.actionHandlers.OnCopyMultiple([...items])
+      },
+      {
+        label: 'Move',
+        icon: 'forward',
+        onClick: (items: CoreTypes.ResFile[]) =>
+          this.actionHandlers.OnMoveMultiple(items)
+      },
+      {
+        label: 'Set Permissions',
+        icon: 'lock_outline',
+        onClick: (items: CoreTypes.ResFile[]) =>
+          this.actionHandlers.OnSetPermissionsObjectMultiple(items),
+        $disabled: of(!this.config.isAdmin)
+      },
+      {
+        label: 'Delete',
+        icon: 'delete',
+        color: 'warn',
+        onClick: (items: CoreTypes.ResFile[]) =>
+          this.actionHandlers.OnDeleteMultiple(items),
+        $disabled: of(!this.config.isAdmin)
+      }
+    ];
+    this.mainActions = [
+      {
+        label: 'Back',
+        icon: 'reply',
+        onClick: async () => this.actionHandlers.OnNavigateToParent()
+      },
+      {
+        label: 'Refresh',
+        icon: 'refresh',
+        onClick: async () => this.actionHandlers.RefreshExplorer()
+      },
+      {
+        label: 'Upload Files',
+        icon: 'file_upload',
+        onClick: async () =>
+          this.actionHandlers.OnUploadFilesToCurrentDirectory()
+      },
+      {
+        label: 'New Folder',
+        icon: 'create_new_folder',
+        onClick: async () => this.actionHandlers.OnNewFolderInCurrentDirectory()
       }
     ];
     const allFiles$ = new BehaviorSubject<CoreTypes.ResFile[]>([]);
@@ -219,7 +282,7 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
 
   async onEnterFolder(itemPath: string) {
     this.logger.info('onSelectItemDoubleClick!', { itemPath });
-    this.clearBulkSelected();
+    this.ClearBulkSelected();
     return this.actionHandlers.OnNavigateTo(itemPath);
   }
   async onSelectedFilePath(itemPath: string) {
@@ -241,62 +304,13 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
     await this.actionHandlers.OnSelectItemByPath(file.fullPath);
   }
 
-  public async onClickNewFolder() {
-    return this.actionHandlers.OnNewFolderInCurrentDirectory();
-  }
-
-  public async onClickUpFolder() {
-    return this.actionHandlers.OnNavigateToParent();
-  }
-
-  public async onClickUploadFiles() {
-    return this.actionHandlers.OnUploadFilesToCurrentDirectory();
-  }
-
-  public async onClickRefresh() {
-    return this.actionHandlers.RefreshExplorer();
-  }
-
-  public async onClickedCancelBulk() {
-    this.logger.info('onClickCancelBulk');
-    this.clearBulkSelected();
-  }
-
-  public async onClickedBulkCopy() {
-    const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
-    const selectedCopied = [...selected];
-    this.logger.info('clickedBulkCopy', { selectedCopied });
-    await this.actionHandlers.OnCopyMultiple(selectedCopied);
-    this.clearBulkSelected();
-  }
-
-  public async onClickedBulkMove() {
-    const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
-    this.logger.info('clickedBulkMove', { selected });
-    await this.actionHandlers.OnMoveMultiple(selected);
-    this.clearBulkSelected();
-  }
-
-  public async onClickedBulkDelete() {
-    const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
-    this.clearBulkSelected();
-    return this.actionHandlers.OnDeleteMultiple(selected);
-  }
-
-  public async onClickedBulkPermissions() {
-    this.logger.info('clickedBulkPermissions');
-    const selected = await this.$BulkSelected.pipe(take(1)).toPromise();
-    await this.actionHandlers.OnSetPermissionsMultiple(selected);
-    this.clearBulkSelected();
-  }
-
   public async onClickCrumb(newPath: string) {
-    this.clearBulkSelected();
+    this.ClearBulkSelected();
     this.logger.info('onClickCrumb', { newPath });
     return this.actionHandlers.OnNavigateTo(newPath);
   }
 
-  private clearBulkSelected() {
+  public ClearBulkSelected() {
     this.$triggerClearSelected.next();
     this.$BulkSelected.next([]);
   }

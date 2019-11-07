@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs';
 
-export interface ActionButton {
+export interface MainActionDefinition {
   label: string;
-  onClick: (item: ActionButton) => void;
   icon: string;
-  color: string;
+  color?: string;
   $disabled?: Observable<boolean>;
+  onClick: () => Promise<void>;
 }

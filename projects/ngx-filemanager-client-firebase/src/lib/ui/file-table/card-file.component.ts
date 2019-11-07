@@ -43,8 +43,12 @@ import { FileActionDefinition } from './FileActionDefinition';
       </div>
     </div>
     <mat-menu #menu="matMenu">
-      <button mat-menu-item *ngFor="let action of actions" (click)="action.onClick(file)">
-        <mat-icon>{{ action.icon }}</mat-icon>
+      <button
+        mat-menu-item
+        *ngFor="let action of actions"
+        (click)="action.onClick(file)"
+      >
+        <mat-icon [color]="action.color">{{ action.icon }}</mat-icon>
         <span>{{ action.label }}</span>
       </button>
     </mat-menu>

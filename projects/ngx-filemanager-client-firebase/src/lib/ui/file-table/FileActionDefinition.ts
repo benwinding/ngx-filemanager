@@ -2,6 +2,7 @@ import { CoreTypes } from '../../../core-types';
 
 export interface FileActionDefinition {
   label: string;
-  icon?: string;
-  onClick?: (row: CoreTypes.ResFile) => void;
+  icon: string;
+  color?: string;
+  onClick: (row: CoreTypes.ResFile) => void;
 }

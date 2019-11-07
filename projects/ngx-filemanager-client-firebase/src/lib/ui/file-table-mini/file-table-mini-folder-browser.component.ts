@@ -8,17 +8,13 @@ import { ClientFileSystemService } from '../../services/pure/client-filesystem.s
 import { OptimisticFilesystemService } from '../../services/pure/optimistic-filesystem.service';
 import { takeUntil } from 'rxjs/operators';
 import { SelectionModel } from '@angular/cdk/collections';
+import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'app-file-table-mini-folder-browser',
   template: `
-    <actions-mini-browser
-      (clickedUpFolder)="onUpFolder()"
-      (clickedNewFolder)="onNewFolder()"
-      [$CurrentPathIsRoot]="$CurrentPathIsRoot"
-    >
-    </actions-mini-browser>
+    <actions-mini-browser [mainActions]="mainActions"> </actions-mini-browser>
     <div class="full-width">
       <h4 class="p5 m0 color-grey">Folders</h4>
       <div class="flex-col">
@@ -70,6 +66,8 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
 
   folders: CoreTypes.ResFile[];
 
+  mainActions: MainActionDefinition[];
+
   destroyed = new Subject();
 
   constructor(private logger: LoggerService) {}
@@ -80,6 +78,25 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
       .subscribe(fileItems => {
         this.folders = fileItems.filter(f => f.type === 'dir');
       });
+
+    this.mainActions = [
+      {
+        label: 'Back',
+        icon: 'reply',
+        onClick: async () => {
+          await this.actionHandlers.OnNavigateToParent();
+          const selectedDirectory = await this.actionHandlers.GetCurrentPath();
+          this.selectedDirectory.emit(selectedDirectory);
+        },
+        $disabled: this.$CurrentPathIsRoot
+      },
+      {
+        label: 'New Folder',
+        icon: 'create_new_folder',
+        onClick: async () => this.actionHandlers.OnNewFolderInCurrentDirectory()
+      }
+    ];
+
     return this.actionHandlers.OnNavigateTo(this.currentDirectory);
   }
 
@@ -88,16 +105,7 @@ export class AppFileTableMiniFolderBrowserComponent implements OnInit {
   }
 
   async onEnterFolder(folderPath: string) {
+    this.selectedDirectory.emit(folderPath);
     return this.actionHandlers.OnNavigateTo(folderPath);
-  }
-
-  async onUpFolder() {
-    await this.actionHandlers.OnNavigateToParent();
-    const selectedDirectory = await this.actionHandlers.GetCurrentPath();
-    this.selectedDirectory.emit(selectedDirectory);
-  }
-  async onNewFolder() {
-    this.logger.info('onClickNewFolder');
-    return this.actionHandlers.OnNewFolderInCurrentDirectory();
   }
 }

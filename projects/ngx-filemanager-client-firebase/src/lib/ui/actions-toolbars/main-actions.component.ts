@@ -1,15 +1,15 @@
 import { Component, Input } from '@angular/core';
-import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
+import { MainActionDefinition } from './MainActionDefinition';
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'actions-mini-browser',
+  selector: 'main-actions',
   template: `
-    <mat-toolbar *ngIf="this.mainActions">
+    <mat-toolbar>
       <mat-toolbar-row class="scroll-x">
         <div *ngFor="let action of mainActions">
           <button
-            class="action has-pointer"
+            class="mr-10 has-pointer"
             mat-raised-button
             [color]="action.color"
             (click)="action.onClick(action)"
@@ -22,16 +22,9 @@ import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
       </mat-toolbar-row>
     </mat-toolbar>
   `,
-  styles: [
-    `
-      button.action {
-        margin-right: 10px;
-      }
-    `
-  ],
   styleUrls: ['../shared-utility-styles.scss']
 })
-export class AppActionsMiniBrowserComponent {
+export class AppMainActionsComponent {
   @Input()
   mainActions: MainActionDefinition[];
 }
