@@ -265,7 +265,7 @@ export class LibMainFileManagerComponent implements OnInit, OnDestroy {
         label: 'Download',
         toolTip: 'Click to Download',
         icon: 'file_download',
-        $disabled: this.actionHandlers.$SelectedFile.pipe(map(f => f.type !== 'file')),
+        $disabled: this.actionHandlers.$SelectedFile.pipe(map(f => !f || f.type !== 'file')),
         onClick: async (file) => this.actionHandlers.OnDownloadFile(file)
       },
       {

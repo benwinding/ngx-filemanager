@@ -31,7 +31,7 @@ import { FileActionDefinition } from './FileActionDefinition';
         </div>
         <img class="mr-10" width="30" [src]="folder['icon']" />
         <div>
-          <h5 class="m0 mb-5">{{ folder.name }}</h5>
+          <h5 class="m0 mb-5 has-ellipsis">{{ folder.name }}</h5>
           <small class="m0 color-grey">{{ folder.size | fileSize }}</small>
         </div>
       </div>

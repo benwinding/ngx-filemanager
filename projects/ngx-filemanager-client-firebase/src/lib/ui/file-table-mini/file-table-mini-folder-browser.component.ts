@@ -21,7 +21,7 @@ import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
   selector: 'app-file-table-mini-folder-browser',
   template: `
     <actions-mini-browser [mainActions]="mainActions"> </actions-mini-browser>
-    <div class="full-width">
+    <div class="full-width mini-browser-height">
       <h4 class="p5 m0 color-grey">Folders</h4>
       <div class="flex-col">
         <card-folder
@@ -34,24 +34,18 @@ import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
       </div>
     </div>
   `,
-  styles: [
-    `
-      .icon {
-        height: 35px;
-      }
-      .break-word {
-        overflow-wrap: break-word;
-        word-break: break-all;
-      }
-      .greyed {
-        filter: grayscale(1);
-      }
-    `
-  ],
   providers: [
     ActionHandlersService,
     ClientFileSystemService,
     OptimisticFilesystemService
+  ],
+  styles: [
+    `
+      .mini-browser-height {
+        min-height: 400px;
+        max-height: 80vh;
+      }
+    `
   ]
 })
 export class AppFileTableMiniFolderBrowserComponent

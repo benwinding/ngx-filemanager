@@ -28,7 +28,7 @@ import { FileActionDefinition } from './FileActionDefinition';
         >
         <img class="mr-10" width="30" [src]="file['icon']" />
         <div>
-          <h5 class="m0 mb-5">{{ file.name }}</h5>
+          <h5 class="m0 mb-5 has-ellipsis">{{ file.name }}</h5>
           <small class="m0 color-grey">{{ file.size | fileSize }}</small>
         </div>
       </div>

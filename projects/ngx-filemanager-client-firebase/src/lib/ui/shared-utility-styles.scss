@@ -40,6 +40,11 @@ h6 {
 .has-pointer {
   cursor: pointer;
 }
+.has-ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
 .scroll-x {
   overflow-x: auto;
 }
@@ -51,6 +56,10 @@ h6 {
 }
 .space-between {
   justify-content: space-between;
+}
+.break-word {
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 .capitalize {
   text-transform: capitalize;

@@ -29,12 +29,14 @@ export interface CopyDialogInterface {
         <h2>{{ OkLabel }} Items</h2>
       </ng-template>
       <ng-template #bodyTemplate>
-        <h5>Selected Items</h5>
-        <ol>
-          <li *ngFor="let file of items">
+        <h5 class="my-5">Selected Items</h5>
+        <mat-chip-list class="mb-5">
+          <mat-chip *ngFor="let file of items">
+            <mat-icon *ngIf="file.type === 'file'">description</mat-icon>
+            <mat-icon *ngIf="file.type !== 'file'">folder</mat-icon>
             {{ file.name }}
-          </li>
-        </ol>
+          </mat-chip>
+        </mat-chip-list>
         <div>
           <app-file-table-mini-folder-browser
             [folders]="folders"
