@@ -44,6 +44,11 @@ export class ActionHandlersService {
     return current || '';
   }
 
+  public ConvertToRelativePath(directoryPath: string): string {
+    const rootLength = (this.config.virtualRoot || '').length;
+    return (directoryPath || '').slice(rootLength);
+  }
+
   get $CurrentPathIsRoot() {
     return this.$CurrentPath.pipe(map(p => p === this.config.virtualRoot));
   }
