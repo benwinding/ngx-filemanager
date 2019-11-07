@@ -16,8 +16,6 @@ export interface CopyDialogInterface {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'ngx-filemanager-copy-dialog',
   template: `
     <base-dialog
       *ngIf="currentDir"
@@ -37,21 +35,24 @@ export interface CopyDialogInterface {
             {{ file.name }}
           </mat-chip>
         </mat-chip-list>
-        <div>
-          <app-file-table-mini-folder-browser
-            [folders]="folders"
-            [mainActions]="mainActions"
-            (enterDirectory)="onEnterDirectory($event)"
-            (selectedDirectory)="onSelectedDirectory($event)"
-          >
-          </app-file-table-mini-folder-browser>
+        <h5 class="my-5">Navigate to destination folder</h5>
+        <div class="full-width">
+          <mat-card class="m-10 bg-grey">
+            <app-file-table-mini-folder-browser
+              [folders]="folders"
+              [mainActions]="mainActions"
+              (enterDirectory)="onEnterDirectory($event)"
+              (selectedDirectory)="onSelectedDirectory($event)"
+            >
+            </app-file-table-mini-folder-browser>
+          </mat-card>
         </div>
       </ng-template>
       <ng-template #actionsTemplate>
         <h5 class="p5 m0" *ngIf="!SelectedFolder">No folder selected</h5>
         <h5 class="p5 m0" *ngIf="SameAsRoot">Cannot copy to the same folder</h5>
         <h5 class="p5 m0" *ngIf="!DisableCopy">
-          CopyTo Path: {{ copyToPath }}
+          Will copy Selected Items to: {{ copyToPath }}
         </h5>
         <btns-cancel-ok
           [okIcon]="OkIcon"
@@ -64,6 +65,13 @@ export interface CopyDialogInterface {
       </ng-template>
     </base-dialog>
   `,
+  styles: [
+    `
+      .bg-grey {
+        background-color: #eee;
+      }
+    `
+  ],
   styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppDialogCopyComponent implements OnDestroy {

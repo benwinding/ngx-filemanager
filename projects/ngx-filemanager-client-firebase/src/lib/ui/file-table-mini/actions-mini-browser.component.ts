@@ -5,7 +5,7 @@ import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
   // tslint:disable-next-line:component-selector
   selector: 'actions-mini-browser',
   template: `
-    <mat-toolbar *ngIf="this.mainActions">
+    <mat-toolbar color="primary" *ngIf="this.mainActions">
       <mat-toolbar-row class="top-toolbar">
         <span class="top-toolbar-label">
           Actions

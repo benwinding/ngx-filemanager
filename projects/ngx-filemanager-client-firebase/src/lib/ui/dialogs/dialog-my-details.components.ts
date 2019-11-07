@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'ngx-filemanager-new-folder-dialog',
   template: `
     <base-dialog
       [header]="headerTemplate"

@@ -20,10 +20,10 @@ import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
   // tslint:disable-next-line:component-selector
   selector: 'app-file-table-mini-folder-browser',
   template: `
-    <actions-mini-browser [mainActions]="mainActions"> </actions-mini-browser>
     <div class="full-width mini-browser-height">
+      <actions-mini-browser [mainActions]="mainActions"> </actions-mini-browser>
       <h4 class="p5 m0 color-grey">Folders</h4>
-      <div class="flex-col">
+      <div class="flex-col bg-white">
         <card-folder
           *ngFor="let folder of folders"
           [folder]="folder"
@@ -45,8 +45,12 @@ import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
         min-height: 400px;
         max-height: 80vh;
       }
+      .bg-white {
+        background-color: #fff;
+      }
     `
-  ]
+  ],
+  styleUrls: ['../shared-utility-styles.scss']
 })
 export class AppFileTableMiniFolderBrowserComponent
   implements OnInit, OnDestroy {

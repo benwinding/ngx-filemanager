@@ -18,8 +18,6 @@ export interface UploadDialogResponseInterface {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'ngx-filemanager-upload-files-dialog',
   template: `
     <base-dialog
       [header]="headerTemplate"

@@ -8,8 +8,6 @@ export interface RenameDialogInterface {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'ngx-filemanager-rename-file-dialog',
   template: `
     <base-dialog
       [header]="headerTemplate"

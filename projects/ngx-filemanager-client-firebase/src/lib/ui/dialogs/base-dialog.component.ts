@@ -20,6 +20,7 @@ import { Component, Input } from '@angular/core';
     `
       .dialog-wrapper {
         max-height: 80vh;
+        min-width: 400px;
       }
       .header {
       }

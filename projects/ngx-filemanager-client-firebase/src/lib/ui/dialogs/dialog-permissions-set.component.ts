@@ -20,8 +20,6 @@ export interface PermissionsDialogResponseInterface {
 }
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'ngx-filemanager-permissions-set-dialog',
   template: `
     <base-dialog
       [header]="headerTemplate"

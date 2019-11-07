@@ -16,7 +16,8 @@ import {
   MatInputModule,
   MatDialogModule,
   MatChipsModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatCardModule
 } from '@angular/material';
 import { AppBtnsCancelOkComponent } from './btns-cancel-ok.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -50,6 +51,7 @@ const declarations = [...entryComponents, AppBtnsCancelOkComponent];
     MatInputModule,
     MatIconModule,
     MatSelectModule,
+    MatCardModule,
     FileTableMiniModule,
     TagsControlModule
   ],

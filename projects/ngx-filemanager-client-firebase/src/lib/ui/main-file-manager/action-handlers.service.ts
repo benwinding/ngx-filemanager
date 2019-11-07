@@ -292,7 +292,7 @@ export class ActionHandlersService {
 
   private async openDialog(comp: any, data?: any) {
     const ref = this.dialog.open(comp, {
-      width: '400px',
+      width: '600px',
       hasBackdrop: true,
       disableClose: false,
       data: data
