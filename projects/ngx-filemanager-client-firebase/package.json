@@ -1,6 +1,6 @@
 {
   "name": "ngx-filemanager-client-firebase",
-  "version": "0.6.0-beta.5",
+  "version": "0.6.1",
   "peerDependencies": {
     "@angular/common": "^7.x",
     "@angular/compiler": "^7.x",
