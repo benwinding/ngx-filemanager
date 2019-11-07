@@ -237,9 +237,10 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
     ];
     this.mainActions = [
       {
-        label: 'Back',
+        label: 'Back Folder',
         icon: 'reply',
-        onClick: async () => this.actionHandlers.OnNavigateToParent()
+        onClick: async () => this.actionHandlers.OnNavigateToParent(),
+        $disabled: this.$CurrentPathIsRoot
       },
       {
         label: 'Refresh',
