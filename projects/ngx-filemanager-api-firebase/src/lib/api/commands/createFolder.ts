@@ -53,7 +53,8 @@ export async function CreateFolder(
   bucket: Bucket,
   newDirectoryPath: string,
   claims: CoreTypes.UserCustomClaims,
-  disableNoClobber?: boolean
+  disableNoClobber?: boolean,
+  isAdmin?: boolean,
 ) {
   try {
     const newDirPath = paths.EnsureGoogleStoragePathDir(newDirectoryPath);
@@ -64,7 +65,9 @@ export async function CreateFolder(
     } else {
       newDirToAdd = newDir;
     }
-    await storage.TryCheckWritePermission(bucket, newDirToAdd.name, claims);
+    if (!isAdmin) {
+      await storage.TryCheckWritePermission(bucket, newDirToAdd.name, claims);
+    }
     return CreateFolderWithoutPermissions(bucket, newDirToAdd.name);
   } catch (error) {
     throw new Error(error);

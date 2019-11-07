@@ -221,7 +221,8 @@ export class NgxFileMangerApiFireBaseClass {
         bucket,
         body.newPath,
         claims,
-        body.disableNoClobber
+        body.disableNoClobber,
+        body.isAdmin
       );
       const response: CoreTypes.ResBodyCreateFolder = {
         result: result
