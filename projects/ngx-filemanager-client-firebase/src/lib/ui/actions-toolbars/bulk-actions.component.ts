@@ -8,6 +8,11 @@ import { Observable } from 'rxjs';
   selector: 'bulk-actions',
   template: `
     <mat-toolbar color="primary">
+      <mat-toolbar-row class="top-toolbar">
+        <span class="top-toolbar-label">
+          Bulk Actions
+        </span>
+      </mat-toolbar-row>
       <mat-toolbar-row class="scroll-x">
         <div class="flex-row" *ngIf="bulkSelected$ | async as selected">
           <div *ngFor="let action of bulkActions">
@@ -36,7 +41,10 @@ export class AppBulkActionsComponent {
   @Output()
   clearSelected = new EventEmitter<void>();
 
-  async executeAction(action: BulkActionDefinition, selected: CoreTypes.ResFile[]) {
+  async executeAction(
+    action: BulkActionDefinition,
+    selected: CoreTypes.ResFile[]
+  ) {
     await action.onClick(selected);
     this.clearSelected.emit();
   }

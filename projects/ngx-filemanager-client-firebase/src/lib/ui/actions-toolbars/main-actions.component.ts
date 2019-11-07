@@ -6,6 +6,11 @@ import { MainActionDefinition } from './MainActionDefinition';
   selector: 'main-actions',
   template: `
     <mat-toolbar>
+      <mat-toolbar-row class="top-toolbar">
+        <span class="top-toolbar-label">
+          Main Actions
+        </span>
+      </mat-toolbar-row>
       <mat-toolbar-row class="scroll-x">
         <div *ngFor="let action of mainActions">
           <button
@@ -22,7 +27,14 @@ import { MainActionDefinition } from './MainActionDefinition';
       </mat-toolbar-row>
     </mat-toolbar>
   `,
-  styleUrls: ['../shared-utility-styles.scss']
+  styleUrls: ['../shared-utility-styles.scss'],
+  styles: [
+    `
+      .top-toolbar-label {
+        color: #8a8a8a;
+      }
+    `
+  ]
 })
 export class AppMainActionsComponent {
   @Input()

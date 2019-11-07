@@ -6,6 +6,11 @@ import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
   selector: 'actions-mini-browser',
   template: `
     <mat-toolbar *ngIf="this.mainActions">
+      <mat-toolbar-row class="top-toolbar">
+        <span class="top-toolbar-label">
+          Actions
+        </span>
+      </mat-toolbar-row>
       <mat-toolbar-row class="scroll-x">
         <div *ngFor="let action of mainActions">
           <button
