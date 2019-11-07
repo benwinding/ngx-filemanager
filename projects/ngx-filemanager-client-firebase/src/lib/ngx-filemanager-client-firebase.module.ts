@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { APP_BASE_HREF, CommonModule, PlatformLocation } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AutoTableModule } from 'ngx-auto-table';
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -27,10 +26,9 @@ import {
   MatChipsModule
 } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
-import { DropzoneModule } from 'ngx-dropzone-wrapper';
 
 import { getBaseHref } from './getBaseHref';
-import { NgxFileManagerComponent } from './ui/file-manager/file-manager.component';
+import { LibMainFileManagerComponent } from './ui/main-file-manager/main-file-manager.component';
 import { AppBreadCrumbsComponent } from './ui/bread-crumbs/bread-crumbs.component';
 import { AppBulkActionsComponent } from './ui/actions-toolbars/bulk-actions.component';
 import { AppMainActionsComponent } from './ui/actions-toolbars/main-actions.component';
@@ -47,7 +45,7 @@ import { FileSizeModule } from './ui/file-size/file-size.module';
 import { AppFileTableModule } from './ui/file-table/file-table.module';
 
 const declarations = [
-  NgxFileManagerComponent,
+  LibMainFileManagerComponent,
   AppBreadCrumbsComponent,
   AppBulkActionsComponent,
   AppMainActionsComponent,
@@ -61,8 +59,6 @@ const declarations = [
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    AutoTableModule,
-    DropzoneModule,
     FileSizeModule,
 
     AppFileTableModule,
@@ -92,7 +88,7 @@ const declarations = [
     MatToolbarModule,
     MatTooltipModule
   ],
-  exports: [NgxFileManagerComponent],
+  exports: [LibMainFileManagerComponent],
   providers: [
     ServerFilesystemProviderService,
     FilemanagerStatusService,

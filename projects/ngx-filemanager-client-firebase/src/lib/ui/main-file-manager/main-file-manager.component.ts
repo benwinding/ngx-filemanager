@@ -16,15 +16,15 @@ import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'ngx-filemanager',
-  templateUrl: 'file-manager.component.html',
-  styleUrls: ['file-manager.component.scss', '../shared-utility-styles.scss'],
+  templateUrl: 'main-file-manager.component.html',
+  styleUrls: ['main-file-manager.component.scss', '../shared-utility-styles.scss'],
   providers: [
     ActionHandlersService,
     ClientFileSystemService,
     OptimisticFilesystemService
   ]
 })
-export class NgxFileManagerComponent implements OnInit, OnDestroy {
+export class LibMainFileManagerComponent implements OnInit, OnDestroy {
   @Input()
   fileSystem: FileSystemProvider;
   @Input()
@@ -39,7 +39,6 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
   public requestMap;
 
   $CurrentPath: Observable<string>;
-  $CurrentPathIsRoot: Observable<boolean>;
   SelectedFile: CoreTypes.ResFile;
 
   destroyed = new Subject();
@@ -107,7 +106,6 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
     await this.actionHandlers.init(this.fileSystem, this.config);
     await this.actionHandlers.OnNavigateTo(this.config.virtualRoot);
     this.$CurrentPath = this.actionHandlers.$CurrentPath;
-    this.$CurrentPathIsRoot = this.actionHandlers.$CurrentPathIsRoot;
     this.actionHandlers.$SelectedFile
       .pipe(
         takeUntil(this.destroyed),
@@ -240,7 +238,7 @@ export class NgxFileManagerComponent implements OnInit, OnDestroy {
         label: 'Back Folder',
         icon: 'reply',
         onClick: async () => this.actionHandlers.OnNavigateToParent(),
-        $disabled: this.$CurrentPathIsRoot
+        $disabled: this.actionHandlers.$CurrentPathIsRoot
       },
       {
         label: 'Refresh',

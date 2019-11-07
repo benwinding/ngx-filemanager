@@ -1,9 +1,15 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnDestroy
+} from '@angular/core';
 import { CoreTypes } from '../../../core-types';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { LoggerService } from '../../services/logging/logger.service';
-import { ActionHandlersService } from '../file-manager/action-handlers.service';
-import { FileManagerConfig } from '../../configuration/client-configuration';
+import { ActionHandlersService } from '../main-file-manager/action-handlers.service';
 import { ClientFileSystemService } from '../../services/pure/client-filesystem.service';
 import { OptimisticFilesystemService } from '../../services/pure/optimistic-filesystem.service';
 import { takeUntil } from 'rxjs/operators';
@@ -48,65 +54,37 @@ import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
     OptimisticFilesystemService
   ]
 })
-export class AppFileTableMiniFolderBrowserComponent implements OnInit {
+export class AppFileTableMiniFolderBrowserComponent
+  implements OnInit, OnDestroy {
   selectedItem = new SelectionModel<string>(false);
 
   @Input()
-  currentDirectory: string;
+  folders: CoreTypes.ResFile[];
   @Input()
-  config: FileManagerConfig;
-  @Input()
-  $CurrentPathIsRoot: Observable<boolean>;
-  @Input()
-  actionHandlers: ActionHandlersService;
-
+  mainActions: MainActionDefinition[];
+  @Output()
+  enterDirectory = new EventEmitter<string>();
   @Output()
   selectedDirectory = new EventEmitter<string>();
-
-  folders: CoreTypes.ResFile[];
-
-  mainActions: MainActionDefinition[];
 
   destroyed = new Subject();
 
   constructor(private logger: LoggerService) {}
 
   async ngOnInit() {
-    this.actionHandlers.$FilesWithIcons
-      .pipe(takeUntil(this.destroyed))
-      .subscribe(fileItems => {
-        this.folders = fileItems.filter(f => f.type === 'dir');
-      });
     this.selectedItem.changed.pipe(takeUntil(this.destroyed)).subscribe(() => {
       const selectedDir = this.selectedItem.selected[0];
       this.selectedDirectory.emit(selectedDir);
     });
+  }
 
-    this.mainActions = [
-      {
-        label: 'Back',
-        icon: 'reply',
-        onClick: async () => {
-          this.logger.info('Back clicked');
-          await this.actionHandlers.OnNavigateToParent();
-          const selectedDirectory = await this.actionHandlers.GetCurrentPath();
-          this.selectedDirectory.emit(selectedDirectory);
-        },
-        $disabled: this.$CurrentPathIsRoot
-      },
-      {
-        label: 'New Folder',
-        icon: 'create_new_folder',
-        onClick: async () => this.actionHandlers.OnNewFolderInCurrentDirectory()
-      }
-    ];
-
-    return this.actionHandlers.OnNavigateTo(this.currentDirectory);
+  ngOnDestroy() {
+    this.destroyed.next();
   }
 
   async onEnterFolder(folderPath: string) {
     this.logger.info('onEnterFolder', { folderPath });
+    this.enterDirectory.emit(folderPath);
     this.selectedDirectory.emit(folderPath);
-    return this.actionHandlers.OnNavigateTo(folderPath);
   }
 }
