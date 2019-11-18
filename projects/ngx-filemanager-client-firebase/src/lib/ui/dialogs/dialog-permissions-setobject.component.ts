@@ -39,7 +39,7 @@ export interface PermissionsObjectDialogResponseInterface {
           </mat-chip>
         </mat-chip-list>
 
-        <div>
+        <div class="full-width">
           <h5 class="my-5">Who can see this</h5>
           <app-control-tag-multiple
             class="full-width -mt-15"
