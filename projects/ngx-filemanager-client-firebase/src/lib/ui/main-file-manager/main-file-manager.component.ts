@@ -99,6 +99,9 @@ export class LibMainFileManagerComponent implements OnInit, OnDestroy {
       );
       this.config.virtualRoot = '/';
     }
+    if (this.config.virtualRoot.endsWith('/')) {
+      this.config.virtualRoot = this.config.virtualRoot.slice(0, -1);
+    }
     if (!this.config.initialPath) {
       console.warn(
         '<ngx-filemanager> warning config.initialPath not set, using virtualRoot: ' +
