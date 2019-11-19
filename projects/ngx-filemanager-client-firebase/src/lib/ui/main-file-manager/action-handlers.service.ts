@@ -48,6 +48,9 @@ export class ActionHandlersService {
     const rootLength = (this.config.virtualRoot || '').length;
     return (directoryPath || '').slice(rootLength);
   }
+  public GetRootPath(): string {
+    return this.config.virtualRoot || '';
+  }
 
   get $CurrentPathIsRoot() {
     return this.$CurrentPath.pipe(map(p => p === this.config.virtualRoot));

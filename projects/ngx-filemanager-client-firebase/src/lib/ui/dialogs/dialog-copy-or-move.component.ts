@@ -3,10 +3,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { CoreTypes } from '../../../core-types';
 import { LoggerService } from '../../services/logging/logger.service';
 import path from 'path-browserify';
-import { Subject, Observable, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject, combineLatest } from 'rxjs';
 import { EnsureTrailingSlash } from '../../utils/path-helpers';
 import { ActionHandlersService } from '../main-file-manager/action-handlers.service';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
 
 export interface CopyDialogInterface {
@@ -18,7 +18,7 @@ export interface CopyDialogInterface {
 @Component({
   template: `
     <base-dialog
-      *ngIf="currentDir"
+      *ngIf="srcDirectory"
       [header]="headerTemplate"
       [body]="bodyTemplate"
       [actions]="actionsTemplate"
@@ -50,11 +50,13 @@ export interface CopyDialogInterface {
       </ng-template>
       <ng-template #actionsTemplate>
         <h5 class="p5 m0" *ngIf="!SelectedFolder">No folder selected</h5>
-        <h5 class="p5 m0" *ngIf="SameAsCurrentDirectory">
+        <h5 class="p5 m0" *ngIf="SameAsSrcFolder">
           Cannot copy to the same folder
         </h5>
         <h5 class="p5 m0" *ngIf="!DisableCopy">
-          Will copy Selected Items to: <strong>{{ copyToPathRelative }}</strong>
+          Will copy Selected Items to:
+          <strong *ngIf="!copyToPathRelative">/</strong>
+          <strong>{{ copyToPathRelative }}</strong>
         </h5>
         <btns-cancel-ok
           [okIcon]="OkIcon"
@@ -79,7 +81,7 @@ export interface CopyDialogInterface {
 export class AppDialogCopyComponent implements OnDestroy {
   copyToPathRelative: string;
   copyToPath: string;
-  currentDir: string;
+  srcDirectory: string;
   items: CoreTypes.ResFile[];
   actionHandlers: ActionHandlersService;
 
@@ -90,6 +92,7 @@ export class AppDialogCopyComponent implements OnDestroy {
   OkIcon: string;
 
   destroyed = new Subject();
+  $copyPathChanged = new BehaviorSubject<string>(null);
 
   constructor(
     private logger: LoggerService,
@@ -111,6 +114,25 @@ export class AppDialogCopyComponent implements OnDestroy {
     }
     this.actionHandlers = await this.data.actionHandler.CloneProvider();
     this.mainActions = [
+      {
+        label: 'Home',
+        icon: 'home',
+        onClick: async () => {
+          this.logger.info('Back clicked');
+          const rootPath = this.actionHandlers.GetRootPath();
+          await this.actionHandlers.OnNavigateTo(rootPath);
+          this.onSelectedDirectory(rootPath);
+          return this.onSelectedDirectory(rootPath);
+        },
+        $disabled: combineLatest([
+          this.actionHandlers.$CurrentPathIsRoot,
+          this.$copyPathChanged
+        ]).pipe(
+          map(([isRoot, copyTo]) => {
+            return this.DisableCopy;
+          })
+        )
+      },
       {
         label: 'Back',
         icon: 'reply',
@@ -135,7 +157,8 @@ export class AppDialogCopyComponent implements OnDestroy {
       });
 
     const firstFile = [...this.items].pop();
-    this.currentDir = EnsureTrailingSlash(path.dirname(firstFile.fullPath));
+    this.setSrcDirectory(firstFile.fullPath);
+    this.setCopyToPath(this.actionHandlers.GetRootPath());
   }
 
   ngOnDestroy() {
@@ -145,28 +168,44 @@ export class AppDialogCopyComponent implements OnDestroy {
   get SelectedFolder() {
     return !!this.copyToPath;
   }
-  get SameAsCurrentDirectory() {
-    return this.copyToPath === this.currentDir;
+  get SameAsSrcFolder() {
+    return this.copyToPath === this.srcDirectory;
   }
   get DisableCopy() {
-    return !this.SelectedFolder || this.SameAsCurrentDirectory;
+    return !this.SelectedFolder || this.SameAsSrcFolder;
   }
 
-  private setCopyToPath(newPath: string) {
-    this.copyToPath = newPath;
+  private setCopyToPath(inputPath: string) {
+    const dirPath = EnsureTrailingSlash(inputPath);
+    this.copyToPath = dirPath;
+    this.$copyPathChanged.next(dirPath);
     this.copyToPathRelative = this.actionHandlers.ConvertToRelativePath(
-      newPath
+      dirPath
     );
+    this.logger.info('setCopyToPath:', {
+      inputPath,
+      copyToPath: this.copyToPath,
+      copyToPathRelative: this.copyToPathRelative
+    });
+  }
+
+  private setSrcDirectory(inputPath: string) {
+    const dirPath = EnsureTrailingSlash(path.dirname(inputPath));
+    this.srcDirectory = dirPath;
+    this.logger.info('setSrcDirectory:', {
+      inputPath,
+      srcDirectory: this.srcDirectory
+    });
   }
 
   onEnterDirectory(directoryPath: string) {
-    this.logger.info('clicked this item:', { directoryPath });
+    this.logger.info('onEnterDirectory:', { directoryPath });
     this.setCopyToPath(directoryPath);
     return this.actionHandlers.OnNavigateTo(directoryPath);
   }
 
   onSelectedDirectory(directoryPath: string) {
-    this.logger.info('clicked this item:', { directoryPath });
+    this.logger.info('onSelectedDirectory:', { directoryPath });
     this.setCopyToPath(directoryPath);
   }
 
