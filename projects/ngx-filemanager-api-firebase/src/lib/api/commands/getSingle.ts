@@ -6,6 +6,7 @@ import {
   translateStorageToResFile,
   translateRawStorage
 } from '../../utils/translation-helpers';
+import { paths } from '../../utils/paths';
 const moment = require('moment');
 
 async function GetUrl(file: File): Promise<string> {
@@ -28,7 +29,8 @@ export async function GetSingle(
   claims: CoreTypes.UserCustomClaims
 ): Promise<CoreTypes.ResFile> {
   try {
-    const file = bucket.file(item);
+    const actualFilePath = paths.EnsureNoPrefixSlash(item);
+    const file = bucket.file(actualFilePath);
     const translatedF = translateRawStorage(file);
     const resFile = await translateStorageToResFile(translatedF);
     resFile.downloadUrl = await GetUrl(file);

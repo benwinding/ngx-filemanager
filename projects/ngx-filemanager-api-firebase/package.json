@@ -1,6 +1,6 @@
 {
   "name": "ngx-filemanager-api-firebase",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "peerDependencies": {
     "express": "^4.x",
     "firebase-admin": "^7.x"

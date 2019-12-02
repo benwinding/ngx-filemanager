@@ -47,6 +47,10 @@ export async function translateStorageToResFile(
     return resFile;
   }
   try {
+    const [exists] = await f.ref.exists();
+    if (!exists) {
+      throw new Error('File not found: ' + resFile.fullPath);
+    }
     const [aclObj] = await f.ref.acl.get();
     resFile.rightsFirebase = aclObj as any;
     const metaResp = await f.ref.getMetadata();
