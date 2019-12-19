@@ -1,5 +1,5 @@
 import { Bucket } from '../../types/google-cloud-types';
-import { getResultFromArray } from '../../utils/translation-helpers';
+import { ResultsObjFromArray } from '../../utils/translation-helpers';
 import * as path from 'path';
 import { CoreTypes } from '../../types';
 import { VError } from 'verror';
@@ -37,8 +37,7 @@ export async function MoveFiles(
     const moveResultsArr = moveResultsArrArr.reduce((acc, cur) => {
       return acc.concat(cur);
     }, []);
-    const results = getResultFromArray(moveResultsArr);
-    return results;
+    return ResultsObjFromArray(moveResultsArr);
   } catch (error) {
     throw new VError(error);
   }

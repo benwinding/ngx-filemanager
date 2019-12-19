@@ -96,10 +96,27 @@ export function getResult(res: request.Response): CoreTypes.ResultObj {
   };
 }
 
-export function getResultFromArray(res: request.Response[]): CoreTypes.ResultObj {
+export function getResultFromArray(
+  res: request.Response[]
+): CoreTypes.ResultObj {
   const fail = res.find(r => r.statusCode !== 204);
   return {
     success: !fail,
     error: fail ? 'error: ' + JSON.stringify(fail.body) : null
   };
+}
+
+export function ResultsObjFromArray(
+  moveResults: CoreTypes.ResultObj[]
+): CoreTypes.ResultObj {
+  return moveResults.reduce(
+    (acc, cur) => {
+      if (cur.error) {
+        acc.error += ' | ' + cur.error;
+        acc.success = false;
+      }
+      return acc;
+    },
+    { error: '', success: true }
+  );
 }

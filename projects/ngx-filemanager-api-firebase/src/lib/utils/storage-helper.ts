@@ -29,19 +29,26 @@ async function GetAllChildrenWithPrefix(
   }
 }
 
-async function TryRenameFile(file: File, oldPrefix: string, newPrefix: string) {
+async function TryRenameFile(
+  file: File,
+  oldPrefix: string,
+  newPrefix: string
+): Promise<CoreTypes.ResultObj> {
   try {
     const originalFilePath = file.name;
     const relativePath = originalFilePath.slice(oldPrefix.length);
     const newPath = path.join(newPrefix, relativePath);
     const newFilePath = paths.EnsureNoPrefixSlash(newPath);
     console.log(`- renaming "${originalFilePath}" -> "${newFilePath}"`);
-    const result = await file.move(newFilePath);
-    return result[0];
+    const [response] = await file.move(newFilePath);
+    return { error: '', success: true };
   } catch (error) {
     const [fileExists] = await file.exists();
     console.error('storage-helper: TryCopyFile() error renaming file', {
-      fileExists
+      fileExists,
+      fileName: file.name,
+      oldPrefix,
+      newPrefix
     });
     throw new VError(error);
   }
@@ -64,7 +71,6 @@ async function TryCopyFile(file: File, oldPrefix: string, newPrefix: string) {
     throw new VError(error);
   }
 }
-
 
 async function TryCheckWritePermission(
   bucket: Bucket,
@@ -222,5 +228,5 @@ export const storage = {
   MakeOptionsList,
   TryRenameFile,
   TryCopyFile,
-  TryCheckWritePermission,
+  TryCheckWritePermission
 };

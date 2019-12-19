@@ -1,32 +1,50 @@
 import { Bucket } from '../../types/google-cloud-types';
-import { getResult, getResultFromArray } from '../../utils/translation-helpers';
 import { CoreTypes } from '../../types';
 import { VError } from 'verror';
 import { paths } from '../../utils/paths';
 import { storage } from '../../utils/storage-helper';
+import { ResultsObjFromArray } from '../../utils/translation-helpers';
 
 export async function RenameFile(
   bucket: Bucket,
-  item: string,
-  newItemPath: string,
+  inputSrc: string,
+  inputDest: string,
   claims: CoreTypes.UserCustomClaims
 ) {
   try {
-    const itemsPrefixOld = paths.EnsureNoPrefixSlash(item);
-    const itemsPrefixNew = paths.EnsureNoPrefixSlash(newItemPath);
-    const isFile = !item.endsWith('/');
-    if (isFile) {
-      const file = bucket.file(item);
-      const resultObj = await storage.TryRenameFile(file, itemsPrefixOld, itemsPrefixNew);
-      const result = getResult(resultObj);
-      return result;
+    const parsedSrc = paths.EnsureNoPrefixSlash(inputSrc);
+    const parsedDest = paths.EnsureNoPrefixSlash(inputDest);
+    const fileItem = bucket.file(parsedSrc);
+    const [exists] = await fileItem.exists();
+    if (!exists) {
+      throw new Error(`
+item: "${fileItem.name}" does not exist
+bucket: "${bucket.name}"
+
+inputSrc: "${inputSrc}",
+inputDest: "${inputDest}",
+
+parsedSrc: "${parsedSrc}",
+parsedDest: "${parsedDest}",
+`);
     }
-    const allChildren = await storage.GetAllChildrenWithPrefix(bucket, itemsPrefixOld);
-    const moveResults = await Promise.all(
-      allChildren.map(f => storage.TryRenameFile(f, itemsPrefixOld, itemsPrefixNew))
+    const isFile = !inputSrc.endsWith('/');
+    if (isFile) {
+      const resultObj = await storage.TryRenameFile(
+        fileItem,
+        parsedSrc,
+        parsedDest
+      );
+      return resultObj;
+    }
+    const allChildren = await storage.GetAllChildrenWithPrefix(
+      bucket,
+      parsedSrc
     );
-    const results = getResultFromArray(moveResults);
-    return results;
+    const moveResults = await Promise.all(
+      allChildren.map(f => storage.TryRenameFile(f, parsedSrc, parsedDest))
+    );
+    return ResultsObjFromArray(moveResults);
   } catch (error) {
     throw new VError(error);
   }
