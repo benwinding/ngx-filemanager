@@ -12,8 +12,7 @@ case "$1" in
       popd
       ;;
   demo)
-      yarn client-demo-build && gh-pages -d dist/ngx-filemanager-client-firebase-demo/
-      popd
+      yarn client-demo-build && ./node_modules/.bin/gh-pages -d dist/ngx-filemanager-client-firebase-demo/
       ;;
   *)
       echo $"Usage: $0 {core|client|api}"
