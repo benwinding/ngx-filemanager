@@ -8,7 +8,8 @@ import {
   debounceTime,
   takeUntil,
   map,
-  distinctUntilChanged
+  distinctUntilChanged,
+  filter
 } from 'rxjs/operators';
 import { Subject, combineLatest } from 'rxjs';
 import { $users, $groups } from './users-factory';
@@ -52,11 +53,8 @@ import { environment } from '../environments/environment';
         </textarea>
       </mat-form-field>
       <div>
-        <p>Is Admin? ({{isAdminControl.value ? 'Yes' : 'No'}})</p>
-        <mat-slide-toggle
-          [formControl]="isAdminControl"
-        >
-        </mat-slide-toggle>
+        <p>Is Admin? ({{ isAdminControl.value ? 'Yes' : 'No' }})</p>
+        <mat-slide-toggle [formControl]="isAdminControl"> </mat-slide-toggle>
       </div>
     </mat-card>
 
@@ -79,24 +77,28 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     bucketName: ''
   };
 
-  bucketName = new FormControl('my-test-bucketname');
-  apiEndpoint = new FormControl('http://localhost:4444/ApiPublic/files');
-  virtualRoot = new FormControl('/');
-  firebaseConfig = new FormControl('');
-  isAdminControl = new FormControl(false);
+  bucketName = new FormControl();
+  apiEndpoint = new FormControl();
+  virtualRoot = new FormControl();
+  firebaseConfig = new FormControl();
+  isAdminControl = new FormControl();
 
-  showExplorer = true;
+  showExplorer = false;
 
   destroyed = new Subject();
 
   constructor(
     public serverFilesystemProvider: ServerFilesystemProviderService
   ) {
+    function getNotNullValue$(control: FormControl) {
+      return control.valueChanges.pipe(filter(v => !!v));
+    }
+
     combineLatest([
-      this.bucketName.valueChanges,
-      this.apiEndpoint.valueChanges,
-      this.virtualRoot.valueChanges,
-      this.firebaseConfig.valueChanges.pipe(
+      getNotNullValue$(this.bucketName),
+      getNotNullValue$(this.apiEndpoint),
+      getNotNullValue$(this.virtualRoot),
+      getNotNullValue$(this.firebaseConfig).pipe(
         map(v => {
           try {
             const json = JSON.stringify(JSON.parse(v));
@@ -107,17 +109,24 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
         }),
         distinctUntilChanged()
       ),
-      this.isAdminControl.valueChanges,
+      this.isAdminControl.valueChanges
     ])
-      .pipe(
-        debounceTime(500),
-        takeUntil(this.destroyed)
-      )
+      .pipe(debounceTime(500), takeUntil(this.destroyed))
       .subscribe(() => this.reInitializeExplorer());
-    this.bucketName.setValue(localStorage.getItem('bucketname'));
-    this.apiEndpoint.setValue(localStorage.getItem('apiendpoint'));
+    this.setDefaults();
+  }
+
+  setDefaults() {
+    this.bucketName.setValue(
+      localStorage.getItem('bucketname') || 'my-test-bucketname'
+    );
+    this.apiEndpoint.setValue(
+      localStorage.getItem('apiendpoint') ||
+        'http://localhost:4444/ApiPublic/files'
+    );
     this.virtualRoot.setValue(localStorage.getItem('virtualRoot') || '/');
     this.firebaseConfig.setValue(localStorage.getItem('firebaseConfig') || '');
+    this.isAdminControl.setValue(localStorage.getItem('isAdmin') || false);
   }
 
   ngOnDestroy() {
@@ -139,6 +148,7 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     localStorage.setItem('apiendpoint', this.apiEndpoint.value);
     localStorage.setItem('virtualRoot', this.virtualRoot.value);
     localStorage.setItem('firebaseConfig', this.firebaseConfig.value);
+    localStorage.setItem('isAdmin', this.isAdminControl.value);
     setTimeout(() => {
       this.showExplorer = true;
     }, 100);
