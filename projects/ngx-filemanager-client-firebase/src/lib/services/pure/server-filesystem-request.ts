@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { take } from 'rxjs/operators';
+import { LoggerService } from '../logging/logger.service';
 
 export class FileSystemRequestBuilder {
   private options = {
@@ -9,6 +10,7 @@ export class FileSystemRequestBuilder {
   constructor(
     private http: HttpClient,
     private url: string,
+    private logger: LoggerService
   ) {}
   AddBody(body) {
     this.body = {
@@ -44,6 +46,11 @@ export class FileSystemRequestBuilder {
   async POST() {
     const key = this.makeRequestKey();
     try {
+      this.logger.info('FileSystemRequestBuilder', {
+        url: this.url,
+        body: this.body,
+        options: this.options
+      });
       const response = await this.http
         .post(this.url, this.body, this.options)
         .pipe(take(1))

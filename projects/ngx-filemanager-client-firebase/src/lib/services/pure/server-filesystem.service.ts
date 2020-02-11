@@ -15,7 +15,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
 
   private makeAPIRequest(action: CoreTypes.FileManagerAction) {
     this.logger.info('makeAPIRequest', { action, context: this });
-    return new FileSystemRequestBuilder(this.http, this.apiEndpoint).AddBody({
+    return new FileSystemRequestBuilder(this.http, this.apiEndpoint, this.logger).AddBody({
       action: action,
       bucketname: this.bucketname,
       isAdmin: this.isAdmin

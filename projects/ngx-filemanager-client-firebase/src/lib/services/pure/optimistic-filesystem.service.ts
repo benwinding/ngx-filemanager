@@ -132,10 +132,16 @@ export class OptimisticFilesystemService
   async HandleUpload(uploadedFiles: string[]): Promise<any> {
     this.status.UpdateStatus('HandleUpload', 'SENDING');
     this.logger.info('HandleUpload', { uploadedFiles });
-    const uploadAll = uploadedFiles.map(f => this.serverFilesystem.Upload(f));
+    const uploadAllPromise = uploadedFiles.map(f => this.serverFilesystem.Upload(f));
+    const blankPermissionsObj: CoreTypes.FilePermissionsObject = {
+      others: 'read/write',
+      readers: [],
+      writers: []
+    };
     await Promise.all([
+      this.serverFilesystem.SetPermissionsObjectMultiple(uploadedFiles, blankPermissionsObj, true),
       this.clientFilesystem.OnUploadedFiles(uploadedFiles),
-      uploadAll
+      uploadAllPromise
     ]);
     this.status.UpdateStatus('HandleUpload', 'SUCCESS');
   }
