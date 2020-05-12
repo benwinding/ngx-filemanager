@@ -6,27 +6,29 @@ import { FileSystemProvider, CoreTypes } from '../../../core-types';
 import { LoggerService } from '../../services/logging/logger.service';
 import {
   RenameDialogInterface,
-  AppDialogRenameComponent
+  AppDialogRenameComponent,
 } from '../dialogs/dialog-rename.component';
 import {
   CopyDialogInterface,
-  AppDialogCopyComponent
+  AppDialogCopyComponent,
 } from '../dialogs/dialog-copy-or-move.component';
 import {
   PermissionsObjectDialogInterface,
   PermissionsObjectDialogResponseInterface,
-  AppDialogPermissionsSetObjectComponent
+  AppDialogPermissionsSetObjectComponent,
 } from '../dialogs/dialog-permissions-setobject.component';
 import {
   UploadDialogInterface,
   UploadDialogResponseInterface,
-  AppDialogUploadFilesComponent
+  AppDialogUploadFilesComponent,
 } from '../dialogs/dialog-upload.component';
 import { AppDialogNewFolderComponent } from '../dialogs/dialog-new-folder.component';
 import { FileManagerConfig } from '../../configuration/client-configuration';
 import { ClientFileSystemService } from '../../services/pure/client-filesystem.service';
 import { OptimisticFilesystemService } from '../../services/pure/optimistic-filesystem.service';
 import { NotificationService } from '../../services/pure/notification.service';
+import { AppDialogConfirmationComponent } from '../dialogs/dialog-confirmation.component';
+import { MakeDir } from '../../services/stub/stub-files';
 
 @Injectable()
 export class ActionHandlersService {
@@ -53,7 +55,7 @@ export class ActionHandlersService {
   }
 
   get $CurrentPathIsRoot() {
-    return this.$CurrentPath.pipe(map(p => p === this.config.virtualRoot));
+    return this.$CurrentPath.pipe(map((p) => p === this.config.virtualRoot));
   }
 
   get $SelectedFile() {
@@ -82,14 +84,14 @@ export class ActionHandlersService {
     } catch (error) {
       this.logger.error('init() OnNewFolderClobber: error', error, {
         fileSystem,
-        config
+        config,
       });
     }
   }
 
   public async OnRename(file: CoreTypes.ResFile) {
     const data: RenameDialogInterface = {
-      currentPath: file.fullPath
+      currentPath: file.fullPath,
     };
     this.logger.info('OnRename', { data });
     const renamedPath = await this.openDialog(AppDialogRenameComponent, data);
@@ -113,7 +115,7 @@ export class ActionHandlersService {
     const data: CopyDialogInterface = {
       files: files,
       isCopy: false,
-      actionHandler: this
+      actionHandler: this,
     };
     const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
     if (!newFolderPath) {
@@ -121,7 +123,7 @@ export class ActionHandlersService {
       return;
     }
     try {
-      const filePaths = files.map(f => f.fullPath);
+      const filePaths = files.map((f) => f.fullPath);
       await this.optimisticFs.HandleMoveMultiple(filePaths, newFolderPath);
       await this.RefreshExplorer();
     } catch (error) {
@@ -134,7 +136,7 @@ export class ActionHandlersService {
     const data: CopyDialogInterface = {
       files: files,
       isCopy: true,
-      actionHandler: this
+      actionHandler: this,
     };
     const newFolderPath = await this.openDialog(AppDialogCopyComponent, data);
     this.logger.info('OnCopyMultiple', { files, newFolderPath });
@@ -143,7 +145,7 @@ export class ActionHandlersService {
       return;
     }
     try {
-      const filePaths = files.map(f => f.fullPath);
+      const filePaths = files.map((f) => f.fullPath);
       await this.optimisticFs.HandleCopyMultiple(filePaths, newFolderPath);
       await this.RefreshExplorer();
     } catch (error) {
@@ -168,7 +170,7 @@ export class ActionHandlersService {
   public async OnSetPermissionsObjectMultiple(files: CoreTypes.ResFile[]) {
     const data: PermissionsObjectDialogInterface = {
       files: files,
-      config: this.config
+      config: this.config,
     };
     try {
       this.checkCanAddPermissions();
@@ -186,7 +188,7 @@ export class ActionHandlersService {
       return;
     }
     try {
-      const filePaths = files.map(f => f.fullPath);
+      const filePaths = files.map((f) => f.fullPath);
       await this.optimisticFs.HandleSetPermissionsObjectMultiple(
         filePaths,
         res.permissionsObj,
@@ -201,7 +203,7 @@ export class ActionHandlersService {
 
   public async OnDeleteMultiple(files: CoreTypes.ResFile[]) {
     try {
-      const deletedPaths = files.map(f => f.fullPath);
+      const deletedPaths = files.map((f) => f.fullPath);
       this.logger.info('deleting files', { files, deletedPaths });
       await this.optimisticFs.HandleRemove(deletedPaths);
       await this.RefreshExplorer();
@@ -233,7 +235,7 @@ export class ActionHandlersService {
     const data: UploadDialogInterface = {
       currentDirectory: currentPath,
       firebaseConfig: this.config.firebaseConfig,
-      bucketName: this.config.bucketName
+      bucketName: this.config.bucketName,
     };
     const res: UploadDialogResponseInterface = await this.openDialog(
       AppDialogUploadFilesComponent,
@@ -243,7 +245,7 @@ export class ActionHandlersService {
       this.logger.info('onClickUpload canceled...');
       return;
     }
-    const filesToAdd = res.uploaded.map(f => path.join(currentPath, f));
+    const filesToAdd = res.uploaded.map((f) => path.join(currentPath, f));
     await this.optimisticFs.HandleUpload(filesToAdd);
     await this.optimisticFs.HandleList(currentPath);
   }
@@ -255,7 +257,17 @@ export class ActionHandlersService {
       this.logger.info('onClickNewFolder   no folder created...');
       return;
     }
-    return this.OnNewFolder(newDirName);
+    await this.OnNewFolder(newDirName);
+    const setPermissions = await this.openDialog(
+      AppDialogConfirmationComponent
+    );
+
+    if (setPermissions) {
+      const currentDirectory = await this.GetCurrentPath();
+      const newDirectoryPath = path.join(currentDirectory, newDirName);
+      const folder = MakeDir(newDirectoryPath);
+      await this.OnSetPermissionsMultiple([folder]);
+    }
   }
 
   public async OnNewFolder(newDirName: string) {
@@ -303,12 +315,9 @@ export class ActionHandlersService {
       width: '600px',
       hasBackdrop: true,
       disableClose: false,
-      data: data
+      data: data,
     });
-    const result = await ref
-      .afterClosed()
-      .pipe(take(1))
-      .toPromise();
+    const result = await ref.afterClosed().pipe(take(1)).toPromise();
     return result;
   }
 

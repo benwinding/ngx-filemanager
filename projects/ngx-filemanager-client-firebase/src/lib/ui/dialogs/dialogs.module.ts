@@ -24,6 +24,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileTableMiniModule } from '../file-table-mini/file-table-mini.module';
 import { FormFileFirebaseModule } from '../file-upload/file-upload.module';
 import { TagsControlModule } from '../tags-control/tags-control.module';
+import { AppDialogConfirmationComponent } from './dialog-confirmation.component';
 
 const entryComponents = [
   BaseDialogComponent,
@@ -33,7 +34,8 @@ const entryComponents = [
   AppDialogPermissionsSetObjectComponent,
   AppDialogCopyComponent,
   AppDialogUploadFilesComponent,
-  AppDialogMyDetailsComponent
+  AppDialogMyDetailsComponent,
+  AppDialogConfirmationComponent
 ];
 
 const declarations = [...entryComponents, AppBtnsCancelOkComponent];
