@@ -1,0 +1,68 @@
+on:
+  push:
+    paths:
+    - 'projects/ngx-filemanager-client-firebase/**'
+    - 'projects/ngx-filemanager-client-firebase-demo/**'
+
+name: Client Build and Publish
+jobs:
+  deploy-lib:
+    name: Deploy Client Firebase 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js 10.17
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.17
+      - name: Cache node_modules
+        id: cache-modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('package.json') }}
+      - name: Install Dependencies
+        if: steps.cache-modules.outputs.cache-hit != 'true'
+        run: npm install
+      - name: Build Core && Client
+        run: |
+          npm run-script core-build
+          npm run-script client-build
+      - name: Publish Client
+        if: github.ref == 'refs/heads/master'
+        uses: benwinding/merge-release@master
+        env:
+          DEPLOY_DIR: dist/ngx-filemanager-client-firebase
+          SRC_PACKAGE_DIR: projects/ngx-filemanager-client-firebase
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          GIT_TAG_SUFFIX: -client-firebase
+  deploy-demo:
+    name: Deploy Client Demo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Use Node.js 10.17
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.17
+      - name: Cache node_modules
+        id: cache-modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('package.json') }}
+      - name: Install Dependencies
+        if: steps.cache-modules.outputs.cache-hit != 'true'
+        run: npm install
+      - name: Build Core && Client-Demo
+        run: |
+          npm run-script core-build
+          npm run-script client-build
+          npm run-script client-demo-build
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: dist/ngx-filemanager-client-firebase-demo # The folder the action should deploy.
