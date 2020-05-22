@@ -1,4 +1,7 @@
 {
   "name": "ngx-filemanager-core",
-  "version": "0.5.0"
+  "version": "0.5.0",
+  "homepage": "https://github.com/benwinding/ngx-filemanager",
+  "email": "hello@benwinding.com",
+  "license": "MIT"
 }

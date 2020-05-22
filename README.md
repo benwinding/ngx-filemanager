@@ -2,6 +2,23 @@
 
 A filemanager for Angular (ngx).
 
+### Filemanager Api
+
+<!-- [START badges] -->
+[![NPM Version](https://img.shields.io/npm/v/ngx-filemanager-api-firebase.svg)](https://www.npmjs.com/package/ngx-filemanager-api-firebase) 
+[![License](https://img.shields.io/npm/l/ngx-filemanager-api-firebase.svg)](https://github.com/benwinding/ngx-filemanager/blob/master/LICENSE) 
+[![Downloads/week](https://img.shields.io/npm/dm/ngx-filemanager-api-firebase.svg)](https://www.npmjs.com/package/ngx-filemanager-api-firebase) 
+<!-- [END badges] -->
+
+### Filemanager Client
+
+<!-- [START badges] -->
+[![NPM Version](https://img.shields.io/npm/v/ngx-filemanager-client-firebase.svg)](https://www.npmjs.com/package/ngx-filemanager-client-firebase) 
+[![License](https://img.shields.io/npm/l/ngx-filemanager-client-firebase.svg)](https://github.com/benwinding/ngx-filemanager/blob/master/LICENSE) 
+[![Downloads/week](https://img.shields.io/npm/dm/ngx-filemanager-client-firebase.svg)](https://www.npmjs.com/package/ngx-filemanager-client-firebase) 
+ngx-filemanager-client-firebase)
+<!-- [END badges] -->
+
 ## Features
 
 - Using Angular Material Design

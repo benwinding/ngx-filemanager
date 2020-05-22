@@ -1,6 +1,9 @@
 {
   "name": "ngx-filemanager-client-firebase",
   "version": "0.6.7",
+  "homepage": "https://github.com/benwinding/ngx-filemanager",
+  "email": "hello@benwinding.com",
+  "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^8.x",
     "@angular/compiler": "^8.x",
