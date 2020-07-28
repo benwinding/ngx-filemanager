@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
 import { take, map } from 'rxjs/operators';
 import path from 'path-browserify';
 import { FileSystemProvider, CoreTypes } from '../../../core-types';
@@ -29,6 +28,7 @@ import { OptimisticFilesystemService } from '../../services/pure/optimistic-file
 import { NotificationService } from '../../services/pure/notification.service';
 import { AppDialogConfirmationComponent } from '../dialogs/dialog-confirmation.component';
 import { MakeDir } from '../../services/stub/stub-files';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable()
 export class ActionHandlersService {

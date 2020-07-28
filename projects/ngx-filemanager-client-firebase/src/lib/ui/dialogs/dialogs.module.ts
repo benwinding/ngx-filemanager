@@ -8,23 +8,22 @@ import { AppDialogCopyComponent } from './dialog-copy-or-move.component';
 import { AppDialogUploadFilesComponent } from './dialog-upload.component';
 import { AppDialogMyDetailsComponent } from './dialog-my-details.components';
 import { CommonModule } from '@angular/common';
-import {
-  MatButtonModule,
-  MatIconModule,
-  MatFormFieldModule,
-  MatSelectModule,
-  MatInputModule,
-  MatDialogModule,
-  MatChipsModule,
-  MatAutocompleteModule,
-  MatCardModule
-} from '@angular/material';
+
 import { AppBtnsCancelOkComponent } from './btns-cancel-ok.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileTableMiniModule } from '../file-table-mini/file-table-mini.module';
 import { FormFileFirebaseModule } from '../file-upload/file-upload.module';
 import { TagsControlModule } from '../tags-control/tags-control.module';
 import { AppDialogConfirmationComponent } from './dialog-confirmation.component';
+
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
 
 const entryComponents = [
   BaseDialogComponent,

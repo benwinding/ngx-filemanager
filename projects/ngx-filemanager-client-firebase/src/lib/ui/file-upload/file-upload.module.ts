@@ -1,13 +1,13 @@
 import { FormFileFirebaseComponent } from './form-file-firebase/form-file-firebase.component';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatInputModule,
-  MatIconModule,
-  MatProgressBarModule
-} from '@angular/material';
+
 import { FormFileUploadedFileListComponent } from './form-file-firebase/form-file-uploader-list.component';
 import { CommonModule } from '@angular/common';
+
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   imports: [

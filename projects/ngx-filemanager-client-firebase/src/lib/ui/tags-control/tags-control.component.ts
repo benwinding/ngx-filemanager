@@ -6,17 +6,16 @@ import {
   ViewChild,
   OnDestroy
 } from '@angular/core';
-import {
-  MatAutocomplete,
-  MatAutocompleteSelectedEvent,
-  MatChipInputEvent
-} from '@angular/material';
+
 import { FormControl, Validators } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Observable } from 'rxjs';
 import { map, startWith, take } from 'rxjs/operators';
 
 import { v4 as uuidv1 } from 'uuid';
+
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 export interface Tag {
   id: string;

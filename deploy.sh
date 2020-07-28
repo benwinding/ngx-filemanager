@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 case "$1" in
   core)
       yarn core-build && pushd dist/ngx-filemanager-core && npm publish

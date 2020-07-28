@@ -1,7 +1,6 @@
 import { ActionHandlersService } from './action-handlers.service';
 import { TestBed } from '@angular/core/testing';
 import { PlatformLocation, APP_BASE_HREF } from '@angular/common';
-import { MatSnackBar, MatDialog } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
 import { NotificationService } from '../../services/pure/notification.service';
 import { getBaseHref } from '../../getBaseHref';
@@ -12,6 +11,9 @@ import { ClientFileSystemService } from '../../services/pure/client-filesystem.s
 import { OptimisticFilesystemService } from '../../services/pure/optimistic-filesystem.service';
 import { ServerFilesystemProviderService } from '../../services/pure/server-filesystem.service';
 import { FileManagerConfig } from '../../configuration/client-configuration';
+
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 
 class SnackStub {
   notify(msg: string, title?: string, isError?: boolean) {}

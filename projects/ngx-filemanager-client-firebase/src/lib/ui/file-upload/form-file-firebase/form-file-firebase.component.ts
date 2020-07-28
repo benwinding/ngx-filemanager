@@ -279,7 +279,7 @@ export class FormFileFirebaseComponent extends FormBase<FormArrayFileObject[]>
   }
 
   onError(error) {
-    this.ns.notify('storage/unauthorized', 'Error Uploading', true);
+    this.ns.notify('storage/unauthorized', 'Error Uploading');
     console.error('onError(error)', { error }, error);
   }
 

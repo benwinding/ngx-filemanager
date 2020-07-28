@@ -1,10 +1,11 @@
 import { ControlValueAccessor, FormControl, Validator } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { OnDestroy, OnInit, Input } from '@angular/core';
+import { OnDestroy, OnInit, Input, Directive } from '@angular/core';
 import { takeUntil, auditTime } from 'rxjs/operators';
 import { ConvertToTitleCase } from '../../../utils/case-helper';
 import {v4 as uuidv4 } from 'uuid';
 
+@Directive()
 export class FormBase<T>
   implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   internalControl: FormControl = new FormControl();

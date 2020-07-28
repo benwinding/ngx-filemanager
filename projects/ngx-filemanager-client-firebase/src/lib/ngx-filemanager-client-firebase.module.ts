@@ -1,30 +1,7 @@
 import { NgModule } from '@angular/core';
 import { APP_BASE_HREF, CommonModule, PlatformLocation } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatButtonToggleModule,
-  MatCheckboxModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatInputModule,
-  MatMenuModule,
-  MatPaginatorModule,
-  MatProgressBarModule,
-  MatProgressSpinnerModule,
-  MatSelectModule,
-  MatSortModule,
-  MatTableModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MatSidenavModule,
-  MatDialogModule,
-  MatTabsModule,
-  MatCardModule,
-  MatSnackBarModule,
-  MatChipsModule
-} from '@angular/material';
+
 import { HttpClientModule } from '@angular/common/http';
 
 import { getBaseHref } from './getBaseHref';
@@ -43,6 +20,29 @@ import { IconUrlResolverService } from './services/pure/icon-url-resolver.servic
 import { NgxFilemanagerClientDialogsModule } from './ui/dialogs/dialogs.module';
 import { FileSizeModule } from './ui/file-size/file-size.module';
 import { AppFileTableModule } from './ui/file-table/file-table.module';
+
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const declarations = [
   LibMainFileManagerComponent,

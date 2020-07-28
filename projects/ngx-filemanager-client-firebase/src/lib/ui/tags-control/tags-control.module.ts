@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { AppControlTagMultipleComponent } from './tags-control.component';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import {
-  MatChipsModule,
-  MatIconModule,
-  MatInputModule,
-  MatFormFieldModule,
-  MatAutocompleteModule
-} from '@angular/material';
+
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+
 
 @NgModule({
   imports: [

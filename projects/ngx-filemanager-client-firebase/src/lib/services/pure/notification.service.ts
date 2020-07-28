@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class NotificationService {
   constructor(private matSnackbar: MatSnackBar) {}
 
-  public notify(msg: string, title?: string, isError?: boolean) {
+  public notify(msg: string, title?: string) {
     return this.matSnackbar.open(msg, title, {
       duration: 4000,
       horizontalPosition: 'center',
-      verticalPosition: 'bottom'
+      verticalPosition: 'bottom',
     });
   }
 

@@ -4,12 +4,12 @@ import { CardFileComponent } from './card-file.component';
 import { CardFolderComponent } from './card-folder.component';
 import { AppFileTableComponent } from './file-table.component';
 import { CommonModule } from '@angular/common';
-import {
-  MatIconModule,
-  MatButtonModule,
-  MatTooltipModule,
-  MatMenuModule
-} from '@angular/material';
+
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
+
 import { FileSizeModule } from '../file-size/file-size.module';
 
 @NgModule({

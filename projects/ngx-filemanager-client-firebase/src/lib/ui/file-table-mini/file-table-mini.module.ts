@@ -3,12 +3,12 @@ import { AppFileTableMiniFolderBrowserComponent } from './file-table-mini-folder
 import { AppActionsMiniBrowserComponent } from './actions-mini-browser.component';
 import { CommonModule } from '@angular/common';
 import { FileSizeModule } from '../file-size/file-size.module';
-import {
-  MatButtonModule,
-  MatToolbarModule,
-  MatIconModule
-} from '@angular/material';
+
 import { AppFileTableModule } from '../file-table/file-table.module';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @NgModule({
   imports: [
