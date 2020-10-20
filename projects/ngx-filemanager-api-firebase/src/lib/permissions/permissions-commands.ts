@@ -9,6 +9,34 @@ async function UpdateFilePermissions(
   return permHelper.SetMetaPropertyObj(file, 'permissions', newPermissions);
 }
 
+async function UpdateFileSize(
+  file: File,
+  bytesCount: number
+) {
+  return permHelper.SetMetaPropertyString(file, 'size', bytesCount+'');
+}
+
+async function UpdateFolderSize(
+  file: File,
+  bytesCount: number
+) {
+  return permHelper.SetMetaPropertyString(file, 'size', bytesCount+'');
+}
+
+async function SetFolderProps(
+  file: File,
+  bytesCount: number,
+  childCount: number
+) {
+  await Promise.all([
+    permHelper.SetMetaPropertyString(file, 'size', bytesCount+''),
+    permHelper.SetMetaPropertyString(file, 'child_count', childCount+''),
+  ])  
+}
+
 export const permsCommands = {
-  UpdateFilePermissions
+  UpdateFilePermissions,
+  UpdateFileSize,
+  UpdateFolderSize,
+  SetFolderProps
 };

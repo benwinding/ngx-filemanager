@@ -162,3 +162,15 @@ test('adds (2) to directory (2)', () => {
   return expect(result).toBe('sub/dir (2) (2)/');
 });
 
+// Get parent
+
+test('Get parent dir', () => {
+  const result = paths.GetParentDir('sub/dir (2)/');
+  return expect(result).toBe('sub/');
+});
+
+test('Get parent dir when in root folder', () => {
+  const result = paths.GetParentDir('sub/');
+  return expect(result).toBe('');
+});
+

@@ -19,7 +19,7 @@ test('should list files with permissions', async () => {
   });
   await testHelper.delayMs(200);
   // testHelper.logObj({result});
-  // await testHelper.removeDir(testBucket, 'list.spec.ts/test2');
+  await testHelper.removeDir(testBucket, 'list.spec.ts/test2');
   expect(result.length).toBe(2);
 }, 60000);
 

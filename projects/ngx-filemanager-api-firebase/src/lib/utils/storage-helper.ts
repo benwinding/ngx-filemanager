@@ -10,7 +10,7 @@ import { CoreTypes } from '../types';
 import {
   translateStorageToResFile,
   makePhantomStorageFolder,
-  translateRawStorage
+  translateRawStorage,
 } from './translation-helpers';
 
 async function GetAllChildrenWithPrefix(
@@ -48,7 +48,7 @@ async function TryRenameFile(
       fileExists,
       fileName: file.name,
       oldPrefix,
-      newPrefix
+      newPrefix,
     });
     throw new VError(error);
   }
@@ -66,7 +66,7 @@ async function TryCopyFile(file: File, oldPrefix: string, newPrefix: string) {
   } catch (error) {
     const [fileExists] = await file.exists();
     console.error('storage-helper: TryCopyFile() error copying file', {
-      fileExists
+      fileExists,
     });
     throw new VError(error);
   }
@@ -117,7 +117,7 @@ export function MakeOptionsListRoot(): GetFilesOptions {
   return {
     delimiter: '/',
     includeTrailingDelimiter: true,
-    autoPaginate: false
+    autoPaginate: false,
   } as any;
 }
 
@@ -126,7 +126,7 @@ export function MakeOptionsList(inputDirectoryPath: string) {
     delimiter: '/',
     includeTrailingDelimiter: true,
     directory: inputDirectoryPath,
-    autoPaginate: false
+    autoPaginate: false,
   } as any;
 }
 
@@ -148,7 +148,7 @@ export async function GetFilesAndPrefixes(
       const prefixes = apiResponse['prefixes'] || [];
       const result: FilesAndPrefixes = {
         files: files || [],
-        prefixes: prefixes
+        prefixes: prefixes,
       };
       resolve(result);
     };
@@ -163,7 +163,7 @@ export async function GetFiles(
   try {
     const result = await bucket.getFiles(options);
     const storageObjects = result[0];
-    const files = storageObjects.map(o => translateRawStorage(o));
+    const files = storageObjects.map((o) => translateRawStorage(o));
     return files;
   } catch (error) {
     throw new VError(error);
@@ -186,19 +186,20 @@ export async function GetListFromStorage(
   }
   try {
     const result = await GetFilesAndPrefixes(bucket, options);
-    const allObjects = result.files.map(o => translateRawStorage(o));
+    const allObjects = result.files.map((o) => translateRawStorage(o));
 
-    const allObjectsPathsSet = new Set(allObjects.map(f => f.ref.name));
+    const allObjectsPathsSet = new Set(allObjects.map((f) => f.ref.name));
     const phantomPrefixes = result.prefixes.filter(
-      prefix => !allObjectsPathsSet.has(prefix)
+      (prefix) => !allObjectsPathsSet.has(prefix)
     );
 
-    const newPhantomFolders = phantomPrefixes.map(phantomPath =>
+    const newPhantomFolders = phantomPrefixes.map((phantomPath) =>
       makePhantomStorageFolder(phantomPath)
     );
     const combinedList = [...allObjects, ...newPhantomFolders];
     const filesWithoutCurrentDirectory = combinedList.filter(
-      f => paths.EnsureGoogleStoragePathDir(f.fullPath) !== googleStorageDirPath
+      (f) =>
+        paths.EnsureGoogleStoragePathDir(f.fullPath) !== googleStorageDirPath
     );
     return filesWithoutCurrentDirectory;
   } catch (error) {
@@ -213,12 +214,47 @@ export async function GetListWithoutPermissions(
   try {
     const files = await GetListFromStorage(bucket, inputDirectoryPath);
     const resFiles = await Promise.all(
-      files.map(f => translateStorageToResFile(f))
+      files.map((f) => translateStorageToResFile(f))
     );
     return resFiles;
   } catch (error) {
     throw new VError(error);
   }
+}
+
+async function GetParent(
+  bucket: Bucket,
+  filePath: string
+): Promise<File | null> {
+  const parentPath = paths.GetParentDir(filePath);
+  if (!parentPath) {
+    return null;
+  }
+  const parentObj = bucket.file(parentPath);
+  return parentObj;
+}
+
+export async function UpdateParentsCountAdded(
+  bucket: Bucket,
+  filePath: string,
+  fileSizeBytes: number
+): Promise<any> {
+  const parent = await GetParent(bucket, filePath);
+  if (!parent) {
+    return;
+  }
+  let res = { totalChildren: 0, totalBytes: 0 };
+  try {
+    res = await perms.queries.GetFolderProps(parent);
+  } catch (error) {
+    await parent.save('');
+  }
+  res.totalChildren++;
+  res.totalBytes += fileSizeBytes;
+  await Promise.all([
+    perms.commands.SetFolderProps(parent, res.totalChildren, res.totalBytes),
+    UpdateParentsCountAdded(bucket, parent.name, fileSizeBytes),
+  ]);
 }
 
 export const storage = {
@@ -228,5 +264,6 @@ export const storage = {
   MakeOptionsList,
   TryRenameFile,
   TryCopyFile,
-  TryCheckWritePermission
+  TryCheckWritePermission,
+  UpdateParentsCountAdded,
 };

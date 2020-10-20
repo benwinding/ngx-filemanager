@@ -27,6 +27,7 @@ export namespace CoreTypes {
     permissions: FilePermissionsObject; // unix string
     perms?: string;
     size: string; // bytes
+    child_count?: string; // bytes
     date: string; // iso format
     type: 'dir' | 'file';
     isPhantomFolder?: boolean;
@@ -94,7 +95,7 @@ export namespace CoreTypes {
     result: string;
   }
 
-  // CREATE FOLDER
+  // CREATE_FOLDER
 
   export interface ReqBodyCreateFolder extends ReqBodyAction {
     newPath: string;
@@ -103,7 +104,7 @@ export namespace CoreTypes {
 
   export interface ResBodyCreateFolder extends ResBodySuccess {}
 
-  // SET PERMISSIONS
+  // SET_PERMISSIONS
 
   export interface ReqBodySetPermissions extends ReqBodyAction {
     items: string[];
@@ -120,11 +121,11 @@ export namespace CoreTypes {
 
   export interface ResBodySetPermissions extends ResBodySuccess {}
 
-  // UPLOAD FILE
+  // UPLOAD_FILE
 
   export interface ResBodyUploadFile extends ResBodySuccess {}
 
-  // UPLOAD FILE
+  // UPLOAD_FILE
 
   export interface ReqBodyGetSingle extends ReqBodyAction {
     item: string;

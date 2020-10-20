@@ -11,7 +11,6 @@ import { storage } from './storage-helper';
 const serviceAccount = require('../../../../../serviceAccountKey.TESTS.json');
 const testbucketname = 'resvu-integration-tests.appspot.com';
 
-
 function logObj(obj) {
   console.log(CICULAR.stringify(obj, null, 2));
 }
@@ -20,7 +19,7 @@ function getBucket() {
   if (!admin.apps || !admin.apps.length) {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
-      storageBucket: testbucketname
+      storageBucket: testbucketname,
     });
   }
   const testStorage = admin.storage();
@@ -30,16 +29,23 @@ function getBucket() {
 
 async function uploadTestFile(file: File) {
   const content = 'hi there' + Math.random().toString().slice(0, 20);
-  const buffer = new Buffer(content);
+  const buffer = Buffer.from(content);
   const fileOptions = {
-    contentType: 'text/plain'
+    contentType: 'text/plain',
   };
-  console.log('test-helper: uploadTestFile() about to try and upload test file: ', {fileName: file.name});
+  console.log(
+    'test-helper: uploadTestFile() about to try and upload test file: ',
+    { fileName: file.name }
+  );
   try {
     await delay(500);
     await file.save(buffer, fileOptions);
   } catch (error) {
-    console.error('test-helper: uploadTestFile', {fileName: file.name}, error);
+    console.error(
+      'test-helper: uploadTestFile',
+      { fileName: file.name },
+      error
+    );
     throw new Error(error);
   }
   await delay(500);
@@ -51,7 +57,7 @@ async function uploadTestFileWithPerms(
 ) {
   const buffer = new Buffer('hi there');
   const fileOptions = {
-    contentType: 'text/plain'
+    contentType: 'text/plain',
   };
 
   try {
@@ -61,7 +67,11 @@ async function uploadTestFileWithPerms(
     await perms.commands.UpdateFilePermissions(file, permissionsObj);
     await delay(500);
   } catch (error) {
-    console.error('test-helper: uploadTestFile', {fileName: file.name}, error);
+    console.error(
+      'test-helper: uploadTestFile',
+      { fileName: file.name },
+      error
+    );
     throw new Error(error);
   }
 }
@@ -72,7 +82,9 @@ async function uploadTestFiles(files: File[]) {
       await uploadTestFile(file);
     }
   } catch (error) {
-    console.error('test-helper uploadTestFiles()', {filenames: files.map(f => f.name)});
+    console.error('test-helper uploadTestFiles()', {
+      filenames: files.map((f) => f.name),
+    });
     throw new VError(error);
   }
 }
@@ -86,7 +98,9 @@ async function uploadTestFilesWithPerms(
       await uploadTestFileWithPerms(file, permissionsObj);
     }
   } catch (error) {
-    console.error('test-helper uploadTestFilesWithPerms()', {filenames: files.map(f => f.name)});
+    console.error('test-helper uploadTestFilesWithPerms()', {
+      filenames: files.map((f) => f.name),
+    });
     throw new VError(error);
   }
 }
@@ -129,7 +143,7 @@ async function removeFile(bucket: Bucket, filePath: string) {
 }
 
 async function removeFiles(files: File[]) {
-  await Promise.all(files.map(f => f.delete()));
+  await Promise.all(files.map((f) => f.delete()));
 }
 
 async function removeDir(bucket: Bucket, dirPath: string) {
@@ -150,7 +164,7 @@ async function removeDir(bucket: Bucket, dirPath: string) {
     await delay(100);
   } catch (error) {
     console.log('test-helper: removeDir() problem removing children of path', {
-      dirPath
+      dirPath,
     });
   }
 }
@@ -203,5 +217,5 @@ export const testHelper = {
   existsDir,
   logObj,
   getBucket,
-  delayMs: delay
+  delayMs: delay,
 };

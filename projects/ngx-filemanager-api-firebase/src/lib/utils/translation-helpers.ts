@@ -59,6 +59,7 @@ export async function translateStorageToResFile(
     const permissions = await perms.queries.RetrieveFilePermissions(f.ref);
     resFile.permissions = permissions;
     resFile.size = metaData.size;
+    resFile.child_count = metaData.child_count;
     resFile.date = metaData.updated;
     resFile.metaData = customMeta;
     return resFile;

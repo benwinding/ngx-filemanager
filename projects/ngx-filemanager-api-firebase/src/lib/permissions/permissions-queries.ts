@@ -15,7 +15,7 @@ async function RetrieveFilePermissions(
   const blank = permsFactory.blankPermissionsObj();
   const safePerms = {
     ...blank,
-    ...(fromStorage || {})
+    ...(fromStorage || {}),
   };
   return safePerms;
 }
@@ -51,7 +51,7 @@ function CanWrite(othersPermissions: CoreTypes.FilePermissionOthers) {
 
 function CanOthersDo(
   othersPermissions: CoreTypes.FilePermissionOthers,
-  toCheck: 'read' | 'write'
+  toCheck: 'read' | 'write' | 'execute'
 ) {
   switch (toCheck) {
     case 'read':
@@ -63,12 +63,22 @@ function CanOthersDo(
   }
 }
 
-export type FilePermission = 'write' | 'read';
+async function GetFolderProps(
+  file: File
+): Promise<{ totalBytes: number; totalChildren: number }> {
+  const [size, fileCount] = await Promise.all([
+    permHelper.GetMetaPropertyString(file, 'size'),
+    permHelper.GetMetaPropertyString(file, 'child_count'),
+  ]);
+  const safeSize = Number.isFinite(+size) ? +size : 0;
+  const safeChildren = Number.isFinite(+fileCount) ? +fileCount : 0;
+  return { totalBytes: safeSize, totalChildren: safeChildren };
+}
 
 function TryCheckFileAccess(
   filePermissions: CoreTypes.FilePermissionsObject,
   claims: CoreTypes.UserCustomClaims,
-  toCheck: 'read' | 'write'
+  toCheck: FilePermission
 ): boolean {
   // Anyone can do something
   const anyoneCanDo = CanOthersDo(filePermissions.others, toCheck);
@@ -107,7 +117,7 @@ function IsPartOfArray(
     return false;
   }
   const userGroupSet = new Set(usersGroups);
-  const isInArray = arr.find(entity => userGroupSet.has(entity));
+  const isInArray = arr.find((entity) => userGroupSet.has(entity));
   return !!isInArray;
 }
 
@@ -142,5 +152,6 @@ export const permsQueries = {
   TryCheckHasAnyPermissions,
   TryCheckFileAccess,
   IsPartOfArray,
-  CheckCanEditPermissions
+  CheckCanEditPermissions,
+  GetFolderProps,
 };

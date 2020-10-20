@@ -1,5 +1,6 @@
 import { Bucket, File } from '../../types/google-cloud-types';
 import * as path from 'path';
+import { perms } from '../../permissions';
 import { CoreTypes } from '../../types';
 import { paths } from '../../utils/paths';
 import { storage } from '../../utils/storage-helper';
@@ -55,6 +56,11 @@ export async function UploadFile(
       file = desiredFile;
     }
     await SaveBufferToPath(file, mimetype, buffer);
+    const bytesCount = buffer.length;
+    await Promise.all([
+      perms.commands.UpdateFileSize(file, bytesCount),
+      storage.UpdateParentsCountAdded(bucket, file.name, bytesCount),
+    ])
   } catch (error) {
     throw new Error('UploadFile: ' + error);
   }
