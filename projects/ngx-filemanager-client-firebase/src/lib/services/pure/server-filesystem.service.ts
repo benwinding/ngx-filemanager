@@ -11,14 +11,22 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
   private apiEndpoint: string;
   private isAdmin: boolean;
 
+  private LOG_ID = Math.random().toString(32).slice(2, 10);
+
   constructor(private http: HttpClient, private logger: LoggerService) {}
 
   private makeAPIRequest(action: CoreTypes.FileManagerAction) {
     this.logger.info('makeAPIRequest', { action, context: this });
-    return new FileSystemRequestBuilder(this.http, this.apiEndpoint, this.logger).AddBody({
+
+    return new FileSystemRequestBuilder(
+      this.http,
+      this.apiEndpoint,
+      this.logger,
+      this.LOG_ID
+    ).AddBody({
       action: action,
       bucketname: this.bucketname,
-      isAdmin: this.isAdmin
+      isAdmin: this.isAdmin,
     });
   }
 
@@ -35,7 +43,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
   List(path: string): Promise<CoreTypes.ResBodyList> {
     return this.makeAPIRequest('list')
       .PatchBody<CoreTypes.ReqBodyList>({
-        path: path
+        path: path,
       })
       .POST();
   }
@@ -46,7 +54,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
   ): Promise<CoreTypes.ResBodyCreateFolder> {
     return this.makeAPIRequest('createFolder')
       .PatchBody<CoreTypes.ReqBodyCreateFolder>({
-        newPath: newPath
+        newPath: newPath,
       })
       .POST();
   }
@@ -58,7 +66,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     return this.makeAPIRequest('copy')
       .PatchBody<CoreTypes.ReqBodyCopy>({
         singleFileName: singleFileName,
-        newPath: newPath
+        newPath: newPath,
       })
       .POST();
   }
@@ -67,7 +75,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     return this.makeAPIRequest('move')
       .PatchBody<CoreTypes.ReqBodyMove>({
         items: [item],
-        newPath: newPath
+        newPath: newPath,
       })
       .POST();
   }
@@ -76,7 +84,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     return this.makeAPIRequest('rename')
       .PatchBody<CoreTypes.ReqBodyRename>({
         item: item,
-        newItemPath: newItemPath
+        newItemPath: newItemPath,
       })
       .POST();
   }
@@ -85,7 +93,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     return this.makeAPIRequest('edit')
       .PatchBody<CoreTypes.ReqBodyEdit>({
         item: item,
-        content: content
+        content: content,
       })
       .POST();
   }
@@ -93,7 +101,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
   Getcontent(item: string): Promise<CoreTypes.ResBodyGetContent> {
     return this.makeAPIRequest('getContent')
       .PatchBody<CoreTypes.ReqBodyEdit>({
-        item: item
+        item: item,
       })
       .POST();
   }
@@ -109,7 +117,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
         items: [item],
         role: role,
         entity: entity,
-        recursive: recursive
+        recursive: recursive,
       })
       .POST();
   }
@@ -121,7 +129,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     return this.makeAPIRequest('move')
       .PatchBody<CoreTypes.ReqBodyMove>({
         items: items,
-        newPath: newPath
+        newPath: newPath,
       })
       .POST();
   }
@@ -133,7 +141,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
     return this.makeAPIRequest('copy')
       .PatchBody<CoreTypes.ReqBodyCopy>({
         items: items,
-        newPath: newPath
+        newPath: newPath,
       })
       .POST();
   }
@@ -149,7 +157,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
         items: items,
         role: role,
         entity: entity,
-        recursive: recursive
+        recursive: recursive,
       })
       .POST();
   }
@@ -163,7 +171,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
       .PatchBody<CoreTypes.ReqBodySetPermissionsObject>({
         items: items,
         permissionsObj: permissionsObj,
-        recursive: recursive
+        recursive: recursive,
       })
       .POST();
   }
@@ -171,7 +179,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
   Remove(items: string[]): Promise<CoreTypes.ResBodyRemove> {
     return this.makeAPIRequest('remove')
       .PatchBody<CoreTypes.ReqBodyRemove>({
-        items: items
+        items: items,
       })
       .POST();
   }
@@ -179,7 +187,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
   GetSingle(item: string): Promise<CoreTypes.ResBodyGetSingle> {
     return this.makeAPIRequest('getSingle')
       .PatchBody<CoreTypes.ReqBodyGetSingle>({
-        item: item
+        item: item,
       })
       .POST();
   }
@@ -205,7 +213,7 @@ export class ServerFilesystemProviderService implements FileSystemProvider {
         'getSingle'
       )
         .PatchBody<CoreTypes.ReqBodyGetSingle>({
-          item: file.fullPath
+          item: file.fullPath,
         })
         .POST();
       const url = response.result.url;

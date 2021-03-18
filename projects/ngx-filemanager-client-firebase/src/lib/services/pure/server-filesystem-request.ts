@@ -10,7 +10,8 @@ export class FileSystemRequestBuilder {
   constructor(
     private http: HttpClient,
     private url: string,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private LOG_ID: string
   ) {}
   AddBody(body) {
     this.body = {
@@ -46,7 +47,7 @@ export class FileSystemRequestBuilder {
   async POST() {
     const key = this.makeRequestKey();
     try {
-      this.logger.info('FileSystemRequestBuilder', {
+      this.logger.info(this.LOG_ID + ' FileSystemRequestBuilder', {
         url: this.url,
         body: this.body,
         options: this.options
