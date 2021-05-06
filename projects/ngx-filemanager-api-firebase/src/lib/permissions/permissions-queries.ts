@@ -1,4 +1,3 @@
-import { FilePermission } from './unix-conversion';
 import { File } from '../types/google-cloud-types';
 import { GetTokenFromRequest } from './token-helper';
 import { CoreTypes } from '../types';
@@ -9,13 +8,14 @@ import { permHelper } from './permissions-helper';
 async function RetrieveFilePermissions(
   file: File
 ): Promise<CoreTypes.FilePermissionsObject> {
-  const fromStorage = await permHelper.GetMetaPropertyObj<
-    CoreTypes.FilePermissionsObject
-  >(file, 'permissions');
+  const fromStorage = await permHelper.GetMetaPropertyObj<CoreTypes.FilePermissionsObject>(
+    file,
+    'permissions'
+  );
   const blank = permsFactory.blankPermissionsObj();
   const safePerms = {
     ...blank,
-    ...(fromStorage || {})
+    ...(fromStorage || {}),
   };
   return safePerms;
 }
@@ -42,7 +42,11 @@ function TryCheckHasAnyPermissions(claims: CoreTypes.UserCustomClaims) {
 }
 
 function CanRead(othersPermissions: CoreTypes.FilePermissionOthers) {
-  return othersPermissions === 'read' || othersPermissions === 'read/write';
+  return (
+    othersPermissions == null ||
+    othersPermissions === 'read' ||
+    othersPermissions === 'read/write'
+  );
 }
 
 function CanWrite(othersPermissions: CoreTypes.FilePermissionOthers) {
@@ -107,7 +111,7 @@ function IsPartOfArray(
     return false;
   }
   const userGroupSet = new Set(usersGroups);
-  const isInArray = arr.find(entity => userGroupSet.has(entity));
+  const isInArray = arr.find((entity) => userGroupSet.has(entity));
   return !!isInArray;
 }
 
@@ -142,5 +146,5 @@ export const permsQueries = {
   TryCheckHasAnyPermissions,
   TryCheckFileAccess,
   IsPartOfArray,
-  CheckCanEditPermissions
+  CheckCanEditPermissions,
 };
