@@ -393,15 +393,13 @@ export class LibMainFileManagerComponent implements OnInit, OnDestroy {
 
       const currentVisiableDocuments: CoreTypes.ResFile[] = (await this.actionHandlers.ListCurrentPathItems(currentPath)).result;
       currentVisiableDocuments.forEach((item: CoreTypes.ResFile)=>{
-        console.log('I am file', item, 'item.type', item.type)
+        console.log( item, 'item.type', item.type)
         if(item.type==='file') {
           if(this.checkSearchKeywordRelative(item.name, keyword)) {
-            console.log('pushed inside dir')
             this.seachResultDocuments.push(item);
           }
         } else if(item.type==='dir') {
           if(this.checkSearchKeywordRelative(item.name, keyword)) {
-            console.log('pushed inside dir');
             this.seachResultFolders.push(item);
           }
           this.iterateCurrentDocumentAndFolders(item.fullPath, keyword, level+1);
