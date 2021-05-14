@@ -51,6 +51,94 @@
           </div>
         </div>
       </div>
+      <div *ngIf="enableSearch">
+        <form (submit)="searchAllDocumentsAndFolders(searchKeyword)" [formGroup]="searchForm">
+          <mat-form-field class="w-full px-2">
+            <input matInput [(ngModel)]="searchKeyword" formControlName="searchKeyword" placeholder="Search here"/>
+          </mat-form-field>
+          <mat-progress-spinner
+              *ngIf="showSearchingSpinner"
+              mode="determinate"
+              [diameter]="40"
+              color="warn"
+              [value]="100"
+            ></mat-progress-spinner>
+        </form>
+        <div *ngIf="!showSearchingSpinner&&isSearching&&seachResultDocuments.length===0&&seachResultFolders.length===0">
+          <div class="card-container">
+            <h4>Search results: </h4>
+            <mat-card >
+              <div class="document">
+                <div class="title">
+                  There are no site files/folders match your keyword.
+                </div>
+              </div>
+            </mat-card>
+          </div>
+        </div>
+        <div class="exp-panel" *ngIf="seachResultDocuments.length>0">
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Files:
+              </mat-panel-title>
+              <mat-panel-description>
+                They are results of search files.
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-card (click)="onSelectedSearchItem(document)" *ngFor="let document of seachResultDocuments|slice:0: documentsShow">
+              <div class="document">
+                <div class="title">
+                  {{document.name}}
+                </div>
+                <div class="search-item">
+                  <mat-icon class="icon-size-44 text-primary">
+                      insert_drive_file
+                  </mat-icon>
+                  <span>{{ document.fullPath }}</span>
+              </div>
+              </div>
+            </mat-card>
+            <div class="text-right">
+              <button 
+                *ngIf="documentsShow < seachResultDocuments.length"
+                (click)="documentsShow=documentsShow+10"
+                mat-raised-button>Load more</button>
+              </div>
+          </mat-expansion-panel>
+        </div>
+        <div class="exp-panel" *ngIf="seachResultFolders.length>0">
+          <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Folders:
+              </mat-panel-title>
+              <mat-panel-description>
+                They are results of search folders.
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-card (click)="onSelectedSearchItem(folder)" *ngFor="let folder of seachResultFolders|slice:0: foldersShow">
+              <div class="document">
+                <div class="title">
+                  {{folder.name}}
+                </div>
+                <div class="search-item">
+                  <mat-icon class="icon-size-44 text-primary">
+                      folder
+                  </mat-icon>
+                  <span>{{ folder.fullPath }}</span>
+                </div>
+              </div>
+            </mat-card>
+            <div class="text-right">
+              <button 
+                *ngIf="foldersShow < seachResultFolders.length"
+                (click)="foldersShow=foldersShow+10"
+                mat-raised-button>Load more</button>
+            </div>
+          </mat-expansion-panel>
+        </div>
+      </div>
       <app-file-table
         *ngIf="folders$ && files$"
         [folders]="folders$ | async"

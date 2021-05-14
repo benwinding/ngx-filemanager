@@ -22,4 +22,6 @@ export interface FileManagerConfig {
 
   showWriters?: boolean;
   showOthers?: boolean;
+
+  enableSearch?: boolean;
 }
