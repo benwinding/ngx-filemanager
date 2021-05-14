@@ -13,6 +13,7 @@ import { FileActionDefinition } from '../file-table/FileActionDefinition';
 import { BulkActionDefinition } from '../actions-toolbars/BulkActionDefinition';
 import { MainActionDefinition } from '../actions-toolbars/MainActionDefinition';
 import { FileDetailActionDefinition } from '../file-details/FileDetailActionDefinition';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -24,6 +25,7 @@ import { FileDetailActionDefinition } from '../file-details/FileDetailActionDefi
     ClientFileSystemService,
     OptimisticFilesystemService
   ]
+  
 })
 export class LibMainFileManagerComponent implements OnInit, OnDestroy {
   @Input()
@@ -54,12 +56,25 @@ export class LibMainFileManagerComponent implements OnInit, OnDestroy {
   folders$: Observable<CoreTypes.ResFile[]>;
   files$: Observable<CoreTypes.ResFile[]>;
 
+  enableSearch: boolean = false;
+  searchForm: FormGroup;
+  searchKeyword: string = '';
+  seachResultDocuments: CoreTypes.ResFile[] = [];
+  seachResultFolders: CoreTypes.ResFile[] = [];
+  documentsShow: number = 10;
+  foldersShow: number = 10;
+  isSearching: boolean = false;
+  showSearchingSpinner: boolean = false;
+
   constructor(
     private actionHandlers: ActionHandlersService,
     private logger: LoggerService,
-    private status: FilemanagerStatusService
+    private status: FilemanagerStatusService,
   ) {
     this.requestMap = this.status.ActiveRequestsMap;
+    this.searchForm = new FormGroup({
+      searchKeyword: new FormControl('', [Validators.minLength(3)]),
+    });
   }
 
   // Getters
@@ -126,6 +141,7 @@ export class LibMainFileManagerComponent implements OnInit, OnDestroy {
       .subscribe();
     this.makeConfig();
     this.initLoaded = true;
+    this.enableSearch = !!this.config.enableSearch || false;
   }
 
   ngOnDestroy() {
@@ -349,5 +365,73 @@ export class LibMainFileManagerComponent implements OnInit, OnDestroy {
   public ClearBulkSelected() {
     this.$triggerClearSelected.next();
     this.$BulkSelected.next([]);
+  }
+
+  // Search
+  public async searchAllDocumentsAndFolders(keyword: string) {
+    keyword = keyword.toLocaleLowerCase().trim();
+    if(!this.searchForm.valid){ 
+      return
+    };
+    await this.initCleanSearchResults();
+    const startPath = this.actionHandlers.GetRootPath();
+    this.isSearching = true;
+    this.showSearchingSpinner = true;
+    this.iterateCurrentDocumentAndFolders(startPath, keyword, 0);
+  }
+
+  private async iterateCurrentDocumentAndFolders(currentPath: string, keyword: string, level: number) {
+      if(level > 100) {
+        this.isSearching = false;
+      }
+      if(this.showSearchingSpinner) {
+        this.showSearchingSpinner = (this.isSearching&&this.seachResultDocuments.length===0&&this.seachResultFolders.length===0&&level < 3);
+      }
+      if(!this.isSearching) {
+        return
+      }
+
+      const currentVisiableDocuments: CoreTypes.ResFile[] = (await this.actionHandlers.ListCurrentPathItems(currentPath)).result;
+      currentVisiableDocuments.forEach((item: CoreTypes.ResFile)=>{
+        console.log( item, 'item.type', item.type)
+        if(item.type==='file') {
+          if(this.checkSearchKeywordRelative(item.name, keyword)) {
+            this.seachResultDocuments.push(item);
+          }
+        } else if(item.type==='dir') {
+          if(this.checkSearchKeywordRelative(item.name, keyword)) {
+            this.seachResultFolders.push(item);
+          }
+          this.iterateCurrentDocumentAndFolders(item.fullPath, keyword, level+1);
+        }
+      });
+  }
+
+  public checkSearchKeywordRelative(targetName: string, keyword: string) {
+    return targetName.toLowerCase().includes(keyword);
+  }
+
+  public initCleanSearchResults() {
+    this.isSearching = false;
+    this.showSearchingSpinner = false;
+    return new Promise<void>((resolve)=>{
+      setTimeout(() => {
+        this.seachResultDocuments = [];
+        this.seachResultFolders = [];
+        this.foldersShow = 5;
+        this.documentsShow = 5;
+        resolve();
+      }, 10);
+    })
+  }
+
+  public onSelectedSearchItem(item: CoreTypes.ResFile) {
+    //this.initCleanSearchResults();
+    if(item.type === 'file') {
+      let fileParentPath = item.fullPath.substring(0, item.fullPath.lastIndexOf('/'));
+      this.onEnterFolder(fileParentPath);
+    } else if (item.type === 'dir') {
+      this.onEnterFolder(item.fullPath);
+    }
   }
 }

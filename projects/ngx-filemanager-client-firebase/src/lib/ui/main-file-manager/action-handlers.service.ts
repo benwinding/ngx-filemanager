@@ -332,4 +332,9 @@ export class ActionHandlersService {
     await cloned.init(this.fileSystem, this.config);
     return cloned;
   }
+
+  //Search 
+  public ListCurrentPathItems(path: string): Promise<CoreTypes.ResBodyList> {
+    return this.fileSystem.List(path);
+  }
 }
