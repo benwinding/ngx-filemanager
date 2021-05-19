@@ -52,9 +52,15 @@ import { environment } from '../environments/environment';
         >
         </textarea>
       </mat-form-field>
-      <div>
+      <div style="display: flex;">
+      <div style="margin-right: 10px">
         <p>Is Admin? ({{ isAdminControl.value ? 'Yes' : 'No' }})</p>
         <mat-slide-toggle [formControl]="isAdminControl"> </mat-slide-toggle>
+      </div>
+      <div>
+        <p>Enable Search? ({{ hasSearchControl.value ? 'Yes' : 'No' }})</p>
+        <mat-slide-toggle [formControl]="hasSearchControl"> </mat-slide-toggle>
+      </div>
       </div>
     </mat-card>
 
@@ -82,6 +88,7 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
   virtualRoot = new FormControl();
   firebaseConfig = new FormControl();
   isAdminControl = new FormControl();
+  hasSearchControl = new FormControl();
 
   showExplorer = false;
 
@@ -109,7 +116,8 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
         }),
         distinctUntilChanged()
       ),
-      this.isAdminControl.valueChanges
+      this.isAdminControl.valueChanges,
+      this.hasSearchControl.valueChanges
     ])
       .pipe(debounceTime(500), takeUntil(this.destroyed))
       .subscribe(() => this.reInitializeExplorer());
@@ -126,7 +134,8 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     );
     this.virtualRoot.setValue(localStorage.getItem('virtualRoot') || '/');
     this.firebaseConfig.setValue(localStorage.getItem('firebaseConfig') || '');
-    this.isAdminControl.setValue(localStorage.getItem('isAdmin') || false);
+    this.isAdminControl.setValue(localStorage.getItem('isAdmin') == 'true' || false);
+    this.hasSearchControl.setValue(localStorage.getItem('hasSearch') == 'true' || false);
   }
 
   ngOnDestroy() {
@@ -144,11 +153,13 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     this.config.virtualRoot = this.virtualRoot.value;
     this.config.bucketName = this.bucketName.value;
     this.config.isAdmin = this.isAdminControl.value;
+    this.config.enableSearch = this.hasSearchControl.value;
     localStorage.setItem('bucketname', this.bucketName.value);
     localStorage.setItem('apiendpoint', this.apiEndpoint.value);
     localStorage.setItem('virtualRoot', this.virtualRoot.value);
     localStorage.setItem('firebaseConfig', this.firebaseConfig.value);
     localStorage.setItem('isAdmin', this.isAdminControl.value);
+    localStorage.setItem('hasSearch', this.hasSearchControl.value);
     setTimeout(() => {
       this.showExplorer = true;
     }, 100);
