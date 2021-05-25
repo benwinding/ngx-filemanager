@@ -61,6 +61,14 @@ import { environment } from '../environments/environment';
         <p>Enable Search? ({{ hasSearchControl.value ? 'Yes' : 'No' }})</p>
         <mat-slide-toggle [formControl]="hasSearchControl"> </mat-slide-toggle>
       </div>
+      <mat-form-field style="margin-left: 15px;">
+        <input
+          matInput
+          placeholder="folderSizePath"
+          type="text"
+          [formControl]="folderSizePath"
+        />
+      </mat-form-field>
       </div>
     </mat-card>
 
@@ -80,7 +88,8 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     users: $users,
     groups: $groups,
     firebaseConfig: environment.firebaseConfig,
-    bucketName: ''
+    bucketName: '',
+    folderSizePath: ''
   };
 
   bucketName = new FormControl();
@@ -89,6 +98,7 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
   firebaseConfig = new FormControl();
   isAdminControl = new FormControl();
   hasSearchControl = new FormControl();
+  folderSizePath = new FormControl();
 
   showExplorer = false;
 
@@ -117,7 +127,8 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
         distinctUntilChanged()
       ),
       this.isAdminControl.valueChanges,
-      this.hasSearchControl.valueChanges
+      this.hasSearchControl.valueChanges,
+      this.folderSizePath.valueChanges
     ])
       .pipe(debounceTime(500), takeUntil(this.destroyed))
       .subscribe(() => this.reInitializeExplorer());
@@ -136,6 +147,7 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     this.firebaseConfig.setValue(localStorage.getItem('firebaseConfig') || '');
     this.isAdminControl.setValue(localStorage.getItem('isAdmin') == 'true' || false);
     this.hasSearchControl.setValue(localStorage.getItem('hasSearch') == 'true' || false);
+    this.folderSizePath.setValue(localStorage.getItem('folderSizePath') || '');
   }
 
   ngOnDestroy() {
@@ -154,12 +166,14 @@ export class AppTestFunctionsRemoteComponent implements OnDestroy {
     this.config.bucketName = this.bucketName.value;
     this.config.isAdmin = this.isAdminControl.value;
     this.config.enableSearch = this.hasSearchControl.value;
+    this.config.folderSizePath = this.folderSizePath.value;
     localStorage.setItem('bucketname', this.bucketName.value);
     localStorage.setItem('apiendpoint', this.apiEndpoint.value);
     localStorage.setItem('virtualRoot', this.virtualRoot.value);
     localStorage.setItem('firebaseConfig', this.firebaseConfig.value);
     localStorage.setItem('isAdmin', this.isAdminControl.value);
     localStorage.setItem('hasSearch', this.hasSearchControl.value);
+    localStorage.setItem('folderSizePath', this.folderSizePath.value);
     setTimeout(() => {
       this.showExplorer = true;
     }, 100);
