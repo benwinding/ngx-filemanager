@@ -24,4 +24,6 @@ export interface FileManagerConfig {
   showOthers?: boolean;
 
   enableSearch?: boolean;
+
+  folderSizePath?: string
 }

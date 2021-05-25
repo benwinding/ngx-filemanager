@@ -40,7 +40,8 @@ import { FileDetailActionDefinition } from './FileDetailActionDefinition';
           </div>
         </span>
         <h5 class="mt-5">Size</h5>
-        <h6>{{ file.size | fileSize }}</h6>
+        <h6 *ngIf="isFile">{{ file.size | fileSize }}</h6>
+        <h6 *ngIf="!isFile&&config.folderSizePath">{{ getFolderSize(file) | fileSize }}</h6>
         <h5 class="mt-5">Date</h5>
         <h6>{{ file.date | date: 'short' }}</h6>
         <span class="flex-row space-between align-top mt-5">
@@ -239,5 +240,13 @@ export class FileDetailsComponent {
         file: this._file
       });
     }
+  }
+
+  getFolderSize(folder: CoreTypes.ResFile) {
+    if(folder.metaData) {
+      let path = this.config.folderSizePath
+      return path.split('.').reduce(function(p,prop) { return p[prop] }, folder);
+    }
+    return folder.size
   }
 }
