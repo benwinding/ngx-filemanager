@@ -145,6 +145,7 @@
         [files]="files$ | async"
         [fileActions]="fileActions"
         [folderActions]="folderActions"
+        [config]="config"
         [$triggerClearSelected]="$triggerClearSelected"
         (checkedChanged)="$BulkSelected.next($event)"
         (selectedChanged)="this.onSelectedFilePath($event)"

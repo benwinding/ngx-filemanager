@@ -11,6 +11,7 @@ import { Subject, Observable } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { takeUntil } from 'rxjs/operators';
 import { FileActionDefinition } from './FileActionDefinition';
+import { FileManagerConfig } from '../../configuration/client-configuration';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -36,6 +37,7 @@ import { FileActionDefinition } from './FileActionDefinition';
         <card-folder
           *ngFor="let folder of folders"
           [folder]="folder"
+          [config]="config"
           [checkedItems]="checkedItems"
           [selectedItem]="selectedItem"
           [actions]="folderActions"
@@ -106,6 +108,8 @@ export class AppFileTableComponent implements OnInit, OnDestroy {
   files: CoreTypes.ResFile[];
   @Input()
   folders: CoreTypes.ResFile[];
+  @Input()
+  config: FileManagerConfig;
   @Output()
   checkedChanged = new EventEmitter<CoreTypes.ResFile[]>();
   @Output()

@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CoreTypes } from '../../../core-types';
 import { FileActionDefinition } from './FileActionDefinition';
+import { FileManagerConfig } from '../../configuration/client-configuration';
 
 @Component({
   selector: 'card-folder',
@@ -32,7 +33,7 @@ import { FileActionDefinition } from './FileActionDefinition';
         <img class="mr-10" width="30" [src]="folder['icon']" />
         <div>
           <h5 class="m0 mb-5 has-ellipsis">{{ folder.name }}</h5>
-          <small class="m0 color-grey">{{ folder.size | fileSize }}</small>
+          <small *ngIf="config.folderSizePath" class="m0 color-grey">{{ getFolderSize(folder) | fileSize }}</small>
         </div>
       </div>
       <button
@@ -76,6 +77,8 @@ export class CardFolderComponent {
   checkedItems: SelectionModel<string>;
   @Input()
   selectedItem: SelectionModel<string>;
+  @Input()
+  config: FileManagerConfig;
   @Output()
   enterFolder = new EventEmitter<string>();
 
@@ -91,5 +94,13 @@ export class CardFolderComponent {
   onDoubleClick() {
     console.log('onDoubleClick!');
     this.enterFolder.emit(this.folder.fullPath);
+  }
+
+  getFolderSize(folder: CoreTypes.ResFile) {
+    if(folder.metaData) {
+      let path = this.config.folderSizePath
+      return path.split('.').reduce(function(p,prop) { return p[prop] }, folder);
+    }
+    return folder.size
   }
 }
