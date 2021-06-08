@@ -210,7 +210,12 @@ export class AppControlTagMultipleComponent implements OnInit, OnDestroy {
   selectedTag(event: MatAutocompleteSelectedEvent): void {
     console.log(event);
     const newVal = event.option.value;
-    this.control.value.push(newVal);
+    let canPush = true;
+    this.control.value.forEach((item)=>{
+      canPush = (item.id !== newVal.id) && canPush
+    })
+    if(canPush)
+      this.control.value.push(newVal);
     this.tagInput.nativeElement.value = '';
     this.tagInput.nativeElement.blur();
     this.updateFormValue();
