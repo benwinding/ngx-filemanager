@@ -18,7 +18,7 @@
     "@angular/cdk": "10.x",
     "@ctrl/ngx-csv": "^4",
     "path-browserify": "^1.0.1",
-    "ngx-filemanager-core": "^0.5.2",
+    "ngx-filemanager-core": "^0.5.3",
     "uuid": "3.3.2"
   }
 }
