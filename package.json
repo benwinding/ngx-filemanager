@@ -55,9 +55,9 @@
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "10.x",
-    "@angular-devkit/build-angular": "^0.1000.4",
-    "@angular-devkit/build-ng-packagr": "^0.1000.4",
-    "@angular-devkit/build-webpack": "^0.1000.4",
+    "@angular-devkit/build-angular": "0.1000.4",
+    "@angular-devkit/build-ng-packagr": "0.1000.4",
+    "@angular-devkit/build-webpack": "0.1000.4",
     "@angular/cli": "10.x",
     "@angular/compiler-cli": "10.x",
     "@angular/language-service": "10.x",
@@ -95,6 +95,6 @@
     "**/gaxios": "1.8.3"
   },
   "engines": {
-    "node": "10"
+    "node": "10 || 12"
   }
 }
