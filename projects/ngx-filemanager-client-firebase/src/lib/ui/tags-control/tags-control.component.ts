@@ -138,9 +138,6 @@ export class AppControlTagMultipleComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.selectChoices$.subscribe((value) => {
-      console.log('ssss', value);
-    });
     this.checkExists(this.control, 'this.group');
     this.checkExists(this.selectChoices$, 'this.selectChoices');
     this.selectInitial = this.control.value;
@@ -172,9 +169,6 @@ export class AppControlTagMultipleComponent implements OnInit, OnDestroy {
           });
         })
       );
-      this.filteredTags.subscribe((value) => {
-        console.log('sss!', value);
-      });
     });
 
     // Add the initial values if they're passed in
