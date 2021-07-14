@@ -2,7 +2,10 @@ import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { Observable, Subject, combineLatest } from 'rxjs';
-import { FileManagerConfig } from '../../configuration/client-configuration';
+import {
+  FileManagerConfig,
+  NameUid,
+} from '../../configuration/client-configuration';
 import { CoreTypes } from '../../../core-types';
 import { LoggerService } from '../../services/logging/logger.service';
 import { map, tap } from 'rxjs/operators';
@@ -99,8 +102,8 @@ export interface PermissionsObjectDialogResponseInterface {
       .-mt-15 {
         margin-top: -15px;
       }
-    `
-  ]
+    `,
+  ],
 })
 export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
   items: CoreTypes.ResFile[];
@@ -109,7 +112,7 @@ export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
   othersOptions: CoreTypes.FilePermissionOthers[] = [
     'read/write',
     'read',
-    'hidden'
+    'hidden',
   ];
 
   allReadersControl = new FormControl([]);
@@ -131,19 +134,35 @@ export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
     const users$ = this.config.users;
     const groups$ = this.config.groups;
     this.$allEntities = combineLatest([groups$, users$]).pipe(
-      tap(allEntities => this.logger.info('allEntities', { allEntities })),
-      map(arr => arr[0].concat(arr[1])),
-      map(arr =>
+      tap((allEntities) => this.logger.info('allEntities', { allEntities })),
+      map((arr) => {
+        let tempEntities: NameUid[] = [
+          {
+            uid: '',
+            name: 'Groups: ',
+            isDisabled: true,
+          },
+        ];
+        tempEntities = tempEntities.concat(arr[0]);
+        tempEntities.push({
+          uid: '',
+          name: 'Users: ',
+          isDisabled: true,
+        });
+        return tempEntities.concat(arr[1]);
+      }),
+      map((arr) =>
         arr.map(
-          n =>
+          (n) =>
             ({
               id: n.uid,
-              name: n.name
+              name: n.name,
+              isDisabled: !!n.isDisabled,
             } as Tag)
         )
       )
     );
-    this.$allEntities.subscribe(allEntities =>
+    this.$allEntities.subscribe((allEntities) =>
       this.logger.info('allEntities', { allEntities })
     );
     this.initPermissions(data.files);
@@ -154,9 +173,9 @@ export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
   }
 
   initPermissions(files: CoreTypes.ResFile[]) {
-    const allPermissions = files.map(f => f.permissions);
+    const allPermissions = files.map((f) => f.permissions);
     const othersVal = allPermissions
-      .map(p => p.others)
+      .map((p) => p.others)
       .reduce((acc, curr) => {
         if (acc === '-') {
           return curr;
@@ -172,19 +191,19 @@ export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
     }
 
     const uniqueWriters = this.getUniqueTags(
-      allPermissions.map(p => p.writers)
+      allPermissions.map((p) => p.writers)
     );
     this.allWritersControl.setValue(uniqueWriters);
 
     const uniqueReaders = this.getUniqueTags(
-      allPermissions.map(p => p.readers)
+      allPermissions.map((p) => p.readers)
     );
     this.allReadersControl.setValue(uniqueReaders);
 
     this.logger.info('set permissions', {
       othersVal,
       uniqueWriters,
-      uniqueReaders
+      uniqueReaders,
     });
   }
 
@@ -198,26 +217,26 @@ export class AppDialogPermissionsSetObjectComponent implements OnDestroy {
 
   strings2Tags(inputArr: string[]): Tag[] {
     return inputArr.map(
-      val =>
+      (val) =>
         ({
           id: uuidv4(),
-          name: val
+          name: val,
         } as Tag)
     );
   }
   tags2Strings(inputArr: Tag[]): string[] {
-    return inputArr.map(val => val.name);
+    return inputArr.map((val) => val.name);
   }
 
   onSubmit() {
     const newPermissionsObj: CoreTypes.FilePermissionsObject = {
       others: this.othersControl.value,
       readers: this.tags2Strings(this.allReadersControl.value),
-      writers: this.tags2Strings(this.allWritersControl.value)
+      writers: this.tags2Strings(this.allWritersControl.value),
     };
     const response: PermissionsObjectDialogResponseInterface = {
       permissionsObj: newPermissionsObj,
-      files: this.data.files
+      files: this.data.files,
     };
     this.logger.info('onSubmit', { newPermissionsObj, response });
     this.dialogRef.close(response);

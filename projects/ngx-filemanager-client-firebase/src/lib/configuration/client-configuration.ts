@@ -1,8 +1,9 @@
-import {Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 
 export interface NameUid {
   name: string;
   uid: string;
+  isDisabled?: boolean;
 }
 
 export interface FileManagerConfig {
@@ -25,5 +26,5 @@ export interface FileManagerConfig {
 
   enableSearch?: boolean;
 
-  folderSizePath?: string
+  folderSizePath?: string;
 }

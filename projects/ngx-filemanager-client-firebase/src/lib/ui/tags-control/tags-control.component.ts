@@ -4,7 +4,7 @@ import {
   Input,
   OnInit,
   ViewChild,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 
 import { FormControl, Validators } from '@angular/forms';
@@ -14,12 +14,16 @@ import { map, startWith, take } from 'rxjs/operators';
 
 import { v4 as uuidv1 } from 'uuid';
 
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import {
+  MatAutocomplete,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 
 export interface Tag {
   id: string;
   name: string;
+  isDisabled?: boolean;
 }
 
 @Component({
@@ -60,7 +64,11 @@ export interface Tag {
         #auto="matAutocomplete"
         (optionSelected)="selectedTag($event)"
       >
-        <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+        <mat-option
+          *ngFor="let tag of filteredTags | async"
+          [value]="tag"
+          [disabled]="tag['isDisabled']"
+        >
           {{ tag.name }}
         </mat-option>
       </mat-autocomplete>
@@ -87,8 +95,8 @@ export interface Tag {
         top: 1px !important;
         color: white;
       }
-    `
-  ]
+    `,
+  ],
 })
 export class AppControlTagMultipleComponent implements OnInit, OnDestroy {
   // Autocomplete FormGroup
@@ -139,7 +147,7 @@ export class AppControlTagMultipleComponent implements OnInit, OnDestroy {
     this.selectChoices$ = this.selectChoices$.pipe(take(1));
     this.controlAutocomplete = new FormControl([], Validators.minLength(1));
     // When selectChoices resolves (once)
-    this.selectChoices$.subscribe(selectChoicesArr => {
+    this.selectChoices$.subscribe((selectChoicesArr) => {
       // set the tags filtering pipe
       this.filteredTags = this.controlAutocomplete.valueChanges.pipe(
         startWith(null),
@@ -149,7 +157,7 @@ export class AppControlTagMultipleComponent implements OnInit, OnDestroy {
           if (!keyboardInput) {
             return selectChoicesArr;
           }
-          return selectChoicesArr.filter(tag => {
+          return selectChoicesArr.filter((tag) => {
             if (!tag) {
               return false;
             }
@@ -185,7 +193,7 @@ export class AppControlTagMultipleComponent implements OnInit, OnDestroy {
         const val = value.trim();
         const newTag: Tag = {
           id: newTagId,
-          name: val
+          name: val,
         };
         this.control.value.push(newTag);
       }
@@ -199,7 +207,7 @@ export class AppControlTagMultipleComponent implements OnInit, OnDestroy {
   }
 
   removeTag(removeTag: Tag): void {
-    const index = this.control.value.findIndex(t => t.id === removeTag.id);
+    const index = this.control.value.findIndex((t) => t.id === removeTag.id);
 
     if (index >= 0) {
       this.control.value.splice(index, 1);
@@ -211,11 +219,10 @@ export class AppControlTagMultipleComponent implements OnInit, OnDestroy {
     console.log(event);
     const newVal = event.option.value;
     let canPush = true;
-    this.control.value.forEach((item)=>{
-      canPush = (item.id !== newVal.id) && canPush
-    })
-    if(canPush)
-      this.control.value.push(newVal);
+    this.control.value.forEach((item) => {
+      canPush = item.id !== newVal.id && canPush;
+    });
+    if (canPush) this.control.value.push(newVal);
     this.tagInput.nativeElement.value = '';
     this.tagInput.nativeElement.blur();
     this.updateFormValue();
