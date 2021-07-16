@@ -33,7 +33,7 @@ import { FileManagerConfig } from '../../configuration/client-configuration';
         <img class="mr-10" width="30" [src]="folder['icon']" />
         <div>
           <h5 class="m0 mb-5 has-ellipsis">{{ folder.name }}</h5>
-          <small *ngIf="config.folderSizePath" class="m0 color-grey">{{ getFolderSize(folder) | fileSize }}</small>
+          <small *ngIf="config && config.folderSizePath" class="m0 color-grey">{{ getFolderSize(folder) | fileSize }}</small>
         </div>
       </div>
       <button
